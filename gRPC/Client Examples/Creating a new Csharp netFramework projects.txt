@@ -1,0 +1,14 @@
+1) Create a normal .Net Framework console application
+2) right click references, manage nuget packages
+3) search for GRCP, install GRCP and GRCP.Tools
+4) search for google protobuf, install google.protobuff. 
+5) save project, right click project and select 'unload project'
+6) right click project file, edit it.
+7) add the following item group:
+  <ItemGroup>
+    <Protobuf Include="..\..\protos\helloworld.proto">
+      <Link>protos\helloworld.proto</Link>
+    </Protobuf>
+    <None Include="packages.config" />
+  </ItemGroup>
+8) reopen project, add code, should build and run?

@@ -1,0 +1,6 @@
+D:\Source Repositories\BrainInterchange-Development\BICSharpNetFramework\BICSharpNetConsoleTest\BICSharpNetConsoleTest\bin\x64\Debug\BICSharpNetConsoleTest.exe.config
+D:\Source Repositories\BrainInterchange-Development\BICSharpNetFramework\BICSharpNetConsoleTest\BICSharpNetConsoleTest\bin\x64\Debug\BICSharpNetConsoleTest.exe
+D:\Source Repositories\BrainInterchange-Development\BICSharpNetFramework\BICSharpNetConsoleTest\BICSharpNetConsoleTest\bin\x64\Debug\BICSharpNetConsoleTest.pdb
+D:\Source Repositories\BrainInterchange-Development\BICSharpNetFramework\BICSharpNetConsoleTest\BICSharpNetConsoleTest\obj\x64\Debug\BICSharpNetConsoleTest.csproj.CoreCompileInputs.cache
+D:\Source Repositories\BrainInterchange-Development\BICSharpNetFramework\BICSharpNetConsoleTest\BICSharpNetConsoleTest\obj\x64\Debug\BICSharpNetConsoleTest.exe
+D:\Source Repositories\BrainInterchange-Development\BICSharpNetFramework\BICSharpNetConsoleTest\BICSharpNetConsoleTest\obj\x64\Debug\BICSharpNetConsoleTest.pdb

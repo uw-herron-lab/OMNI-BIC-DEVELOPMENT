@@ -1,0 +1,5 @@
+test.log
+/CMakeFiles/*
+/x64/*
+/Debug/*
+/.vs/*

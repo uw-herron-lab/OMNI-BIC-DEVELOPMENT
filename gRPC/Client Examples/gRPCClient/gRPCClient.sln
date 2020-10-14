@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29911.84
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gRPCClient", "gRPCClient\gRPCClient.csproj", "{AA72DD57-AE89-464C-9B05-4A6CABF9A408}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AA72DD57-AE89-464C-9B05-4A6CABF9A408}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA72DD57-AE89-464C-9B05-4A6CABF9A408}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA72DD57-AE89-464C-9B05-4A6CABF9A408}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA72DD57-AE89-464C-9B05-4A6CABF9A408}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {34C84FB1-2BBA-4DBE-A076-B794C313A5FC}
+	EndGlobalSection
+EndGlobal

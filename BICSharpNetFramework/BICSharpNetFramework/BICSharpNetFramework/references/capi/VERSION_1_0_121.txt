@@ -1,0 +1,4 @@
+Version information. Do not modify or rename!
+Major = 1
+Minor = 0
+Micro = 121

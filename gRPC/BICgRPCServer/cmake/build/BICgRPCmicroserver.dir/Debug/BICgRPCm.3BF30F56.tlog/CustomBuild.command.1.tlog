@@ -1,0 +1,20 @@
+^D:\SOURCE REPOSITORIES\BRAININTERCHANGE-DEVELOPMENT\GRPC\BICGRPCSERVER\CMAKE\BUILD\CMAKEFILES\634D70C5687247F5F4BE7AD3D1685632\BICGRPC.PB.CC.RULE
+setlocal
+D:\gitbuilds\bin\protoc.exe --grpc_out "D:/Source Repositories/BrainInterchange-Development/gRPC/BICgRPCServer/cmake/build" --cpp_out "D:/Source Repositories/BrainInterchange-Development/gRPC/BICgRPCServer/cmake/build" -I "D:/Source Repositories/BrainInterchange-Development/gRPC/Protos" --plugin=protoc-gen-grpc="D:/gitbuilds/bin/grpc_cpp_plugin.exe" "D:/Source Repositories/BrainInterchange-Development/gRPC/Protos/BICgRPC.proto"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^D:\SOURCE REPOSITORIES\BRAININTERCHANGE-DEVELOPMENT\GRPC\BICGRPCSERVER\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" "-SD:/Source Repositories/BrainInterchange-Development/gRPC/BICgRPCServer" "-BD:/Source Repositories/BrainInterchange-Development/gRPC/BICgRPCServer/cmake/build" --check-stamp-file "D:/Source Repositories/BrainInterchange-Development/gRPC/BICgRPCServer/cmake/build/CMakeFiles/generate.stamp"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
