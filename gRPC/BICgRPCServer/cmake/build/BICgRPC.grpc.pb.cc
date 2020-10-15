@@ -21,112 +21,488 @@
 #include <grpcpp/impl/codegen/sync_stream.h>
 namespace BICgRPC {
 
-static const char* Greeter_method_names[] = {
-  "/BICgRPC.Greeter/SayHello",
-  "/BICgRPC.Greeter/SayHelloAgain",
+static const char* BICManager_method_names[] = {
+  "/BICgRPC.BICManager/bicInit",
+  "/BICgRPC.BICManager/bicGetImplantInfo",
+  "/BICgRPC.BICManager/bicGetImpedance",
+  "/BICgRPC.BICManager/bicGetTemperature",
+  "/BICgRPC.BICManager/bicGetHumidity",
+  "/BICgRPC.BICManager/bicSetSensingEnable",
+  "/BICgRPC.BICManager/bicSetImplantPower",
+  "/BICgRPC.BICManager/bicStartStimulation",
+  "/BICgRPC.BICManager/bicStopStimulation",
+  "/BICgRPC.BICManager/bicDispose",
 };
 
-std::unique_ptr< Greeter::Stub> Greeter::NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options) {
+std::unique_ptr< BICManager::Stub> BICManager::NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options) {
   (void)options;
-  std::unique_ptr< Greeter::Stub> stub(new Greeter::Stub(channel));
+  std::unique_ptr< BICManager::Stub> stub(new BICManager::Stub(channel));
   return stub;
 }
 
-Greeter::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel)
-  : channel_(channel), rpcmethod_SayHello_(Greeter_method_names[0], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_SayHelloAgain_(Greeter_method_names[1], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+BICManager::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel)
+  : channel_(channel), rpcmethod_bicInit_(BICManager_method_names[0], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_bicGetImplantInfo_(BICManager_method_names[1], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_bicGetImpedance_(BICManager_method_names[2], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_bicGetTemperature_(BICManager_method_names[3], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_bicGetHumidity_(BICManager_method_names[4], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_bicSetSensingEnable_(BICManager_method_names[5], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_bicSetImplantPower_(BICManager_method_names[6], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_bicStartStimulation_(BICManager_method_names[7], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_bicStopStimulation_(BICManager_method_names[8], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_bicDispose_(BICManager_method_names[9], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   {}
 
-::grpc::Status Greeter::Stub::SayHello(::grpc::ClientContext* context, const ::BICgRPC::HelloRequest& request, ::BICgRPC::HelloReply* response) {
-  return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_SayHello_, context, request, response);
+::grpc::Status BICManager::Stub::bicInit(::grpc::ClientContext* context, const ::BICgRPC::bicInitRequest& request, ::BICgRPC::bicSuccessReply* response) {
+  return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_bicInit_, context, request, response);
 }
 
-void Greeter::Stub::experimental_async::SayHello(::grpc::ClientContext* context, const ::BICgRPC::HelloRequest* request, ::BICgRPC::HelloReply* response, std::function<void(::grpc::Status)> f) {
-  ::grpc_impl::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_SayHello_, context, request, response, std::move(f));
+void BICManager::Stub::experimental_async::bicInit(::grpc::ClientContext* context, const ::BICgRPC::bicInitRequest* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)> f) {
+  ::grpc_impl::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_bicInit_, context, request, response, std::move(f));
 }
 
-void Greeter::Stub::experimental_async::SayHello(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::HelloReply* response, std::function<void(::grpc::Status)> f) {
-  ::grpc_impl::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_SayHello_, context, request, response, std::move(f));
+void BICManager::Stub::experimental_async::bicInit(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)> f) {
+  ::grpc_impl::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_bicInit_, context, request, response, std::move(f));
 }
 
-void Greeter::Stub::experimental_async::SayHello(::grpc::ClientContext* context, const ::BICgRPC::HelloRequest* request, ::BICgRPC::HelloReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
-  ::grpc_impl::internal::ClientCallbackUnaryFactory::Create(stub_->channel_.get(), stub_->rpcmethod_SayHello_, context, request, response, reactor);
+void BICManager::Stub::experimental_async::bicInit(::grpc::ClientContext* context, const ::BICgRPC::bicInitRequest* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
+  ::grpc_impl::internal::ClientCallbackUnaryFactory::Create(stub_->channel_.get(), stub_->rpcmethod_bicInit_, context, request, response, reactor);
 }
 
-void Greeter::Stub::experimental_async::SayHello(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::HelloReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
-  ::grpc_impl::internal::ClientCallbackUnaryFactory::Create(stub_->channel_.get(), stub_->rpcmethod_SayHello_, context, request, response, reactor);
+void BICManager::Stub::experimental_async::bicInit(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
+  ::grpc_impl::internal::ClientCallbackUnaryFactory::Create(stub_->channel_.get(), stub_->rpcmethod_bicInit_, context, request, response, reactor);
 }
 
-::grpc::ClientAsyncResponseReader< ::BICgRPC::HelloReply>* Greeter::Stub::AsyncSayHelloRaw(::grpc::ClientContext* context, const ::BICgRPC::HelloRequest& request, ::grpc::CompletionQueue* cq) {
-  return ::grpc_impl::internal::ClientAsyncResponseReaderFactory< ::BICgRPC::HelloReply>::Create(channel_.get(), cq, rpcmethod_SayHello_, context, request, true);
+::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* BICManager::Stub::AsyncbicInitRaw(::grpc::ClientContext* context, const ::BICgRPC::bicInitRequest& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc_impl::internal::ClientAsyncResponseReaderFactory< ::BICgRPC::bicSuccessReply>::Create(channel_.get(), cq, rpcmethod_bicInit_, context, request, true);
 }
 
-::grpc::ClientAsyncResponseReader< ::BICgRPC::HelloReply>* Greeter::Stub::PrepareAsyncSayHelloRaw(::grpc::ClientContext* context, const ::BICgRPC::HelloRequest& request, ::grpc::CompletionQueue* cq) {
-  return ::grpc_impl::internal::ClientAsyncResponseReaderFactory< ::BICgRPC::HelloReply>::Create(channel_.get(), cq, rpcmethod_SayHello_, context, request, false);
+::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* BICManager::Stub::PrepareAsyncbicInitRaw(::grpc::ClientContext* context, const ::BICgRPC::bicInitRequest& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc_impl::internal::ClientAsyncResponseReaderFactory< ::BICgRPC::bicSuccessReply>::Create(channel_.get(), cq, rpcmethod_bicInit_, context, request, false);
 }
 
-::grpc::Status Greeter::Stub::SayHelloAgain(::grpc::ClientContext* context, const ::BICgRPC::HelloRequest& request, ::BICgRPC::HelloReply* response) {
-  return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_SayHelloAgain_, context, request, response);
+::grpc::Status BICManager::Stub::bicGetImplantInfo(::grpc::ClientContext* context, const ::BICgRPC::bicGetImplantInfoRequest& request, ::BICgRPC::bicGetImplantInfoReply* response) {
+  return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_bicGetImplantInfo_, context, request, response);
 }
 
-void Greeter::Stub::experimental_async::SayHelloAgain(::grpc::ClientContext* context, const ::BICgRPC::HelloRequest* request, ::BICgRPC::HelloReply* response, std::function<void(::grpc::Status)> f) {
-  ::grpc_impl::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_SayHelloAgain_, context, request, response, std::move(f));
+void BICManager::Stub::experimental_async::bicGetImplantInfo(::grpc::ClientContext* context, const ::BICgRPC::bicGetImplantInfoRequest* request, ::BICgRPC::bicGetImplantInfoReply* response, std::function<void(::grpc::Status)> f) {
+  ::grpc_impl::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_bicGetImplantInfo_, context, request, response, std::move(f));
 }
 
-void Greeter::Stub::experimental_async::SayHelloAgain(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::HelloReply* response, std::function<void(::grpc::Status)> f) {
-  ::grpc_impl::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_SayHelloAgain_, context, request, response, std::move(f));
+void BICManager::Stub::experimental_async::bicGetImplantInfo(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicGetImplantInfoReply* response, std::function<void(::grpc::Status)> f) {
+  ::grpc_impl::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_bicGetImplantInfo_, context, request, response, std::move(f));
 }
 
-void Greeter::Stub::experimental_async::SayHelloAgain(::grpc::ClientContext* context, const ::BICgRPC::HelloRequest* request, ::BICgRPC::HelloReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
-  ::grpc_impl::internal::ClientCallbackUnaryFactory::Create(stub_->channel_.get(), stub_->rpcmethod_SayHelloAgain_, context, request, response, reactor);
+void BICManager::Stub::experimental_async::bicGetImplantInfo(::grpc::ClientContext* context, const ::BICgRPC::bicGetImplantInfoRequest* request, ::BICgRPC::bicGetImplantInfoReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
+  ::grpc_impl::internal::ClientCallbackUnaryFactory::Create(stub_->channel_.get(), stub_->rpcmethod_bicGetImplantInfo_, context, request, response, reactor);
 }
 
-void Greeter::Stub::experimental_async::SayHelloAgain(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::HelloReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
-  ::grpc_impl::internal::ClientCallbackUnaryFactory::Create(stub_->channel_.get(), stub_->rpcmethod_SayHelloAgain_, context, request, response, reactor);
+void BICManager::Stub::experimental_async::bicGetImplantInfo(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicGetImplantInfoReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
+  ::grpc_impl::internal::ClientCallbackUnaryFactory::Create(stub_->channel_.get(), stub_->rpcmethod_bicGetImplantInfo_, context, request, response, reactor);
 }
 
-::grpc::ClientAsyncResponseReader< ::BICgRPC::HelloReply>* Greeter::Stub::AsyncSayHelloAgainRaw(::grpc::ClientContext* context, const ::BICgRPC::HelloRequest& request, ::grpc::CompletionQueue* cq) {
-  return ::grpc_impl::internal::ClientAsyncResponseReaderFactory< ::BICgRPC::HelloReply>::Create(channel_.get(), cq, rpcmethod_SayHelloAgain_, context, request, true);
+::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetImplantInfoReply>* BICManager::Stub::AsyncbicGetImplantInfoRaw(::grpc::ClientContext* context, const ::BICgRPC::bicGetImplantInfoRequest& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc_impl::internal::ClientAsyncResponseReaderFactory< ::BICgRPC::bicGetImplantInfoReply>::Create(channel_.get(), cq, rpcmethod_bicGetImplantInfo_, context, request, true);
 }
 
-::grpc::ClientAsyncResponseReader< ::BICgRPC::HelloReply>* Greeter::Stub::PrepareAsyncSayHelloAgainRaw(::grpc::ClientContext* context, const ::BICgRPC::HelloRequest& request, ::grpc::CompletionQueue* cq) {
-  return ::grpc_impl::internal::ClientAsyncResponseReaderFactory< ::BICgRPC::HelloReply>::Create(channel_.get(), cq, rpcmethod_SayHelloAgain_, context, request, false);
+::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetImplantInfoReply>* BICManager::Stub::PrepareAsyncbicGetImplantInfoRaw(::grpc::ClientContext* context, const ::BICgRPC::bicGetImplantInfoRequest& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc_impl::internal::ClientAsyncResponseReaderFactory< ::BICgRPC::bicGetImplantInfoReply>::Create(channel_.get(), cq, rpcmethod_bicGetImplantInfo_, context, request, false);
 }
 
-Greeter::Service::Service() {
+::grpc::Status BICManager::Stub::bicGetImpedance(::grpc::ClientContext* context, const ::BICgRPC::bicGetImpedanceRequest& request, ::BICgRPC::bicGetImpedanceReply* response) {
+  return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_bicGetImpedance_, context, request, response);
+}
+
+void BICManager::Stub::experimental_async::bicGetImpedance(::grpc::ClientContext* context, const ::BICgRPC::bicGetImpedanceRequest* request, ::BICgRPC::bicGetImpedanceReply* response, std::function<void(::grpc::Status)> f) {
+  ::grpc_impl::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_bicGetImpedance_, context, request, response, std::move(f));
+}
+
+void BICManager::Stub::experimental_async::bicGetImpedance(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicGetImpedanceReply* response, std::function<void(::grpc::Status)> f) {
+  ::grpc_impl::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_bicGetImpedance_, context, request, response, std::move(f));
+}
+
+void BICManager::Stub::experimental_async::bicGetImpedance(::grpc::ClientContext* context, const ::BICgRPC::bicGetImpedanceRequest* request, ::BICgRPC::bicGetImpedanceReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
+  ::grpc_impl::internal::ClientCallbackUnaryFactory::Create(stub_->channel_.get(), stub_->rpcmethod_bicGetImpedance_, context, request, response, reactor);
+}
+
+void BICManager::Stub::experimental_async::bicGetImpedance(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicGetImpedanceReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
+  ::grpc_impl::internal::ClientCallbackUnaryFactory::Create(stub_->channel_.get(), stub_->rpcmethod_bicGetImpedance_, context, request, response, reactor);
+}
+
+::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetImpedanceReply>* BICManager::Stub::AsyncbicGetImpedanceRaw(::grpc::ClientContext* context, const ::BICgRPC::bicGetImpedanceRequest& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc_impl::internal::ClientAsyncResponseReaderFactory< ::BICgRPC::bicGetImpedanceReply>::Create(channel_.get(), cq, rpcmethod_bicGetImpedance_, context, request, true);
+}
+
+::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetImpedanceReply>* BICManager::Stub::PrepareAsyncbicGetImpedanceRaw(::grpc::ClientContext* context, const ::BICgRPC::bicGetImpedanceRequest& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc_impl::internal::ClientAsyncResponseReaderFactory< ::BICgRPC::bicGetImpedanceReply>::Create(channel_.get(), cq, rpcmethod_bicGetImpedance_, context, request, false);
+}
+
+::grpc::Status BICManager::Stub::bicGetTemperature(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::BICgRPC::bicGetTemperatureReply* response) {
+  return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_bicGetTemperature_, context, request, response);
+}
+
+void BICManager::Stub::experimental_async::bicGetTemperature(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest* request, ::BICgRPC::bicGetTemperatureReply* response, std::function<void(::grpc::Status)> f) {
+  ::grpc_impl::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_bicGetTemperature_, context, request, response, std::move(f));
+}
+
+void BICManager::Stub::experimental_async::bicGetTemperature(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicGetTemperatureReply* response, std::function<void(::grpc::Status)> f) {
+  ::grpc_impl::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_bicGetTemperature_, context, request, response, std::move(f));
+}
+
+void BICManager::Stub::experimental_async::bicGetTemperature(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest* request, ::BICgRPC::bicGetTemperatureReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
+  ::grpc_impl::internal::ClientCallbackUnaryFactory::Create(stub_->channel_.get(), stub_->rpcmethod_bicGetTemperature_, context, request, response, reactor);
+}
+
+void BICManager::Stub::experimental_async::bicGetTemperature(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicGetTemperatureReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
+  ::grpc_impl::internal::ClientCallbackUnaryFactory::Create(stub_->channel_.get(), stub_->rpcmethod_bicGetTemperature_, context, request, response, reactor);
+}
+
+::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetTemperatureReply>* BICManager::Stub::AsyncbicGetTemperatureRaw(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc_impl::internal::ClientAsyncResponseReaderFactory< ::BICgRPC::bicGetTemperatureReply>::Create(channel_.get(), cq, rpcmethod_bicGetTemperature_, context, request, true);
+}
+
+::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetTemperatureReply>* BICManager::Stub::PrepareAsyncbicGetTemperatureRaw(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc_impl::internal::ClientAsyncResponseReaderFactory< ::BICgRPC::bicGetTemperatureReply>::Create(channel_.get(), cq, rpcmethod_bicGetTemperature_, context, request, false);
+}
+
+::grpc::Status BICManager::Stub::bicGetHumidity(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::BICgRPC::bicGetHumidityReply* response) {
+  return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_bicGetHumidity_, context, request, response);
+}
+
+void BICManager::Stub::experimental_async::bicGetHumidity(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest* request, ::BICgRPC::bicGetHumidityReply* response, std::function<void(::grpc::Status)> f) {
+  ::grpc_impl::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_bicGetHumidity_, context, request, response, std::move(f));
+}
+
+void BICManager::Stub::experimental_async::bicGetHumidity(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicGetHumidityReply* response, std::function<void(::grpc::Status)> f) {
+  ::grpc_impl::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_bicGetHumidity_, context, request, response, std::move(f));
+}
+
+void BICManager::Stub::experimental_async::bicGetHumidity(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest* request, ::BICgRPC::bicGetHumidityReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
+  ::grpc_impl::internal::ClientCallbackUnaryFactory::Create(stub_->channel_.get(), stub_->rpcmethod_bicGetHumidity_, context, request, response, reactor);
+}
+
+void BICManager::Stub::experimental_async::bicGetHumidity(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicGetHumidityReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
+  ::grpc_impl::internal::ClientCallbackUnaryFactory::Create(stub_->channel_.get(), stub_->rpcmethod_bicGetHumidity_, context, request, response, reactor);
+}
+
+::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetHumidityReply>* BICManager::Stub::AsyncbicGetHumidityRaw(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc_impl::internal::ClientAsyncResponseReaderFactory< ::BICgRPC::bicGetHumidityReply>::Create(channel_.get(), cq, rpcmethod_bicGetHumidity_, context, request, true);
+}
+
+::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetHumidityReply>* BICManager::Stub::PrepareAsyncbicGetHumidityRaw(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc_impl::internal::ClientAsyncResponseReaderFactory< ::BICgRPC::bicGetHumidityReply>::Create(channel_.get(), cq, rpcmethod_bicGetHumidity_, context, request, false);
+}
+
+::grpc::Status BICManager::Stub::bicSetSensingEnable(::grpc::ClientContext* context, const ::BICgRPC::bicSetSensingEnableRequest& request, ::BICgRPC::bicSuccessReply* response) {
+  return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_bicSetSensingEnable_, context, request, response);
+}
+
+void BICManager::Stub::experimental_async::bicSetSensingEnable(::grpc::ClientContext* context, const ::BICgRPC::bicSetSensingEnableRequest* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)> f) {
+  ::grpc_impl::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_bicSetSensingEnable_, context, request, response, std::move(f));
+}
+
+void BICManager::Stub::experimental_async::bicSetSensingEnable(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)> f) {
+  ::grpc_impl::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_bicSetSensingEnable_, context, request, response, std::move(f));
+}
+
+void BICManager::Stub::experimental_async::bicSetSensingEnable(::grpc::ClientContext* context, const ::BICgRPC::bicSetSensingEnableRequest* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
+  ::grpc_impl::internal::ClientCallbackUnaryFactory::Create(stub_->channel_.get(), stub_->rpcmethod_bicSetSensingEnable_, context, request, response, reactor);
+}
+
+void BICManager::Stub::experimental_async::bicSetSensingEnable(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
+  ::grpc_impl::internal::ClientCallbackUnaryFactory::Create(stub_->channel_.get(), stub_->rpcmethod_bicSetSensingEnable_, context, request, response, reactor);
+}
+
+::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* BICManager::Stub::AsyncbicSetSensingEnableRaw(::grpc::ClientContext* context, const ::BICgRPC::bicSetSensingEnableRequest& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc_impl::internal::ClientAsyncResponseReaderFactory< ::BICgRPC::bicSuccessReply>::Create(channel_.get(), cq, rpcmethod_bicSetSensingEnable_, context, request, true);
+}
+
+::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* BICManager::Stub::PrepareAsyncbicSetSensingEnableRaw(::grpc::ClientContext* context, const ::BICgRPC::bicSetSensingEnableRequest& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc_impl::internal::ClientAsyncResponseReaderFactory< ::BICgRPC::bicSuccessReply>::Create(channel_.get(), cq, rpcmethod_bicSetSensingEnable_, context, request, false);
+}
+
+::grpc::Status BICManager::Stub::bicSetImplantPower(::grpc::ClientContext* context, const ::BICgRPC::bicSetImplantPowerRequest& request, ::BICgRPC::bicSuccessReply* response) {
+  return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_bicSetImplantPower_, context, request, response);
+}
+
+void BICManager::Stub::experimental_async::bicSetImplantPower(::grpc::ClientContext* context, const ::BICgRPC::bicSetImplantPowerRequest* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)> f) {
+  ::grpc_impl::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_bicSetImplantPower_, context, request, response, std::move(f));
+}
+
+void BICManager::Stub::experimental_async::bicSetImplantPower(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)> f) {
+  ::grpc_impl::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_bicSetImplantPower_, context, request, response, std::move(f));
+}
+
+void BICManager::Stub::experimental_async::bicSetImplantPower(::grpc::ClientContext* context, const ::BICgRPC::bicSetImplantPowerRequest* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
+  ::grpc_impl::internal::ClientCallbackUnaryFactory::Create(stub_->channel_.get(), stub_->rpcmethod_bicSetImplantPower_, context, request, response, reactor);
+}
+
+void BICManager::Stub::experimental_async::bicSetImplantPower(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
+  ::grpc_impl::internal::ClientCallbackUnaryFactory::Create(stub_->channel_.get(), stub_->rpcmethod_bicSetImplantPower_, context, request, response, reactor);
+}
+
+::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* BICManager::Stub::AsyncbicSetImplantPowerRaw(::grpc::ClientContext* context, const ::BICgRPC::bicSetImplantPowerRequest& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc_impl::internal::ClientAsyncResponseReaderFactory< ::BICgRPC::bicSuccessReply>::Create(channel_.get(), cq, rpcmethod_bicSetImplantPower_, context, request, true);
+}
+
+::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* BICManager::Stub::PrepareAsyncbicSetImplantPowerRaw(::grpc::ClientContext* context, const ::BICgRPC::bicSetImplantPowerRequest& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc_impl::internal::ClientAsyncResponseReaderFactory< ::BICgRPC::bicSuccessReply>::Create(channel_.get(), cq, rpcmethod_bicSetImplantPower_, context, request, false);
+}
+
+::grpc::Status BICManager::Stub::bicStartStimulation(::grpc::ClientContext* context, const ::BICgRPC::bicStartStimulationRequest& request, ::BICgRPC::bicSuccessReply* response) {
+  return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_bicStartStimulation_, context, request, response);
+}
+
+void BICManager::Stub::experimental_async::bicStartStimulation(::grpc::ClientContext* context, const ::BICgRPC::bicStartStimulationRequest* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)> f) {
+  ::grpc_impl::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_bicStartStimulation_, context, request, response, std::move(f));
+}
+
+void BICManager::Stub::experimental_async::bicStartStimulation(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)> f) {
+  ::grpc_impl::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_bicStartStimulation_, context, request, response, std::move(f));
+}
+
+void BICManager::Stub::experimental_async::bicStartStimulation(::grpc::ClientContext* context, const ::BICgRPC::bicStartStimulationRequest* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
+  ::grpc_impl::internal::ClientCallbackUnaryFactory::Create(stub_->channel_.get(), stub_->rpcmethod_bicStartStimulation_, context, request, response, reactor);
+}
+
+void BICManager::Stub::experimental_async::bicStartStimulation(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
+  ::grpc_impl::internal::ClientCallbackUnaryFactory::Create(stub_->channel_.get(), stub_->rpcmethod_bicStartStimulation_, context, request, response, reactor);
+}
+
+::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* BICManager::Stub::AsyncbicStartStimulationRaw(::grpc::ClientContext* context, const ::BICgRPC::bicStartStimulationRequest& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc_impl::internal::ClientAsyncResponseReaderFactory< ::BICgRPC::bicSuccessReply>::Create(channel_.get(), cq, rpcmethod_bicStartStimulation_, context, request, true);
+}
+
+::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* BICManager::Stub::PrepareAsyncbicStartStimulationRaw(::grpc::ClientContext* context, const ::BICgRPC::bicStartStimulationRequest& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc_impl::internal::ClientAsyncResponseReaderFactory< ::BICgRPC::bicSuccessReply>::Create(channel_.get(), cq, rpcmethod_bicStartStimulation_, context, request, false);
+}
+
+::grpc::Status BICManager::Stub::bicStopStimulation(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::BICgRPC::bicSuccessReply* response) {
+  return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_bicStopStimulation_, context, request, response);
+}
+
+void BICManager::Stub::experimental_async::bicStopStimulation(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)> f) {
+  ::grpc_impl::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_bicStopStimulation_, context, request, response, std::move(f));
+}
+
+void BICManager::Stub::experimental_async::bicStopStimulation(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)> f) {
+  ::grpc_impl::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_bicStopStimulation_, context, request, response, std::move(f));
+}
+
+void BICManager::Stub::experimental_async::bicStopStimulation(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
+  ::grpc_impl::internal::ClientCallbackUnaryFactory::Create(stub_->channel_.get(), stub_->rpcmethod_bicStopStimulation_, context, request, response, reactor);
+}
+
+void BICManager::Stub::experimental_async::bicStopStimulation(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
+  ::grpc_impl::internal::ClientCallbackUnaryFactory::Create(stub_->channel_.get(), stub_->rpcmethod_bicStopStimulation_, context, request, response, reactor);
+}
+
+::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* BICManager::Stub::AsyncbicStopStimulationRaw(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc_impl::internal::ClientAsyncResponseReaderFactory< ::BICgRPC::bicSuccessReply>::Create(channel_.get(), cq, rpcmethod_bicStopStimulation_, context, request, true);
+}
+
+::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* BICManager::Stub::PrepareAsyncbicStopStimulationRaw(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc_impl::internal::ClientAsyncResponseReaderFactory< ::BICgRPC::bicSuccessReply>::Create(channel_.get(), cq, rpcmethod_bicStopStimulation_, context, request, false);
+}
+
+::grpc::Status BICManager::Stub::bicDispose(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::BICgRPC::bicSuccessReply* response) {
+  return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_bicDispose_, context, request, response);
+}
+
+void BICManager::Stub::experimental_async::bicDispose(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)> f) {
+  ::grpc_impl::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_bicDispose_, context, request, response, std::move(f));
+}
+
+void BICManager::Stub::experimental_async::bicDispose(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)> f) {
+  ::grpc_impl::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_bicDispose_, context, request, response, std::move(f));
+}
+
+void BICManager::Stub::experimental_async::bicDispose(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
+  ::grpc_impl::internal::ClientCallbackUnaryFactory::Create(stub_->channel_.get(), stub_->rpcmethod_bicDispose_, context, request, response, reactor);
+}
+
+void BICManager::Stub::experimental_async::bicDispose(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
+  ::grpc_impl::internal::ClientCallbackUnaryFactory::Create(stub_->channel_.get(), stub_->rpcmethod_bicDispose_, context, request, response, reactor);
+}
+
+::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* BICManager::Stub::AsyncbicDisposeRaw(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc_impl::internal::ClientAsyncResponseReaderFactory< ::BICgRPC::bicSuccessReply>::Create(channel_.get(), cq, rpcmethod_bicDispose_, context, request, true);
+}
+
+::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* BICManager::Stub::PrepareAsyncbicDisposeRaw(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc_impl::internal::ClientAsyncResponseReaderFactory< ::BICgRPC::bicSuccessReply>::Create(channel_.get(), cq, rpcmethod_bicDispose_, context, request, false);
+}
+
+BICManager::Service::Service() {
   AddMethod(new ::grpc::internal::RpcServiceMethod(
-      Greeter_method_names[0],
+      BICManager_method_names[0],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
-      new ::grpc::internal::RpcMethodHandler< Greeter::Service, ::BICgRPC::HelloRequest, ::BICgRPC::HelloReply>(
-          [](Greeter::Service* service,
+      new ::grpc::internal::RpcMethodHandler< BICManager::Service, ::BICgRPC::bicInitRequest, ::BICgRPC::bicSuccessReply>(
+          [](BICManager::Service* service,
              ::grpc_impl::ServerContext* ctx,
-             const ::BICgRPC::HelloRequest* req,
-             ::BICgRPC::HelloReply* resp) {
-               return service->SayHello(ctx, req, resp);
+             const ::BICgRPC::bicInitRequest* req,
+             ::BICgRPC::bicSuccessReply* resp) {
+               return service->bicInit(ctx, req, resp);
              }, this)));
   AddMethod(new ::grpc::internal::RpcServiceMethod(
-      Greeter_method_names[1],
+      BICManager_method_names[1],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
-      new ::grpc::internal::RpcMethodHandler< Greeter::Service, ::BICgRPC::HelloRequest, ::BICgRPC::HelloReply>(
-          [](Greeter::Service* service,
+      new ::grpc::internal::RpcMethodHandler< BICManager::Service, ::BICgRPC::bicGetImplantInfoRequest, ::BICgRPC::bicGetImplantInfoReply>(
+          [](BICManager::Service* service,
              ::grpc_impl::ServerContext* ctx,
-             const ::BICgRPC::HelloRequest* req,
-             ::BICgRPC::HelloReply* resp) {
-               return service->SayHelloAgain(ctx, req, resp);
+             const ::BICgRPC::bicGetImplantInfoRequest* req,
+             ::BICgRPC::bicGetImplantInfoReply* resp) {
+               return service->bicGetImplantInfo(ctx, req, resp);
+             }, this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      BICManager_method_names[2],
+      ::grpc::internal::RpcMethod::NORMAL_RPC,
+      new ::grpc::internal::RpcMethodHandler< BICManager::Service, ::BICgRPC::bicGetImpedanceRequest, ::BICgRPC::bicGetImpedanceReply>(
+          [](BICManager::Service* service,
+             ::grpc_impl::ServerContext* ctx,
+             const ::BICgRPC::bicGetImpedanceRequest* req,
+             ::BICgRPC::bicGetImpedanceReply* resp) {
+               return service->bicGetImpedance(ctx, req, resp);
+             }, this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      BICManager_method_names[3],
+      ::grpc::internal::RpcMethod::NORMAL_RPC,
+      new ::grpc::internal::RpcMethodHandler< BICManager::Service, ::BICgRPC::bicNullRequest, ::BICgRPC::bicGetTemperatureReply>(
+          [](BICManager::Service* service,
+             ::grpc_impl::ServerContext* ctx,
+             const ::BICgRPC::bicNullRequest* req,
+             ::BICgRPC::bicGetTemperatureReply* resp) {
+               return service->bicGetTemperature(ctx, req, resp);
+             }, this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      BICManager_method_names[4],
+      ::grpc::internal::RpcMethod::NORMAL_RPC,
+      new ::grpc::internal::RpcMethodHandler< BICManager::Service, ::BICgRPC::bicNullRequest, ::BICgRPC::bicGetHumidityReply>(
+          [](BICManager::Service* service,
+             ::grpc_impl::ServerContext* ctx,
+             const ::BICgRPC::bicNullRequest* req,
+             ::BICgRPC::bicGetHumidityReply* resp) {
+               return service->bicGetHumidity(ctx, req, resp);
+             }, this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      BICManager_method_names[5],
+      ::grpc::internal::RpcMethod::NORMAL_RPC,
+      new ::grpc::internal::RpcMethodHandler< BICManager::Service, ::BICgRPC::bicSetSensingEnableRequest, ::BICgRPC::bicSuccessReply>(
+          [](BICManager::Service* service,
+             ::grpc_impl::ServerContext* ctx,
+             const ::BICgRPC::bicSetSensingEnableRequest* req,
+             ::BICgRPC::bicSuccessReply* resp) {
+               return service->bicSetSensingEnable(ctx, req, resp);
+             }, this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      BICManager_method_names[6],
+      ::grpc::internal::RpcMethod::NORMAL_RPC,
+      new ::grpc::internal::RpcMethodHandler< BICManager::Service, ::BICgRPC::bicSetImplantPowerRequest, ::BICgRPC::bicSuccessReply>(
+          [](BICManager::Service* service,
+             ::grpc_impl::ServerContext* ctx,
+             const ::BICgRPC::bicSetImplantPowerRequest* req,
+             ::BICgRPC::bicSuccessReply* resp) {
+               return service->bicSetImplantPower(ctx, req, resp);
+             }, this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      BICManager_method_names[7],
+      ::grpc::internal::RpcMethod::NORMAL_RPC,
+      new ::grpc::internal::RpcMethodHandler< BICManager::Service, ::BICgRPC::bicStartStimulationRequest, ::BICgRPC::bicSuccessReply>(
+          [](BICManager::Service* service,
+             ::grpc_impl::ServerContext* ctx,
+             const ::BICgRPC::bicStartStimulationRequest* req,
+             ::BICgRPC::bicSuccessReply* resp) {
+               return service->bicStartStimulation(ctx, req, resp);
+             }, this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      BICManager_method_names[8],
+      ::grpc::internal::RpcMethod::NORMAL_RPC,
+      new ::grpc::internal::RpcMethodHandler< BICManager::Service, ::BICgRPC::bicNullRequest, ::BICgRPC::bicSuccessReply>(
+          [](BICManager::Service* service,
+             ::grpc_impl::ServerContext* ctx,
+             const ::BICgRPC::bicNullRequest* req,
+             ::BICgRPC::bicSuccessReply* resp) {
+               return service->bicStopStimulation(ctx, req, resp);
+             }, this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      BICManager_method_names[9],
+      ::grpc::internal::RpcMethod::NORMAL_RPC,
+      new ::grpc::internal::RpcMethodHandler< BICManager::Service, ::BICgRPC::bicNullRequest, ::BICgRPC::bicSuccessReply>(
+          [](BICManager::Service* service,
+             ::grpc_impl::ServerContext* ctx,
+             const ::BICgRPC::bicNullRequest* req,
+             ::BICgRPC::bicSuccessReply* resp) {
+               return service->bicDispose(ctx, req, resp);
              }, this)));
 }
 
-Greeter::Service::~Service() {
+BICManager::Service::~Service() {
 }
 
-::grpc::Status Greeter::Service::SayHello(::grpc::ServerContext* context, const ::BICgRPC::HelloRequest* request, ::BICgRPC::HelloReply* response) {
+::grpc::Status BICManager::Service::bicInit(::grpc::ServerContext* context, const ::BICgRPC::bicInitRequest* request, ::BICgRPC::bicSuccessReply* response) {
   (void) context;
   (void) request;
   (void) response;
   return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
 }
 
-::grpc::Status Greeter::Service::SayHelloAgain(::grpc::ServerContext* context, const ::BICgRPC::HelloRequest* request, ::BICgRPC::HelloReply* response) {
+::grpc::Status BICManager::Service::bicGetImplantInfo(::grpc::ServerContext* context, const ::BICgRPC::bicGetImplantInfoRequest* request, ::BICgRPC::bicGetImplantInfoReply* response) {
+  (void) context;
+  (void) request;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status BICManager::Service::bicGetImpedance(::grpc::ServerContext* context, const ::BICgRPC::bicGetImpedanceRequest* request, ::BICgRPC::bicGetImpedanceReply* response) {
+  (void) context;
+  (void) request;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status BICManager::Service::bicGetTemperature(::grpc::ServerContext* context, const ::BICgRPC::bicNullRequest* request, ::BICgRPC::bicGetTemperatureReply* response) {
+  (void) context;
+  (void) request;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status BICManager::Service::bicGetHumidity(::grpc::ServerContext* context, const ::BICgRPC::bicNullRequest* request, ::BICgRPC::bicGetHumidityReply* response) {
+  (void) context;
+  (void) request;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status BICManager::Service::bicSetSensingEnable(::grpc::ServerContext* context, const ::BICgRPC::bicSetSensingEnableRequest* request, ::BICgRPC::bicSuccessReply* response) {
+  (void) context;
+  (void) request;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status BICManager::Service::bicSetImplantPower(::grpc::ServerContext* context, const ::BICgRPC::bicSetImplantPowerRequest* request, ::BICgRPC::bicSuccessReply* response) {
+  (void) context;
+  (void) request;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status BICManager::Service::bicStartStimulation(::grpc::ServerContext* context, const ::BICgRPC::bicStartStimulationRequest* request, ::BICgRPC::bicSuccessReply* response) {
+  (void) context;
+  (void) request;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status BICManager::Service::bicStopStimulation(::grpc::ServerContext* context, const ::BICgRPC::bicNullRequest* request, ::BICgRPC::bicSuccessReply* response) {
+  (void) context;
+  (void) request;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status BICManager::Service::bicDispose(::grpc::ServerContext* context, const ::BICgRPC::bicNullRequest* request, ::BICgRPC::bicSuccessReply* response) {
   (void) context;
   (void) request;
   (void) response;

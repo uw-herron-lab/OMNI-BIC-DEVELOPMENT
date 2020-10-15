@@ -24,20 +24,23 @@ namespace GreeterClient
         {
             Channel channel = new Channel("127.0.0.1:50051", ChannelCredentials.Insecure);
 
-            var client = new Greeter.GreeterClient(channel);
-            String user = "aNewSummitProjectName";
+            var client = new BICManager.BICManagerClient(channel);
 
-            var reply = client.SayHello(new HelloRequest { Name = user });
-            Console.WriteLine("Server Response: " + reply.Message);
+            var reply = client.bicInit(new bicInitRequest { LogFileName = "./test.log" });
+            Console.WriteLine("Server Response: " + reply.Success);
             Console.WriteLine("Press any key to proceed...");
             Console.ReadKey();
-            var reply2 = client.SayHelloAgain(new HelloRequest { Name = user });
-            Console.WriteLine("Server Response: " + reply2.Message);
 
-            
+            var reply2 = client.bicGetImplantInfo(new bicGetImplantInfoRequest {  });
+            Console.WriteLine("Server Response: " + reply2.DeviceId);
+            Console.WriteLine("Press any key to initiate disposal...");
+            Console.ReadKey();
+
+            var reply3 = client.bicDispose(new bicNullRequest {  });
+            Console.WriteLine("Server Response: " + reply3.Success);
+            channel.ShutdownAsync().Wait();
             Console.WriteLine("Press any key to exit...");
             Console.ReadKey();
-            channel.ShutdownAsync().Wait();
         }
     }
 }

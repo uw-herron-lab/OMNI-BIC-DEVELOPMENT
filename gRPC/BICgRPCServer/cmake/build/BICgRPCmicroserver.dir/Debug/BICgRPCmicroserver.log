@@ -1,1 +1,53 @@
-﻿  BICgRPCmicroserver.vcxproj -> D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\cmake\build\Debug\BICgRPCmicroserver.exe
+﻿  Generating BICgRPC.pb.cc, BICgRPC.pb.h, BICgRPC.grpc.pb.cc, BICgRPC.grpc.pb.h
+  Building Custom Rule D:/Source Repositories/BrainInterchange-Development/gRPC/BICgRPCServer/CMakeLists.txt
+  BICgRPCmicroserver.cc
+D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(368,1): warning C4267: 'argument': conversion from 'size_t' to 'google::protobuf::uint32', possible loss of data
+D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(369,1): warning C4267: 'argument': conversion from 'size_t' to 'google::protobuf::uint32', possible loss of data
+D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(372,1): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(357,40): warning C4101: 'theError': unreferenced local variable
+  BICgRPC.pb.cc
+  BICgRPC.grpc.pb.cc
+D:\gitbuilds\include\grpcpp/impl/codegen/proto_utils.h(52,1): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\gitbuilds\include\grpcpp/impl/codegen/proto_utils.h(107): message : see reference to function template instantiation 'grpc::Status grpc::GenericSerialize<grpc::ProtoBufferWriter,T>(const grpc::protobuf::MessageLite &,grpc::ByteBuffer *,bool *)' being compiled
+          with
+          [
+              T=BICgRPC::bicSuccessReply
+          ]
+D:\gitbuilds\include\grpcpp/impl/codegen/proto_utils.h(106): message : while compiling class template member function 'grpc::Status grpc::SerializationTraits<R,void>::Serialize(const grpc::protobuf::MessageLite &,grpc::ByteBuffer *,bool *)'
+          with
+          [
+              R=BICgRPC::bicSuccessReply
+          ]
+D:\gitbuilds\include\grpcpp/impl/codegen/call_op_set.h(388): message : see reference to function template instantiation 'grpc::Status grpc::SerializationTraits<R,void>::Serialize(const grpc::protobuf::MessageLite &,grpc::ByteBuffer *,bool *)' being compiled
+          with
+          [
+              R=BICgRPC::bicSuccessReply
+          ]
+D:\gitbuilds\include\grpcpp/impl/codegen/call_op_set.h(447): message : see reference to class template instantiation 'grpc::SerializationTraits<R,void>' being compiled
+          with
+          [
+              R=BICgRPC::bicSuccessReply
+          ]
+D:\gitbuilds\include\grpcpp/impl/codegen/call_op_set.h(442): message : while compiling class template member function 'void grpc::internal::CallOpRecvMessage<R>::FinishOp(bool *)'
+          with
+          [
+              R=BICgRPC::bicSuccessReply
+          ]
+D:\gitbuilds\include\grpcpp/impl/codegen/call_op_set.h(914): message : see reference to function template instantiation 'void grpc::internal::CallOpRecvMessage<R>::FinishOp(bool *)' being compiled
+          with
+          [
+              R=BICgRPC::bicSuccessReply
+          ]
+D:\gitbuilds\include\grpcpp/impl/codegen/call_op_set.h(859): message : see reference to class template instantiation 'grpc::internal::CallOpRecvMessage<R>' being compiled
+          with
+          [
+              R=BICgRPC::bicSuccessReply
+          ]
+D:\gitbuilds\include\grpcpp/impl/codegen/async_unary_call_impl.h(188): message : see reference to class template instantiation 'grpc::internal::CallOpSet<grpc::internal::CallOpSendInitialMetadata,grpc::internal::CallOpSendMessage,grpc::internal::CallOpClientSendClose,grpc::internal::CallOpRecvInitialMetadata,grpc::internal::CallOpRecvMessage<R>,grpc::internal::CallOpClientRecvStatus>' being compiled
+          with
+          [
+              R=BICgRPC::bicSuccessReply
+          ]
+D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\cmake\build\BICgRPC.grpc.pb.h(517): message : see reference to class template instantiation 'grpc_impl::ClientAsyncResponseReader<BICgRPC::bicSuccessReply>' being compiled
+  Generating Code...
+  BICgRPCmicroserver.vcxproj -> D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\cmake\build\Debug\BICgRPCmicroserver.exe

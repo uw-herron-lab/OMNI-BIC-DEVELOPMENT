@@ -14,184 +14,553 @@
 #include <google/protobuf/wire_format.h>
 // @@protoc_insertion_point(includes)
 #include <google/protobuf/port_def.inc>
+extern PROTOBUF_INTERNAL_EXPORT_BICgRPC_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_bicGetImplantInfoReply_bicChannelInfo_BICgRPC_2eproto;
 namespace BICgRPC {
-class HelloRequestDefaultTypeInternal {
+class bicNullRequestDefaultTypeInternal {
  public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<HelloRequest> _instance;
-} _HelloRequest_default_instance_;
-class HelloReplyDefaultTypeInternal {
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<bicNullRequest> _instance;
+} _bicNullRequest_default_instance_;
+class bicSuccessReplyDefaultTypeInternal {
  public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<HelloReply> _instance;
-} _HelloReply_default_instance_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<bicSuccessReply> _instance;
+} _bicSuccessReply_default_instance_;
+class bicInitRequestDefaultTypeInternal {
+ public:
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<bicInitRequest> _instance;
+} _bicInitRequest_default_instance_;
+class bicGetImplantInfoRequestDefaultTypeInternal {
+ public:
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<bicGetImplantInfoRequest> _instance;
+} _bicGetImplantInfoRequest_default_instance_;
+class bicGetImplantInfoReply_bicChannelInfoDefaultTypeInternal {
+ public:
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<bicGetImplantInfoReply_bicChannelInfo> _instance;
+} _bicGetImplantInfoReply_bicChannelInfo_default_instance_;
+class bicGetImplantInfoReplyDefaultTypeInternal {
+ public:
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<bicGetImplantInfoReply> _instance;
+} _bicGetImplantInfoReply_default_instance_;
+class bicGetImpedanceRequestDefaultTypeInternal {
+ public:
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<bicGetImpedanceRequest> _instance;
+} _bicGetImpedanceRequest_default_instance_;
+class bicGetImpedanceReplyDefaultTypeInternal {
+ public:
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<bicGetImpedanceReply> _instance;
+} _bicGetImpedanceReply_default_instance_;
+class bicGetTemperatureReplyDefaultTypeInternal {
+ public:
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<bicGetTemperatureReply> _instance;
+} _bicGetTemperatureReply_default_instance_;
+class bicGetHumidityReplyDefaultTypeInternal {
+ public:
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<bicGetHumidityReply> _instance;
+} _bicGetHumidityReply_default_instance_;
+class bicSetSensingEnableRequestDefaultTypeInternal {
+ public:
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<bicSetSensingEnableRequest> _instance;
+} _bicSetSensingEnableRequest_default_instance_;
+class bicSetImplantPowerRequestDefaultTypeInternal {
+ public:
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<bicSetImplantPowerRequest> _instance;
+} _bicSetImplantPowerRequest_default_instance_;
+class bicStartStimulationRequestDefaultTypeInternal {
+ public:
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<bicStartStimulationRequest> _instance;
+} _bicStartStimulationRequest_default_instance_;
 }  // namespace BICgRPC
-static void InitDefaultsscc_info_HelloReply_BICgRPC_2eproto() {
+static void InitDefaultsscc_info_bicGetHumidityReply_BICgRPC_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   {
-    void* ptr = &::BICgRPC::_HelloReply_default_instance_;
-    new (ptr) ::BICgRPC::HelloReply();
+    void* ptr = &::BICgRPC::_bicGetHumidityReply_default_instance_;
+    new (ptr) ::BICgRPC::bicGetHumidityReply();
     ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
   }
-  ::BICgRPC::HelloReply::InitAsDefaultInstance();
+  ::BICgRPC::bicGetHumidityReply::InitAsDefaultInstance();
 }
 
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_HelloReply_BICgRPC_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_HelloReply_BICgRPC_2eproto}, {}};
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_bicGetHumidityReply_BICgRPC_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_bicGetHumidityReply_BICgRPC_2eproto}, {}};
 
-static void InitDefaultsscc_info_HelloRequest_BICgRPC_2eproto() {
+static void InitDefaultsscc_info_bicGetImpedanceReply_BICgRPC_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   {
-    void* ptr = &::BICgRPC::_HelloRequest_default_instance_;
-    new (ptr) ::BICgRPC::HelloRequest();
+    void* ptr = &::BICgRPC::_bicGetImpedanceReply_default_instance_;
+    new (ptr) ::BICgRPC::bicGetImpedanceReply();
     ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
   }
-  ::BICgRPC::HelloRequest::InitAsDefaultInstance();
+  ::BICgRPC::bicGetImpedanceReply::InitAsDefaultInstance();
 }
 
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_HelloRequest_BICgRPC_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_HelloRequest_BICgRPC_2eproto}, {}};
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_bicGetImpedanceReply_BICgRPC_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_bicGetImpedanceReply_BICgRPC_2eproto}, {}};
 
-static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_BICgRPC_2eproto[2];
-static constexpr ::PROTOBUF_NAMESPACE_ID::EnumDescriptor const** file_level_enum_descriptors_BICgRPC_2eproto = nullptr;
+static void InitDefaultsscc_info_bicGetImpedanceRequest_BICgRPC_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::BICgRPC::_bicGetImpedanceRequest_default_instance_;
+    new (ptr) ::BICgRPC::bicGetImpedanceRequest();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::BICgRPC::bicGetImpedanceRequest::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_bicGetImpedanceRequest_BICgRPC_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_bicGetImpedanceRequest_BICgRPC_2eproto}, {}};
+
+static void InitDefaultsscc_info_bicGetImplantInfoReply_BICgRPC_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::BICgRPC::_bicGetImplantInfoReply_default_instance_;
+    new (ptr) ::BICgRPC::bicGetImplantInfoReply();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::BICgRPC::bicGetImplantInfoReply::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<1> scc_info_bicGetImplantInfoReply_BICgRPC_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 1, 0, InitDefaultsscc_info_bicGetImplantInfoReply_BICgRPC_2eproto}, {
+      &scc_info_bicGetImplantInfoReply_bicChannelInfo_BICgRPC_2eproto.base,}};
+
+static void InitDefaultsscc_info_bicGetImplantInfoReply_bicChannelInfo_BICgRPC_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::BICgRPC::_bicGetImplantInfoReply_bicChannelInfo_default_instance_;
+    new (ptr) ::BICgRPC::bicGetImplantInfoReply_bicChannelInfo();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::BICgRPC::bicGetImplantInfoReply_bicChannelInfo::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_bicGetImplantInfoReply_bicChannelInfo_BICgRPC_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_bicGetImplantInfoReply_bicChannelInfo_BICgRPC_2eproto}, {}};
+
+static void InitDefaultsscc_info_bicGetImplantInfoRequest_BICgRPC_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::BICgRPC::_bicGetImplantInfoRequest_default_instance_;
+    new (ptr) ::BICgRPC::bicGetImplantInfoRequest();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::BICgRPC::bicGetImplantInfoRequest::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_bicGetImplantInfoRequest_BICgRPC_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_bicGetImplantInfoRequest_BICgRPC_2eproto}, {}};
+
+static void InitDefaultsscc_info_bicGetTemperatureReply_BICgRPC_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::BICgRPC::_bicGetTemperatureReply_default_instance_;
+    new (ptr) ::BICgRPC::bicGetTemperatureReply();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::BICgRPC::bicGetTemperatureReply::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_bicGetTemperatureReply_BICgRPC_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_bicGetTemperatureReply_BICgRPC_2eproto}, {}};
+
+static void InitDefaultsscc_info_bicInitRequest_BICgRPC_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::BICgRPC::_bicInitRequest_default_instance_;
+    new (ptr) ::BICgRPC::bicInitRequest();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::BICgRPC::bicInitRequest::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_bicInitRequest_BICgRPC_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_bicInitRequest_BICgRPC_2eproto}, {}};
+
+static void InitDefaultsscc_info_bicNullRequest_BICgRPC_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::BICgRPC::_bicNullRequest_default_instance_;
+    new (ptr) ::BICgRPC::bicNullRequest();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::BICgRPC::bicNullRequest::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_bicNullRequest_BICgRPC_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_bicNullRequest_BICgRPC_2eproto}, {}};
+
+static void InitDefaultsscc_info_bicSetImplantPowerRequest_BICgRPC_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::BICgRPC::_bicSetImplantPowerRequest_default_instance_;
+    new (ptr) ::BICgRPC::bicSetImplantPowerRequest();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::BICgRPC::bicSetImplantPowerRequest::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_bicSetImplantPowerRequest_BICgRPC_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_bicSetImplantPowerRequest_BICgRPC_2eproto}, {}};
+
+static void InitDefaultsscc_info_bicSetSensingEnableRequest_BICgRPC_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::BICgRPC::_bicSetSensingEnableRequest_default_instance_;
+    new (ptr) ::BICgRPC::bicSetSensingEnableRequest();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::BICgRPC::bicSetSensingEnableRequest::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_bicSetSensingEnableRequest_BICgRPC_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_bicSetSensingEnableRequest_BICgRPC_2eproto}, {}};
+
+static void InitDefaultsscc_info_bicStartStimulationRequest_BICgRPC_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::BICgRPC::_bicStartStimulationRequest_default_instance_;
+    new (ptr) ::BICgRPC::bicStartStimulationRequest();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::BICgRPC::bicStartStimulationRequest::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_bicStartStimulationRequest_BICgRPC_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_bicStartStimulationRequest_BICgRPC_2eproto}, {}};
+
+static void InitDefaultsscc_info_bicSuccessReply_BICgRPC_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::BICgRPC::_bicSuccessReply_default_instance_;
+    new (ptr) ::BICgRPC::bicSuccessReply();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::BICgRPC::bicSuccessReply::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_bicSuccessReply_BICgRPC_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_bicSuccessReply_BICgRPC_2eproto}, {}};
+
+static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_BICgRPC_2eproto[13];
+static const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* file_level_enum_descriptors_BICgRPC_2eproto[1];
 static constexpr ::PROTOBUF_NAMESPACE_ID::ServiceDescriptor const** file_level_service_descriptors_BICgRPC_2eproto = nullptr;
 
 const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_BICgRPC_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::BICgRPC::HelloRequest, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicNullRequest, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::BICgRPC::HelloRequest, name_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::BICgRPC::HelloReply, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicSuccessReply, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::BICgRPC::HelloReply, message_),
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicSuccessReply, success_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicInitRequest, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicInitRequest, logfilename_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicGetImplantInfoRequest, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicGetImplantInfoRequest, updatecachedinfo_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicGetImplantInfoReply_bicChannelInfo, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicGetImplantInfoReply_bicChannelInfo, canmeasure_),
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicGetImplantInfoReply_bicChannelInfo, measurevaluemin_),
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicGetImplantInfoReply_bicChannelInfo, measurevaluemax_),
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicGetImplantInfoReply_bicChannelInfo, canstimulate_),
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicGetImplantInfoReply_bicChannelInfo, stimulationunit_),
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicGetImplantInfoReply_bicChannelInfo, stimvaluemin_),
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicGetImplantInfoReply_bicChannelInfo, stimvaluemax_),
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicGetImplantInfoReply_bicChannelInfo, canmeasureimpedance_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicGetImplantInfoReply, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicGetImplantInfoReply, firmwareversion_),
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicGetImplantInfoReply, devicetype_),
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicGetImplantInfoReply, deviceid_),
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicGetImplantInfoReply, channelinfolist_),
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicGetImplantInfoReply, channelcount_),
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicGetImplantInfoReply, measurementchannelcount_),
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicGetImplantInfoReply, stimulationchannelcount_),
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicGetImplantInfoReply, samplingrate_),
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicGetImplantInfoReply, success_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicGetImpedanceRequest, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicGetImpedanceRequest, channel_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicGetImpedanceReply, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicGetImpedanceReply, channelimpedance_),
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicGetImpedanceReply, units_),
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicGetImpedanceReply, success_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicGetTemperatureReply, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicGetTemperatureReply, temperature_),
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicGetTemperatureReply, units_),
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicGetTemperatureReply, success_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicGetHumidityReply, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicGetHumidityReply, humidity_),
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicGetHumidityReply, units_),
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicGetHumidityReply, success_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicSetSensingEnableRequest, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicSetSensingEnableRequest, enablesensing_),
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicSetSensingEnableRequest, refchannels_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicSetImplantPowerRequest, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicSetImplantPowerRequest, powerenabled_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicStartStimulationRequest, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
 };
 static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-  { 0, -1, sizeof(::BICgRPC::HelloRequest)},
-  { 6, -1, sizeof(::BICgRPC::HelloReply)},
+  { 0, -1, sizeof(::BICgRPC::bicNullRequest)},
+  { 5, -1, sizeof(::BICgRPC::bicSuccessReply)},
+  { 11, -1, sizeof(::BICgRPC::bicInitRequest)},
+  { 17, -1, sizeof(::BICgRPC::bicGetImplantInfoRequest)},
+  { 23, -1, sizeof(::BICgRPC::bicGetImplantInfoReply_bicChannelInfo)},
+  { 36, -1, sizeof(::BICgRPC::bicGetImplantInfoReply)},
+  { 50, -1, sizeof(::BICgRPC::bicGetImpedanceRequest)},
+  { 56, -1, sizeof(::BICgRPC::bicGetImpedanceReply)},
+  { 64, -1, sizeof(::BICgRPC::bicGetTemperatureReply)},
+  { 72, -1, sizeof(::BICgRPC::bicGetHumidityReply)},
+  { 80, -1, sizeof(::BICgRPC::bicSetSensingEnableRequest)},
+  { 87, -1, sizeof(::BICgRPC::bicSetImplantPowerRequest)},
+  { 93, -1, sizeof(::BICgRPC::bicStartStimulationRequest)},
 };
 
 static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::BICgRPC::_HelloRequest_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::BICgRPC::_HelloReply_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::BICgRPC::_bicNullRequest_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::BICgRPC::_bicSuccessReply_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::BICgRPC::_bicInitRequest_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::BICgRPC::_bicGetImplantInfoRequest_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::BICgRPC::_bicGetImplantInfoReply_bicChannelInfo_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::BICgRPC::_bicGetImplantInfoReply_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::BICgRPC::_bicGetImpedanceRequest_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::BICgRPC::_bicGetImpedanceReply_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::BICgRPC::_bicGetTemperatureReply_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::BICgRPC::_bicGetHumidityReply_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::BICgRPC::_bicSetSensingEnableRequest_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::BICgRPC::_bicSetImplantPowerRequest_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::BICgRPC::_bicStartStimulationRequest_default_instance_),
 };
 
 const char descriptor_table_protodef_BICgRPC_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
-  "\n\rBICgRPC.proto\022\007BICgRPC\"\034\n\014HelloRequest"
-  "\022\014\n\004name\030\001 \001(\t\"\035\n\nHelloReply\022\017\n\007message\030"
-  "\001 \001(\t2\202\001\n\007Greeter\0228\n\010SayHello\022\025.BICgRPC."
-  "HelloRequest\032\023.BICgRPC.HelloReply\"\000\022=\n\rS"
-  "ayHelloAgain\022\025.BICgRPC.HelloRequest\032\023.BI"
-  "CgRPC.HelloReply\"\000B\"\n\017io.grpc.BICgRPCB\007B"
-  "ICgRPCP\001\242\002\003HLWb\006proto3"
+  "\n\rBICgRPC.proto\022\007BICgRPC\"\020\n\016bicNullReque"
+  "st\"\"\n\017bicSuccessReply\022\017\n\007success\030\001 \001(\t\"%"
+  "\n\016bicInitRequest\022\023\n\013logFileName\030\001 \001(\t\"4\n"
+  "\030bicGetImplantInfoRequest\022\030\n\020updateCache"
+  "dInfo\030\001 \001(\010\"\363\004\n\026bicGetImplantInfoReply\022\027"
+  "\n\017firmwareVersion\030\001 \001(\t\022\022\n\ndeviceType\030\002 "
+  "\001(\t\022\020\n\010deviceId\030\003 \001(\t\022G\n\017channelInfoList"
+  "\030\004 \003(\0132..BICgRPC.bicGetImplantInfoReply."
+  "bicChannelInfo\022\024\n\014channelCount\030\005 \001(\r\022\037\n\027"
+  "measurementChannelCount\030\006 \001(\r\022\037\n\027stimula"
+  "tionChannelCount\030\007 \001(\r\022\024\n\014samplingRate\030\010"
+  " \001(\r\022\017\n\007success\030\t \001(\t\032\321\002\n\016bicChannelInfo"
+  "\022\022\n\ncanMeasure\030\001 \001(\010\022\027\n\017measureValueMin\030"
+  "\002 \001(\001\022\027\n\017measureValueMax\030\003 \001(\001\022\024\n\014canSti"
+  "mulate\030\004 \001(\010\022P\n\017stimulationUnit\030\005 \001(\01627."
+  "BICgRPC.bicGetImplantInfoReply.bicChanne"
+  "lInfo.UnitType\022\024\n\014stimValueMin\030\006 \001(\001\022\024\n\014"
+  "stimValueMax\030\007 \001(\001\022\033\n\023canMeasureImpedanc"
+  "e\030\010 \001(\010\"H\n\010UnitType\022\016\n\nUT_NO_UNIT\020\000\022\016\n\nU"
+  "T_CURRENT\020\001\022\016\n\nUT_VOLTAGE\020\002\022\014\n\010UT_COUNT\020"
+  "\003\")\n\026bicGetImpedanceRequest\022\017\n\007channel\030\001"
+  " \001(\r\"P\n\024bicGetImpedanceReply\022\030\n\020channelI"
+  "mpedance\030\001 \001(\001\022\r\n\005units\030\002 \001(\t\022\017\n\007success"
+  "\030\003 \001(\t\"M\n\026bicGetTemperatureReply\022\023\n\013temp"
+  "erature\030\001 \001(\001\022\r\n\005units\030\002 \001(\t\022\017\n\007success\030"
+  "\003 \001(\t\"G\n\023bicGetHumidityReply\022\020\n\010humidity"
+  "\030\001 \001(\001\022\r\n\005units\030\002 \001(\t\022\017\n\007success\030\003 \001(\t\"H"
+  "\n\032bicSetSensingEnableRequest\022\025\n\renableSe"
+  "nsing\030\001 \001(\010\022\023\n\013refChannels\030\002 \003(\r\"1\n\031bicS"
+  "etImplantPowerRequest\022\024\n\014powerEnabled\030\001 "
+  "\001(\010\"\034\n\032bicStartStimulationRequest2\254\006\n\nBI"
+  "CManager\022>\n\007bicInit\022\027.BICgRPC.bicInitReq"
+  "uest\032\030.BICgRPC.bicSuccessReply\"\000\022Y\n\021bicG"
+  "etImplantInfo\022!.BICgRPC.bicGetImplantInf"
+  "oRequest\032\037.BICgRPC.bicGetImplantInfoRepl"
+  "y\"\000\022S\n\017bicGetImpedance\022\037.BICgRPC.bicGetI"
+  "mpedanceRequest\032\035.BICgRPC.bicGetImpedanc"
+  "eReply\"\000\022O\n\021bicGetTemperature\022\027.BICgRPC."
+  "bicNullRequest\032\037.BICgRPC.bicGetTemperatu"
+  "reReply\"\000\022I\n\016bicGetHumidity\022\027.BICgRPC.bi"
+  "cNullRequest\032\034.BICgRPC.bicGetHumidityRep"
+  "ly\"\000\022V\n\023bicSetSensingEnable\022#.BICgRPC.bi"
+  "cSetSensingEnableRequest\032\030.BICgRPC.bicSu"
+  "ccessReply\"\000\022T\n\022bicSetImplantPower\022\".BIC"
+  "gRPC.bicSetImplantPowerRequest\032\030.BICgRPC"
+  ".bicSuccessReply\"\000\022V\n\023bicStartStimulatio"
+  "n\022#.BICgRPC.bicStartStimulationRequest\032\030"
+  ".BICgRPC.bicSuccessReply\"\000\022I\n\022bicStopSti"
+  "mulation\022\027.BICgRPC.bicNullRequest\032\030.BICg"
+  "RPC.bicSuccessReply\"\000\022A\n\nbicDispose\022\027.BI"
+  "CgRPC.bicNullRequest\032\030.BICgRPC.bicSucces"
+  "sReply\"\000B\"\n\017io.grpc.BICgRPCB\007BICgRPCP\001\242\002"
+  "\003HLWb\006proto3"
   ;
 static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_BICgRPC_2eproto_deps[1] = {
 };
-static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_BICgRPC_2eproto_sccs[2] = {
-  &scc_info_HelloReply_BICgRPC_2eproto.base,
-  &scc_info_HelloRequest_BICgRPC_2eproto.base,
+static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_BICgRPC_2eproto_sccs[13] = {
+  &scc_info_bicGetHumidityReply_BICgRPC_2eproto.base,
+  &scc_info_bicGetImpedanceReply_BICgRPC_2eproto.base,
+  &scc_info_bicGetImpedanceRequest_BICgRPC_2eproto.base,
+  &scc_info_bicGetImplantInfoReply_BICgRPC_2eproto.base,
+  &scc_info_bicGetImplantInfoReply_bicChannelInfo_BICgRPC_2eproto.base,
+  &scc_info_bicGetImplantInfoRequest_BICgRPC_2eproto.base,
+  &scc_info_bicGetTemperatureReply_BICgRPC_2eproto.base,
+  &scc_info_bicInitRequest_BICgRPC_2eproto.base,
+  &scc_info_bicNullRequest_BICgRPC_2eproto.base,
+  &scc_info_bicSetImplantPowerRequest_BICgRPC_2eproto.base,
+  &scc_info_bicSetSensingEnableRequest_BICgRPC_2eproto.base,
+  &scc_info_bicStartStimulationRequest_BICgRPC_2eproto.base,
+  &scc_info_bicSuccessReply_BICgRPC_2eproto.base,
 };
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_BICgRPC_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_BICgRPC_2eproto = {
-  false, false, descriptor_table_protodef_BICgRPC_2eproto, "BICgRPC.proto", 262,
-  &descriptor_table_BICgRPC_2eproto_once, descriptor_table_BICgRPC_2eproto_sccs, descriptor_table_BICgRPC_2eproto_deps, 2, 0,
+  false, false, descriptor_table_protodef_BICgRPC_2eproto, "BICgRPC.proto", 2092,
+  &descriptor_table_BICgRPC_2eproto_once, descriptor_table_BICgRPC_2eproto_sccs, descriptor_table_BICgRPC_2eproto_deps, 13, 0,
   schemas, file_default_instances, TableStruct_BICgRPC_2eproto::offsets,
-  file_level_metadata_BICgRPC_2eproto, 2, file_level_enum_descriptors_BICgRPC_2eproto, file_level_service_descriptors_BICgRPC_2eproto,
+  file_level_metadata_BICgRPC_2eproto, 13, file_level_enum_descriptors_BICgRPC_2eproto, file_level_service_descriptors_BICgRPC_2eproto,
 };
 
 // Force running AddDescriptors() at dynamic initialization time.
 static bool dynamic_init_dummy_BICgRPC_2eproto = (static_cast<void>(::PROTOBUF_NAMESPACE_ID::internal::AddDescriptors(&descriptor_table_BICgRPC_2eproto)), true);
 namespace BICgRPC {
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* bicGetImplantInfoReply_bicChannelInfo_UnitType_descriptor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&descriptor_table_BICgRPC_2eproto);
+  return file_level_enum_descriptors_BICgRPC_2eproto[0];
+}
+bool bicGetImplantInfoReply_bicChannelInfo_UnitType_IsValid(int value) {
+  switch (value) {
+    case 0:
+    case 1:
+    case 2:
+    case 3:
+      return true;
+    default:
+      return false;
+  }
+}
+
+#if (__cplusplus < 201703) && (!defined(_MSC_VER) || _MSC_VER >= 1900)
+constexpr bicGetImplantInfoReply_bicChannelInfo_UnitType bicGetImplantInfoReply_bicChannelInfo::UT_NO_UNIT;
+constexpr bicGetImplantInfoReply_bicChannelInfo_UnitType bicGetImplantInfoReply_bicChannelInfo::UT_CURRENT;
+constexpr bicGetImplantInfoReply_bicChannelInfo_UnitType bicGetImplantInfoReply_bicChannelInfo::UT_VOLTAGE;
+constexpr bicGetImplantInfoReply_bicChannelInfo_UnitType bicGetImplantInfoReply_bicChannelInfo::UT_COUNT;
+constexpr bicGetImplantInfoReply_bicChannelInfo_UnitType bicGetImplantInfoReply_bicChannelInfo::UnitType_MIN;
+constexpr bicGetImplantInfoReply_bicChannelInfo_UnitType bicGetImplantInfoReply_bicChannelInfo::UnitType_MAX;
+constexpr int bicGetImplantInfoReply_bicChannelInfo::UnitType_ARRAYSIZE;
+#endif  // (__cplusplus < 201703) && (!defined(_MSC_VER) || _MSC_VER >= 1900)
 
 // ===================================================================
 
-void HelloRequest::InitAsDefaultInstance() {
+void bicNullRequest::InitAsDefaultInstance() {
 }
-class HelloRequest::_Internal {
+class bicNullRequest::_Internal {
  public:
 };
 
-HelloRequest::HelloRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+bicNullRequest::bicNullRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena)
   : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
   SharedCtor();
   RegisterArenaDtor(arena);
-  // @@protoc_insertion_point(arena_constructor:BICgRPC.HelloRequest)
+  // @@protoc_insertion_point(arena_constructor:BICgRPC.bicNullRequest)
 }
-HelloRequest::HelloRequest(const HelloRequest& from)
+bicNullRequest::bicNullRequest(const bicNullRequest& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  if (!from._internal_name().empty()) {
-    name_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from._internal_name(),
-      GetArena());
-  }
-  // @@protoc_insertion_point(copy_constructor:BICgRPC.HelloRequest)
+  // @@protoc_insertion_point(copy_constructor:BICgRPC.bicNullRequest)
 }
 
-void HelloRequest::SharedCtor() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_HelloRequest_BICgRPC_2eproto.base);
-  name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+void bicNullRequest::SharedCtor() {
 }
 
-HelloRequest::~HelloRequest() {
-  // @@protoc_insertion_point(destructor:BICgRPC.HelloRequest)
+bicNullRequest::~bicNullRequest() {
+  // @@protoc_insertion_point(destructor:BICgRPC.bicNullRequest)
   SharedDtor();
   _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-void HelloRequest::SharedDtor() {
+void bicNullRequest::SharedDtor() {
   GOOGLE_DCHECK(GetArena() == nullptr);
-  name_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 }
 
-void HelloRequest::ArenaDtor(void* object) {
-  HelloRequest* _this = reinterpret_cast< HelloRequest* >(object);
+void bicNullRequest::ArenaDtor(void* object) {
+  bicNullRequest* _this = reinterpret_cast< bicNullRequest* >(object);
   (void)_this;
 }
-void HelloRequest::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+void bicNullRequest::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
 }
-void HelloRequest::SetCachedSize(int size) const {
+void bicNullRequest::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const HelloRequest& HelloRequest::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_HelloRequest_BICgRPC_2eproto.base);
+const bicNullRequest& bicNullRequest::default_instance() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_bicNullRequest_BICgRPC_2eproto.base);
   return *internal_default_instance();
 }
 
 
-void HelloRequest::Clear() {
-// @@protoc_insertion_point(message_clear_start:BICgRPC.HelloRequest)
+void bicNullRequest::Clear() {
+// @@protoc_insertion_point(message_clear_start:BICgRPC.bicNullRequest)
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  name_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-const char* HelloRequest::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+const char* bicNullRequest::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
   ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
   while (!ctx->Done(&ptr)) {
     ::PROTOBUF_NAMESPACE_ID::uint32 tag;
     ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
     CHK_(ptr);
-    switch (tag >> 3) {
-      // string name = 1;
-      case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
-          auto str = _internal_mutable_name();
-          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
-          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "BICgRPC.HelloRequest.name"));
-          CHK_(ptr);
-        } else goto handle_unusual;
-        continue;
-      default: {
-      handle_unusual:
         if ((tag & 7) == 4 || tag == 0) {
           ctx->SetLastTag(tag);
           goto success;
@@ -201,8 +570,6 @@ const char* HelloRequest::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_I
             ptr, ctx);
         CHK_(ptr != nullptr);
         continue;
-      }
-    }  // switch
   }  // while
 success:
   return ptr;
@@ -212,44 +579,27 @@ failure:
 #undef CHK_
 }
 
-::PROTOBUF_NAMESPACE_ID::uint8* HelloRequest::_InternalSerialize(
+::PROTOBUF_NAMESPACE_ID::uint8* bicNullRequest::_InternalSerialize(
     ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:BICgRPC.HelloRequest)
+  // @@protoc_insertion_point(serialize_to_array_start:BICgRPC.bicNullRequest)
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
-
-  // string name = 1;
-  if (this->name().size() > 0) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
-      this->_internal_name().data(), static_cast<int>(this->_internal_name().length()),
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
-      "BICgRPC.HelloRequest.name");
-    target = stream->WriteStringMaybeAliased(
-        1, this->_internal_name(), target);
-  }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:BICgRPC.HelloRequest)
+  // @@protoc_insertion_point(serialize_to_array_end:BICgRPC.bicNullRequest)
   return target;
 }
 
-size_t HelloRequest::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:BICgRPC.HelloRequest)
+size_t bicNullRequest::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:BICgRPC.bicNullRequest)
   size_t total_size = 0;
 
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
-
-  // string name = 1;
-  if (this->name().size() > 0) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
-        this->_internal_name());
-  }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
@@ -260,129 +610,125 @@ size_t HelloRequest::ByteSizeLong() const {
   return total_size;
 }
 
-void HelloRequest::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:BICgRPC.HelloRequest)
+void bicNullRequest::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:BICgRPC.bicNullRequest)
   GOOGLE_DCHECK_NE(&from, this);
-  const HelloRequest* source =
-      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<HelloRequest>(
+  const bicNullRequest* source =
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<bicNullRequest>(
           &from);
   if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:BICgRPC.HelloRequest)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:BICgRPC.bicNullRequest)
     ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:BICgRPC.HelloRequest)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:BICgRPC.bicNullRequest)
     MergeFrom(*source);
   }
 }
 
-void HelloRequest::MergeFrom(const HelloRequest& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:BICgRPC.HelloRequest)
+void bicNullRequest::MergeFrom(const bicNullRequest& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:BICgRPC.bicNullRequest)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (from.name().size() > 0) {
-    _internal_set_name(from._internal_name());
-  }
 }
 
-void HelloRequest::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:BICgRPC.HelloRequest)
+void bicNullRequest::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:BICgRPC.bicNullRequest)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-void HelloRequest::CopyFrom(const HelloRequest& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:BICgRPC.HelloRequest)
+void bicNullRequest::CopyFrom(const bicNullRequest& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:BICgRPC.bicNullRequest)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-bool HelloRequest::IsInitialized() const {
+bool bicNullRequest::IsInitialized() const {
   return true;
 }
 
-void HelloRequest::InternalSwap(HelloRequest* other) {
+void bicNullRequest::InternalSwap(bicNullRequest* other) {
   using std::swap;
   _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
-  name_.Swap(&other->name_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
 }
 
-::PROTOBUF_NAMESPACE_ID::Metadata HelloRequest::GetMetadata() const {
+::PROTOBUF_NAMESPACE_ID::Metadata bicNullRequest::GetMetadata() const {
   return GetMetadataStatic();
 }
 
 
 // ===================================================================
 
-void HelloReply::InitAsDefaultInstance() {
+void bicSuccessReply::InitAsDefaultInstance() {
 }
-class HelloReply::_Internal {
+class bicSuccessReply::_Internal {
  public:
 };
 
-HelloReply::HelloReply(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+bicSuccessReply::bicSuccessReply(::PROTOBUF_NAMESPACE_ID::Arena* arena)
   : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
   SharedCtor();
   RegisterArenaDtor(arena);
-  // @@protoc_insertion_point(arena_constructor:BICgRPC.HelloReply)
+  // @@protoc_insertion_point(arena_constructor:BICgRPC.bicSuccessReply)
 }
-HelloReply::HelloReply(const HelloReply& from)
+bicSuccessReply::bicSuccessReply(const bicSuccessReply& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  message_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  if (!from._internal_message().empty()) {
-    message_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from._internal_message(),
+  success_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_success().empty()) {
+    success_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from._internal_success(),
       GetArena());
   }
-  // @@protoc_insertion_point(copy_constructor:BICgRPC.HelloReply)
+  // @@protoc_insertion_point(copy_constructor:BICgRPC.bicSuccessReply)
 }
 
-void HelloReply::SharedCtor() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_HelloReply_BICgRPC_2eproto.base);
-  message_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+void bicSuccessReply::SharedCtor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_bicSuccessReply_BICgRPC_2eproto.base);
+  success_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 }
 
-HelloReply::~HelloReply() {
-  // @@protoc_insertion_point(destructor:BICgRPC.HelloReply)
+bicSuccessReply::~bicSuccessReply() {
+  // @@protoc_insertion_point(destructor:BICgRPC.bicSuccessReply)
   SharedDtor();
   _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-void HelloReply::SharedDtor() {
+void bicSuccessReply::SharedDtor() {
   GOOGLE_DCHECK(GetArena() == nullptr);
-  message_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  success_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 }
 
-void HelloReply::ArenaDtor(void* object) {
-  HelloReply* _this = reinterpret_cast< HelloReply* >(object);
+void bicSuccessReply::ArenaDtor(void* object) {
+  bicSuccessReply* _this = reinterpret_cast< bicSuccessReply* >(object);
   (void)_this;
 }
-void HelloReply::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+void bicSuccessReply::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
 }
-void HelloReply::SetCachedSize(int size) const {
+void bicSuccessReply::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const HelloReply& HelloReply::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_HelloReply_BICgRPC_2eproto.base);
+const bicSuccessReply& bicSuccessReply::default_instance() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_bicSuccessReply_BICgRPC_2eproto.base);
   return *internal_default_instance();
 }
 
 
-void HelloReply::Clear() {
-// @@protoc_insertion_point(message_clear_start:BICgRPC.HelloReply)
+void bicSuccessReply::Clear() {
+// @@protoc_insertion_point(message_clear_start:BICgRPC.bicSuccessReply)
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  message_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  success_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-const char* HelloReply::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+const char* bicSuccessReply::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
   ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
   while (!ctx->Done(&ptr)) {
@@ -390,12 +736,12 @@ const char* HelloReply::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID:
     ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
     CHK_(ptr);
     switch (tag >> 3) {
-      // string message = 1;
+      // string success = 1;
       case 1:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
-          auto str = _internal_mutable_message();
+          auto str = _internal_mutable_success();
           ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
-          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "BICgRPC.HelloReply.message"));
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "BICgRPC.bicSuccessReply.success"));
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
@@ -421,43 +767,43 @@ failure:
 #undef CHK_
 }
 
-::PROTOBUF_NAMESPACE_ID::uint8* HelloReply::_InternalSerialize(
+::PROTOBUF_NAMESPACE_ID::uint8* bicSuccessReply::_InternalSerialize(
     ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:BICgRPC.HelloReply)
+  // @@protoc_insertion_point(serialize_to_array_start:BICgRPC.bicSuccessReply)
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // string message = 1;
-  if (this->message().size() > 0) {
+  // string success = 1;
+  if (this->success().size() > 0) {
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
-      this->_internal_message().data(), static_cast<int>(this->_internal_message().length()),
+      this->_internal_success().data(), static_cast<int>(this->_internal_success().length()),
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
-      "BICgRPC.HelloReply.message");
+      "BICgRPC.bicSuccessReply.success");
     target = stream->WriteStringMaybeAliased(
-        1, this->_internal_message(), target);
+        1, this->_internal_success(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:BICgRPC.HelloReply)
+  // @@protoc_insertion_point(serialize_to_array_end:BICgRPC.bicSuccessReply)
   return target;
 }
 
-size_t HelloReply::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:BICgRPC.HelloReply)
+size_t bicSuccessReply::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:BICgRPC.bicSuccessReply)
   size_t total_size = 0;
 
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // string message = 1;
-  if (this->message().size() > 0) {
+  // string success = 1;
+  if (this->success().size() > 0) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
-        this->_internal_message());
+        this->_internal_success());
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -469,58 +815,2887 @@ size_t HelloReply::ByteSizeLong() const {
   return total_size;
 }
 
-void HelloReply::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:BICgRPC.HelloReply)
+void bicSuccessReply::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:BICgRPC.bicSuccessReply)
   GOOGLE_DCHECK_NE(&from, this);
-  const HelloReply* source =
-      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<HelloReply>(
+  const bicSuccessReply* source =
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<bicSuccessReply>(
           &from);
   if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:BICgRPC.HelloReply)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:BICgRPC.bicSuccessReply)
     ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:BICgRPC.HelloReply)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:BICgRPC.bicSuccessReply)
     MergeFrom(*source);
   }
 }
 
-void HelloReply::MergeFrom(const HelloReply& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:BICgRPC.HelloReply)
+void bicSuccessReply::MergeFrom(const bicSuccessReply& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:BICgRPC.bicSuccessReply)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (from.message().size() > 0) {
-    _internal_set_message(from._internal_message());
+  if (from.success().size() > 0) {
+    _internal_set_success(from._internal_success());
   }
 }
 
-void HelloReply::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:BICgRPC.HelloReply)
+void bicSuccessReply::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:BICgRPC.bicSuccessReply)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-void HelloReply::CopyFrom(const HelloReply& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:BICgRPC.HelloReply)
+void bicSuccessReply::CopyFrom(const bicSuccessReply& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:BICgRPC.bicSuccessReply)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-bool HelloReply::IsInitialized() const {
+bool bicSuccessReply::IsInitialized() const {
   return true;
 }
 
-void HelloReply::InternalSwap(HelloReply* other) {
+void bicSuccessReply::InternalSwap(bicSuccessReply* other) {
   using std::swap;
   _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
-  message_.Swap(&other->message_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  success_.Swap(&other->success_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
 }
 
-::PROTOBUF_NAMESPACE_ID::Metadata HelloReply::GetMetadata() const {
+::PROTOBUF_NAMESPACE_ID::Metadata bicSuccessReply::GetMetadata() const {
+  return GetMetadataStatic();
+}
+
+
+// ===================================================================
+
+void bicInitRequest::InitAsDefaultInstance() {
+}
+class bicInitRequest::_Internal {
+ public:
+};
+
+bicInitRequest::bicInitRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+  SharedCtor();
+  RegisterArenaDtor(arena);
+  // @@protoc_insertion_point(arena_constructor:BICgRPC.bicInitRequest)
+}
+bicInitRequest::bicInitRequest(const bicInitRequest& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  logfilename_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_logfilename().empty()) {
+    logfilename_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from._internal_logfilename(),
+      GetArena());
+  }
+  // @@protoc_insertion_point(copy_constructor:BICgRPC.bicInitRequest)
+}
+
+void bicInitRequest::SharedCtor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_bicInitRequest_BICgRPC_2eproto.base);
+  logfilename_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+
+bicInitRequest::~bicInitRequest() {
+  // @@protoc_insertion_point(destructor:BICgRPC.bicInitRequest)
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+void bicInitRequest::SharedDtor() {
+  GOOGLE_DCHECK(GetArena() == nullptr);
+  logfilename_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+
+void bicInitRequest::ArenaDtor(void* object) {
+  bicInitRequest* _this = reinterpret_cast< bicInitRequest* >(object);
+  (void)_this;
+}
+void bicInitRequest::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void bicInitRequest::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+const bicInitRequest& bicInitRequest::default_instance() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_bicInitRequest_BICgRPC_2eproto.base);
+  return *internal_default_instance();
+}
+
+
+void bicInitRequest::Clear() {
+// @@protoc_insertion_point(message_clear_start:BICgRPC.bicInitRequest)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  logfilename_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* bicInitRequest::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
+    switch (tag >> 3) {
+      // string logFileName = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          auto str = _internal_mutable_logfilename();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "BICgRPC.bicInitRequest.logFileName"));
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      default: {
+      handle_unusual:
+        if ((tag & 7) == 4 || tag == 0) {
+          ctx->SetLastTag(tag);
+          goto success;
+        }
+        ptr = UnknownFieldParse(tag,
+            _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+            ptr, ctx);
+        CHK_(ptr != nullptr);
+        continue;
+      }
+    }  // switch
+  }  // while
+success:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto success;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* bicInitRequest::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:BICgRPC.bicInitRequest)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // string logFileName = 1;
+  if (this->logfilename().size() > 0) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_logfilename().data(), static_cast<int>(this->_internal_logfilename().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "BICgRPC.bicInitRequest.logFileName");
+    target = stream->WriteStringMaybeAliased(
+        1, this->_internal_logfilename(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:BICgRPC.bicInitRequest)
+  return target;
+}
+
+size_t bicInitRequest::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:BICgRPC.bicInitRequest)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // string logFileName = 1;
+  if (this->logfilename().size() > 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_logfilename());
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
+        _internal_metadata_, total_size, &_cached_size_);
+  }
+  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void bicInitRequest::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:BICgRPC.bicInitRequest)
+  GOOGLE_DCHECK_NE(&from, this);
+  const bicInitRequest* source =
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<bicInitRequest>(
+          &from);
+  if (source == nullptr) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:BICgRPC.bicInitRequest)
+    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:BICgRPC.bicInitRequest)
+    MergeFrom(*source);
+  }
+}
+
+void bicInitRequest::MergeFrom(const bicInitRequest& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:BICgRPC.bicInitRequest)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from.logfilename().size() > 0) {
+    _internal_set_logfilename(from._internal_logfilename());
+  }
+}
+
+void bicInitRequest::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:BICgRPC.bicInitRequest)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void bicInitRequest::CopyFrom(const bicInitRequest& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:BICgRPC.bicInitRequest)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool bicInitRequest::IsInitialized() const {
+  return true;
+}
+
+void bicInitRequest::InternalSwap(bicInitRequest* other) {
+  using std::swap;
+  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
+  logfilename_.Swap(&other->logfilename_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata bicInitRequest::GetMetadata() const {
+  return GetMetadataStatic();
+}
+
+
+// ===================================================================
+
+void bicGetImplantInfoRequest::InitAsDefaultInstance() {
+}
+class bicGetImplantInfoRequest::_Internal {
+ public:
+};
+
+bicGetImplantInfoRequest::bicGetImplantInfoRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+  SharedCtor();
+  RegisterArenaDtor(arena);
+  // @@protoc_insertion_point(arena_constructor:BICgRPC.bicGetImplantInfoRequest)
+}
+bicGetImplantInfoRequest::bicGetImplantInfoRequest(const bicGetImplantInfoRequest& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  updatecachedinfo_ = from.updatecachedinfo_;
+  // @@protoc_insertion_point(copy_constructor:BICgRPC.bicGetImplantInfoRequest)
+}
+
+void bicGetImplantInfoRequest::SharedCtor() {
+  updatecachedinfo_ = false;
+}
+
+bicGetImplantInfoRequest::~bicGetImplantInfoRequest() {
+  // @@protoc_insertion_point(destructor:BICgRPC.bicGetImplantInfoRequest)
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+void bicGetImplantInfoRequest::SharedDtor() {
+  GOOGLE_DCHECK(GetArena() == nullptr);
+}
+
+void bicGetImplantInfoRequest::ArenaDtor(void* object) {
+  bicGetImplantInfoRequest* _this = reinterpret_cast< bicGetImplantInfoRequest* >(object);
+  (void)_this;
+}
+void bicGetImplantInfoRequest::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void bicGetImplantInfoRequest::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+const bicGetImplantInfoRequest& bicGetImplantInfoRequest::default_instance() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_bicGetImplantInfoRequest_BICgRPC_2eproto.base);
+  return *internal_default_instance();
+}
+
+
+void bicGetImplantInfoRequest::Clear() {
+// @@protoc_insertion_point(message_clear_start:BICgRPC.bicGetImplantInfoRequest)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  updatecachedinfo_ = false;
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* bicGetImplantInfoRequest::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
+    switch (tag >> 3) {
+      // bool updateCachedInfo = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 8)) {
+          updatecachedinfo_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      default: {
+      handle_unusual:
+        if ((tag & 7) == 4 || tag == 0) {
+          ctx->SetLastTag(tag);
+          goto success;
+        }
+        ptr = UnknownFieldParse(tag,
+            _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+            ptr, ctx);
+        CHK_(ptr != nullptr);
+        continue;
+      }
+    }  // switch
+  }  // while
+success:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto success;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* bicGetImplantInfoRequest::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:BICgRPC.bicGetImplantInfoRequest)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // bool updateCachedInfo = 1;
+  if (this->updatecachedinfo() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteBoolToArray(1, this->_internal_updatecachedinfo(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:BICgRPC.bicGetImplantInfoRequest)
+  return target;
+}
+
+size_t bicGetImplantInfoRequest::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:BICgRPC.bicGetImplantInfoRequest)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // bool updateCachedInfo = 1;
+  if (this->updatecachedinfo() != 0) {
+    total_size += 1 + 1;
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
+        _internal_metadata_, total_size, &_cached_size_);
+  }
+  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void bicGetImplantInfoRequest::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:BICgRPC.bicGetImplantInfoRequest)
+  GOOGLE_DCHECK_NE(&from, this);
+  const bicGetImplantInfoRequest* source =
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<bicGetImplantInfoRequest>(
+          &from);
+  if (source == nullptr) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:BICgRPC.bicGetImplantInfoRequest)
+    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:BICgRPC.bicGetImplantInfoRequest)
+    MergeFrom(*source);
+  }
+}
+
+void bicGetImplantInfoRequest::MergeFrom(const bicGetImplantInfoRequest& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:BICgRPC.bicGetImplantInfoRequest)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from.updatecachedinfo() != 0) {
+    _internal_set_updatecachedinfo(from._internal_updatecachedinfo());
+  }
+}
+
+void bicGetImplantInfoRequest::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:BICgRPC.bicGetImplantInfoRequest)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void bicGetImplantInfoRequest::CopyFrom(const bicGetImplantInfoRequest& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:BICgRPC.bicGetImplantInfoRequest)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool bicGetImplantInfoRequest::IsInitialized() const {
+  return true;
+}
+
+void bicGetImplantInfoRequest::InternalSwap(bicGetImplantInfoRequest* other) {
+  using std::swap;
+  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
+  swap(updatecachedinfo_, other->updatecachedinfo_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata bicGetImplantInfoRequest::GetMetadata() const {
+  return GetMetadataStatic();
+}
+
+
+// ===================================================================
+
+void bicGetImplantInfoReply_bicChannelInfo::InitAsDefaultInstance() {
+}
+class bicGetImplantInfoReply_bicChannelInfo::_Internal {
+ public:
+};
+
+bicGetImplantInfoReply_bicChannelInfo::bicGetImplantInfoReply_bicChannelInfo(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+  SharedCtor();
+  RegisterArenaDtor(arena);
+  // @@protoc_insertion_point(arena_constructor:BICgRPC.bicGetImplantInfoReply.bicChannelInfo)
+}
+bicGetImplantInfoReply_bicChannelInfo::bicGetImplantInfoReply_bicChannelInfo(const bicGetImplantInfoReply_bicChannelInfo& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::memcpy(&measurevaluemin_, &from.measurevaluemin_,
+    static_cast<size_t>(reinterpret_cast<char*>(&stimvaluemax_) -
+    reinterpret_cast<char*>(&measurevaluemin_)) + sizeof(stimvaluemax_));
+  // @@protoc_insertion_point(copy_constructor:BICgRPC.bicGetImplantInfoReply.bicChannelInfo)
+}
+
+void bicGetImplantInfoReply_bicChannelInfo::SharedCtor() {
+  ::memset(&measurevaluemin_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&stimvaluemax_) -
+      reinterpret_cast<char*>(&measurevaluemin_)) + sizeof(stimvaluemax_));
+}
+
+bicGetImplantInfoReply_bicChannelInfo::~bicGetImplantInfoReply_bicChannelInfo() {
+  // @@protoc_insertion_point(destructor:BICgRPC.bicGetImplantInfoReply.bicChannelInfo)
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+void bicGetImplantInfoReply_bicChannelInfo::SharedDtor() {
+  GOOGLE_DCHECK(GetArena() == nullptr);
+}
+
+void bicGetImplantInfoReply_bicChannelInfo::ArenaDtor(void* object) {
+  bicGetImplantInfoReply_bicChannelInfo* _this = reinterpret_cast< bicGetImplantInfoReply_bicChannelInfo* >(object);
+  (void)_this;
+}
+void bicGetImplantInfoReply_bicChannelInfo::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void bicGetImplantInfoReply_bicChannelInfo::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+const bicGetImplantInfoReply_bicChannelInfo& bicGetImplantInfoReply_bicChannelInfo::default_instance() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_bicGetImplantInfoReply_bicChannelInfo_BICgRPC_2eproto.base);
+  return *internal_default_instance();
+}
+
+
+void bicGetImplantInfoReply_bicChannelInfo::Clear() {
+// @@protoc_insertion_point(message_clear_start:BICgRPC.bicGetImplantInfoReply.bicChannelInfo)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  ::memset(&measurevaluemin_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&stimvaluemax_) -
+      reinterpret_cast<char*>(&measurevaluemin_)) + sizeof(stimvaluemax_));
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* bicGetImplantInfoReply_bicChannelInfo::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
+    switch (tag >> 3) {
+      // bool canMeasure = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 8)) {
+          canmeasure_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // double measureValueMin = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 17)) {
+          measurevaluemin_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<double>(ptr);
+          ptr += sizeof(double);
+        } else goto handle_unusual;
+        continue;
+      // double measureValueMax = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 25)) {
+          measurevaluemax_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<double>(ptr);
+          ptr += sizeof(double);
+        } else goto handle_unusual;
+        continue;
+      // bool canStimulate = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 32)) {
+          canstimulate_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // .BICgRPC.bicGetImplantInfoReply.bicChannelInfo.UnitType stimulationUnit = 5;
+      case 5:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 40)) {
+          ::PROTOBUF_NAMESPACE_ID::uint64 val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+          _internal_set_stimulationunit(static_cast<::BICgRPC::bicGetImplantInfoReply_bicChannelInfo_UnitType>(val));
+        } else goto handle_unusual;
+        continue;
+      // double stimValueMin = 6;
+      case 6:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 49)) {
+          stimvaluemin_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<double>(ptr);
+          ptr += sizeof(double);
+        } else goto handle_unusual;
+        continue;
+      // double stimValueMax = 7;
+      case 7:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 57)) {
+          stimvaluemax_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<double>(ptr);
+          ptr += sizeof(double);
+        } else goto handle_unusual;
+        continue;
+      // bool canMeasureImpedance = 8;
+      case 8:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 64)) {
+          canmeasureimpedance_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      default: {
+      handle_unusual:
+        if ((tag & 7) == 4 || tag == 0) {
+          ctx->SetLastTag(tag);
+          goto success;
+        }
+        ptr = UnknownFieldParse(tag,
+            _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+            ptr, ctx);
+        CHK_(ptr != nullptr);
+        continue;
+      }
+    }  // switch
+  }  // while
+success:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto success;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* bicGetImplantInfoReply_bicChannelInfo::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:BICgRPC.bicGetImplantInfoReply.bicChannelInfo)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // bool canMeasure = 1;
+  if (this->canmeasure() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteBoolToArray(1, this->_internal_canmeasure(), target);
+  }
+
+  // double measureValueMin = 2;
+  if (!(this->measurevaluemin() <= 0 && this->measurevaluemin() >= 0)) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteDoubleToArray(2, this->_internal_measurevaluemin(), target);
+  }
+
+  // double measureValueMax = 3;
+  if (!(this->measurevaluemax() <= 0 && this->measurevaluemax() >= 0)) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteDoubleToArray(3, this->_internal_measurevaluemax(), target);
+  }
+
+  // bool canStimulate = 4;
+  if (this->canstimulate() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteBoolToArray(4, this->_internal_canstimulate(), target);
+  }
+
+  // .BICgRPC.bicGetImplantInfoReply.bicChannelInfo.UnitType stimulationUnit = 5;
+  if (this->stimulationunit() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteEnumToArray(
+      5, this->_internal_stimulationunit(), target);
+  }
+
+  // double stimValueMin = 6;
+  if (!(this->stimvaluemin() <= 0 && this->stimvaluemin() >= 0)) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteDoubleToArray(6, this->_internal_stimvaluemin(), target);
+  }
+
+  // double stimValueMax = 7;
+  if (!(this->stimvaluemax() <= 0 && this->stimvaluemax() >= 0)) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteDoubleToArray(7, this->_internal_stimvaluemax(), target);
+  }
+
+  // bool canMeasureImpedance = 8;
+  if (this->canmeasureimpedance() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteBoolToArray(8, this->_internal_canmeasureimpedance(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:BICgRPC.bicGetImplantInfoReply.bicChannelInfo)
+  return target;
+}
+
+size_t bicGetImplantInfoReply_bicChannelInfo::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:BICgRPC.bicGetImplantInfoReply.bicChannelInfo)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // double measureValueMin = 2;
+  if (!(this->measurevaluemin() <= 0 && this->measurevaluemin() >= 0)) {
+    total_size += 1 + 8;
+  }
+
+  // double measureValueMax = 3;
+  if (!(this->measurevaluemax() <= 0 && this->measurevaluemax() >= 0)) {
+    total_size += 1 + 8;
+  }
+
+  // bool canMeasure = 1;
+  if (this->canmeasure() != 0) {
+    total_size += 1 + 1;
+  }
+
+  // bool canStimulate = 4;
+  if (this->canstimulate() != 0) {
+    total_size += 1 + 1;
+  }
+
+  // bool canMeasureImpedance = 8;
+  if (this->canmeasureimpedance() != 0) {
+    total_size += 1 + 1;
+  }
+
+  // .BICgRPC.bicGetImplantInfoReply.bicChannelInfo.UnitType stimulationUnit = 5;
+  if (this->stimulationunit() != 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::EnumSize(this->_internal_stimulationunit());
+  }
+
+  // double stimValueMin = 6;
+  if (!(this->stimvaluemin() <= 0 && this->stimvaluemin() >= 0)) {
+    total_size += 1 + 8;
+  }
+
+  // double stimValueMax = 7;
+  if (!(this->stimvaluemax() <= 0 && this->stimvaluemax() >= 0)) {
+    total_size += 1 + 8;
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
+        _internal_metadata_, total_size, &_cached_size_);
+  }
+  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void bicGetImplantInfoReply_bicChannelInfo::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:BICgRPC.bicGetImplantInfoReply.bicChannelInfo)
+  GOOGLE_DCHECK_NE(&from, this);
+  const bicGetImplantInfoReply_bicChannelInfo* source =
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<bicGetImplantInfoReply_bicChannelInfo>(
+          &from);
+  if (source == nullptr) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:BICgRPC.bicGetImplantInfoReply.bicChannelInfo)
+    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:BICgRPC.bicGetImplantInfoReply.bicChannelInfo)
+    MergeFrom(*source);
+  }
+}
+
+void bicGetImplantInfoReply_bicChannelInfo::MergeFrom(const bicGetImplantInfoReply_bicChannelInfo& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:BICgRPC.bicGetImplantInfoReply.bicChannelInfo)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (!(from.measurevaluemin() <= 0 && from.measurevaluemin() >= 0)) {
+    _internal_set_measurevaluemin(from._internal_measurevaluemin());
+  }
+  if (!(from.measurevaluemax() <= 0 && from.measurevaluemax() >= 0)) {
+    _internal_set_measurevaluemax(from._internal_measurevaluemax());
+  }
+  if (from.canmeasure() != 0) {
+    _internal_set_canmeasure(from._internal_canmeasure());
+  }
+  if (from.canstimulate() != 0) {
+    _internal_set_canstimulate(from._internal_canstimulate());
+  }
+  if (from.canmeasureimpedance() != 0) {
+    _internal_set_canmeasureimpedance(from._internal_canmeasureimpedance());
+  }
+  if (from.stimulationunit() != 0) {
+    _internal_set_stimulationunit(from._internal_stimulationunit());
+  }
+  if (!(from.stimvaluemin() <= 0 && from.stimvaluemin() >= 0)) {
+    _internal_set_stimvaluemin(from._internal_stimvaluemin());
+  }
+  if (!(from.stimvaluemax() <= 0 && from.stimvaluemax() >= 0)) {
+    _internal_set_stimvaluemax(from._internal_stimvaluemax());
+  }
+}
+
+void bicGetImplantInfoReply_bicChannelInfo::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:BICgRPC.bicGetImplantInfoReply.bicChannelInfo)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void bicGetImplantInfoReply_bicChannelInfo::CopyFrom(const bicGetImplantInfoReply_bicChannelInfo& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:BICgRPC.bicGetImplantInfoReply.bicChannelInfo)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool bicGetImplantInfoReply_bicChannelInfo::IsInitialized() const {
+  return true;
+}
+
+void bicGetImplantInfoReply_bicChannelInfo::InternalSwap(bicGetImplantInfoReply_bicChannelInfo* other) {
+  using std::swap;
+  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(bicGetImplantInfoReply_bicChannelInfo, stimvaluemax_)
+      + sizeof(bicGetImplantInfoReply_bicChannelInfo::stimvaluemax_)
+      - PROTOBUF_FIELD_OFFSET(bicGetImplantInfoReply_bicChannelInfo, measurevaluemin_)>(
+          reinterpret_cast<char*>(&measurevaluemin_),
+          reinterpret_cast<char*>(&other->measurevaluemin_));
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata bicGetImplantInfoReply_bicChannelInfo::GetMetadata() const {
+  return GetMetadataStatic();
+}
+
+
+// ===================================================================
+
+void bicGetImplantInfoReply::InitAsDefaultInstance() {
+}
+class bicGetImplantInfoReply::_Internal {
+ public:
+};
+
+bicGetImplantInfoReply::bicGetImplantInfoReply(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena),
+  channelinfolist_(arena) {
+  SharedCtor();
+  RegisterArenaDtor(arena);
+  // @@protoc_insertion_point(arena_constructor:BICgRPC.bicGetImplantInfoReply)
+}
+bicGetImplantInfoReply::bicGetImplantInfoReply(const bicGetImplantInfoReply& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message(),
+      channelinfolist_(from.channelinfolist_) {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  firmwareversion_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_firmwareversion().empty()) {
+    firmwareversion_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from._internal_firmwareversion(),
+      GetArena());
+  }
+  devicetype_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_devicetype().empty()) {
+    devicetype_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from._internal_devicetype(),
+      GetArena());
+  }
+  deviceid_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_deviceid().empty()) {
+    deviceid_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from._internal_deviceid(),
+      GetArena());
+  }
+  success_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_success().empty()) {
+    success_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from._internal_success(),
+      GetArena());
+  }
+  ::memcpy(&channelcount_, &from.channelcount_,
+    static_cast<size_t>(reinterpret_cast<char*>(&samplingrate_) -
+    reinterpret_cast<char*>(&channelcount_)) + sizeof(samplingrate_));
+  // @@protoc_insertion_point(copy_constructor:BICgRPC.bicGetImplantInfoReply)
+}
+
+void bicGetImplantInfoReply::SharedCtor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_bicGetImplantInfoReply_BICgRPC_2eproto.base);
+  firmwareversion_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  devicetype_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  deviceid_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  success_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  ::memset(&channelcount_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&samplingrate_) -
+      reinterpret_cast<char*>(&channelcount_)) + sizeof(samplingrate_));
+}
+
+bicGetImplantInfoReply::~bicGetImplantInfoReply() {
+  // @@protoc_insertion_point(destructor:BICgRPC.bicGetImplantInfoReply)
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+void bicGetImplantInfoReply::SharedDtor() {
+  GOOGLE_DCHECK(GetArena() == nullptr);
+  firmwareversion_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  devicetype_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  deviceid_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  success_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+
+void bicGetImplantInfoReply::ArenaDtor(void* object) {
+  bicGetImplantInfoReply* _this = reinterpret_cast< bicGetImplantInfoReply* >(object);
+  (void)_this;
+}
+void bicGetImplantInfoReply::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void bicGetImplantInfoReply::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+const bicGetImplantInfoReply& bicGetImplantInfoReply::default_instance() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_bicGetImplantInfoReply_BICgRPC_2eproto.base);
+  return *internal_default_instance();
+}
+
+
+void bicGetImplantInfoReply::Clear() {
+// @@protoc_insertion_point(message_clear_start:BICgRPC.bicGetImplantInfoReply)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  channelinfolist_.Clear();
+  firmwareversion_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  devicetype_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  deviceid_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  success_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  ::memset(&channelcount_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&samplingrate_) -
+      reinterpret_cast<char*>(&channelcount_)) + sizeof(samplingrate_));
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* bicGetImplantInfoReply::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
+    switch (tag >> 3) {
+      // string firmwareVersion = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          auto str = _internal_mutable_firmwareversion();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "BICgRPC.bicGetImplantInfoReply.firmwareVersion"));
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // string deviceType = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
+          auto str = _internal_mutable_devicetype();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "BICgRPC.bicGetImplantInfoReply.deviceType"));
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // string deviceId = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 26)) {
+          auto str = _internal_mutable_deviceid();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "BICgRPC.bicGetImplantInfoReply.deviceId"));
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // repeated .BICgRPC.bicGetImplantInfoReply.bicChannelInfo channelInfoList = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 34)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            ptr = ctx->ParseMessage(_internal_add_channelinfolist(), ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<34>(ptr));
+        } else goto handle_unusual;
+        continue;
+      // uint32 channelCount = 5;
+      case 5:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 40)) {
+          channelcount_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // uint32 measurementChannelCount = 6;
+      case 6:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 48)) {
+          measurementchannelcount_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // uint32 stimulationChannelCount = 7;
+      case 7:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 56)) {
+          stimulationchannelcount_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // uint32 samplingRate = 8;
+      case 8:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 64)) {
+          samplingrate_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // string success = 9;
+      case 9:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 74)) {
+          auto str = _internal_mutable_success();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "BICgRPC.bicGetImplantInfoReply.success"));
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      default: {
+      handle_unusual:
+        if ((tag & 7) == 4 || tag == 0) {
+          ctx->SetLastTag(tag);
+          goto success;
+        }
+        ptr = UnknownFieldParse(tag,
+            _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+            ptr, ctx);
+        CHK_(ptr != nullptr);
+        continue;
+      }
+    }  // switch
+  }  // while
+success:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto success;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* bicGetImplantInfoReply::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:BICgRPC.bicGetImplantInfoReply)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // string firmwareVersion = 1;
+  if (this->firmwareversion().size() > 0) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_firmwareversion().data(), static_cast<int>(this->_internal_firmwareversion().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "BICgRPC.bicGetImplantInfoReply.firmwareVersion");
+    target = stream->WriteStringMaybeAliased(
+        1, this->_internal_firmwareversion(), target);
+  }
+
+  // string deviceType = 2;
+  if (this->devicetype().size() > 0) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_devicetype().data(), static_cast<int>(this->_internal_devicetype().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "BICgRPC.bicGetImplantInfoReply.deviceType");
+    target = stream->WriteStringMaybeAliased(
+        2, this->_internal_devicetype(), target);
+  }
+
+  // string deviceId = 3;
+  if (this->deviceid().size() > 0) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_deviceid().data(), static_cast<int>(this->_internal_deviceid().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "BICgRPC.bicGetImplantInfoReply.deviceId");
+    target = stream->WriteStringMaybeAliased(
+        3, this->_internal_deviceid(), target);
+  }
+
+  // repeated .BICgRPC.bicGetImplantInfoReply.bicChannelInfo channelInfoList = 4;
+  for (unsigned int i = 0,
+      n = static_cast<unsigned int>(this->_internal_channelinfolist_size()); i < n; i++) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(4, this->_internal_channelinfolist(i), target, stream);
+  }
+
+  // uint32 channelCount = 5;
+  if (this->channelcount() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(5, this->_internal_channelcount(), target);
+  }
+
+  // uint32 measurementChannelCount = 6;
+  if (this->measurementchannelcount() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(6, this->_internal_measurementchannelcount(), target);
+  }
+
+  // uint32 stimulationChannelCount = 7;
+  if (this->stimulationchannelcount() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(7, this->_internal_stimulationchannelcount(), target);
+  }
+
+  // uint32 samplingRate = 8;
+  if (this->samplingrate() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(8, this->_internal_samplingrate(), target);
+  }
+
+  // string success = 9;
+  if (this->success().size() > 0) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_success().data(), static_cast<int>(this->_internal_success().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "BICgRPC.bicGetImplantInfoReply.success");
+    target = stream->WriteStringMaybeAliased(
+        9, this->_internal_success(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:BICgRPC.bicGetImplantInfoReply)
+  return target;
+}
+
+size_t bicGetImplantInfoReply::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:BICgRPC.bicGetImplantInfoReply)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // repeated .BICgRPC.bicGetImplantInfoReply.bicChannelInfo channelInfoList = 4;
+  total_size += 1UL * this->_internal_channelinfolist_size();
+  for (const auto& msg : this->channelinfolist_) {
+    total_size +=
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
+  }
+
+  // string firmwareVersion = 1;
+  if (this->firmwareversion().size() > 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_firmwareversion());
+  }
+
+  // string deviceType = 2;
+  if (this->devicetype().size() > 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_devicetype());
+  }
+
+  // string deviceId = 3;
+  if (this->deviceid().size() > 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_deviceid());
+  }
+
+  // string success = 9;
+  if (this->success().size() > 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_success());
+  }
+
+  // uint32 channelCount = 5;
+  if (this->channelcount() != 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
+        this->_internal_channelcount());
+  }
+
+  // uint32 measurementChannelCount = 6;
+  if (this->measurementchannelcount() != 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
+        this->_internal_measurementchannelcount());
+  }
+
+  // uint32 stimulationChannelCount = 7;
+  if (this->stimulationchannelcount() != 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
+        this->_internal_stimulationchannelcount());
+  }
+
+  // uint32 samplingRate = 8;
+  if (this->samplingrate() != 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
+        this->_internal_samplingrate());
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
+        _internal_metadata_, total_size, &_cached_size_);
+  }
+  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void bicGetImplantInfoReply::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:BICgRPC.bicGetImplantInfoReply)
+  GOOGLE_DCHECK_NE(&from, this);
+  const bicGetImplantInfoReply* source =
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<bicGetImplantInfoReply>(
+          &from);
+  if (source == nullptr) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:BICgRPC.bicGetImplantInfoReply)
+    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:BICgRPC.bicGetImplantInfoReply)
+    MergeFrom(*source);
+  }
+}
+
+void bicGetImplantInfoReply::MergeFrom(const bicGetImplantInfoReply& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:BICgRPC.bicGetImplantInfoReply)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  channelinfolist_.MergeFrom(from.channelinfolist_);
+  if (from.firmwareversion().size() > 0) {
+    _internal_set_firmwareversion(from._internal_firmwareversion());
+  }
+  if (from.devicetype().size() > 0) {
+    _internal_set_devicetype(from._internal_devicetype());
+  }
+  if (from.deviceid().size() > 0) {
+    _internal_set_deviceid(from._internal_deviceid());
+  }
+  if (from.success().size() > 0) {
+    _internal_set_success(from._internal_success());
+  }
+  if (from.channelcount() != 0) {
+    _internal_set_channelcount(from._internal_channelcount());
+  }
+  if (from.measurementchannelcount() != 0) {
+    _internal_set_measurementchannelcount(from._internal_measurementchannelcount());
+  }
+  if (from.stimulationchannelcount() != 0) {
+    _internal_set_stimulationchannelcount(from._internal_stimulationchannelcount());
+  }
+  if (from.samplingrate() != 0) {
+    _internal_set_samplingrate(from._internal_samplingrate());
+  }
+}
+
+void bicGetImplantInfoReply::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:BICgRPC.bicGetImplantInfoReply)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void bicGetImplantInfoReply::CopyFrom(const bicGetImplantInfoReply& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:BICgRPC.bicGetImplantInfoReply)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool bicGetImplantInfoReply::IsInitialized() const {
+  return true;
+}
+
+void bicGetImplantInfoReply::InternalSwap(bicGetImplantInfoReply* other) {
+  using std::swap;
+  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
+  channelinfolist_.InternalSwap(&other->channelinfolist_);
+  firmwareversion_.Swap(&other->firmwareversion_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  devicetype_.Swap(&other->devicetype_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  deviceid_.Swap(&other->deviceid_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  success_.Swap(&other->success_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(bicGetImplantInfoReply, samplingrate_)
+      + sizeof(bicGetImplantInfoReply::samplingrate_)
+      - PROTOBUF_FIELD_OFFSET(bicGetImplantInfoReply, channelcount_)>(
+          reinterpret_cast<char*>(&channelcount_),
+          reinterpret_cast<char*>(&other->channelcount_));
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata bicGetImplantInfoReply::GetMetadata() const {
+  return GetMetadataStatic();
+}
+
+
+// ===================================================================
+
+void bicGetImpedanceRequest::InitAsDefaultInstance() {
+}
+class bicGetImpedanceRequest::_Internal {
+ public:
+};
+
+bicGetImpedanceRequest::bicGetImpedanceRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+  SharedCtor();
+  RegisterArenaDtor(arena);
+  // @@protoc_insertion_point(arena_constructor:BICgRPC.bicGetImpedanceRequest)
+}
+bicGetImpedanceRequest::bicGetImpedanceRequest(const bicGetImpedanceRequest& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  channel_ = from.channel_;
+  // @@protoc_insertion_point(copy_constructor:BICgRPC.bicGetImpedanceRequest)
+}
+
+void bicGetImpedanceRequest::SharedCtor() {
+  channel_ = 0u;
+}
+
+bicGetImpedanceRequest::~bicGetImpedanceRequest() {
+  // @@protoc_insertion_point(destructor:BICgRPC.bicGetImpedanceRequest)
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+void bicGetImpedanceRequest::SharedDtor() {
+  GOOGLE_DCHECK(GetArena() == nullptr);
+}
+
+void bicGetImpedanceRequest::ArenaDtor(void* object) {
+  bicGetImpedanceRequest* _this = reinterpret_cast< bicGetImpedanceRequest* >(object);
+  (void)_this;
+}
+void bicGetImpedanceRequest::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void bicGetImpedanceRequest::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+const bicGetImpedanceRequest& bicGetImpedanceRequest::default_instance() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_bicGetImpedanceRequest_BICgRPC_2eproto.base);
+  return *internal_default_instance();
+}
+
+
+void bicGetImpedanceRequest::Clear() {
+// @@protoc_insertion_point(message_clear_start:BICgRPC.bicGetImpedanceRequest)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  channel_ = 0u;
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* bicGetImpedanceRequest::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
+    switch (tag >> 3) {
+      // uint32 channel = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 8)) {
+          channel_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      default: {
+      handle_unusual:
+        if ((tag & 7) == 4 || tag == 0) {
+          ctx->SetLastTag(tag);
+          goto success;
+        }
+        ptr = UnknownFieldParse(tag,
+            _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+            ptr, ctx);
+        CHK_(ptr != nullptr);
+        continue;
+      }
+    }  // switch
+  }  // while
+success:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto success;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* bicGetImpedanceRequest::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:BICgRPC.bicGetImpedanceRequest)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // uint32 channel = 1;
+  if (this->channel() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(1, this->_internal_channel(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:BICgRPC.bicGetImpedanceRequest)
+  return target;
+}
+
+size_t bicGetImpedanceRequest::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:BICgRPC.bicGetImpedanceRequest)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // uint32 channel = 1;
+  if (this->channel() != 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
+        this->_internal_channel());
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
+        _internal_metadata_, total_size, &_cached_size_);
+  }
+  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void bicGetImpedanceRequest::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:BICgRPC.bicGetImpedanceRequest)
+  GOOGLE_DCHECK_NE(&from, this);
+  const bicGetImpedanceRequest* source =
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<bicGetImpedanceRequest>(
+          &from);
+  if (source == nullptr) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:BICgRPC.bicGetImpedanceRequest)
+    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:BICgRPC.bicGetImpedanceRequest)
+    MergeFrom(*source);
+  }
+}
+
+void bicGetImpedanceRequest::MergeFrom(const bicGetImpedanceRequest& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:BICgRPC.bicGetImpedanceRequest)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from.channel() != 0) {
+    _internal_set_channel(from._internal_channel());
+  }
+}
+
+void bicGetImpedanceRequest::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:BICgRPC.bicGetImpedanceRequest)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void bicGetImpedanceRequest::CopyFrom(const bicGetImpedanceRequest& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:BICgRPC.bicGetImpedanceRequest)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool bicGetImpedanceRequest::IsInitialized() const {
+  return true;
+}
+
+void bicGetImpedanceRequest::InternalSwap(bicGetImpedanceRequest* other) {
+  using std::swap;
+  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
+  swap(channel_, other->channel_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata bicGetImpedanceRequest::GetMetadata() const {
+  return GetMetadataStatic();
+}
+
+
+// ===================================================================
+
+void bicGetImpedanceReply::InitAsDefaultInstance() {
+}
+class bicGetImpedanceReply::_Internal {
+ public:
+};
+
+bicGetImpedanceReply::bicGetImpedanceReply(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+  SharedCtor();
+  RegisterArenaDtor(arena);
+  // @@protoc_insertion_point(arena_constructor:BICgRPC.bicGetImpedanceReply)
+}
+bicGetImpedanceReply::bicGetImpedanceReply(const bicGetImpedanceReply& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  units_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_units().empty()) {
+    units_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from._internal_units(),
+      GetArena());
+  }
+  success_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_success().empty()) {
+    success_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from._internal_success(),
+      GetArena());
+  }
+  channelimpedance_ = from.channelimpedance_;
+  // @@protoc_insertion_point(copy_constructor:BICgRPC.bicGetImpedanceReply)
+}
+
+void bicGetImpedanceReply::SharedCtor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_bicGetImpedanceReply_BICgRPC_2eproto.base);
+  units_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  success_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  channelimpedance_ = 0;
+}
+
+bicGetImpedanceReply::~bicGetImpedanceReply() {
+  // @@protoc_insertion_point(destructor:BICgRPC.bicGetImpedanceReply)
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+void bicGetImpedanceReply::SharedDtor() {
+  GOOGLE_DCHECK(GetArena() == nullptr);
+  units_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  success_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+
+void bicGetImpedanceReply::ArenaDtor(void* object) {
+  bicGetImpedanceReply* _this = reinterpret_cast< bicGetImpedanceReply* >(object);
+  (void)_this;
+}
+void bicGetImpedanceReply::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void bicGetImpedanceReply::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+const bicGetImpedanceReply& bicGetImpedanceReply::default_instance() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_bicGetImpedanceReply_BICgRPC_2eproto.base);
+  return *internal_default_instance();
+}
+
+
+void bicGetImpedanceReply::Clear() {
+// @@protoc_insertion_point(message_clear_start:BICgRPC.bicGetImpedanceReply)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  units_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  success_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  channelimpedance_ = 0;
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* bicGetImpedanceReply::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
+    switch (tag >> 3) {
+      // double channelImpedance = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 9)) {
+          channelimpedance_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<double>(ptr);
+          ptr += sizeof(double);
+        } else goto handle_unusual;
+        continue;
+      // string units = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
+          auto str = _internal_mutable_units();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "BICgRPC.bicGetImpedanceReply.units"));
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // string success = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 26)) {
+          auto str = _internal_mutable_success();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "BICgRPC.bicGetImpedanceReply.success"));
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      default: {
+      handle_unusual:
+        if ((tag & 7) == 4 || tag == 0) {
+          ctx->SetLastTag(tag);
+          goto success;
+        }
+        ptr = UnknownFieldParse(tag,
+            _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+            ptr, ctx);
+        CHK_(ptr != nullptr);
+        continue;
+      }
+    }  // switch
+  }  // while
+success:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto success;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* bicGetImpedanceReply::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:BICgRPC.bicGetImpedanceReply)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // double channelImpedance = 1;
+  if (!(this->channelimpedance() <= 0 && this->channelimpedance() >= 0)) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteDoubleToArray(1, this->_internal_channelimpedance(), target);
+  }
+
+  // string units = 2;
+  if (this->units().size() > 0) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_units().data(), static_cast<int>(this->_internal_units().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "BICgRPC.bicGetImpedanceReply.units");
+    target = stream->WriteStringMaybeAliased(
+        2, this->_internal_units(), target);
+  }
+
+  // string success = 3;
+  if (this->success().size() > 0) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_success().data(), static_cast<int>(this->_internal_success().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "BICgRPC.bicGetImpedanceReply.success");
+    target = stream->WriteStringMaybeAliased(
+        3, this->_internal_success(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:BICgRPC.bicGetImpedanceReply)
+  return target;
+}
+
+size_t bicGetImpedanceReply::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:BICgRPC.bicGetImpedanceReply)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // string units = 2;
+  if (this->units().size() > 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_units());
+  }
+
+  // string success = 3;
+  if (this->success().size() > 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_success());
+  }
+
+  // double channelImpedance = 1;
+  if (!(this->channelimpedance() <= 0 && this->channelimpedance() >= 0)) {
+    total_size += 1 + 8;
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
+        _internal_metadata_, total_size, &_cached_size_);
+  }
+  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void bicGetImpedanceReply::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:BICgRPC.bicGetImpedanceReply)
+  GOOGLE_DCHECK_NE(&from, this);
+  const bicGetImpedanceReply* source =
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<bicGetImpedanceReply>(
+          &from);
+  if (source == nullptr) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:BICgRPC.bicGetImpedanceReply)
+    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:BICgRPC.bicGetImpedanceReply)
+    MergeFrom(*source);
+  }
+}
+
+void bicGetImpedanceReply::MergeFrom(const bicGetImpedanceReply& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:BICgRPC.bicGetImpedanceReply)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from.units().size() > 0) {
+    _internal_set_units(from._internal_units());
+  }
+  if (from.success().size() > 0) {
+    _internal_set_success(from._internal_success());
+  }
+  if (!(from.channelimpedance() <= 0 && from.channelimpedance() >= 0)) {
+    _internal_set_channelimpedance(from._internal_channelimpedance());
+  }
+}
+
+void bicGetImpedanceReply::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:BICgRPC.bicGetImpedanceReply)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void bicGetImpedanceReply::CopyFrom(const bicGetImpedanceReply& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:BICgRPC.bicGetImpedanceReply)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool bicGetImpedanceReply::IsInitialized() const {
+  return true;
+}
+
+void bicGetImpedanceReply::InternalSwap(bicGetImpedanceReply* other) {
+  using std::swap;
+  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
+  units_.Swap(&other->units_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  success_.Swap(&other->success_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  swap(channelimpedance_, other->channelimpedance_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata bicGetImpedanceReply::GetMetadata() const {
+  return GetMetadataStatic();
+}
+
+
+// ===================================================================
+
+void bicGetTemperatureReply::InitAsDefaultInstance() {
+}
+class bicGetTemperatureReply::_Internal {
+ public:
+};
+
+bicGetTemperatureReply::bicGetTemperatureReply(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+  SharedCtor();
+  RegisterArenaDtor(arena);
+  // @@protoc_insertion_point(arena_constructor:BICgRPC.bicGetTemperatureReply)
+}
+bicGetTemperatureReply::bicGetTemperatureReply(const bicGetTemperatureReply& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  units_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_units().empty()) {
+    units_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from._internal_units(),
+      GetArena());
+  }
+  success_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_success().empty()) {
+    success_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from._internal_success(),
+      GetArena());
+  }
+  temperature_ = from.temperature_;
+  // @@protoc_insertion_point(copy_constructor:BICgRPC.bicGetTemperatureReply)
+}
+
+void bicGetTemperatureReply::SharedCtor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_bicGetTemperatureReply_BICgRPC_2eproto.base);
+  units_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  success_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  temperature_ = 0;
+}
+
+bicGetTemperatureReply::~bicGetTemperatureReply() {
+  // @@protoc_insertion_point(destructor:BICgRPC.bicGetTemperatureReply)
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+void bicGetTemperatureReply::SharedDtor() {
+  GOOGLE_DCHECK(GetArena() == nullptr);
+  units_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  success_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+
+void bicGetTemperatureReply::ArenaDtor(void* object) {
+  bicGetTemperatureReply* _this = reinterpret_cast< bicGetTemperatureReply* >(object);
+  (void)_this;
+}
+void bicGetTemperatureReply::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void bicGetTemperatureReply::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+const bicGetTemperatureReply& bicGetTemperatureReply::default_instance() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_bicGetTemperatureReply_BICgRPC_2eproto.base);
+  return *internal_default_instance();
+}
+
+
+void bicGetTemperatureReply::Clear() {
+// @@protoc_insertion_point(message_clear_start:BICgRPC.bicGetTemperatureReply)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  units_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  success_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  temperature_ = 0;
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* bicGetTemperatureReply::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
+    switch (tag >> 3) {
+      // double temperature = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 9)) {
+          temperature_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<double>(ptr);
+          ptr += sizeof(double);
+        } else goto handle_unusual;
+        continue;
+      // string units = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
+          auto str = _internal_mutable_units();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "BICgRPC.bicGetTemperatureReply.units"));
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // string success = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 26)) {
+          auto str = _internal_mutable_success();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "BICgRPC.bicGetTemperatureReply.success"));
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      default: {
+      handle_unusual:
+        if ((tag & 7) == 4 || tag == 0) {
+          ctx->SetLastTag(tag);
+          goto success;
+        }
+        ptr = UnknownFieldParse(tag,
+            _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+            ptr, ctx);
+        CHK_(ptr != nullptr);
+        continue;
+      }
+    }  // switch
+  }  // while
+success:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto success;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* bicGetTemperatureReply::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:BICgRPC.bicGetTemperatureReply)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // double temperature = 1;
+  if (!(this->temperature() <= 0 && this->temperature() >= 0)) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteDoubleToArray(1, this->_internal_temperature(), target);
+  }
+
+  // string units = 2;
+  if (this->units().size() > 0) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_units().data(), static_cast<int>(this->_internal_units().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "BICgRPC.bicGetTemperatureReply.units");
+    target = stream->WriteStringMaybeAliased(
+        2, this->_internal_units(), target);
+  }
+
+  // string success = 3;
+  if (this->success().size() > 0) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_success().data(), static_cast<int>(this->_internal_success().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "BICgRPC.bicGetTemperatureReply.success");
+    target = stream->WriteStringMaybeAliased(
+        3, this->_internal_success(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:BICgRPC.bicGetTemperatureReply)
+  return target;
+}
+
+size_t bicGetTemperatureReply::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:BICgRPC.bicGetTemperatureReply)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // string units = 2;
+  if (this->units().size() > 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_units());
+  }
+
+  // string success = 3;
+  if (this->success().size() > 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_success());
+  }
+
+  // double temperature = 1;
+  if (!(this->temperature() <= 0 && this->temperature() >= 0)) {
+    total_size += 1 + 8;
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
+        _internal_metadata_, total_size, &_cached_size_);
+  }
+  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void bicGetTemperatureReply::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:BICgRPC.bicGetTemperatureReply)
+  GOOGLE_DCHECK_NE(&from, this);
+  const bicGetTemperatureReply* source =
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<bicGetTemperatureReply>(
+          &from);
+  if (source == nullptr) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:BICgRPC.bicGetTemperatureReply)
+    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:BICgRPC.bicGetTemperatureReply)
+    MergeFrom(*source);
+  }
+}
+
+void bicGetTemperatureReply::MergeFrom(const bicGetTemperatureReply& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:BICgRPC.bicGetTemperatureReply)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from.units().size() > 0) {
+    _internal_set_units(from._internal_units());
+  }
+  if (from.success().size() > 0) {
+    _internal_set_success(from._internal_success());
+  }
+  if (!(from.temperature() <= 0 && from.temperature() >= 0)) {
+    _internal_set_temperature(from._internal_temperature());
+  }
+}
+
+void bicGetTemperatureReply::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:BICgRPC.bicGetTemperatureReply)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void bicGetTemperatureReply::CopyFrom(const bicGetTemperatureReply& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:BICgRPC.bicGetTemperatureReply)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool bicGetTemperatureReply::IsInitialized() const {
+  return true;
+}
+
+void bicGetTemperatureReply::InternalSwap(bicGetTemperatureReply* other) {
+  using std::swap;
+  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
+  units_.Swap(&other->units_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  success_.Swap(&other->success_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  swap(temperature_, other->temperature_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata bicGetTemperatureReply::GetMetadata() const {
+  return GetMetadataStatic();
+}
+
+
+// ===================================================================
+
+void bicGetHumidityReply::InitAsDefaultInstance() {
+}
+class bicGetHumidityReply::_Internal {
+ public:
+};
+
+bicGetHumidityReply::bicGetHumidityReply(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+  SharedCtor();
+  RegisterArenaDtor(arena);
+  // @@protoc_insertion_point(arena_constructor:BICgRPC.bicGetHumidityReply)
+}
+bicGetHumidityReply::bicGetHumidityReply(const bicGetHumidityReply& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  units_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_units().empty()) {
+    units_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from._internal_units(),
+      GetArena());
+  }
+  success_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_success().empty()) {
+    success_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from._internal_success(),
+      GetArena());
+  }
+  humidity_ = from.humidity_;
+  // @@protoc_insertion_point(copy_constructor:BICgRPC.bicGetHumidityReply)
+}
+
+void bicGetHumidityReply::SharedCtor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_bicGetHumidityReply_BICgRPC_2eproto.base);
+  units_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  success_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  humidity_ = 0;
+}
+
+bicGetHumidityReply::~bicGetHumidityReply() {
+  // @@protoc_insertion_point(destructor:BICgRPC.bicGetHumidityReply)
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+void bicGetHumidityReply::SharedDtor() {
+  GOOGLE_DCHECK(GetArena() == nullptr);
+  units_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  success_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+
+void bicGetHumidityReply::ArenaDtor(void* object) {
+  bicGetHumidityReply* _this = reinterpret_cast< bicGetHumidityReply* >(object);
+  (void)_this;
+}
+void bicGetHumidityReply::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void bicGetHumidityReply::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+const bicGetHumidityReply& bicGetHumidityReply::default_instance() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_bicGetHumidityReply_BICgRPC_2eproto.base);
+  return *internal_default_instance();
+}
+
+
+void bicGetHumidityReply::Clear() {
+// @@protoc_insertion_point(message_clear_start:BICgRPC.bicGetHumidityReply)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  units_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  success_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  humidity_ = 0;
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* bicGetHumidityReply::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
+    switch (tag >> 3) {
+      // double humidity = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 9)) {
+          humidity_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<double>(ptr);
+          ptr += sizeof(double);
+        } else goto handle_unusual;
+        continue;
+      // string units = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
+          auto str = _internal_mutable_units();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "BICgRPC.bicGetHumidityReply.units"));
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // string success = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 26)) {
+          auto str = _internal_mutable_success();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "BICgRPC.bicGetHumidityReply.success"));
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      default: {
+      handle_unusual:
+        if ((tag & 7) == 4 || tag == 0) {
+          ctx->SetLastTag(tag);
+          goto success;
+        }
+        ptr = UnknownFieldParse(tag,
+            _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+            ptr, ctx);
+        CHK_(ptr != nullptr);
+        continue;
+      }
+    }  // switch
+  }  // while
+success:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto success;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* bicGetHumidityReply::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:BICgRPC.bicGetHumidityReply)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // double humidity = 1;
+  if (!(this->humidity() <= 0 && this->humidity() >= 0)) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteDoubleToArray(1, this->_internal_humidity(), target);
+  }
+
+  // string units = 2;
+  if (this->units().size() > 0) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_units().data(), static_cast<int>(this->_internal_units().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "BICgRPC.bicGetHumidityReply.units");
+    target = stream->WriteStringMaybeAliased(
+        2, this->_internal_units(), target);
+  }
+
+  // string success = 3;
+  if (this->success().size() > 0) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_success().data(), static_cast<int>(this->_internal_success().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "BICgRPC.bicGetHumidityReply.success");
+    target = stream->WriteStringMaybeAliased(
+        3, this->_internal_success(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:BICgRPC.bicGetHumidityReply)
+  return target;
+}
+
+size_t bicGetHumidityReply::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:BICgRPC.bicGetHumidityReply)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // string units = 2;
+  if (this->units().size() > 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_units());
+  }
+
+  // string success = 3;
+  if (this->success().size() > 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_success());
+  }
+
+  // double humidity = 1;
+  if (!(this->humidity() <= 0 && this->humidity() >= 0)) {
+    total_size += 1 + 8;
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
+        _internal_metadata_, total_size, &_cached_size_);
+  }
+  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void bicGetHumidityReply::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:BICgRPC.bicGetHumidityReply)
+  GOOGLE_DCHECK_NE(&from, this);
+  const bicGetHumidityReply* source =
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<bicGetHumidityReply>(
+          &from);
+  if (source == nullptr) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:BICgRPC.bicGetHumidityReply)
+    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:BICgRPC.bicGetHumidityReply)
+    MergeFrom(*source);
+  }
+}
+
+void bicGetHumidityReply::MergeFrom(const bicGetHumidityReply& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:BICgRPC.bicGetHumidityReply)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from.units().size() > 0) {
+    _internal_set_units(from._internal_units());
+  }
+  if (from.success().size() > 0) {
+    _internal_set_success(from._internal_success());
+  }
+  if (!(from.humidity() <= 0 && from.humidity() >= 0)) {
+    _internal_set_humidity(from._internal_humidity());
+  }
+}
+
+void bicGetHumidityReply::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:BICgRPC.bicGetHumidityReply)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void bicGetHumidityReply::CopyFrom(const bicGetHumidityReply& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:BICgRPC.bicGetHumidityReply)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool bicGetHumidityReply::IsInitialized() const {
+  return true;
+}
+
+void bicGetHumidityReply::InternalSwap(bicGetHumidityReply* other) {
+  using std::swap;
+  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
+  units_.Swap(&other->units_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  success_.Swap(&other->success_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  swap(humidity_, other->humidity_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata bicGetHumidityReply::GetMetadata() const {
+  return GetMetadataStatic();
+}
+
+
+// ===================================================================
+
+void bicSetSensingEnableRequest::InitAsDefaultInstance() {
+}
+class bicSetSensingEnableRequest::_Internal {
+ public:
+};
+
+bicSetSensingEnableRequest::bicSetSensingEnableRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena),
+  refchannels_(arena) {
+  SharedCtor();
+  RegisterArenaDtor(arena);
+  // @@protoc_insertion_point(arena_constructor:BICgRPC.bicSetSensingEnableRequest)
+}
+bicSetSensingEnableRequest::bicSetSensingEnableRequest(const bicSetSensingEnableRequest& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message(),
+      refchannels_(from.refchannels_) {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  enablesensing_ = from.enablesensing_;
+  // @@protoc_insertion_point(copy_constructor:BICgRPC.bicSetSensingEnableRequest)
+}
+
+void bicSetSensingEnableRequest::SharedCtor() {
+  enablesensing_ = false;
+}
+
+bicSetSensingEnableRequest::~bicSetSensingEnableRequest() {
+  // @@protoc_insertion_point(destructor:BICgRPC.bicSetSensingEnableRequest)
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+void bicSetSensingEnableRequest::SharedDtor() {
+  GOOGLE_DCHECK(GetArena() == nullptr);
+}
+
+void bicSetSensingEnableRequest::ArenaDtor(void* object) {
+  bicSetSensingEnableRequest* _this = reinterpret_cast< bicSetSensingEnableRequest* >(object);
+  (void)_this;
+}
+void bicSetSensingEnableRequest::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void bicSetSensingEnableRequest::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+const bicSetSensingEnableRequest& bicSetSensingEnableRequest::default_instance() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_bicSetSensingEnableRequest_BICgRPC_2eproto.base);
+  return *internal_default_instance();
+}
+
+
+void bicSetSensingEnableRequest::Clear() {
+// @@protoc_insertion_point(message_clear_start:BICgRPC.bicSetSensingEnableRequest)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  refchannels_.Clear();
+  enablesensing_ = false;
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* bicSetSensingEnableRequest::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
+    switch (tag >> 3) {
+      // bool enableSensing = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 8)) {
+          enablesensing_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // repeated uint32 refChannels = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::PackedUInt32Parser(_internal_mutable_refchannels(), ptr, ctx);
+          CHK_(ptr);
+        } else if (static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 16) {
+          _internal_add_refchannels(::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr));
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      default: {
+      handle_unusual:
+        if ((tag & 7) == 4 || tag == 0) {
+          ctx->SetLastTag(tag);
+          goto success;
+        }
+        ptr = UnknownFieldParse(tag,
+            _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+            ptr, ctx);
+        CHK_(ptr != nullptr);
+        continue;
+      }
+    }  // switch
+  }  // while
+success:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto success;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* bicSetSensingEnableRequest::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:BICgRPC.bicSetSensingEnableRequest)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // bool enableSensing = 1;
+  if (this->enablesensing() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteBoolToArray(1, this->_internal_enablesensing(), target);
+  }
+
+  // repeated uint32 refChannels = 2;
+  {
+    int byte_size = _refchannels_cached_byte_size_.load(std::memory_order_relaxed);
+    if (byte_size > 0) {
+      target = stream->WriteUInt32Packed(
+          2, _internal_refchannels(), byte_size, target);
+    }
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:BICgRPC.bicSetSensingEnableRequest)
+  return target;
+}
+
+size_t bicSetSensingEnableRequest::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:BICgRPC.bicSetSensingEnableRequest)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // repeated uint32 refChannels = 2;
+  {
+    size_t data_size = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      UInt32Size(this->refchannels_);
+    if (data_size > 0) {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
+            static_cast<::PROTOBUF_NAMESPACE_ID::int32>(data_size));
+    }
+    int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(data_size);
+    _refchannels_cached_byte_size_.store(cached_size,
+                                    std::memory_order_relaxed);
+    total_size += data_size;
+  }
+
+  // bool enableSensing = 1;
+  if (this->enablesensing() != 0) {
+    total_size += 1 + 1;
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
+        _internal_metadata_, total_size, &_cached_size_);
+  }
+  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void bicSetSensingEnableRequest::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:BICgRPC.bicSetSensingEnableRequest)
+  GOOGLE_DCHECK_NE(&from, this);
+  const bicSetSensingEnableRequest* source =
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<bicSetSensingEnableRequest>(
+          &from);
+  if (source == nullptr) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:BICgRPC.bicSetSensingEnableRequest)
+    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:BICgRPC.bicSetSensingEnableRequest)
+    MergeFrom(*source);
+  }
+}
+
+void bicSetSensingEnableRequest::MergeFrom(const bicSetSensingEnableRequest& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:BICgRPC.bicSetSensingEnableRequest)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  refchannels_.MergeFrom(from.refchannels_);
+  if (from.enablesensing() != 0) {
+    _internal_set_enablesensing(from._internal_enablesensing());
+  }
+}
+
+void bicSetSensingEnableRequest::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:BICgRPC.bicSetSensingEnableRequest)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void bicSetSensingEnableRequest::CopyFrom(const bicSetSensingEnableRequest& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:BICgRPC.bicSetSensingEnableRequest)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool bicSetSensingEnableRequest::IsInitialized() const {
+  return true;
+}
+
+void bicSetSensingEnableRequest::InternalSwap(bicSetSensingEnableRequest* other) {
+  using std::swap;
+  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
+  refchannels_.InternalSwap(&other->refchannels_);
+  swap(enablesensing_, other->enablesensing_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata bicSetSensingEnableRequest::GetMetadata() const {
+  return GetMetadataStatic();
+}
+
+
+// ===================================================================
+
+void bicSetImplantPowerRequest::InitAsDefaultInstance() {
+}
+class bicSetImplantPowerRequest::_Internal {
+ public:
+};
+
+bicSetImplantPowerRequest::bicSetImplantPowerRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+  SharedCtor();
+  RegisterArenaDtor(arena);
+  // @@protoc_insertion_point(arena_constructor:BICgRPC.bicSetImplantPowerRequest)
+}
+bicSetImplantPowerRequest::bicSetImplantPowerRequest(const bicSetImplantPowerRequest& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  powerenabled_ = from.powerenabled_;
+  // @@protoc_insertion_point(copy_constructor:BICgRPC.bicSetImplantPowerRequest)
+}
+
+void bicSetImplantPowerRequest::SharedCtor() {
+  powerenabled_ = false;
+}
+
+bicSetImplantPowerRequest::~bicSetImplantPowerRequest() {
+  // @@protoc_insertion_point(destructor:BICgRPC.bicSetImplantPowerRequest)
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+void bicSetImplantPowerRequest::SharedDtor() {
+  GOOGLE_DCHECK(GetArena() == nullptr);
+}
+
+void bicSetImplantPowerRequest::ArenaDtor(void* object) {
+  bicSetImplantPowerRequest* _this = reinterpret_cast< bicSetImplantPowerRequest* >(object);
+  (void)_this;
+}
+void bicSetImplantPowerRequest::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void bicSetImplantPowerRequest::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+const bicSetImplantPowerRequest& bicSetImplantPowerRequest::default_instance() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_bicSetImplantPowerRequest_BICgRPC_2eproto.base);
+  return *internal_default_instance();
+}
+
+
+void bicSetImplantPowerRequest::Clear() {
+// @@protoc_insertion_point(message_clear_start:BICgRPC.bicSetImplantPowerRequest)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  powerenabled_ = false;
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* bicSetImplantPowerRequest::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
+    switch (tag >> 3) {
+      // bool powerEnabled = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 8)) {
+          powerenabled_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      default: {
+      handle_unusual:
+        if ((tag & 7) == 4 || tag == 0) {
+          ctx->SetLastTag(tag);
+          goto success;
+        }
+        ptr = UnknownFieldParse(tag,
+            _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+            ptr, ctx);
+        CHK_(ptr != nullptr);
+        continue;
+      }
+    }  // switch
+  }  // while
+success:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto success;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* bicSetImplantPowerRequest::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:BICgRPC.bicSetImplantPowerRequest)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // bool powerEnabled = 1;
+  if (this->powerenabled() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteBoolToArray(1, this->_internal_powerenabled(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:BICgRPC.bicSetImplantPowerRequest)
+  return target;
+}
+
+size_t bicSetImplantPowerRequest::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:BICgRPC.bicSetImplantPowerRequest)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // bool powerEnabled = 1;
+  if (this->powerenabled() != 0) {
+    total_size += 1 + 1;
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
+        _internal_metadata_, total_size, &_cached_size_);
+  }
+  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void bicSetImplantPowerRequest::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:BICgRPC.bicSetImplantPowerRequest)
+  GOOGLE_DCHECK_NE(&from, this);
+  const bicSetImplantPowerRequest* source =
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<bicSetImplantPowerRequest>(
+          &from);
+  if (source == nullptr) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:BICgRPC.bicSetImplantPowerRequest)
+    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:BICgRPC.bicSetImplantPowerRequest)
+    MergeFrom(*source);
+  }
+}
+
+void bicSetImplantPowerRequest::MergeFrom(const bicSetImplantPowerRequest& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:BICgRPC.bicSetImplantPowerRequest)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from.powerenabled() != 0) {
+    _internal_set_powerenabled(from._internal_powerenabled());
+  }
+}
+
+void bicSetImplantPowerRequest::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:BICgRPC.bicSetImplantPowerRequest)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void bicSetImplantPowerRequest::CopyFrom(const bicSetImplantPowerRequest& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:BICgRPC.bicSetImplantPowerRequest)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool bicSetImplantPowerRequest::IsInitialized() const {
+  return true;
+}
+
+void bicSetImplantPowerRequest::InternalSwap(bicSetImplantPowerRequest* other) {
+  using std::swap;
+  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
+  swap(powerenabled_, other->powerenabled_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata bicSetImplantPowerRequest::GetMetadata() const {
+  return GetMetadataStatic();
+}
+
+
+// ===================================================================
+
+void bicStartStimulationRequest::InitAsDefaultInstance() {
+}
+class bicStartStimulationRequest::_Internal {
+ public:
+};
+
+bicStartStimulationRequest::bicStartStimulationRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+  SharedCtor();
+  RegisterArenaDtor(arena);
+  // @@protoc_insertion_point(arena_constructor:BICgRPC.bicStartStimulationRequest)
+}
+bicStartStimulationRequest::bicStartStimulationRequest(const bicStartStimulationRequest& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  // @@protoc_insertion_point(copy_constructor:BICgRPC.bicStartStimulationRequest)
+}
+
+void bicStartStimulationRequest::SharedCtor() {
+}
+
+bicStartStimulationRequest::~bicStartStimulationRequest() {
+  // @@protoc_insertion_point(destructor:BICgRPC.bicStartStimulationRequest)
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+void bicStartStimulationRequest::SharedDtor() {
+  GOOGLE_DCHECK(GetArena() == nullptr);
+}
+
+void bicStartStimulationRequest::ArenaDtor(void* object) {
+  bicStartStimulationRequest* _this = reinterpret_cast< bicStartStimulationRequest* >(object);
+  (void)_this;
+}
+void bicStartStimulationRequest::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void bicStartStimulationRequest::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+const bicStartStimulationRequest& bicStartStimulationRequest::default_instance() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_bicStartStimulationRequest_BICgRPC_2eproto.base);
+  return *internal_default_instance();
+}
+
+
+void bicStartStimulationRequest::Clear() {
+// @@protoc_insertion_point(message_clear_start:BICgRPC.bicStartStimulationRequest)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* bicStartStimulationRequest::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
+        if ((tag & 7) == 4 || tag == 0) {
+          ctx->SetLastTag(tag);
+          goto success;
+        }
+        ptr = UnknownFieldParse(tag,
+            _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+            ptr, ctx);
+        CHK_(ptr != nullptr);
+        continue;
+  }  // while
+success:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto success;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* bicStartStimulationRequest::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:BICgRPC.bicStartStimulationRequest)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:BICgRPC.bicStartStimulationRequest)
+  return target;
+}
+
+size_t bicStartStimulationRequest::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:BICgRPC.bicStartStimulationRequest)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
+        _internal_metadata_, total_size, &_cached_size_);
+  }
+  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void bicStartStimulationRequest::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:BICgRPC.bicStartStimulationRequest)
+  GOOGLE_DCHECK_NE(&from, this);
+  const bicStartStimulationRequest* source =
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<bicStartStimulationRequest>(
+          &from);
+  if (source == nullptr) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:BICgRPC.bicStartStimulationRequest)
+    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:BICgRPC.bicStartStimulationRequest)
+    MergeFrom(*source);
+  }
+}
+
+void bicStartStimulationRequest::MergeFrom(const bicStartStimulationRequest& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:BICgRPC.bicStartStimulationRequest)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+}
+
+void bicStartStimulationRequest::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:BICgRPC.bicStartStimulationRequest)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void bicStartStimulationRequest::CopyFrom(const bicStartStimulationRequest& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:BICgRPC.bicStartStimulationRequest)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool bicStartStimulationRequest::IsInitialized() const {
+  return true;
+}
+
+void bicStartStimulationRequest::InternalSwap(bicStartStimulationRequest* other) {
+  using std::swap;
+  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata bicStartStimulationRequest::GetMetadata() const {
   return GetMetadataStatic();
 }
 
@@ -528,11 +3703,44 @@ void HelloReply::InternalSwap(HelloReply* other) {
 // @@protoc_insertion_point(namespace_scope)
 }  // namespace BICgRPC
 PROTOBUF_NAMESPACE_OPEN
-template<> PROTOBUF_NOINLINE ::BICgRPC::HelloRequest* Arena::CreateMaybeMessage< ::BICgRPC::HelloRequest >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::BICgRPC::HelloRequest >(arena);
+template<> PROTOBUF_NOINLINE ::BICgRPC::bicNullRequest* Arena::CreateMaybeMessage< ::BICgRPC::bicNullRequest >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::BICgRPC::bicNullRequest >(arena);
 }
-template<> PROTOBUF_NOINLINE ::BICgRPC::HelloReply* Arena::CreateMaybeMessage< ::BICgRPC::HelloReply >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::BICgRPC::HelloReply >(arena);
+template<> PROTOBUF_NOINLINE ::BICgRPC::bicSuccessReply* Arena::CreateMaybeMessage< ::BICgRPC::bicSuccessReply >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::BICgRPC::bicSuccessReply >(arena);
+}
+template<> PROTOBUF_NOINLINE ::BICgRPC::bicInitRequest* Arena::CreateMaybeMessage< ::BICgRPC::bicInitRequest >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::BICgRPC::bicInitRequest >(arena);
+}
+template<> PROTOBUF_NOINLINE ::BICgRPC::bicGetImplantInfoRequest* Arena::CreateMaybeMessage< ::BICgRPC::bicGetImplantInfoRequest >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::BICgRPC::bicGetImplantInfoRequest >(arena);
+}
+template<> PROTOBUF_NOINLINE ::BICgRPC::bicGetImplantInfoReply_bicChannelInfo* Arena::CreateMaybeMessage< ::BICgRPC::bicGetImplantInfoReply_bicChannelInfo >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::BICgRPC::bicGetImplantInfoReply_bicChannelInfo >(arena);
+}
+template<> PROTOBUF_NOINLINE ::BICgRPC::bicGetImplantInfoReply* Arena::CreateMaybeMessage< ::BICgRPC::bicGetImplantInfoReply >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::BICgRPC::bicGetImplantInfoReply >(arena);
+}
+template<> PROTOBUF_NOINLINE ::BICgRPC::bicGetImpedanceRequest* Arena::CreateMaybeMessage< ::BICgRPC::bicGetImpedanceRequest >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::BICgRPC::bicGetImpedanceRequest >(arena);
+}
+template<> PROTOBUF_NOINLINE ::BICgRPC::bicGetImpedanceReply* Arena::CreateMaybeMessage< ::BICgRPC::bicGetImpedanceReply >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::BICgRPC::bicGetImpedanceReply >(arena);
+}
+template<> PROTOBUF_NOINLINE ::BICgRPC::bicGetTemperatureReply* Arena::CreateMaybeMessage< ::BICgRPC::bicGetTemperatureReply >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::BICgRPC::bicGetTemperatureReply >(arena);
+}
+template<> PROTOBUF_NOINLINE ::BICgRPC::bicGetHumidityReply* Arena::CreateMaybeMessage< ::BICgRPC::bicGetHumidityReply >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::BICgRPC::bicGetHumidityReply >(arena);
+}
+template<> PROTOBUF_NOINLINE ::BICgRPC::bicSetSensingEnableRequest* Arena::CreateMaybeMessage< ::BICgRPC::bicSetSensingEnableRequest >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::BICgRPC::bicSetSensingEnableRequest >(arena);
+}
+template<> PROTOBUF_NOINLINE ::BICgRPC::bicSetImplantPowerRequest* Arena::CreateMaybeMessage< ::BICgRPC::bicSetImplantPowerRequest >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::BICgRPC::bicSetImplantPowerRequest >(arena);
+}
+template<> PROTOBUF_NOINLINE ::BICgRPC::bicStartStimulationRequest* Arena::CreateMaybeMessage< ::BICgRPC::bicStartStimulationRequest >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::BICgRPC::bicStartStimulationRequest >(arena);
 }
 PROTOBUF_NAMESPACE_CLOSE
 

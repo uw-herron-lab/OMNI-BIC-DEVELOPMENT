@@ -31,6 +31,7 @@
 #include <google/protobuf/message.h>
 #include <google/protobuf/repeated_field.h>  // IWYU pragma: export
 #include <google/protobuf/extension_set.h>  // IWYU pragma: export
+#include <google/protobuf/generated_enum_reflection.h>
 #include <google/protobuf/unknown_field_set.h>
 // @@protoc_insertion_point(includes)
 #include <google/protobuf/port_def.inc>
@@ -47,7 +48,7 @@ struct TableStruct_BICgRPC_2eproto {
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::AuxiliaryParseTableField aux[]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
-  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[2]
+  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[13]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::FieldMetadata field_metadata[];
   static const ::PROTOBUF_NAMESPACE_ID::internal::SerializationTable serialization_table[];
@@ -55,38 +56,109 @@ struct TableStruct_BICgRPC_2eproto {
 };
 extern const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_BICgRPC_2eproto;
 namespace BICgRPC {
-class HelloReply;
-class HelloReplyDefaultTypeInternal;
-extern HelloReplyDefaultTypeInternal _HelloReply_default_instance_;
-class HelloRequest;
-class HelloRequestDefaultTypeInternal;
-extern HelloRequestDefaultTypeInternal _HelloRequest_default_instance_;
+class bicGetHumidityReply;
+class bicGetHumidityReplyDefaultTypeInternal;
+extern bicGetHumidityReplyDefaultTypeInternal _bicGetHumidityReply_default_instance_;
+class bicGetImpedanceReply;
+class bicGetImpedanceReplyDefaultTypeInternal;
+extern bicGetImpedanceReplyDefaultTypeInternal _bicGetImpedanceReply_default_instance_;
+class bicGetImpedanceRequest;
+class bicGetImpedanceRequestDefaultTypeInternal;
+extern bicGetImpedanceRequestDefaultTypeInternal _bicGetImpedanceRequest_default_instance_;
+class bicGetImplantInfoReply;
+class bicGetImplantInfoReplyDefaultTypeInternal;
+extern bicGetImplantInfoReplyDefaultTypeInternal _bicGetImplantInfoReply_default_instance_;
+class bicGetImplantInfoReply_bicChannelInfo;
+class bicGetImplantInfoReply_bicChannelInfoDefaultTypeInternal;
+extern bicGetImplantInfoReply_bicChannelInfoDefaultTypeInternal _bicGetImplantInfoReply_bicChannelInfo_default_instance_;
+class bicGetImplantInfoRequest;
+class bicGetImplantInfoRequestDefaultTypeInternal;
+extern bicGetImplantInfoRequestDefaultTypeInternal _bicGetImplantInfoRequest_default_instance_;
+class bicGetTemperatureReply;
+class bicGetTemperatureReplyDefaultTypeInternal;
+extern bicGetTemperatureReplyDefaultTypeInternal _bicGetTemperatureReply_default_instance_;
+class bicInitRequest;
+class bicInitRequestDefaultTypeInternal;
+extern bicInitRequestDefaultTypeInternal _bicInitRequest_default_instance_;
+class bicNullRequest;
+class bicNullRequestDefaultTypeInternal;
+extern bicNullRequestDefaultTypeInternal _bicNullRequest_default_instance_;
+class bicSetImplantPowerRequest;
+class bicSetImplantPowerRequestDefaultTypeInternal;
+extern bicSetImplantPowerRequestDefaultTypeInternal _bicSetImplantPowerRequest_default_instance_;
+class bicSetSensingEnableRequest;
+class bicSetSensingEnableRequestDefaultTypeInternal;
+extern bicSetSensingEnableRequestDefaultTypeInternal _bicSetSensingEnableRequest_default_instance_;
+class bicStartStimulationRequest;
+class bicStartStimulationRequestDefaultTypeInternal;
+extern bicStartStimulationRequestDefaultTypeInternal _bicStartStimulationRequest_default_instance_;
+class bicSuccessReply;
+class bicSuccessReplyDefaultTypeInternal;
+extern bicSuccessReplyDefaultTypeInternal _bicSuccessReply_default_instance_;
 }  // namespace BICgRPC
 PROTOBUF_NAMESPACE_OPEN
-template<> ::BICgRPC::HelloReply* Arena::CreateMaybeMessage<::BICgRPC::HelloReply>(Arena*);
-template<> ::BICgRPC::HelloRequest* Arena::CreateMaybeMessage<::BICgRPC::HelloRequest>(Arena*);
+template<> ::BICgRPC::bicGetHumidityReply* Arena::CreateMaybeMessage<::BICgRPC::bicGetHumidityReply>(Arena*);
+template<> ::BICgRPC::bicGetImpedanceReply* Arena::CreateMaybeMessage<::BICgRPC::bicGetImpedanceReply>(Arena*);
+template<> ::BICgRPC::bicGetImpedanceRequest* Arena::CreateMaybeMessage<::BICgRPC::bicGetImpedanceRequest>(Arena*);
+template<> ::BICgRPC::bicGetImplantInfoReply* Arena::CreateMaybeMessage<::BICgRPC::bicGetImplantInfoReply>(Arena*);
+template<> ::BICgRPC::bicGetImplantInfoReply_bicChannelInfo* Arena::CreateMaybeMessage<::BICgRPC::bicGetImplantInfoReply_bicChannelInfo>(Arena*);
+template<> ::BICgRPC::bicGetImplantInfoRequest* Arena::CreateMaybeMessage<::BICgRPC::bicGetImplantInfoRequest>(Arena*);
+template<> ::BICgRPC::bicGetTemperatureReply* Arena::CreateMaybeMessage<::BICgRPC::bicGetTemperatureReply>(Arena*);
+template<> ::BICgRPC::bicInitRequest* Arena::CreateMaybeMessage<::BICgRPC::bicInitRequest>(Arena*);
+template<> ::BICgRPC::bicNullRequest* Arena::CreateMaybeMessage<::BICgRPC::bicNullRequest>(Arena*);
+template<> ::BICgRPC::bicSetImplantPowerRequest* Arena::CreateMaybeMessage<::BICgRPC::bicSetImplantPowerRequest>(Arena*);
+template<> ::BICgRPC::bicSetSensingEnableRequest* Arena::CreateMaybeMessage<::BICgRPC::bicSetSensingEnableRequest>(Arena*);
+template<> ::BICgRPC::bicStartStimulationRequest* Arena::CreateMaybeMessage<::BICgRPC::bicStartStimulationRequest>(Arena*);
+template<> ::BICgRPC::bicSuccessReply* Arena::CreateMaybeMessage<::BICgRPC::bicSuccessReply>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 namespace BICgRPC {
 
+enum bicGetImplantInfoReply_bicChannelInfo_UnitType : int {
+  bicGetImplantInfoReply_bicChannelInfo_UnitType_UT_NO_UNIT = 0,
+  bicGetImplantInfoReply_bicChannelInfo_UnitType_UT_CURRENT = 1,
+  bicGetImplantInfoReply_bicChannelInfo_UnitType_UT_VOLTAGE = 2,
+  bicGetImplantInfoReply_bicChannelInfo_UnitType_UT_COUNT = 3,
+  bicGetImplantInfoReply_bicChannelInfo_UnitType_bicGetImplantInfoReply_bicChannelInfo_UnitType_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::min(),
+  bicGetImplantInfoReply_bicChannelInfo_UnitType_bicGetImplantInfoReply_bicChannelInfo_UnitType_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::max()
+};
+bool bicGetImplantInfoReply_bicChannelInfo_UnitType_IsValid(int value);
+constexpr bicGetImplantInfoReply_bicChannelInfo_UnitType bicGetImplantInfoReply_bicChannelInfo_UnitType_UnitType_MIN = bicGetImplantInfoReply_bicChannelInfo_UnitType_UT_NO_UNIT;
+constexpr bicGetImplantInfoReply_bicChannelInfo_UnitType bicGetImplantInfoReply_bicChannelInfo_UnitType_UnitType_MAX = bicGetImplantInfoReply_bicChannelInfo_UnitType_UT_COUNT;
+constexpr int bicGetImplantInfoReply_bicChannelInfo_UnitType_UnitType_ARRAYSIZE = bicGetImplantInfoReply_bicChannelInfo_UnitType_UnitType_MAX + 1;
+
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* bicGetImplantInfoReply_bicChannelInfo_UnitType_descriptor();
+template<typename T>
+inline const std::string& bicGetImplantInfoReply_bicChannelInfo_UnitType_Name(T enum_t_value) {
+  static_assert(::std::is_same<T, bicGetImplantInfoReply_bicChannelInfo_UnitType>::value ||
+    ::std::is_integral<T>::value,
+    "Incorrect type passed to function bicGetImplantInfoReply_bicChannelInfo_UnitType_Name.");
+  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
+    bicGetImplantInfoReply_bicChannelInfo_UnitType_descriptor(), enum_t_value);
+}
+inline bool bicGetImplantInfoReply_bicChannelInfo_UnitType_Parse(
+    ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, bicGetImplantInfoReply_bicChannelInfo_UnitType* value) {
+  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<bicGetImplantInfoReply_bicChannelInfo_UnitType>(
+    bicGetImplantInfoReply_bicChannelInfo_UnitType_descriptor(), name, value);
+}
 // ===================================================================
 
-class HelloRequest PROTOBUF_FINAL :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:BICgRPC.HelloRequest) */ {
+class bicNullRequest PROTOBUF_FINAL :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:BICgRPC.bicNullRequest) */ {
  public:
-  inline HelloRequest() : HelloRequest(nullptr) {}
-  virtual ~HelloRequest();
+  inline bicNullRequest() : bicNullRequest(nullptr) {}
+  virtual ~bicNullRequest();
 
-  HelloRequest(const HelloRequest& from);
-  HelloRequest(HelloRequest&& from) noexcept
-    : HelloRequest() {
+  bicNullRequest(const bicNullRequest& from);
+  bicNullRequest(bicNullRequest&& from) noexcept
+    : bicNullRequest() {
     *this = ::std::move(from);
   }
 
-  inline HelloRequest& operator=(const HelloRequest& from) {
+  inline bicNullRequest& operator=(const bicNullRequest& from) {
     CopyFrom(from);
     return *this;
   }
-  inline HelloRequest& operator=(HelloRequest&& from) noexcept {
+  inline bicNullRequest& operator=(bicNullRequest&& from) noexcept {
     if (GetArena() == from.GetArena()) {
       if (this != &from) InternalSwap(&from);
     } else {
@@ -104,20 +176,20 @@ class HelloRequest PROTOBUF_FINAL :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return GetMetadataStatic().reflection;
   }
-  static const HelloRequest& default_instance();
+  static const bicNullRequest& default_instance();
 
   static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
-  static inline const HelloRequest* internal_default_instance() {
-    return reinterpret_cast<const HelloRequest*>(
-               &_HelloRequest_default_instance_);
+  static inline const bicNullRequest* internal_default_instance() {
+    return reinterpret_cast<const bicNullRequest*>(
+               &_bicNullRequest_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     0;
 
-  friend void swap(HelloRequest& a, HelloRequest& b) {
+  friend void swap(bicNullRequest& a, bicNullRequest& b) {
     a.Swap(&b);
   }
-  inline void Swap(HelloRequest* other) {
+  inline void Swap(bicNullRequest* other) {
     if (other == this) return;
     if (GetArena() == other->GetArena()) {
       InternalSwap(other);
@@ -125,7 +197,7 @@ class HelloRequest PROTOBUF_FINAL :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(HelloRequest* other) {
+  void UnsafeArenaSwap(bicNullRequest* other) {
     if (other == this) return;
     GOOGLE_DCHECK(GetArena() == other->GetArena());
     InternalSwap(other);
@@ -133,17 +205,17 @@ class HelloRequest PROTOBUF_FINAL :
 
   // implements Message ----------------------------------------------
 
-  inline HelloRequest* New() const final {
-    return CreateMaybeMessage<HelloRequest>(nullptr);
+  inline bicNullRequest* New() const final {
+    return CreateMaybeMessage<bicNullRequest>(nullptr);
   }
 
-  HelloRequest* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
-    return CreateMaybeMessage<HelloRequest>(arena);
+  bicNullRequest* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<bicNullRequest>(arena);
   }
   void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
   void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
-  void CopyFrom(const HelloRequest& from);
-  void MergeFrom(const HelloRequest& from);
+  void CopyFrom(const bicNullRequest& from);
+  void MergeFrom(const bicNullRequest& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -157,13 +229,13 @@ class HelloRequest PROTOBUF_FINAL :
   inline void SharedCtor();
   inline void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(HelloRequest* other);
+  void InternalSwap(bicNullRequest* other);
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "BICgRPC.HelloRequest";
+    return "BICgRPC.bicNullRequest";
   }
   protected:
-  explicit HelloRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  explicit bicNullRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena);
   private:
   static void ArenaDtor(void* object);
   inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
@@ -182,55 +254,35 @@ class HelloRequest PROTOBUF_FINAL :
 
   // accessors -------------------------------------------------------
 
-  enum : int {
-    kNameFieldNumber = 1,
-  };
-  // string name = 1;
-  void clear_name();
-  const std::string& name() const;
-  void set_name(const std::string& value);
-  void set_name(std::string&& value);
-  void set_name(const char* value);
-  void set_name(const char* value, size_t size);
-  std::string* mutable_name();
-  std::string* release_name();
-  void set_allocated_name(std::string* name);
-  private:
-  const std::string& _internal_name() const;
-  void _internal_set_name(const std::string& value);
-  std::string* _internal_mutable_name();
-  public:
-
-  // @@protoc_insertion_point(class_scope:BICgRPC.HelloRequest)
+  // @@protoc_insertion_point(class_scope:BICgRPC.bicNullRequest)
  private:
   class _Internal;
 
   template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr name_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_BICgRPC_2eproto;
 };
 // -------------------------------------------------------------------
 
-class HelloReply PROTOBUF_FINAL :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:BICgRPC.HelloReply) */ {
+class bicSuccessReply PROTOBUF_FINAL :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:BICgRPC.bicSuccessReply) */ {
  public:
-  inline HelloReply() : HelloReply(nullptr) {}
-  virtual ~HelloReply();
+  inline bicSuccessReply() : bicSuccessReply(nullptr) {}
+  virtual ~bicSuccessReply();
 
-  HelloReply(const HelloReply& from);
-  HelloReply(HelloReply&& from) noexcept
-    : HelloReply() {
+  bicSuccessReply(const bicSuccessReply& from);
+  bicSuccessReply(bicSuccessReply&& from) noexcept
+    : bicSuccessReply() {
     *this = ::std::move(from);
   }
 
-  inline HelloReply& operator=(const HelloReply& from) {
+  inline bicSuccessReply& operator=(const bicSuccessReply& from) {
     CopyFrom(from);
     return *this;
   }
-  inline HelloReply& operator=(HelloReply&& from) noexcept {
+  inline bicSuccessReply& operator=(bicSuccessReply&& from) noexcept {
     if (GetArena() == from.GetArena()) {
       if (this != &from) InternalSwap(&from);
     } else {
@@ -248,20 +300,20 @@ class HelloReply PROTOBUF_FINAL :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return GetMetadataStatic().reflection;
   }
-  static const HelloReply& default_instance();
+  static const bicSuccessReply& default_instance();
 
   static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
-  static inline const HelloReply* internal_default_instance() {
-    return reinterpret_cast<const HelloReply*>(
-               &_HelloReply_default_instance_);
+  static inline const bicSuccessReply* internal_default_instance() {
+    return reinterpret_cast<const bicSuccessReply*>(
+               &_bicSuccessReply_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     1;
 
-  friend void swap(HelloReply& a, HelloReply& b) {
+  friend void swap(bicSuccessReply& a, bicSuccessReply& b) {
     a.Swap(&b);
   }
-  inline void Swap(HelloReply* other) {
+  inline void Swap(bicSuccessReply* other) {
     if (other == this) return;
     if (GetArena() == other->GetArena()) {
       InternalSwap(other);
@@ -269,7 +321,7 @@ class HelloReply PROTOBUF_FINAL :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(HelloReply* other) {
+  void UnsafeArenaSwap(bicSuccessReply* other) {
     if (other == this) return;
     GOOGLE_DCHECK(GetArena() == other->GetArena());
     InternalSwap(other);
@@ -277,17 +329,17 @@ class HelloReply PROTOBUF_FINAL :
 
   // implements Message ----------------------------------------------
 
-  inline HelloReply* New() const final {
-    return CreateMaybeMessage<HelloReply>(nullptr);
+  inline bicSuccessReply* New() const final {
+    return CreateMaybeMessage<bicSuccessReply>(nullptr);
   }
 
-  HelloReply* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
-    return CreateMaybeMessage<HelloReply>(arena);
+  bicSuccessReply* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<bicSuccessReply>(arena);
   }
   void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
   void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
-  void CopyFrom(const HelloReply& from);
-  void MergeFrom(const HelloReply& from);
+  void CopyFrom(const bicSuccessReply& from);
+  void MergeFrom(const bicSuccessReply& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -301,13 +353,13 @@ class HelloReply PROTOBUF_FINAL :
   inline void SharedCtor();
   inline void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(HelloReply* other);
+  void InternalSwap(bicSuccessReply* other);
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "BICgRPC.HelloReply";
+    return "BICgRPC.bicSuccessReply";
   }
   protected:
-  explicit HelloReply(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  explicit bicSuccessReply(::PROTOBUF_NAMESPACE_ID::Arena* arena);
   private:
   static void ArenaDtor(void* object);
   inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
@@ -327,32 +379,1904 @@ class HelloReply PROTOBUF_FINAL :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kMessageFieldNumber = 1,
+    kSuccessFieldNumber = 1,
   };
-  // string message = 1;
-  void clear_message();
-  const std::string& message() const;
-  void set_message(const std::string& value);
-  void set_message(std::string&& value);
-  void set_message(const char* value);
-  void set_message(const char* value, size_t size);
-  std::string* mutable_message();
-  std::string* release_message();
-  void set_allocated_message(std::string* message);
+  // string success = 1;
+  void clear_success();
+  const std::string& success() const;
+  void set_success(const std::string& value);
+  void set_success(std::string&& value);
+  void set_success(const char* value);
+  void set_success(const char* value, size_t size);
+  std::string* mutable_success();
+  std::string* release_success();
+  void set_allocated_success(std::string* success);
   private:
-  const std::string& _internal_message() const;
-  void _internal_set_message(const std::string& value);
-  std::string* _internal_mutable_message();
+  const std::string& _internal_success() const;
+  void _internal_set_success(const std::string& value);
+  std::string* _internal_mutable_success();
   public:
 
-  // @@protoc_insertion_point(class_scope:BICgRPC.HelloReply)
+  // @@protoc_insertion_point(class_scope:BICgRPC.bicSuccessReply)
  private:
   class _Internal;
 
   template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr message_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr success_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_BICgRPC_2eproto;
+};
+// -------------------------------------------------------------------
+
+class bicInitRequest PROTOBUF_FINAL :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:BICgRPC.bicInitRequest) */ {
+ public:
+  inline bicInitRequest() : bicInitRequest(nullptr) {}
+  virtual ~bicInitRequest();
+
+  bicInitRequest(const bicInitRequest& from);
+  bicInitRequest(bicInitRequest&& from) noexcept
+    : bicInitRequest() {
+    *this = ::std::move(from);
+  }
+
+  inline bicInitRequest& operator=(const bicInitRequest& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline bicInitRequest& operator=(bicInitRequest&& from) noexcept {
+    if (GetArena() == from.GetArena()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return GetMetadataStatic().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return GetMetadataStatic().reflection;
+  }
+  static const bicInitRequest& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const bicInitRequest* internal_default_instance() {
+    return reinterpret_cast<const bicInitRequest*>(
+               &_bicInitRequest_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    2;
+
+  friend void swap(bicInitRequest& a, bicInitRequest& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(bicInitRequest* other) {
+    if (other == this) return;
+    if (GetArena() == other->GetArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(bicInitRequest* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline bicInitRequest* New() const final {
+    return CreateMaybeMessage<bicInitRequest>(nullptr);
+  }
+
+  bicInitRequest* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<bicInitRequest>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const bicInitRequest& from);
+  void MergeFrom(const bicInitRequest& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  inline void SharedCtor();
+  inline void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(bicInitRequest* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "BICgRPC.bicInitRequest";
+  }
+  protected:
+  explicit bicInitRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  private:
+  static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
+    ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&::descriptor_table_BICgRPC_2eproto);
+    return ::descriptor_table_BICgRPC_2eproto.file_level_metadata[kIndexInFileMessages];
+  }
+
+  public:
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kLogFileNameFieldNumber = 1,
+  };
+  // string logFileName = 1;
+  void clear_logfilename();
+  const std::string& logfilename() const;
+  void set_logfilename(const std::string& value);
+  void set_logfilename(std::string&& value);
+  void set_logfilename(const char* value);
+  void set_logfilename(const char* value, size_t size);
+  std::string* mutable_logfilename();
+  std::string* release_logfilename();
+  void set_allocated_logfilename(std::string* logfilename);
+  private:
+  const std::string& _internal_logfilename() const;
+  void _internal_set_logfilename(const std::string& value);
+  std::string* _internal_mutable_logfilename();
+  public:
+
+  // @@protoc_insertion_point(class_scope:BICgRPC.bicInitRequest)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr logfilename_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_BICgRPC_2eproto;
+};
+// -------------------------------------------------------------------
+
+class bicGetImplantInfoRequest PROTOBUF_FINAL :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:BICgRPC.bicGetImplantInfoRequest) */ {
+ public:
+  inline bicGetImplantInfoRequest() : bicGetImplantInfoRequest(nullptr) {}
+  virtual ~bicGetImplantInfoRequest();
+
+  bicGetImplantInfoRequest(const bicGetImplantInfoRequest& from);
+  bicGetImplantInfoRequest(bicGetImplantInfoRequest&& from) noexcept
+    : bicGetImplantInfoRequest() {
+    *this = ::std::move(from);
+  }
+
+  inline bicGetImplantInfoRequest& operator=(const bicGetImplantInfoRequest& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline bicGetImplantInfoRequest& operator=(bicGetImplantInfoRequest&& from) noexcept {
+    if (GetArena() == from.GetArena()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return GetMetadataStatic().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return GetMetadataStatic().reflection;
+  }
+  static const bicGetImplantInfoRequest& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const bicGetImplantInfoRequest* internal_default_instance() {
+    return reinterpret_cast<const bicGetImplantInfoRequest*>(
+               &_bicGetImplantInfoRequest_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    3;
+
+  friend void swap(bicGetImplantInfoRequest& a, bicGetImplantInfoRequest& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(bicGetImplantInfoRequest* other) {
+    if (other == this) return;
+    if (GetArena() == other->GetArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(bicGetImplantInfoRequest* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline bicGetImplantInfoRequest* New() const final {
+    return CreateMaybeMessage<bicGetImplantInfoRequest>(nullptr);
+  }
+
+  bicGetImplantInfoRequest* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<bicGetImplantInfoRequest>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const bicGetImplantInfoRequest& from);
+  void MergeFrom(const bicGetImplantInfoRequest& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  inline void SharedCtor();
+  inline void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(bicGetImplantInfoRequest* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "BICgRPC.bicGetImplantInfoRequest";
+  }
+  protected:
+  explicit bicGetImplantInfoRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  private:
+  static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
+    ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&::descriptor_table_BICgRPC_2eproto);
+    return ::descriptor_table_BICgRPC_2eproto.file_level_metadata[kIndexInFileMessages];
+  }
+
+  public:
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kUpdateCachedInfoFieldNumber = 1,
+  };
+  // bool updateCachedInfo = 1;
+  void clear_updatecachedinfo();
+  bool updatecachedinfo() const;
+  void set_updatecachedinfo(bool value);
+  private:
+  bool _internal_updatecachedinfo() const;
+  void _internal_set_updatecachedinfo(bool value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:BICgRPC.bicGetImplantInfoRequest)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  bool updatecachedinfo_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_BICgRPC_2eproto;
+};
+// -------------------------------------------------------------------
+
+class bicGetImplantInfoReply_bicChannelInfo PROTOBUF_FINAL :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:BICgRPC.bicGetImplantInfoReply.bicChannelInfo) */ {
+ public:
+  inline bicGetImplantInfoReply_bicChannelInfo() : bicGetImplantInfoReply_bicChannelInfo(nullptr) {}
+  virtual ~bicGetImplantInfoReply_bicChannelInfo();
+
+  bicGetImplantInfoReply_bicChannelInfo(const bicGetImplantInfoReply_bicChannelInfo& from);
+  bicGetImplantInfoReply_bicChannelInfo(bicGetImplantInfoReply_bicChannelInfo&& from) noexcept
+    : bicGetImplantInfoReply_bicChannelInfo() {
+    *this = ::std::move(from);
+  }
+
+  inline bicGetImplantInfoReply_bicChannelInfo& operator=(const bicGetImplantInfoReply_bicChannelInfo& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline bicGetImplantInfoReply_bicChannelInfo& operator=(bicGetImplantInfoReply_bicChannelInfo&& from) noexcept {
+    if (GetArena() == from.GetArena()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return GetMetadataStatic().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return GetMetadataStatic().reflection;
+  }
+  static const bicGetImplantInfoReply_bicChannelInfo& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const bicGetImplantInfoReply_bicChannelInfo* internal_default_instance() {
+    return reinterpret_cast<const bicGetImplantInfoReply_bicChannelInfo*>(
+               &_bicGetImplantInfoReply_bicChannelInfo_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    4;
+
+  friend void swap(bicGetImplantInfoReply_bicChannelInfo& a, bicGetImplantInfoReply_bicChannelInfo& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(bicGetImplantInfoReply_bicChannelInfo* other) {
+    if (other == this) return;
+    if (GetArena() == other->GetArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(bicGetImplantInfoReply_bicChannelInfo* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline bicGetImplantInfoReply_bicChannelInfo* New() const final {
+    return CreateMaybeMessage<bicGetImplantInfoReply_bicChannelInfo>(nullptr);
+  }
+
+  bicGetImplantInfoReply_bicChannelInfo* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<bicGetImplantInfoReply_bicChannelInfo>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const bicGetImplantInfoReply_bicChannelInfo& from);
+  void MergeFrom(const bicGetImplantInfoReply_bicChannelInfo& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  inline void SharedCtor();
+  inline void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(bicGetImplantInfoReply_bicChannelInfo* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "BICgRPC.bicGetImplantInfoReply.bicChannelInfo";
+  }
+  protected:
+  explicit bicGetImplantInfoReply_bicChannelInfo(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  private:
+  static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
+    ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&::descriptor_table_BICgRPC_2eproto);
+    return ::descriptor_table_BICgRPC_2eproto.file_level_metadata[kIndexInFileMessages];
+  }
+
+  public:
+
+  // nested types ----------------------------------------------------
+
+  typedef bicGetImplantInfoReply_bicChannelInfo_UnitType UnitType;
+  static constexpr UnitType UT_NO_UNIT =
+    bicGetImplantInfoReply_bicChannelInfo_UnitType_UT_NO_UNIT;
+  static constexpr UnitType UT_CURRENT =
+    bicGetImplantInfoReply_bicChannelInfo_UnitType_UT_CURRENT;
+  static constexpr UnitType UT_VOLTAGE =
+    bicGetImplantInfoReply_bicChannelInfo_UnitType_UT_VOLTAGE;
+  static constexpr UnitType UT_COUNT =
+    bicGetImplantInfoReply_bicChannelInfo_UnitType_UT_COUNT;
+  static inline bool UnitType_IsValid(int value) {
+    return bicGetImplantInfoReply_bicChannelInfo_UnitType_IsValid(value);
+  }
+  static constexpr UnitType UnitType_MIN =
+    bicGetImplantInfoReply_bicChannelInfo_UnitType_UnitType_MIN;
+  static constexpr UnitType UnitType_MAX =
+    bicGetImplantInfoReply_bicChannelInfo_UnitType_UnitType_MAX;
+  static constexpr int UnitType_ARRAYSIZE =
+    bicGetImplantInfoReply_bicChannelInfo_UnitType_UnitType_ARRAYSIZE;
+  static inline const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor*
+  UnitType_descriptor() {
+    return bicGetImplantInfoReply_bicChannelInfo_UnitType_descriptor();
+  }
+  template<typename T>
+  static inline const std::string& UnitType_Name(T enum_t_value) {
+    static_assert(::std::is_same<T, UnitType>::value ||
+      ::std::is_integral<T>::value,
+      "Incorrect type passed to function UnitType_Name.");
+    return bicGetImplantInfoReply_bicChannelInfo_UnitType_Name(enum_t_value);
+  }
+  static inline bool UnitType_Parse(::PROTOBUF_NAMESPACE_ID::ConstStringParam name,
+      UnitType* value) {
+    return bicGetImplantInfoReply_bicChannelInfo_UnitType_Parse(name, value);
+  }
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kMeasureValueMinFieldNumber = 2,
+    kMeasureValueMaxFieldNumber = 3,
+    kCanMeasureFieldNumber = 1,
+    kCanStimulateFieldNumber = 4,
+    kCanMeasureImpedanceFieldNumber = 8,
+    kStimulationUnitFieldNumber = 5,
+    kStimValueMinFieldNumber = 6,
+    kStimValueMaxFieldNumber = 7,
+  };
+  // double measureValueMin = 2;
+  void clear_measurevaluemin();
+  double measurevaluemin() const;
+  void set_measurevaluemin(double value);
+  private:
+  double _internal_measurevaluemin() const;
+  void _internal_set_measurevaluemin(double value);
+  public:
+
+  // double measureValueMax = 3;
+  void clear_measurevaluemax();
+  double measurevaluemax() const;
+  void set_measurevaluemax(double value);
+  private:
+  double _internal_measurevaluemax() const;
+  void _internal_set_measurevaluemax(double value);
+  public:
+
+  // bool canMeasure = 1;
+  void clear_canmeasure();
+  bool canmeasure() const;
+  void set_canmeasure(bool value);
+  private:
+  bool _internal_canmeasure() const;
+  void _internal_set_canmeasure(bool value);
+  public:
+
+  // bool canStimulate = 4;
+  void clear_canstimulate();
+  bool canstimulate() const;
+  void set_canstimulate(bool value);
+  private:
+  bool _internal_canstimulate() const;
+  void _internal_set_canstimulate(bool value);
+  public:
+
+  // bool canMeasureImpedance = 8;
+  void clear_canmeasureimpedance();
+  bool canmeasureimpedance() const;
+  void set_canmeasureimpedance(bool value);
+  private:
+  bool _internal_canmeasureimpedance() const;
+  void _internal_set_canmeasureimpedance(bool value);
+  public:
+
+  // .BICgRPC.bicGetImplantInfoReply.bicChannelInfo.UnitType stimulationUnit = 5;
+  void clear_stimulationunit();
+  ::BICgRPC::bicGetImplantInfoReply_bicChannelInfo_UnitType stimulationunit() const;
+  void set_stimulationunit(::BICgRPC::bicGetImplantInfoReply_bicChannelInfo_UnitType value);
+  private:
+  ::BICgRPC::bicGetImplantInfoReply_bicChannelInfo_UnitType _internal_stimulationunit() const;
+  void _internal_set_stimulationunit(::BICgRPC::bicGetImplantInfoReply_bicChannelInfo_UnitType value);
+  public:
+
+  // double stimValueMin = 6;
+  void clear_stimvaluemin();
+  double stimvaluemin() const;
+  void set_stimvaluemin(double value);
+  private:
+  double _internal_stimvaluemin() const;
+  void _internal_set_stimvaluemin(double value);
+  public:
+
+  // double stimValueMax = 7;
+  void clear_stimvaluemax();
+  double stimvaluemax() const;
+  void set_stimvaluemax(double value);
+  private:
+  double _internal_stimvaluemax() const;
+  void _internal_set_stimvaluemax(double value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:BICgRPC.bicGetImplantInfoReply.bicChannelInfo)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  double measurevaluemin_;
+  double measurevaluemax_;
+  bool canmeasure_;
+  bool canstimulate_;
+  bool canmeasureimpedance_;
+  int stimulationunit_;
+  double stimvaluemin_;
+  double stimvaluemax_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_BICgRPC_2eproto;
+};
+// -------------------------------------------------------------------
+
+class bicGetImplantInfoReply PROTOBUF_FINAL :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:BICgRPC.bicGetImplantInfoReply) */ {
+ public:
+  inline bicGetImplantInfoReply() : bicGetImplantInfoReply(nullptr) {}
+  virtual ~bicGetImplantInfoReply();
+
+  bicGetImplantInfoReply(const bicGetImplantInfoReply& from);
+  bicGetImplantInfoReply(bicGetImplantInfoReply&& from) noexcept
+    : bicGetImplantInfoReply() {
+    *this = ::std::move(from);
+  }
+
+  inline bicGetImplantInfoReply& operator=(const bicGetImplantInfoReply& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline bicGetImplantInfoReply& operator=(bicGetImplantInfoReply&& from) noexcept {
+    if (GetArena() == from.GetArena()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return GetMetadataStatic().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return GetMetadataStatic().reflection;
+  }
+  static const bicGetImplantInfoReply& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const bicGetImplantInfoReply* internal_default_instance() {
+    return reinterpret_cast<const bicGetImplantInfoReply*>(
+               &_bicGetImplantInfoReply_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    5;
+
+  friend void swap(bicGetImplantInfoReply& a, bicGetImplantInfoReply& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(bicGetImplantInfoReply* other) {
+    if (other == this) return;
+    if (GetArena() == other->GetArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(bicGetImplantInfoReply* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline bicGetImplantInfoReply* New() const final {
+    return CreateMaybeMessage<bicGetImplantInfoReply>(nullptr);
+  }
+
+  bicGetImplantInfoReply* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<bicGetImplantInfoReply>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const bicGetImplantInfoReply& from);
+  void MergeFrom(const bicGetImplantInfoReply& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  inline void SharedCtor();
+  inline void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(bicGetImplantInfoReply* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "BICgRPC.bicGetImplantInfoReply";
+  }
+  protected:
+  explicit bicGetImplantInfoReply(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  private:
+  static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
+    ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&::descriptor_table_BICgRPC_2eproto);
+    return ::descriptor_table_BICgRPC_2eproto.file_level_metadata[kIndexInFileMessages];
+  }
+
+  public:
+
+  // nested types ----------------------------------------------------
+
+  typedef bicGetImplantInfoReply_bicChannelInfo bicChannelInfo;
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kChannelInfoListFieldNumber = 4,
+    kFirmwareVersionFieldNumber = 1,
+    kDeviceTypeFieldNumber = 2,
+    kDeviceIdFieldNumber = 3,
+    kSuccessFieldNumber = 9,
+    kChannelCountFieldNumber = 5,
+    kMeasurementChannelCountFieldNumber = 6,
+    kStimulationChannelCountFieldNumber = 7,
+    kSamplingRateFieldNumber = 8,
+  };
+  // repeated .BICgRPC.bicGetImplantInfoReply.bicChannelInfo channelInfoList = 4;
+  int channelinfolist_size() const;
+  private:
+  int _internal_channelinfolist_size() const;
+  public:
+  void clear_channelinfolist();
+  ::BICgRPC::bicGetImplantInfoReply_bicChannelInfo* mutable_channelinfolist(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::BICgRPC::bicGetImplantInfoReply_bicChannelInfo >*
+      mutable_channelinfolist();
+  private:
+  const ::BICgRPC::bicGetImplantInfoReply_bicChannelInfo& _internal_channelinfolist(int index) const;
+  ::BICgRPC::bicGetImplantInfoReply_bicChannelInfo* _internal_add_channelinfolist();
+  public:
+  const ::BICgRPC::bicGetImplantInfoReply_bicChannelInfo& channelinfolist(int index) const;
+  ::BICgRPC::bicGetImplantInfoReply_bicChannelInfo* add_channelinfolist();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::BICgRPC::bicGetImplantInfoReply_bicChannelInfo >&
+      channelinfolist() const;
+
+  // string firmwareVersion = 1;
+  void clear_firmwareversion();
+  const std::string& firmwareversion() const;
+  void set_firmwareversion(const std::string& value);
+  void set_firmwareversion(std::string&& value);
+  void set_firmwareversion(const char* value);
+  void set_firmwareversion(const char* value, size_t size);
+  std::string* mutable_firmwareversion();
+  std::string* release_firmwareversion();
+  void set_allocated_firmwareversion(std::string* firmwareversion);
+  private:
+  const std::string& _internal_firmwareversion() const;
+  void _internal_set_firmwareversion(const std::string& value);
+  std::string* _internal_mutable_firmwareversion();
+  public:
+
+  // string deviceType = 2;
+  void clear_devicetype();
+  const std::string& devicetype() const;
+  void set_devicetype(const std::string& value);
+  void set_devicetype(std::string&& value);
+  void set_devicetype(const char* value);
+  void set_devicetype(const char* value, size_t size);
+  std::string* mutable_devicetype();
+  std::string* release_devicetype();
+  void set_allocated_devicetype(std::string* devicetype);
+  private:
+  const std::string& _internal_devicetype() const;
+  void _internal_set_devicetype(const std::string& value);
+  std::string* _internal_mutable_devicetype();
+  public:
+
+  // string deviceId = 3;
+  void clear_deviceid();
+  const std::string& deviceid() const;
+  void set_deviceid(const std::string& value);
+  void set_deviceid(std::string&& value);
+  void set_deviceid(const char* value);
+  void set_deviceid(const char* value, size_t size);
+  std::string* mutable_deviceid();
+  std::string* release_deviceid();
+  void set_allocated_deviceid(std::string* deviceid);
+  private:
+  const std::string& _internal_deviceid() const;
+  void _internal_set_deviceid(const std::string& value);
+  std::string* _internal_mutable_deviceid();
+  public:
+
+  // string success = 9;
+  void clear_success();
+  const std::string& success() const;
+  void set_success(const std::string& value);
+  void set_success(std::string&& value);
+  void set_success(const char* value);
+  void set_success(const char* value, size_t size);
+  std::string* mutable_success();
+  std::string* release_success();
+  void set_allocated_success(std::string* success);
+  private:
+  const std::string& _internal_success() const;
+  void _internal_set_success(const std::string& value);
+  std::string* _internal_mutable_success();
+  public:
+
+  // uint32 channelCount = 5;
+  void clear_channelcount();
+  ::PROTOBUF_NAMESPACE_ID::uint32 channelcount() const;
+  void set_channelcount(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::uint32 _internal_channelcount() const;
+  void _internal_set_channelcount(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  public:
+
+  // uint32 measurementChannelCount = 6;
+  void clear_measurementchannelcount();
+  ::PROTOBUF_NAMESPACE_ID::uint32 measurementchannelcount() const;
+  void set_measurementchannelcount(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::uint32 _internal_measurementchannelcount() const;
+  void _internal_set_measurementchannelcount(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  public:
+
+  // uint32 stimulationChannelCount = 7;
+  void clear_stimulationchannelcount();
+  ::PROTOBUF_NAMESPACE_ID::uint32 stimulationchannelcount() const;
+  void set_stimulationchannelcount(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::uint32 _internal_stimulationchannelcount() const;
+  void _internal_set_stimulationchannelcount(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  public:
+
+  // uint32 samplingRate = 8;
+  void clear_samplingrate();
+  ::PROTOBUF_NAMESPACE_ID::uint32 samplingrate() const;
+  void set_samplingrate(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::uint32 _internal_samplingrate() const;
+  void _internal_set_samplingrate(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:BICgRPC.bicGetImplantInfoReply)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::BICgRPC::bicGetImplantInfoReply_bicChannelInfo > channelinfolist_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr firmwareversion_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr devicetype_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr deviceid_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr success_;
+  ::PROTOBUF_NAMESPACE_ID::uint32 channelcount_;
+  ::PROTOBUF_NAMESPACE_ID::uint32 measurementchannelcount_;
+  ::PROTOBUF_NAMESPACE_ID::uint32 stimulationchannelcount_;
+  ::PROTOBUF_NAMESPACE_ID::uint32 samplingrate_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_BICgRPC_2eproto;
+};
+// -------------------------------------------------------------------
+
+class bicGetImpedanceRequest PROTOBUF_FINAL :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:BICgRPC.bicGetImpedanceRequest) */ {
+ public:
+  inline bicGetImpedanceRequest() : bicGetImpedanceRequest(nullptr) {}
+  virtual ~bicGetImpedanceRequest();
+
+  bicGetImpedanceRequest(const bicGetImpedanceRequest& from);
+  bicGetImpedanceRequest(bicGetImpedanceRequest&& from) noexcept
+    : bicGetImpedanceRequest() {
+    *this = ::std::move(from);
+  }
+
+  inline bicGetImpedanceRequest& operator=(const bicGetImpedanceRequest& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline bicGetImpedanceRequest& operator=(bicGetImpedanceRequest&& from) noexcept {
+    if (GetArena() == from.GetArena()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return GetMetadataStatic().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return GetMetadataStatic().reflection;
+  }
+  static const bicGetImpedanceRequest& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const bicGetImpedanceRequest* internal_default_instance() {
+    return reinterpret_cast<const bicGetImpedanceRequest*>(
+               &_bicGetImpedanceRequest_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    6;
+
+  friend void swap(bicGetImpedanceRequest& a, bicGetImpedanceRequest& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(bicGetImpedanceRequest* other) {
+    if (other == this) return;
+    if (GetArena() == other->GetArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(bicGetImpedanceRequest* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline bicGetImpedanceRequest* New() const final {
+    return CreateMaybeMessage<bicGetImpedanceRequest>(nullptr);
+  }
+
+  bicGetImpedanceRequest* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<bicGetImpedanceRequest>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const bicGetImpedanceRequest& from);
+  void MergeFrom(const bicGetImpedanceRequest& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  inline void SharedCtor();
+  inline void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(bicGetImpedanceRequest* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "BICgRPC.bicGetImpedanceRequest";
+  }
+  protected:
+  explicit bicGetImpedanceRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  private:
+  static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
+    ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&::descriptor_table_BICgRPC_2eproto);
+    return ::descriptor_table_BICgRPC_2eproto.file_level_metadata[kIndexInFileMessages];
+  }
+
+  public:
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kChannelFieldNumber = 1,
+  };
+  // uint32 channel = 1;
+  void clear_channel();
+  ::PROTOBUF_NAMESPACE_ID::uint32 channel() const;
+  void set_channel(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::uint32 _internal_channel() const;
+  void _internal_set_channel(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:BICgRPC.bicGetImpedanceRequest)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::uint32 channel_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_BICgRPC_2eproto;
+};
+// -------------------------------------------------------------------
+
+class bicGetImpedanceReply PROTOBUF_FINAL :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:BICgRPC.bicGetImpedanceReply) */ {
+ public:
+  inline bicGetImpedanceReply() : bicGetImpedanceReply(nullptr) {}
+  virtual ~bicGetImpedanceReply();
+
+  bicGetImpedanceReply(const bicGetImpedanceReply& from);
+  bicGetImpedanceReply(bicGetImpedanceReply&& from) noexcept
+    : bicGetImpedanceReply() {
+    *this = ::std::move(from);
+  }
+
+  inline bicGetImpedanceReply& operator=(const bicGetImpedanceReply& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline bicGetImpedanceReply& operator=(bicGetImpedanceReply&& from) noexcept {
+    if (GetArena() == from.GetArena()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return GetMetadataStatic().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return GetMetadataStatic().reflection;
+  }
+  static const bicGetImpedanceReply& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const bicGetImpedanceReply* internal_default_instance() {
+    return reinterpret_cast<const bicGetImpedanceReply*>(
+               &_bicGetImpedanceReply_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    7;
+
+  friend void swap(bicGetImpedanceReply& a, bicGetImpedanceReply& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(bicGetImpedanceReply* other) {
+    if (other == this) return;
+    if (GetArena() == other->GetArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(bicGetImpedanceReply* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline bicGetImpedanceReply* New() const final {
+    return CreateMaybeMessage<bicGetImpedanceReply>(nullptr);
+  }
+
+  bicGetImpedanceReply* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<bicGetImpedanceReply>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const bicGetImpedanceReply& from);
+  void MergeFrom(const bicGetImpedanceReply& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  inline void SharedCtor();
+  inline void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(bicGetImpedanceReply* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "BICgRPC.bicGetImpedanceReply";
+  }
+  protected:
+  explicit bicGetImpedanceReply(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  private:
+  static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
+    ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&::descriptor_table_BICgRPC_2eproto);
+    return ::descriptor_table_BICgRPC_2eproto.file_level_metadata[kIndexInFileMessages];
+  }
+
+  public:
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kUnitsFieldNumber = 2,
+    kSuccessFieldNumber = 3,
+    kChannelImpedanceFieldNumber = 1,
+  };
+  // string units = 2;
+  void clear_units();
+  const std::string& units() const;
+  void set_units(const std::string& value);
+  void set_units(std::string&& value);
+  void set_units(const char* value);
+  void set_units(const char* value, size_t size);
+  std::string* mutable_units();
+  std::string* release_units();
+  void set_allocated_units(std::string* units);
+  private:
+  const std::string& _internal_units() const;
+  void _internal_set_units(const std::string& value);
+  std::string* _internal_mutable_units();
+  public:
+
+  // string success = 3;
+  void clear_success();
+  const std::string& success() const;
+  void set_success(const std::string& value);
+  void set_success(std::string&& value);
+  void set_success(const char* value);
+  void set_success(const char* value, size_t size);
+  std::string* mutable_success();
+  std::string* release_success();
+  void set_allocated_success(std::string* success);
+  private:
+  const std::string& _internal_success() const;
+  void _internal_set_success(const std::string& value);
+  std::string* _internal_mutable_success();
+  public:
+
+  // double channelImpedance = 1;
+  void clear_channelimpedance();
+  double channelimpedance() const;
+  void set_channelimpedance(double value);
+  private:
+  double _internal_channelimpedance() const;
+  void _internal_set_channelimpedance(double value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:BICgRPC.bicGetImpedanceReply)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr units_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr success_;
+  double channelimpedance_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_BICgRPC_2eproto;
+};
+// -------------------------------------------------------------------
+
+class bicGetTemperatureReply PROTOBUF_FINAL :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:BICgRPC.bicGetTemperatureReply) */ {
+ public:
+  inline bicGetTemperatureReply() : bicGetTemperatureReply(nullptr) {}
+  virtual ~bicGetTemperatureReply();
+
+  bicGetTemperatureReply(const bicGetTemperatureReply& from);
+  bicGetTemperatureReply(bicGetTemperatureReply&& from) noexcept
+    : bicGetTemperatureReply() {
+    *this = ::std::move(from);
+  }
+
+  inline bicGetTemperatureReply& operator=(const bicGetTemperatureReply& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline bicGetTemperatureReply& operator=(bicGetTemperatureReply&& from) noexcept {
+    if (GetArena() == from.GetArena()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return GetMetadataStatic().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return GetMetadataStatic().reflection;
+  }
+  static const bicGetTemperatureReply& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const bicGetTemperatureReply* internal_default_instance() {
+    return reinterpret_cast<const bicGetTemperatureReply*>(
+               &_bicGetTemperatureReply_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    8;
+
+  friend void swap(bicGetTemperatureReply& a, bicGetTemperatureReply& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(bicGetTemperatureReply* other) {
+    if (other == this) return;
+    if (GetArena() == other->GetArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(bicGetTemperatureReply* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline bicGetTemperatureReply* New() const final {
+    return CreateMaybeMessage<bicGetTemperatureReply>(nullptr);
+  }
+
+  bicGetTemperatureReply* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<bicGetTemperatureReply>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const bicGetTemperatureReply& from);
+  void MergeFrom(const bicGetTemperatureReply& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  inline void SharedCtor();
+  inline void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(bicGetTemperatureReply* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "BICgRPC.bicGetTemperatureReply";
+  }
+  protected:
+  explicit bicGetTemperatureReply(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  private:
+  static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
+    ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&::descriptor_table_BICgRPC_2eproto);
+    return ::descriptor_table_BICgRPC_2eproto.file_level_metadata[kIndexInFileMessages];
+  }
+
+  public:
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kUnitsFieldNumber = 2,
+    kSuccessFieldNumber = 3,
+    kTemperatureFieldNumber = 1,
+  };
+  // string units = 2;
+  void clear_units();
+  const std::string& units() const;
+  void set_units(const std::string& value);
+  void set_units(std::string&& value);
+  void set_units(const char* value);
+  void set_units(const char* value, size_t size);
+  std::string* mutable_units();
+  std::string* release_units();
+  void set_allocated_units(std::string* units);
+  private:
+  const std::string& _internal_units() const;
+  void _internal_set_units(const std::string& value);
+  std::string* _internal_mutable_units();
+  public:
+
+  // string success = 3;
+  void clear_success();
+  const std::string& success() const;
+  void set_success(const std::string& value);
+  void set_success(std::string&& value);
+  void set_success(const char* value);
+  void set_success(const char* value, size_t size);
+  std::string* mutable_success();
+  std::string* release_success();
+  void set_allocated_success(std::string* success);
+  private:
+  const std::string& _internal_success() const;
+  void _internal_set_success(const std::string& value);
+  std::string* _internal_mutable_success();
+  public:
+
+  // double temperature = 1;
+  void clear_temperature();
+  double temperature() const;
+  void set_temperature(double value);
+  private:
+  double _internal_temperature() const;
+  void _internal_set_temperature(double value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:BICgRPC.bicGetTemperatureReply)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr units_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr success_;
+  double temperature_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_BICgRPC_2eproto;
+};
+// -------------------------------------------------------------------
+
+class bicGetHumidityReply PROTOBUF_FINAL :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:BICgRPC.bicGetHumidityReply) */ {
+ public:
+  inline bicGetHumidityReply() : bicGetHumidityReply(nullptr) {}
+  virtual ~bicGetHumidityReply();
+
+  bicGetHumidityReply(const bicGetHumidityReply& from);
+  bicGetHumidityReply(bicGetHumidityReply&& from) noexcept
+    : bicGetHumidityReply() {
+    *this = ::std::move(from);
+  }
+
+  inline bicGetHumidityReply& operator=(const bicGetHumidityReply& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline bicGetHumidityReply& operator=(bicGetHumidityReply&& from) noexcept {
+    if (GetArena() == from.GetArena()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return GetMetadataStatic().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return GetMetadataStatic().reflection;
+  }
+  static const bicGetHumidityReply& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const bicGetHumidityReply* internal_default_instance() {
+    return reinterpret_cast<const bicGetHumidityReply*>(
+               &_bicGetHumidityReply_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    9;
+
+  friend void swap(bicGetHumidityReply& a, bicGetHumidityReply& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(bicGetHumidityReply* other) {
+    if (other == this) return;
+    if (GetArena() == other->GetArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(bicGetHumidityReply* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline bicGetHumidityReply* New() const final {
+    return CreateMaybeMessage<bicGetHumidityReply>(nullptr);
+  }
+
+  bicGetHumidityReply* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<bicGetHumidityReply>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const bicGetHumidityReply& from);
+  void MergeFrom(const bicGetHumidityReply& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  inline void SharedCtor();
+  inline void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(bicGetHumidityReply* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "BICgRPC.bicGetHumidityReply";
+  }
+  protected:
+  explicit bicGetHumidityReply(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  private:
+  static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
+    ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&::descriptor_table_BICgRPC_2eproto);
+    return ::descriptor_table_BICgRPC_2eproto.file_level_metadata[kIndexInFileMessages];
+  }
+
+  public:
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kUnitsFieldNumber = 2,
+    kSuccessFieldNumber = 3,
+    kHumidityFieldNumber = 1,
+  };
+  // string units = 2;
+  void clear_units();
+  const std::string& units() const;
+  void set_units(const std::string& value);
+  void set_units(std::string&& value);
+  void set_units(const char* value);
+  void set_units(const char* value, size_t size);
+  std::string* mutable_units();
+  std::string* release_units();
+  void set_allocated_units(std::string* units);
+  private:
+  const std::string& _internal_units() const;
+  void _internal_set_units(const std::string& value);
+  std::string* _internal_mutable_units();
+  public:
+
+  // string success = 3;
+  void clear_success();
+  const std::string& success() const;
+  void set_success(const std::string& value);
+  void set_success(std::string&& value);
+  void set_success(const char* value);
+  void set_success(const char* value, size_t size);
+  std::string* mutable_success();
+  std::string* release_success();
+  void set_allocated_success(std::string* success);
+  private:
+  const std::string& _internal_success() const;
+  void _internal_set_success(const std::string& value);
+  std::string* _internal_mutable_success();
+  public:
+
+  // double humidity = 1;
+  void clear_humidity();
+  double humidity() const;
+  void set_humidity(double value);
+  private:
+  double _internal_humidity() const;
+  void _internal_set_humidity(double value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:BICgRPC.bicGetHumidityReply)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr units_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr success_;
+  double humidity_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_BICgRPC_2eproto;
+};
+// -------------------------------------------------------------------
+
+class bicSetSensingEnableRequest PROTOBUF_FINAL :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:BICgRPC.bicSetSensingEnableRequest) */ {
+ public:
+  inline bicSetSensingEnableRequest() : bicSetSensingEnableRequest(nullptr) {}
+  virtual ~bicSetSensingEnableRequest();
+
+  bicSetSensingEnableRequest(const bicSetSensingEnableRequest& from);
+  bicSetSensingEnableRequest(bicSetSensingEnableRequest&& from) noexcept
+    : bicSetSensingEnableRequest() {
+    *this = ::std::move(from);
+  }
+
+  inline bicSetSensingEnableRequest& operator=(const bicSetSensingEnableRequest& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline bicSetSensingEnableRequest& operator=(bicSetSensingEnableRequest&& from) noexcept {
+    if (GetArena() == from.GetArena()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return GetMetadataStatic().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return GetMetadataStatic().reflection;
+  }
+  static const bicSetSensingEnableRequest& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const bicSetSensingEnableRequest* internal_default_instance() {
+    return reinterpret_cast<const bicSetSensingEnableRequest*>(
+               &_bicSetSensingEnableRequest_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    10;
+
+  friend void swap(bicSetSensingEnableRequest& a, bicSetSensingEnableRequest& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(bicSetSensingEnableRequest* other) {
+    if (other == this) return;
+    if (GetArena() == other->GetArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(bicSetSensingEnableRequest* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline bicSetSensingEnableRequest* New() const final {
+    return CreateMaybeMessage<bicSetSensingEnableRequest>(nullptr);
+  }
+
+  bicSetSensingEnableRequest* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<bicSetSensingEnableRequest>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const bicSetSensingEnableRequest& from);
+  void MergeFrom(const bicSetSensingEnableRequest& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  inline void SharedCtor();
+  inline void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(bicSetSensingEnableRequest* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "BICgRPC.bicSetSensingEnableRequest";
+  }
+  protected:
+  explicit bicSetSensingEnableRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  private:
+  static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
+    ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&::descriptor_table_BICgRPC_2eproto);
+    return ::descriptor_table_BICgRPC_2eproto.file_level_metadata[kIndexInFileMessages];
+  }
+
+  public:
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kRefChannelsFieldNumber = 2,
+    kEnableSensingFieldNumber = 1,
+  };
+  // repeated uint32 refChannels = 2;
+  int refchannels_size() const;
+  private:
+  int _internal_refchannels_size() const;
+  public:
+  void clear_refchannels();
+  private:
+  ::PROTOBUF_NAMESPACE_ID::uint32 _internal_refchannels(int index) const;
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::uint32 >&
+      _internal_refchannels() const;
+  void _internal_add_refchannels(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::uint32 >*
+      _internal_mutable_refchannels();
+  public:
+  ::PROTOBUF_NAMESPACE_ID::uint32 refchannels(int index) const;
+  void set_refchannels(int index, ::PROTOBUF_NAMESPACE_ID::uint32 value);
+  void add_refchannels(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::uint32 >&
+      refchannels() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::uint32 >*
+      mutable_refchannels();
+
+  // bool enableSensing = 1;
+  void clear_enablesensing();
+  bool enablesensing() const;
+  void set_enablesensing(bool value);
+  private:
+  bool _internal_enablesensing() const;
+  void _internal_set_enablesensing(bool value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:BICgRPC.bicSetSensingEnableRequest)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::uint32 > refchannels_;
+  mutable std::atomic<int> _refchannels_cached_byte_size_;
+  bool enablesensing_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_BICgRPC_2eproto;
+};
+// -------------------------------------------------------------------
+
+class bicSetImplantPowerRequest PROTOBUF_FINAL :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:BICgRPC.bicSetImplantPowerRequest) */ {
+ public:
+  inline bicSetImplantPowerRequest() : bicSetImplantPowerRequest(nullptr) {}
+  virtual ~bicSetImplantPowerRequest();
+
+  bicSetImplantPowerRequest(const bicSetImplantPowerRequest& from);
+  bicSetImplantPowerRequest(bicSetImplantPowerRequest&& from) noexcept
+    : bicSetImplantPowerRequest() {
+    *this = ::std::move(from);
+  }
+
+  inline bicSetImplantPowerRequest& operator=(const bicSetImplantPowerRequest& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline bicSetImplantPowerRequest& operator=(bicSetImplantPowerRequest&& from) noexcept {
+    if (GetArena() == from.GetArena()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return GetMetadataStatic().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return GetMetadataStatic().reflection;
+  }
+  static const bicSetImplantPowerRequest& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const bicSetImplantPowerRequest* internal_default_instance() {
+    return reinterpret_cast<const bicSetImplantPowerRequest*>(
+               &_bicSetImplantPowerRequest_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    11;
+
+  friend void swap(bicSetImplantPowerRequest& a, bicSetImplantPowerRequest& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(bicSetImplantPowerRequest* other) {
+    if (other == this) return;
+    if (GetArena() == other->GetArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(bicSetImplantPowerRequest* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline bicSetImplantPowerRequest* New() const final {
+    return CreateMaybeMessage<bicSetImplantPowerRequest>(nullptr);
+  }
+
+  bicSetImplantPowerRequest* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<bicSetImplantPowerRequest>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const bicSetImplantPowerRequest& from);
+  void MergeFrom(const bicSetImplantPowerRequest& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  inline void SharedCtor();
+  inline void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(bicSetImplantPowerRequest* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "BICgRPC.bicSetImplantPowerRequest";
+  }
+  protected:
+  explicit bicSetImplantPowerRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  private:
+  static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
+    ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&::descriptor_table_BICgRPC_2eproto);
+    return ::descriptor_table_BICgRPC_2eproto.file_level_metadata[kIndexInFileMessages];
+  }
+
+  public:
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kPowerEnabledFieldNumber = 1,
+  };
+  // bool powerEnabled = 1;
+  void clear_powerenabled();
+  bool powerenabled() const;
+  void set_powerenabled(bool value);
+  private:
+  bool _internal_powerenabled() const;
+  void _internal_set_powerenabled(bool value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:BICgRPC.bicSetImplantPowerRequest)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  bool powerenabled_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_BICgRPC_2eproto;
+};
+// -------------------------------------------------------------------
+
+class bicStartStimulationRequest PROTOBUF_FINAL :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:BICgRPC.bicStartStimulationRequest) */ {
+ public:
+  inline bicStartStimulationRequest() : bicStartStimulationRequest(nullptr) {}
+  virtual ~bicStartStimulationRequest();
+
+  bicStartStimulationRequest(const bicStartStimulationRequest& from);
+  bicStartStimulationRequest(bicStartStimulationRequest&& from) noexcept
+    : bicStartStimulationRequest() {
+    *this = ::std::move(from);
+  }
+
+  inline bicStartStimulationRequest& operator=(const bicStartStimulationRequest& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline bicStartStimulationRequest& operator=(bicStartStimulationRequest&& from) noexcept {
+    if (GetArena() == from.GetArena()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return GetMetadataStatic().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return GetMetadataStatic().reflection;
+  }
+  static const bicStartStimulationRequest& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const bicStartStimulationRequest* internal_default_instance() {
+    return reinterpret_cast<const bicStartStimulationRequest*>(
+               &_bicStartStimulationRequest_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    12;
+
+  friend void swap(bicStartStimulationRequest& a, bicStartStimulationRequest& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(bicStartStimulationRequest* other) {
+    if (other == this) return;
+    if (GetArena() == other->GetArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(bicStartStimulationRequest* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline bicStartStimulationRequest* New() const final {
+    return CreateMaybeMessage<bicStartStimulationRequest>(nullptr);
+  }
+
+  bicStartStimulationRequest* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<bicStartStimulationRequest>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const bicStartStimulationRequest& from);
+  void MergeFrom(const bicStartStimulationRequest& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  inline void SharedCtor();
+  inline void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(bicStartStimulationRequest* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "BICgRPC.bicStartStimulationRequest";
+  }
+  protected:
+  explicit bicStartStimulationRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  private:
+  static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
+    ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&::descriptor_table_BICgRPC_2eproto);
+    return ::descriptor_table_BICgRPC_2eproto.file_level_metadata[kIndexInFileMessages];
+  }
+
+  public:
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // @@protoc_insertion_point(class_scope:BICgRPC.bicStartStimulationRequest)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_BICgRPC_2eproto;
 };
@@ -365,145 +2289,1307 @@ class HelloReply PROTOBUF_FINAL :
   #pragma GCC diagnostic push
   #pragma GCC diagnostic ignored "-Wstrict-aliasing"
 #endif  // __GNUC__
-// HelloRequest
+// bicNullRequest
 
-// string name = 1;
-inline void HelloRequest::clear_name() {
-  name_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+// -------------------------------------------------------------------
+
+// bicSuccessReply
+
+// string success = 1;
+inline void bicSuccessReply::clear_success() {
+  success_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
 }
-inline const std::string& HelloRequest::name() const {
-  // @@protoc_insertion_point(field_get:BICgRPC.HelloRequest.name)
-  return _internal_name();
+inline const std::string& bicSuccessReply::success() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.bicSuccessReply.success)
+  return _internal_success();
 }
-inline void HelloRequest::set_name(const std::string& value) {
-  _internal_set_name(value);
-  // @@protoc_insertion_point(field_set:BICgRPC.HelloRequest.name)
+inline void bicSuccessReply::set_success(const std::string& value) {
+  _internal_set_success(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.bicSuccessReply.success)
 }
-inline std::string* HelloRequest::mutable_name() {
-  // @@protoc_insertion_point(field_mutable:BICgRPC.HelloRequest.name)
-  return _internal_mutable_name();
+inline std::string* bicSuccessReply::mutable_success() {
+  // @@protoc_insertion_point(field_mutable:BICgRPC.bicSuccessReply.success)
+  return _internal_mutable_success();
 }
-inline const std::string& HelloRequest::_internal_name() const {
-  return name_.Get();
+inline const std::string& bicSuccessReply::_internal_success() const {
+  return success_.Get();
 }
-inline void HelloRequest::_internal_set_name(const std::string& value) {
+inline void bicSuccessReply::_internal_set_success(const std::string& value) {
   
-  name_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value, GetArena());
+  success_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value, GetArena());
 }
-inline void HelloRequest::set_name(std::string&& value) {
+inline void bicSuccessReply::set_success(std::string&& value) {
   
-  name_.Set(
+  success_.Set(
     &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::move(value), GetArena());
-  // @@protoc_insertion_point(field_set_rvalue:BICgRPC.HelloRequest.name)
+  // @@protoc_insertion_point(field_set_rvalue:BICgRPC.bicSuccessReply.success)
 }
-inline void HelloRequest::set_name(const char* value) {
+inline void bicSuccessReply::set_success(const char* value) {
   GOOGLE_DCHECK(value != nullptr);
   
-  name_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(value),
+  success_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(value),
               GetArena());
-  // @@protoc_insertion_point(field_set_char:BICgRPC.HelloRequest.name)
+  // @@protoc_insertion_point(field_set_char:BICgRPC.bicSuccessReply.success)
 }
-inline void HelloRequest::set_name(const char* value,
+inline void bicSuccessReply::set_success(const char* value,
     size_t size) {
   
-  name_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(
+  success_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(
       reinterpret_cast<const char*>(value), size), GetArena());
-  // @@protoc_insertion_point(field_set_pointer:BICgRPC.HelloRequest.name)
+  // @@protoc_insertion_point(field_set_pointer:BICgRPC.bicSuccessReply.success)
 }
-inline std::string* HelloRequest::_internal_mutable_name() {
+inline std::string* bicSuccessReply::_internal_mutable_success() {
   
-  return name_.Mutable(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  return success_.Mutable(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
 }
-inline std::string* HelloRequest::release_name() {
-  // @@protoc_insertion_point(field_release:BICgRPC.HelloRequest.name)
-  return name_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+inline std::string* bicSuccessReply::release_success() {
+  // @@protoc_insertion_point(field_release:BICgRPC.bicSuccessReply.success)
+  return success_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
 }
-inline void HelloRequest::set_allocated_name(std::string* name) {
-  if (name != nullptr) {
+inline void bicSuccessReply::set_allocated_success(std::string* success) {
+  if (success != nullptr) {
     
   } else {
     
   }
-  name_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), name,
+  success_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), success,
       GetArena());
-  // @@protoc_insertion_point(field_set_allocated:BICgRPC.HelloRequest.name)
+  // @@protoc_insertion_point(field_set_allocated:BICgRPC.bicSuccessReply.success)
 }
 
 // -------------------------------------------------------------------
 
-// HelloReply
+// bicInitRequest
 
-// string message = 1;
-inline void HelloReply::clear_message() {
-  message_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+// string logFileName = 1;
+inline void bicInitRequest::clear_logfilename() {
+  logfilename_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
 }
-inline const std::string& HelloReply::message() const {
-  // @@protoc_insertion_point(field_get:BICgRPC.HelloReply.message)
-  return _internal_message();
+inline const std::string& bicInitRequest::logfilename() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.bicInitRequest.logFileName)
+  return _internal_logfilename();
 }
-inline void HelloReply::set_message(const std::string& value) {
-  _internal_set_message(value);
-  // @@protoc_insertion_point(field_set:BICgRPC.HelloReply.message)
+inline void bicInitRequest::set_logfilename(const std::string& value) {
+  _internal_set_logfilename(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.bicInitRequest.logFileName)
 }
-inline std::string* HelloReply::mutable_message() {
-  // @@protoc_insertion_point(field_mutable:BICgRPC.HelloReply.message)
-  return _internal_mutable_message();
+inline std::string* bicInitRequest::mutable_logfilename() {
+  // @@protoc_insertion_point(field_mutable:BICgRPC.bicInitRequest.logFileName)
+  return _internal_mutable_logfilename();
 }
-inline const std::string& HelloReply::_internal_message() const {
-  return message_.Get();
+inline const std::string& bicInitRequest::_internal_logfilename() const {
+  return logfilename_.Get();
 }
-inline void HelloReply::_internal_set_message(const std::string& value) {
+inline void bicInitRequest::_internal_set_logfilename(const std::string& value) {
   
-  message_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value, GetArena());
+  logfilename_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value, GetArena());
 }
-inline void HelloReply::set_message(std::string&& value) {
+inline void bicInitRequest::set_logfilename(std::string&& value) {
   
-  message_.Set(
+  logfilename_.Set(
     &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::move(value), GetArena());
-  // @@protoc_insertion_point(field_set_rvalue:BICgRPC.HelloReply.message)
+  // @@protoc_insertion_point(field_set_rvalue:BICgRPC.bicInitRequest.logFileName)
 }
-inline void HelloReply::set_message(const char* value) {
+inline void bicInitRequest::set_logfilename(const char* value) {
   GOOGLE_DCHECK(value != nullptr);
   
-  message_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(value),
+  logfilename_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(value),
               GetArena());
-  // @@protoc_insertion_point(field_set_char:BICgRPC.HelloReply.message)
+  // @@protoc_insertion_point(field_set_char:BICgRPC.bicInitRequest.logFileName)
 }
-inline void HelloReply::set_message(const char* value,
+inline void bicInitRequest::set_logfilename(const char* value,
     size_t size) {
   
-  message_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(
+  logfilename_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(
       reinterpret_cast<const char*>(value), size), GetArena());
-  // @@protoc_insertion_point(field_set_pointer:BICgRPC.HelloReply.message)
+  // @@protoc_insertion_point(field_set_pointer:BICgRPC.bicInitRequest.logFileName)
 }
-inline std::string* HelloReply::_internal_mutable_message() {
+inline std::string* bicInitRequest::_internal_mutable_logfilename() {
   
-  return message_.Mutable(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  return logfilename_.Mutable(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
 }
-inline std::string* HelloReply::release_message() {
-  // @@protoc_insertion_point(field_release:BICgRPC.HelloReply.message)
-  return message_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+inline std::string* bicInitRequest::release_logfilename() {
+  // @@protoc_insertion_point(field_release:BICgRPC.bicInitRequest.logFileName)
+  return logfilename_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
 }
-inline void HelloReply::set_allocated_message(std::string* message) {
-  if (message != nullptr) {
+inline void bicInitRequest::set_allocated_logfilename(std::string* logfilename) {
+  if (logfilename != nullptr) {
     
   } else {
     
   }
-  message_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), message,
+  logfilename_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), logfilename,
       GetArena());
-  // @@protoc_insertion_point(field_set_allocated:BICgRPC.HelloReply.message)
+  // @@protoc_insertion_point(field_set_allocated:BICgRPC.bicInitRequest.logFileName)
 }
+
+// -------------------------------------------------------------------
+
+// bicGetImplantInfoRequest
+
+// bool updateCachedInfo = 1;
+inline void bicGetImplantInfoRequest::clear_updatecachedinfo() {
+  updatecachedinfo_ = false;
+}
+inline bool bicGetImplantInfoRequest::_internal_updatecachedinfo() const {
+  return updatecachedinfo_;
+}
+inline bool bicGetImplantInfoRequest::updatecachedinfo() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.bicGetImplantInfoRequest.updateCachedInfo)
+  return _internal_updatecachedinfo();
+}
+inline void bicGetImplantInfoRequest::_internal_set_updatecachedinfo(bool value) {
+  
+  updatecachedinfo_ = value;
+}
+inline void bicGetImplantInfoRequest::set_updatecachedinfo(bool value) {
+  _internal_set_updatecachedinfo(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.bicGetImplantInfoRequest.updateCachedInfo)
+}
+
+// -------------------------------------------------------------------
+
+// bicGetImplantInfoReply_bicChannelInfo
+
+// bool canMeasure = 1;
+inline void bicGetImplantInfoReply_bicChannelInfo::clear_canmeasure() {
+  canmeasure_ = false;
+}
+inline bool bicGetImplantInfoReply_bicChannelInfo::_internal_canmeasure() const {
+  return canmeasure_;
+}
+inline bool bicGetImplantInfoReply_bicChannelInfo::canmeasure() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.bicGetImplantInfoReply.bicChannelInfo.canMeasure)
+  return _internal_canmeasure();
+}
+inline void bicGetImplantInfoReply_bicChannelInfo::_internal_set_canmeasure(bool value) {
+  
+  canmeasure_ = value;
+}
+inline void bicGetImplantInfoReply_bicChannelInfo::set_canmeasure(bool value) {
+  _internal_set_canmeasure(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.bicGetImplantInfoReply.bicChannelInfo.canMeasure)
+}
+
+// double measureValueMin = 2;
+inline void bicGetImplantInfoReply_bicChannelInfo::clear_measurevaluemin() {
+  measurevaluemin_ = 0;
+}
+inline double bicGetImplantInfoReply_bicChannelInfo::_internal_measurevaluemin() const {
+  return measurevaluemin_;
+}
+inline double bicGetImplantInfoReply_bicChannelInfo::measurevaluemin() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.bicGetImplantInfoReply.bicChannelInfo.measureValueMin)
+  return _internal_measurevaluemin();
+}
+inline void bicGetImplantInfoReply_bicChannelInfo::_internal_set_measurevaluemin(double value) {
+  
+  measurevaluemin_ = value;
+}
+inline void bicGetImplantInfoReply_bicChannelInfo::set_measurevaluemin(double value) {
+  _internal_set_measurevaluemin(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.bicGetImplantInfoReply.bicChannelInfo.measureValueMin)
+}
+
+// double measureValueMax = 3;
+inline void bicGetImplantInfoReply_bicChannelInfo::clear_measurevaluemax() {
+  measurevaluemax_ = 0;
+}
+inline double bicGetImplantInfoReply_bicChannelInfo::_internal_measurevaluemax() const {
+  return measurevaluemax_;
+}
+inline double bicGetImplantInfoReply_bicChannelInfo::measurevaluemax() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.bicGetImplantInfoReply.bicChannelInfo.measureValueMax)
+  return _internal_measurevaluemax();
+}
+inline void bicGetImplantInfoReply_bicChannelInfo::_internal_set_measurevaluemax(double value) {
+  
+  measurevaluemax_ = value;
+}
+inline void bicGetImplantInfoReply_bicChannelInfo::set_measurevaluemax(double value) {
+  _internal_set_measurevaluemax(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.bicGetImplantInfoReply.bicChannelInfo.measureValueMax)
+}
+
+// bool canStimulate = 4;
+inline void bicGetImplantInfoReply_bicChannelInfo::clear_canstimulate() {
+  canstimulate_ = false;
+}
+inline bool bicGetImplantInfoReply_bicChannelInfo::_internal_canstimulate() const {
+  return canstimulate_;
+}
+inline bool bicGetImplantInfoReply_bicChannelInfo::canstimulate() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.bicGetImplantInfoReply.bicChannelInfo.canStimulate)
+  return _internal_canstimulate();
+}
+inline void bicGetImplantInfoReply_bicChannelInfo::_internal_set_canstimulate(bool value) {
+  
+  canstimulate_ = value;
+}
+inline void bicGetImplantInfoReply_bicChannelInfo::set_canstimulate(bool value) {
+  _internal_set_canstimulate(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.bicGetImplantInfoReply.bicChannelInfo.canStimulate)
+}
+
+// .BICgRPC.bicGetImplantInfoReply.bicChannelInfo.UnitType stimulationUnit = 5;
+inline void bicGetImplantInfoReply_bicChannelInfo::clear_stimulationunit() {
+  stimulationunit_ = 0;
+}
+inline ::BICgRPC::bicGetImplantInfoReply_bicChannelInfo_UnitType bicGetImplantInfoReply_bicChannelInfo::_internal_stimulationunit() const {
+  return static_cast< ::BICgRPC::bicGetImplantInfoReply_bicChannelInfo_UnitType >(stimulationunit_);
+}
+inline ::BICgRPC::bicGetImplantInfoReply_bicChannelInfo_UnitType bicGetImplantInfoReply_bicChannelInfo::stimulationunit() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.bicGetImplantInfoReply.bicChannelInfo.stimulationUnit)
+  return _internal_stimulationunit();
+}
+inline void bicGetImplantInfoReply_bicChannelInfo::_internal_set_stimulationunit(::BICgRPC::bicGetImplantInfoReply_bicChannelInfo_UnitType value) {
+  
+  stimulationunit_ = value;
+}
+inline void bicGetImplantInfoReply_bicChannelInfo::set_stimulationunit(::BICgRPC::bicGetImplantInfoReply_bicChannelInfo_UnitType value) {
+  _internal_set_stimulationunit(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.bicGetImplantInfoReply.bicChannelInfo.stimulationUnit)
+}
+
+// double stimValueMin = 6;
+inline void bicGetImplantInfoReply_bicChannelInfo::clear_stimvaluemin() {
+  stimvaluemin_ = 0;
+}
+inline double bicGetImplantInfoReply_bicChannelInfo::_internal_stimvaluemin() const {
+  return stimvaluemin_;
+}
+inline double bicGetImplantInfoReply_bicChannelInfo::stimvaluemin() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.bicGetImplantInfoReply.bicChannelInfo.stimValueMin)
+  return _internal_stimvaluemin();
+}
+inline void bicGetImplantInfoReply_bicChannelInfo::_internal_set_stimvaluemin(double value) {
+  
+  stimvaluemin_ = value;
+}
+inline void bicGetImplantInfoReply_bicChannelInfo::set_stimvaluemin(double value) {
+  _internal_set_stimvaluemin(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.bicGetImplantInfoReply.bicChannelInfo.stimValueMin)
+}
+
+// double stimValueMax = 7;
+inline void bicGetImplantInfoReply_bicChannelInfo::clear_stimvaluemax() {
+  stimvaluemax_ = 0;
+}
+inline double bicGetImplantInfoReply_bicChannelInfo::_internal_stimvaluemax() const {
+  return stimvaluemax_;
+}
+inline double bicGetImplantInfoReply_bicChannelInfo::stimvaluemax() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.bicGetImplantInfoReply.bicChannelInfo.stimValueMax)
+  return _internal_stimvaluemax();
+}
+inline void bicGetImplantInfoReply_bicChannelInfo::_internal_set_stimvaluemax(double value) {
+  
+  stimvaluemax_ = value;
+}
+inline void bicGetImplantInfoReply_bicChannelInfo::set_stimvaluemax(double value) {
+  _internal_set_stimvaluemax(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.bicGetImplantInfoReply.bicChannelInfo.stimValueMax)
+}
+
+// bool canMeasureImpedance = 8;
+inline void bicGetImplantInfoReply_bicChannelInfo::clear_canmeasureimpedance() {
+  canmeasureimpedance_ = false;
+}
+inline bool bicGetImplantInfoReply_bicChannelInfo::_internal_canmeasureimpedance() const {
+  return canmeasureimpedance_;
+}
+inline bool bicGetImplantInfoReply_bicChannelInfo::canmeasureimpedance() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.bicGetImplantInfoReply.bicChannelInfo.canMeasureImpedance)
+  return _internal_canmeasureimpedance();
+}
+inline void bicGetImplantInfoReply_bicChannelInfo::_internal_set_canmeasureimpedance(bool value) {
+  
+  canmeasureimpedance_ = value;
+}
+inline void bicGetImplantInfoReply_bicChannelInfo::set_canmeasureimpedance(bool value) {
+  _internal_set_canmeasureimpedance(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.bicGetImplantInfoReply.bicChannelInfo.canMeasureImpedance)
+}
+
+// -------------------------------------------------------------------
+
+// bicGetImplantInfoReply
+
+// string firmwareVersion = 1;
+inline void bicGetImplantInfoReply::clear_firmwareversion() {
+  firmwareversion_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline const std::string& bicGetImplantInfoReply::firmwareversion() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.bicGetImplantInfoReply.firmwareVersion)
+  return _internal_firmwareversion();
+}
+inline void bicGetImplantInfoReply::set_firmwareversion(const std::string& value) {
+  _internal_set_firmwareversion(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.bicGetImplantInfoReply.firmwareVersion)
+}
+inline std::string* bicGetImplantInfoReply::mutable_firmwareversion() {
+  // @@protoc_insertion_point(field_mutable:BICgRPC.bicGetImplantInfoReply.firmwareVersion)
+  return _internal_mutable_firmwareversion();
+}
+inline const std::string& bicGetImplantInfoReply::_internal_firmwareversion() const {
+  return firmwareversion_.Get();
+}
+inline void bicGetImplantInfoReply::_internal_set_firmwareversion(const std::string& value) {
+  
+  firmwareversion_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value, GetArena());
+}
+inline void bicGetImplantInfoReply::set_firmwareversion(std::string&& value) {
+  
+  firmwareversion_.Set(
+    &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::move(value), GetArena());
+  // @@protoc_insertion_point(field_set_rvalue:BICgRPC.bicGetImplantInfoReply.firmwareVersion)
+}
+inline void bicGetImplantInfoReply::set_firmwareversion(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  
+  firmwareversion_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(value),
+              GetArena());
+  // @@protoc_insertion_point(field_set_char:BICgRPC.bicGetImplantInfoReply.firmwareVersion)
+}
+inline void bicGetImplantInfoReply::set_firmwareversion(const char* value,
+    size_t size) {
+  
+  firmwareversion_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(
+      reinterpret_cast<const char*>(value), size), GetArena());
+  // @@protoc_insertion_point(field_set_pointer:BICgRPC.bicGetImplantInfoReply.firmwareVersion)
+}
+inline std::string* bicGetImplantInfoReply::_internal_mutable_firmwareversion() {
+  
+  return firmwareversion_.Mutable(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline std::string* bicGetImplantInfoReply::release_firmwareversion() {
+  // @@protoc_insertion_point(field_release:BICgRPC.bicGetImplantInfoReply.firmwareVersion)
+  return firmwareversion_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline void bicGetImplantInfoReply::set_allocated_firmwareversion(std::string* firmwareversion) {
+  if (firmwareversion != nullptr) {
+    
+  } else {
+    
+  }
+  firmwareversion_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), firmwareversion,
+      GetArena());
+  // @@protoc_insertion_point(field_set_allocated:BICgRPC.bicGetImplantInfoReply.firmwareVersion)
+}
+
+// string deviceType = 2;
+inline void bicGetImplantInfoReply::clear_devicetype() {
+  devicetype_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline const std::string& bicGetImplantInfoReply::devicetype() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.bicGetImplantInfoReply.deviceType)
+  return _internal_devicetype();
+}
+inline void bicGetImplantInfoReply::set_devicetype(const std::string& value) {
+  _internal_set_devicetype(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.bicGetImplantInfoReply.deviceType)
+}
+inline std::string* bicGetImplantInfoReply::mutable_devicetype() {
+  // @@protoc_insertion_point(field_mutable:BICgRPC.bicGetImplantInfoReply.deviceType)
+  return _internal_mutable_devicetype();
+}
+inline const std::string& bicGetImplantInfoReply::_internal_devicetype() const {
+  return devicetype_.Get();
+}
+inline void bicGetImplantInfoReply::_internal_set_devicetype(const std::string& value) {
+  
+  devicetype_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value, GetArena());
+}
+inline void bicGetImplantInfoReply::set_devicetype(std::string&& value) {
+  
+  devicetype_.Set(
+    &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::move(value), GetArena());
+  // @@protoc_insertion_point(field_set_rvalue:BICgRPC.bicGetImplantInfoReply.deviceType)
+}
+inline void bicGetImplantInfoReply::set_devicetype(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  
+  devicetype_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(value),
+              GetArena());
+  // @@protoc_insertion_point(field_set_char:BICgRPC.bicGetImplantInfoReply.deviceType)
+}
+inline void bicGetImplantInfoReply::set_devicetype(const char* value,
+    size_t size) {
+  
+  devicetype_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(
+      reinterpret_cast<const char*>(value), size), GetArena());
+  // @@protoc_insertion_point(field_set_pointer:BICgRPC.bicGetImplantInfoReply.deviceType)
+}
+inline std::string* bicGetImplantInfoReply::_internal_mutable_devicetype() {
+  
+  return devicetype_.Mutable(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline std::string* bicGetImplantInfoReply::release_devicetype() {
+  // @@protoc_insertion_point(field_release:BICgRPC.bicGetImplantInfoReply.deviceType)
+  return devicetype_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline void bicGetImplantInfoReply::set_allocated_devicetype(std::string* devicetype) {
+  if (devicetype != nullptr) {
+    
+  } else {
+    
+  }
+  devicetype_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), devicetype,
+      GetArena());
+  // @@protoc_insertion_point(field_set_allocated:BICgRPC.bicGetImplantInfoReply.deviceType)
+}
+
+// string deviceId = 3;
+inline void bicGetImplantInfoReply::clear_deviceid() {
+  deviceid_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline const std::string& bicGetImplantInfoReply::deviceid() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.bicGetImplantInfoReply.deviceId)
+  return _internal_deviceid();
+}
+inline void bicGetImplantInfoReply::set_deviceid(const std::string& value) {
+  _internal_set_deviceid(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.bicGetImplantInfoReply.deviceId)
+}
+inline std::string* bicGetImplantInfoReply::mutable_deviceid() {
+  // @@protoc_insertion_point(field_mutable:BICgRPC.bicGetImplantInfoReply.deviceId)
+  return _internal_mutable_deviceid();
+}
+inline const std::string& bicGetImplantInfoReply::_internal_deviceid() const {
+  return deviceid_.Get();
+}
+inline void bicGetImplantInfoReply::_internal_set_deviceid(const std::string& value) {
+  
+  deviceid_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value, GetArena());
+}
+inline void bicGetImplantInfoReply::set_deviceid(std::string&& value) {
+  
+  deviceid_.Set(
+    &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::move(value), GetArena());
+  // @@protoc_insertion_point(field_set_rvalue:BICgRPC.bicGetImplantInfoReply.deviceId)
+}
+inline void bicGetImplantInfoReply::set_deviceid(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  
+  deviceid_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(value),
+              GetArena());
+  // @@protoc_insertion_point(field_set_char:BICgRPC.bicGetImplantInfoReply.deviceId)
+}
+inline void bicGetImplantInfoReply::set_deviceid(const char* value,
+    size_t size) {
+  
+  deviceid_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(
+      reinterpret_cast<const char*>(value), size), GetArena());
+  // @@protoc_insertion_point(field_set_pointer:BICgRPC.bicGetImplantInfoReply.deviceId)
+}
+inline std::string* bicGetImplantInfoReply::_internal_mutable_deviceid() {
+  
+  return deviceid_.Mutable(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline std::string* bicGetImplantInfoReply::release_deviceid() {
+  // @@protoc_insertion_point(field_release:BICgRPC.bicGetImplantInfoReply.deviceId)
+  return deviceid_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline void bicGetImplantInfoReply::set_allocated_deviceid(std::string* deviceid) {
+  if (deviceid != nullptr) {
+    
+  } else {
+    
+  }
+  deviceid_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), deviceid,
+      GetArena());
+  // @@protoc_insertion_point(field_set_allocated:BICgRPC.bicGetImplantInfoReply.deviceId)
+}
+
+// repeated .BICgRPC.bicGetImplantInfoReply.bicChannelInfo channelInfoList = 4;
+inline int bicGetImplantInfoReply::_internal_channelinfolist_size() const {
+  return channelinfolist_.size();
+}
+inline int bicGetImplantInfoReply::channelinfolist_size() const {
+  return _internal_channelinfolist_size();
+}
+inline void bicGetImplantInfoReply::clear_channelinfolist() {
+  channelinfolist_.Clear();
+}
+inline ::BICgRPC::bicGetImplantInfoReply_bicChannelInfo* bicGetImplantInfoReply::mutable_channelinfolist(int index) {
+  // @@protoc_insertion_point(field_mutable:BICgRPC.bicGetImplantInfoReply.channelInfoList)
+  return channelinfolist_.Mutable(index);
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::BICgRPC::bicGetImplantInfoReply_bicChannelInfo >*
+bicGetImplantInfoReply::mutable_channelinfolist() {
+  // @@protoc_insertion_point(field_mutable_list:BICgRPC.bicGetImplantInfoReply.channelInfoList)
+  return &channelinfolist_;
+}
+inline const ::BICgRPC::bicGetImplantInfoReply_bicChannelInfo& bicGetImplantInfoReply::_internal_channelinfolist(int index) const {
+  return channelinfolist_.Get(index);
+}
+inline const ::BICgRPC::bicGetImplantInfoReply_bicChannelInfo& bicGetImplantInfoReply::channelinfolist(int index) const {
+  // @@protoc_insertion_point(field_get:BICgRPC.bicGetImplantInfoReply.channelInfoList)
+  return _internal_channelinfolist(index);
+}
+inline ::BICgRPC::bicGetImplantInfoReply_bicChannelInfo* bicGetImplantInfoReply::_internal_add_channelinfolist() {
+  return channelinfolist_.Add();
+}
+inline ::BICgRPC::bicGetImplantInfoReply_bicChannelInfo* bicGetImplantInfoReply::add_channelinfolist() {
+  // @@protoc_insertion_point(field_add:BICgRPC.bicGetImplantInfoReply.channelInfoList)
+  return _internal_add_channelinfolist();
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::BICgRPC::bicGetImplantInfoReply_bicChannelInfo >&
+bicGetImplantInfoReply::channelinfolist() const {
+  // @@protoc_insertion_point(field_list:BICgRPC.bicGetImplantInfoReply.channelInfoList)
+  return channelinfolist_;
+}
+
+// uint32 channelCount = 5;
+inline void bicGetImplantInfoReply::clear_channelcount() {
+  channelcount_ = 0u;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 bicGetImplantInfoReply::_internal_channelcount() const {
+  return channelcount_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 bicGetImplantInfoReply::channelcount() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.bicGetImplantInfoReply.channelCount)
+  return _internal_channelcount();
+}
+inline void bicGetImplantInfoReply::_internal_set_channelcount(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  
+  channelcount_ = value;
+}
+inline void bicGetImplantInfoReply::set_channelcount(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  _internal_set_channelcount(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.bicGetImplantInfoReply.channelCount)
+}
+
+// uint32 measurementChannelCount = 6;
+inline void bicGetImplantInfoReply::clear_measurementchannelcount() {
+  measurementchannelcount_ = 0u;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 bicGetImplantInfoReply::_internal_measurementchannelcount() const {
+  return measurementchannelcount_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 bicGetImplantInfoReply::measurementchannelcount() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.bicGetImplantInfoReply.measurementChannelCount)
+  return _internal_measurementchannelcount();
+}
+inline void bicGetImplantInfoReply::_internal_set_measurementchannelcount(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  
+  measurementchannelcount_ = value;
+}
+inline void bicGetImplantInfoReply::set_measurementchannelcount(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  _internal_set_measurementchannelcount(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.bicGetImplantInfoReply.measurementChannelCount)
+}
+
+// uint32 stimulationChannelCount = 7;
+inline void bicGetImplantInfoReply::clear_stimulationchannelcount() {
+  stimulationchannelcount_ = 0u;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 bicGetImplantInfoReply::_internal_stimulationchannelcount() const {
+  return stimulationchannelcount_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 bicGetImplantInfoReply::stimulationchannelcount() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.bicGetImplantInfoReply.stimulationChannelCount)
+  return _internal_stimulationchannelcount();
+}
+inline void bicGetImplantInfoReply::_internal_set_stimulationchannelcount(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  
+  stimulationchannelcount_ = value;
+}
+inline void bicGetImplantInfoReply::set_stimulationchannelcount(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  _internal_set_stimulationchannelcount(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.bicGetImplantInfoReply.stimulationChannelCount)
+}
+
+// uint32 samplingRate = 8;
+inline void bicGetImplantInfoReply::clear_samplingrate() {
+  samplingrate_ = 0u;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 bicGetImplantInfoReply::_internal_samplingrate() const {
+  return samplingrate_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 bicGetImplantInfoReply::samplingrate() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.bicGetImplantInfoReply.samplingRate)
+  return _internal_samplingrate();
+}
+inline void bicGetImplantInfoReply::_internal_set_samplingrate(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  
+  samplingrate_ = value;
+}
+inline void bicGetImplantInfoReply::set_samplingrate(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  _internal_set_samplingrate(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.bicGetImplantInfoReply.samplingRate)
+}
+
+// string success = 9;
+inline void bicGetImplantInfoReply::clear_success() {
+  success_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline const std::string& bicGetImplantInfoReply::success() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.bicGetImplantInfoReply.success)
+  return _internal_success();
+}
+inline void bicGetImplantInfoReply::set_success(const std::string& value) {
+  _internal_set_success(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.bicGetImplantInfoReply.success)
+}
+inline std::string* bicGetImplantInfoReply::mutable_success() {
+  // @@protoc_insertion_point(field_mutable:BICgRPC.bicGetImplantInfoReply.success)
+  return _internal_mutable_success();
+}
+inline const std::string& bicGetImplantInfoReply::_internal_success() const {
+  return success_.Get();
+}
+inline void bicGetImplantInfoReply::_internal_set_success(const std::string& value) {
+  
+  success_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value, GetArena());
+}
+inline void bicGetImplantInfoReply::set_success(std::string&& value) {
+  
+  success_.Set(
+    &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::move(value), GetArena());
+  // @@protoc_insertion_point(field_set_rvalue:BICgRPC.bicGetImplantInfoReply.success)
+}
+inline void bicGetImplantInfoReply::set_success(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  
+  success_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(value),
+              GetArena());
+  // @@protoc_insertion_point(field_set_char:BICgRPC.bicGetImplantInfoReply.success)
+}
+inline void bicGetImplantInfoReply::set_success(const char* value,
+    size_t size) {
+  
+  success_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(
+      reinterpret_cast<const char*>(value), size), GetArena());
+  // @@protoc_insertion_point(field_set_pointer:BICgRPC.bicGetImplantInfoReply.success)
+}
+inline std::string* bicGetImplantInfoReply::_internal_mutable_success() {
+  
+  return success_.Mutable(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline std::string* bicGetImplantInfoReply::release_success() {
+  // @@protoc_insertion_point(field_release:BICgRPC.bicGetImplantInfoReply.success)
+  return success_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline void bicGetImplantInfoReply::set_allocated_success(std::string* success) {
+  if (success != nullptr) {
+    
+  } else {
+    
+  }
+  success_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), success,
+      GetArena());
+  // @@protoc_insertion_point(field_set_allocated:BICgRPC.bicGetImplantInfoReply.success)
+}
+
+// -------------------------------------------------------------------
+
+// bicGetImpedanceRequest
+
+// uint32 channel = 1;
+inline void bicGetImpedanceRequest::clear_channel() {
+  channel_ = 0u;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 bicGetImpedanceRequest::_internal_channel() const {
+  return channel_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 bicGetImpedanceRequest::channel() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.bicGetImpedanceRequest.channel)
+  return _internal_channel();
+}
+inline void bicGetImpedanceRequest::_internal_set_channel(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  
+  channel_ = value;
+}
+inline void bicGetImpedanceRequest::set_channel(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  _internal_set_channel(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.bicGetImpedanceRequest.channel)
+}
+
+// -------------------------------------------------------------------
+
+// bicGetImpedanceReply
+
+// double channelImpedance = 1;
+inline void bicGetImpedanceReply::clear_channelimpedance() {
+  channelimpedance_ = 0;
+}
+inline double bicGetImpedanceReply::_internal_channelimpedance() const {
+  return channelimpedance_;
+}
+inline double bicGetImpedanceReply::channelimpedance() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.bicGetImpedanceReply.channelImpedance)
+  return _internal_channelimpedance();
+}
+inline void bicGetImpedanceReply::_internal_set_channelimpedance(double value) {
+  
+  channelimpedance_ = value;
+}
+inline void bicGetImpedanceReply::set_channelimpedance(double value) {
+  _internal_set_channelimpedance(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.bicGetImpedanceReply.channelImpedance)
+}
+
+// string units = 2;
+inline void bicGetImpedanceReply::clear_units() {
+  units_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline const std::string& bicGetImpedanceReply::units() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.bicGetImpedanceReply.units)
+  return _internal_units();
+}
+inline void bicGetImpedanceReply::set_units(const std::string& value) {
+  _internal_set_units(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.bicGetImpedanceReply.units)
+}
+inline std::string* bicGetImpedanceReply::mutable_units() {
+  // @@protoc_insertion_point(field_mutable:BICgRPC.bicGetImpedanceReply.units)
+  return _internal_mutable_units();
+}
+inline const std::string& bicGetImpedanceReply::_internal_units() const {
+  return units_.Get();
+}
+inline void bicGetImpedanceReply::_internal_set_units(const std::string& value) {
+  
+  units_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value, GetArena());
+}
+inline void bicGetImpedanceReply::set_units(std::string&& value) {
+  
+  units_.Set(
+    &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::move(value), GetArena());
+  // @@protoc_insertion_point(field_set_rvalue:BICgRPC.bicGetImpedanceReply.units)
+}
+inline void bicGetImpedanceReply::set_units(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  
+  units_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(value),
+              GetArena());
+  // @@protoc_insertion_point(field_set_char:BICgRPC.bicGetImpedanceReply.units)
+}
+inline void bicGetImpedanceReply::set_units(const char* value,
+    size_t size) {
+  
+  units_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(
+      reinterpret_cast<const char*>(value), size), GetArena());
+  // @@protoc_insertion_point(field_set_pointer:BICgRPC.bicGetImpedanceReply.units)
+}
+inline std::string* bicGetImpedanceReply::_internal_mutable_units() {
+  
+  return units_.Mutable(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline std::string* bicGetImpedanceReply::release_units() {
+  // @@protoc_insertion_point(field_release:BICgRPC.bicGetImpedanceReply.units)
+  return units_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline void bicGetImpedanceReply::set_allocated_units(std::string* units) {
+  if (units != nullptr) {
+    
+  } else {
+    
+  }
+  units_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), units,
+      GetArena());
+  // @@protoc_insertion_point(field_set_allocated:BICgRPC.bicGetImpedanceReply.units)
+}
+
+// string success = 3;
+inline void bicGetImpedanceReply::clear_success() {
+  success_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline const std::string& bicGetImpedanceReply::success() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.bicGetImpedanceReply.success)
+  return _internal_success();
+}
+inline void bicGetImpedanceReply::set_success(const std::string& value) {
+  _internal_set_success(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.bicGetImpedanceReply.success)
+}
+inline std::string* bicGetImpedanceReply::mutable_success() {
+  // @@protoc_insertion_point(field_mutable:BICgRPC.bicGetImpedanceReply.success)
+  return _internal_mutable_success();
+}
+inline const std::string& bicGetImpedanceReply::_internal_success() const {
+  return success_.Get();
+}
+inline void bicGetImpedanceReply::_internal_set_success(const std::string& value) {
+  
+  success_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value, GetArena());
+}
+inline void bicGetImpedanceReply::set_success(std::string&& value) {
+  
+  success_.Set(
+    &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::move(value), GetArena());
+  // @@protoc_insertion_point(field_set_rvalue:BICgRPC.bicGetImpedanceReply.success)
+}
+inline void bicGetImpedanceReply::set_success(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  
+  success_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(value),
+              GetArena());
+  // @@protoc_insertion_point(field_set_char:BICgRPC.bicGetImpedanceReply.success)
+}
+inline void bicGetImpedanceReply::set_success(const char* value,
+    size_t size) {
+  
+  success_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(
+      reinterpret_cast<const char*>(value), size), GetArena());
+  // @@protoc_insertion_point(field_set_pointer:BICgRPC.bicGetImpedanceReply.success)
+}
+inline std::string* bicGetImpedanceReply::_internal_mutable_success() {
+  
+  return success_.Mutable(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline std::string* bicGetImpedanceReply::release_success() {
+  // @@protoc_insertion_point(field_release:BICgRPC.bicGetImpedanceReply.success)
+  return success_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline void bicGetImpedanceReply::set_allocated_success(std::string* success) {
+  if (success != nullptr) {
+    
+  } else {
+    
+  }
+  success_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), success,
+      GetArena());
+  // @@protoc_insertion_point(field_set_allocated:BICgRPC.bicGetImpedanceReply.success)
+}
+
+// -------------------------------------------------------------------
+
+// bicGetTemperatureReply
+
+// double temperature = 1;
+inline void bicGetTemperatureReply::clear_temperature() {
+  temperature_ = 0;
+}
+inline double bicGetTemperatureReply::_internal_temperature() const {
+  return temperature_;
+}
+inline double bicGetTemperatureReply::temperature() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.bicGetTemperatureReply.temperature)
+  return _internal_temperature();
+}
+inline void bicGetTemperatureReply::_internal_set_temperature(double value) {
+  
+  temperature_ = value;
+}
+inline void bicGetTemperatureReply::set_temperature(double value) {
+  _internal_set_temperature(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.bicGetTemperatureReply.temperature)
+}
+
+// string units = 2;
+inline void bicGetTemperatureReply::clear_units() {
+  units_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline const std::string& bicGetTemperatureReply::units() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.bicGetTemperatureReply.units)
+  return _internal_units();
+}
+inline void bicGetTemperatureReply::set_units(const std::string& value) {
+  _internal_set_units(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.bicGetTemperatureReply.units)
+}
+inline std::string* bicGetTemperatureReply::mutable_units() {
+  // @@protoc_insertion_point(field_mutable:BICgRPC.bicGetTemperatureReply.units)
+  return _internal_mutable_units();
+}
+inline const std::string& bicGetTemperatureReply::_internal_units() const {
+  return units_.Get();
+}
+inline void bicGetTemperatureReply::_internal_set_units(const std::string& value) {
+  
+  units_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value, GetArena());
+}
+inline void bicGetTemperatureReply::set_units(std::string&& value) {
+  
+  units_.Set(
+    &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::move(value), GetArena());
+  // @@protoc_insertion_point(field_set_rvalue:BICgRPC.bicGetTemperatureReply.units)
+}
+inline void bicGetTemperatureReply::set_units(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  
+  units_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(value),
+              GetArena());
+  // @@protoc_insertion_point(field_set_char:BICgRPC.bicGetTemperatureReply.units)
+}
+inline void bicGetTemperatureReply::set_units(const char* value,
+    size_t size) {
+  
+  units_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(
+      reinterpret_cast<const char*>(value), size), GetArena());
+  // @@protoc_insertion_point(field_set_pointer:BICgRPC.bicGetTemperatureReply.units)
+}
+inline std::string* bicGetTemperatureReply::_internal_mutable_units() {
+  
+  return units_.Mutable(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline std::string* bicGetTemperatureReply::release_units() {
+  // @@protoc_insertion_point(field_release:BICgRPC.bicGetTemperatureReply.units)
+  return units_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline void bicGetTemperatureReply::set_allocated_units(std::string* units) {
+  if (units != nullptr) {
+    
+  } else {
+    
+  }
+  units_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), units,
+      GetArena());
+  // @@protoc_insertion_point(field_set_allocated:BICgRPC.bicGetTemperatureReply.units)
+}
+
+// string success = 3;
+inline void bicGetTemperatureReply::clear_success() {
+  success_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline const std::string& bicGetTemperatureReply::success() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.bicGetTemperatureReply.success)
+  return _internal_success();
+}
+inline void bicGetTemperatureReply::set_success(const std::string& value) {
+  _internal_set_success(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.bicGetTemperatureReply.success)
+}
+inline std::string* bicGetTemperatureReply::mutable_success() {
+  // @@protoc_insertion_point(field_mutable:BICgRPC.bicGetTemperatureReply.success)
+  return _internal_mutable_success();
+}
+inline const std::string& bicGetTemperatureReply::_internal_success() const {
+  return success_.Get();
+}
+inline void bicGetTemperatureReply::_internal_set_success(const std::string& value) {
+  
+  success_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value, GetArena());
+}
+inline void bicGetTemperatureReply::set_success(std::string&& value) {
+  
+  success_.Set(
+    &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::move(value), GetArena());
+  // @@protoc_insertion_point(field_set_rvalue:BICgRPC.bicGetTemperatureReply.success)
+}
+inline void bicGetTemperatureReply::set_success(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  
+  success_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(value),
+              GetArena());
+  // @@protoc_insertion_point(field_set_char:BICgRPC.bicGetTemperatureReply.success)
+}
+inline void bicGetTemperatureReply::set_success(const char* value,
+    size_t size) {
+  
+  success_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(
+      reinterpret_cast<const char*>(value), size), GetArena());
+  // @@protoc_insertion_point(field_set_pointer:BICgRPC.bicGetTemperatureReply.success)
+}
+inline std::string* bicGetTemperatureReply::_internal_mutable_success() {
+  
+  return success_.Mutable(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline std::string* bicGetTemperatureReply::release_success() {
+  // @@protoc_insertion_point(field_release:BICgRPC.bicGetTemperatureReply.success)
+  return success_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline void bicGetTemperatureReply::set_allocated_success(std::string* success) {
+  if (success != nullptr) {
+    
+  } else {
+    
+  }
+  success_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), success,
+      GetArena());
+  // @@protoc_insertion_point(field_set_allocated:BICgRPC.bicGetTemperatureReply.success)
+}
+
+// -------------------------------------------------------------------
+
+// bicGetHumidityReply
+
+// double humidity = 1;
+inline void bicGetHumidityReply::clear_humidity() {
+  humidity_ = 0;
+}
+inline double bicGetHumidityReply::_internal_humidity() const {
+  return humidity_;
+}
+inline double bicGetHumidityReply::humidity() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.bicGetHumidityReply.humidity)
+  return _internal_humidity();
+}
+inline void bicGetHumidityReply::_internal_set_humidity(double value) {
+  
+  humidity_ = value;
+}
+inline void bicGetHumidityReply::set_humidity(double value) {
+  _internal_set_humidity(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.bicGetHumidityReply.humidity)
+}
+
+// string units = 2;
+inline void bicGetHumidityReply::clear_units() {
+  units_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline const std::string& bicGetHumidityReply::units() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.bicGetHumidityReply.units)
+  return _internal_units();
+}
+inline void bicGetHumidityReply::set_units(const std::string& value) {
+  _internal_set_units(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.bicGetHumidityReply.units)
+}
+inline std::string* bicGetHumidityReply::mutable_units() {
+  // @@protoc_insertion_point(field_mutable:BICgRPC.bicGetHumidityReply.units)
+  return _internal_mutable_units();
+}
+inline const std::string& bicGetHumidityReply::_internal_units() const {
+  return units_.Get();
+}
+inline void bicGetHumidityReply::_internal_set_units(const std::string& value) {
+  
+  units_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value, GetArena());
+}
+inline void bicGetHumidityReply::set_units(std::string&& value) {
+  
+  units_.Set(
+    &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::move(value), GetArena());
+  // @@protoc_insertion_point(field_set_rvalue:BICgRPC.bicGetHumidityReply.units)
+}
+inline void bicGetHumidityReply::set_units(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  
+  units_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(value),
+              GetArena());
+  // @@protoc_insertion_point(field_set_char:BICgRPC.bicGetHumidityReply.units)
+}
+inline void bicGetHumidityReply::set_units(const char* value,
+    size_t size) {
+  
+  units_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(
+      reinterpret_cast<const char*>(value), size), GetArena());
+  // @@protoc_insertion_point(field_set_pointer:BICgRPC.bicGetHumidityReply.units)
+}
+inline std::string* bicGetHumidityReply::_internal_mutable_units() {
+  
+  return units_.Mutable(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline std::string* bicGetHumidityReply::release_units() {
+  // @@protoc_insertion_point(field_release:BICgRPC.bicGetHumidityReply.units)
+  return units_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline void bicGetHumidityReply::set_allocated_units(std::string* units) {
+  if (units != nullptr) {
+    
+  } else {
+    
+  }
+  units_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), units,
+      GetArena());
+  // @@protoc_insertion_point(field_set_allocated:BICgRPC.bicGetHumidityReply.units)
+}
+
+// string success = 3;
+inline void bicGetHumidityReply::clear_success() {
+  success_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline const std::string& bicGetHumidityReply::success() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.bicGetHumidityReply.success)
+  return _internal_success();
+}
+inline void bicGetHumidityReply::set_success(const std::string& value) {
+  _internal_set_success(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.bicGetHumidityReply.success)
+}
+inline std::string* bicGetHumidityReply::mutable_success() {
+  // @@protoc_insertion_point(field_mutable:BICgRPC.bicGetHumidityReply.success)
+  return _internal_mutable_success();
+}
+inline const std::string& bicGetHumidityReply::_internal_success() const {
+  return success_.Get();
+}
+inline void bicGetHumidityReply::_internal_set_success(const std::string& value) {
+  
+  success_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value, GetArena());
+}
+inline void bicGetHumidityReply::set_success(std::string&& value) {
+  
+  success_.Set(
+    &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::move(value), GetArena());
+  // @@protoc_insertion_point(field_set_rvalue:BICgRPC.bicGetHumidityReply.success)
+}
+inline void bicGetHumidityReply::set_success(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  
+  success_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(value),
+              GetArena());
+  // @@protoc_insertion_point(field_set_char:BICgRPC.bicGetHumidityReply.success)
+}
+inline void bicGetHumidityReply::set_success(const char* value,
+    size_t size) {
+  
+  success_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(
+      reinterpret_cast<const char*>(value), size), GetArena());
+  // @@protoc_insertion_point(field_set_pointer:BICgRPC.bicGetHumidityReply.success)
+}
+inline std::string* bicGetHumidityReply::_internal_mutable_success() {
+  
+  return success_.Mutable(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline std::string* bicGetHumidityReply::release_success() {
+  // @@protoc_insertion_point(field_release:BICgRPC.bicGetHumidityReply.success)
+  return success_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline void bicGetHumidityReply::set_allocated_success(std::string* success) {
+  if (success != nullptr) {
+    
+  } else {
+    
+  }
+  success_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), success,
+      GetArena());
+  // @@protoc_insertion_point(field_set_allocated:BICgRPC.bicGetHumidityReply.success)
+}
+
+// -------------------------------------------------------------------
+
+// bicSetSensingEnableRequest
+
+// bool enableSensing = 1;
+inline void bicSetSensingEnableRequest::clear_enablesensing() {
+  enablesensing_ = false;
+}
+inline bool bicSetSensingEnableRequest::_internal_enablesensing() const {
+  return enablesensing_;
+}
+inline bool bicSetSensingEnableRequest::enablesensing() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.bicSetSensingEnableRequest.enableSensing)
+  return _internal_enablesensing();
+}
+inline void bicSetSensingEnableRequest::_internal_set_enablesensing(bool value) {
+  
+  enablesensing_ = value;
+}
+inline void bicSetSensingEnableRequest::set_enablesensing(bool value) {
+  _internal_set_enablesensing(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.bicSetSensingEnableRequest.enableSensing)
+}
+
+// repeated uint32 refChannels = 2;
+inline int bicSetSensingEnableRequest::_internal_refchannels_size() const {
+  return refchannels_.size();
+}
+inline int bicSetSensingEnableRequest::refchannels_size() const {
+  return _internal_refchannels_size();
+}
+inline void bicSetSensingEnableRequest::clear_refchannels() {
+  refchannels_.Clear();
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 bicSetSensingEnableRequest::_internal_refchannels(int index) const {
+  return refchannels_.Get(index);
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 bicSetSensingEnableRequest::refchannels(int index) const {
+  // @@protoc_insertion_point(field_get:BICgRPC.bicSetSensingEnableRequest.refChannels)
+  return _internal_refchannels(index);
+}
+inline void bicSetSensingEnableRequest::set_refchannels(int index, ::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  refchannels_.Set(index, value);
+  // @@protoc_insertion_point(field_set:BICgRPC.bicSetSensingEnableRequest.refChannels)
+}
+inline void bicSetSensingEnableRequest::_internal_add_refchannels(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  refchannels_.Add(value);
+}
+inline void bicSetSensingEnableRequest::add_refchannels(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  _internal_add_refchannels(value);
+  // @@protoc_insertion_point(field_add:BICgRPC.bicSetSensingEnableRequest.refChannels)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::uint32 >&
+bicSetSensingEnableRequest::_internal_refchannels() const {
+  return refchannels_;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::uint32 >&
+bicSetSensingEnableRequest::refchannels() const {
+  // @@protoc_insertion_point(field_list:BICgRPC.bicSetSensingEnableRequest.refChannels)
+  return _internal_refchannels();
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::uint32 >*
+bicSetSensingEnableRequest::_internal_mutable_refchannels() {
+  return &refchannels_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::uint32 >*
+bicSetSensingEnableRequest::mutable_refchannels() {
+  // @@protoc_insertion_point(field_mutable_list:BICgRPC.bicSetSensingEnableRequest.refChannels)
+  return _internal_mutable_refchannels();
+}
+
+// -------------------------------------------------------------------
+
+// bicSetImplantPowerRequest
+
+// bool powerEnabled = 1;
+inline void bicSetImplantPowerRequest::clear_powerenabled() {
+  powerenabled_ = false;
+}
+inline bool bicSetImplantPowerRequest::_internal_powerenabled() const {
+  return powerenabled_;
+}
+inline bool bicSetImplantPowerRequest::powerenabled() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.bicSetImplantPowerRequest.powerEnabled)
+  return _internal_powerenabled();
+}
+inline void bicSetImplantPowerRequest::_internal_set_powerenabled(bool value) {
+  
+  powerenabled_ = value;
+}
+inline void bicSetImplantPowerRequest::set_powerenabled(bool value) {
+  _internal_set_powerenabled(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.bicSetImplantPowerRequest.powerEnabled)
+}
+
+// -------------------------------------------------------------------
+
+// bicStartStimulationRequest
 
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
 // -------------------------------------------------------------------
 
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 
 // @@protoc_insertion_point(namespace_scope)
 
 }  // namespace BICgRPC
+
+PROTOBUF_NAMESPACE_OPEN
+
+template <> struct is_proto_enum< ::BICgRPC::bicGetImplantInfoReply_bicChannelInfo_UnitType> : ::std::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::BICgRPC::bicGetImplantInfoReply_bicChannelInfo_UnitType>() {
+  return ::BICgRPC::bicGetImplantInfoReply_bicChannelInfo_UnitType_descriptor();
+}
+
+PROTOBUF_NAMESPACE_CLOSE
 
 // @@protoc_insertion_point(global_scope)
 
