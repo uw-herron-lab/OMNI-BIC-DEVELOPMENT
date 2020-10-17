@@ -14,20 +14,27 @@
 #include <google/protobuf/wire_format.h>
 // @@protoc_insertion_point(includes)
 #include <google/protobuf/port_def.inc>
+extern PROTOBUF_INTERNAL_EXPORT_BICgRPC_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_Bridge_BICgRPC_2eproto;
+extern PROTOBUF_INTERNAL_EXPORT_BICgRPC_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<1> scc_info_bicGetImplantInfoReply_BICgRPC_2eproto;
 extern PROTOBUF_INTERNAL_EXPORT_BICgRPC_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_bicGetImplantInfoReply_bicChannelInfo_BICgRPC_2eproto;
+extern PROTOBUF_INTERNAL_EXPORT_google_2fprotobuf_2fany_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_Any_google_2fprotobuf_2fany_2eproto;
 namespace BICgRPC {
-class bicNullRequestDefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<bicNullRequest> _instance;
-} _bicNullRequest_default_instance_;
 class bicSuccessReplyDefaultTypeInternal {
  public:
   ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<bicSuccessReply> _instance;
 } _bicSuccessReply_default_instance_;
-class bicInitRequestDefaultTypeInternal {
+class ScanDevicesRequestDefaultTypeInternal {
  public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<bicInitRequest> _instance;
-} _bicInitRequest_default_instance_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<ScanDevicesRequest> _instance;
+} _ScanDevicesRequest_default_instance_;
+class ScanDevicesReplyDefaultTypeInternal {
+ public:
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<ScanDevicesReply> _instance;
+} _ScanDevicesReply_default_instance_;
+class ConnectDeviceRequestDefaultTypeInternal {
+ public:
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<ConnectDeviceRequest> _instance;
+} _ConnectDeviceRequest_default_instance_;
 class bicGetImplantInfoRequestDefaultTypeInternal {
  public:
   ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<bicGetImplantInfoRequest> _instance;
@@ -68,7 +75,217 @@ class bicStartStimulationRequestDefaultTypeInternal {
  public:
   ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<bicStartStimulationRequest> _instance;
 } _bicStartStimulationRequest_default_instance_;
+class TemperatureUpdateDefaultTypeInternal {
+ public:
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<TemperatureUpdate> _instance;
+} _TemperatureUpdate_default_instance_;
+class BridgeDefaultTypeInternal {
+ public:
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<Bridge> _instance;
+} _Bridge_default_instance_;
+class QueryBridgesRequestDefaultTypeInternal {
+ public:
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<QueryBridgesRequest> _instance;
+} _QueryBridgesRequest_default_instance_;
+class QueryBridgesResponseDefaultTypeInternal {
+ public:
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<QueryBridgesResponse> _instance;
+} _QueryBridgesResponse_default_instance_;
+class ConnectBridgeRequestDefaultTypeInternal {
+ public:
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<ConnectBridgeRequest> _instance;
+} _ConnectBridgeRequest_default_instance_;
+class ConnectBridgeResponseDefaultTypeInternal {
+ public:
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<ConnectBridgeResponse> _instance;
+} _ConnectBridgeResponse_default_instance_;
+class DescribeBridgeRequestDefaultTypeInternal {
+ public:
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<DescribeBridgeRequest> _instance;
+} _DescribeBridgeRequest_default_instance_;
+class DescribeBridgeResponseDefaultTypeInternal {
+ public:
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<DescribeBridgeResponse> _instance;
+} _DescribeBridgeResponse_default_instance_;
+class DisconnectBridgeRequestDefaultTypeInternal {
+ public:
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<DisconnectBridgeRequest> _instance;
+} _DisconnectBridgeRequest_default_instance_;
 }  // namespace BICgRPC
+static void InitDefaultsscc_info_Bridge_BICgRPC_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::BICgRPC::_Bridge_default_instance_;
+    new (ptr) ::BICgRPC::Bridge();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::BICgRPC::Bridge::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_Bridge_BICgRPC_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_Bridge_BICgRPC_2eproto}, {}};
+
+static void InitDefaultsscc_info_ConnectBridgeRequest_BICgRPC_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::BICgRPC::_ConnectBridgeRequest_default_instance_;
+    new (ptr) ::BICgRPC::ConnectBridgeRequest();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::BICgRPC::ConnectBridgeRequest::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<1> scc_info_ConnectBridgeRequest_BICgRPC_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 1, 0, InitDefaultsscc_info_ConnectBridgeRequest_BICgRPC_2eproto}, {
+      &scc_info_Any_google_2fprotobuf_2fany_2eproto.base,}};
+
+static void InitDefaultsscc_info_ConnectBridgeResponse_BICgRPC_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::BICgRPC::_ConnectBridgeResponse_default_instance_;
+    new (ptr) ::BICgRPC::ConnectBridgeResponse();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::BICgRPC::ConnectBridgeResponse::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<1> scc_info_ConnectBridgeResponse_BICgRPC_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 1, 0, InitDefaultsscc_info_ConnectBridgeResponse_BICgRPC_2eproto}, {
+      &scc_info_Any_google_2fprotobuf_2fany_2eproto.base,}};
+
+static void InitDefaultsscc_info_ConnectDeviceRequest_BICgRPC_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::BICgRPC::_ConnectDeviceRequest_default_instance_;
+    new (ptr) ::BICgRPC::ConnectDeviceRequest();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::BICgRPC::ConnectDeviceRequest::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_ConnectDeviceRequest_BICgRPC_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_ConnectDeviceRequest_BICgRPC_2eproto}, {}};
+
+static void InitDefaultsscc_info_DescribeBridgeRequest_BICgRPC_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::BICgRPC::_DescribeBridgeRequest_default_instance_;
+    new (ptr) ::BICgRPC::DescribeBridgeRequest();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::BICgRPC::DescribeBridgeRequest::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_DescribeBridgeRequest_BICgRPC_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_DescribeBridgeRequest_BICgRPC_2eproto}, {}};
+
+static void InitDefaultsscc_info_DescribeBridgeResponse_BICgRPC_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::BICgRPC::_DescribeBridgeResponse_default_instance_;
+    new (ptr) ::BICgRPC::DescribeBridgeResponse();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::BICgRPC::DescribeBridgeResponse::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<2> scc_info_DescribeBridgeResponse_BICgRPC_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 2, 0, InitDefaultsscc_info_DescribeBridgeResponse_BICgRPC_2eproto}, {
+      &scc_info_Bridge_BICgRPC_2eproto.base,
+      &scc_info_Any_google_2fprotobuf_2fany_2eproto.base,}};
+
+static void InitDefaultsscc_info_DisconnectBridgeRequest_BICgRPC_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::BICgRPC::_DisconnectBridgeRequest_default_instance_;
+    new (ptr) ::BICgRPC::DisconnectBridgeRequest();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::BICgRPC::DisconnectBridgeRequest::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_DisconnectBridgeRequest_BICgRPC_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_DisconnectBridgeRequest_BICgRPC_2eproto}, {}};
+
+static void InitDefaultsscc_info_QueryBridgesRequest_BICgRPC_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::BICgRPC::_QueryBridgesRequest_default_instance_;
+    new (ptr) ::BICgRPC::QueryBridgesRequest();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::BICgRPC::QueryBridgesRequest::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_QueryBridgesRequest_BICgRPC_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_QueryBridgesRequest_BICgRPC_2eproto}, {}};
+
+static void InitDefaultsscc_info_QueryBridgesResponse_BICgRPC_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::BICgRPC::_QueryBridgesResponse_default_instance_;
+    new (ptr) ::BICgRPC::QueryBridgesResponse();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::BICgRPC::QueryBridgesResponse::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<1> scc_info_QueryBridgesResponse_BICgRPC_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 1, 0, InitDefaultsscc_info_QueryBridgesResponse_BICgRPC_2eproto}, {
+      &scc_info_Bridge_BICgRPC_2eproto.base,}};
+
+static void InitDefaultsscc_info_ScanDevicesReply_BICgRPC_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::BICgRPC::_ScanDevicesReply_default_instance_;
+    new (ptr) ::BICgRPC::ScanDevicesReply();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::BICgRPC::ScanDevicesReply::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<1> scc_info_ScanDevicesReply_BICgRPC_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 1, 0, InitDefaultsscc_info_ScanDevicesReply_BICgRPC_2eproto}, {
+      &scc_info_bicGetImplantInfoReply_BICgRPC_2eproto.base,}};
+
+static void InitDefaultsscc_info_ScanDevicesRequest_BICgRPC_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::BICgRPC::_ScanDevicesRequest_default_instance_;
+    new (ptr) ::BICgRPC::ScanDevicesRequest();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::BICgRPC::ScanDevicesRequest::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_ScanDevicesRequest_BICgRPC_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_ScanDevicesRequest_BICgRPC_2eproto}, {}};
+
+static void InitDefaultsscc_info_TemperatureUpdate_BICgRPC_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::BICgRPC::_TemperatureUpdate_default_instance_;
+    new (ptr) ::BICgRPC::TemperatureUpdate();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::BICgRPC::TemperatureUpdate::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_TemperatureUpdate_BICgRPC_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_TemperatureUpdate_BICgRPC_2eproto}, {}};
+
 static void InitDefaultsscc_info_bicGetHumidityReply_BICgRPC_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
@@ -168,34 +385,6 @@ static void InitDefaultsscc_info_bicGetTemperatureReply_BICgRPC_2eproto() {
 ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_bicGetTemperatureReply_BICgRPC_2eproto =
     {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_bicGetTemperatureReply_BICgRPC_2eproto}, {}};
 
-static void InitDefaultsscc_info_bicInitRequest_BICgRPC_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::BICgRPC::_bicInitRequest_default_instance_;
-    new (ptr) ::BICgRPC::bicInitRequest();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-  ::BICgRPC::bicInitRequest::InitAsDefaultInstance();
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_bicInitRequest_BICgRPC_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_bicInitRequest_BICgRPC_2eproto}, {}};
-
-static void InitDefaultsscc_info_bicNullRequest_BICgRPC_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::BICgRPC::_bicNullRequest_default_instance_;
-    new (ptr) ::BICgRPC::bicNullRequest();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-  ::BICgRPC::bicNullRequest::InitAsDefaultInstance();
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_bicNullRequest_BICgRPC_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_bicNullRequest_BICgRPC_2eproto}, {}};
-
 static void InitDefaultsscc_info_bicSetImplantPowerRequest_BICgRPC_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
@@ -252,16 +441,11 @@ static void InitDefaultsscc_info_bicSuccessReply_BICgRPC_2eproto() {
 ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_bicSuccessReply_BICgRPC_2eproto =
     {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_bicSuccessReply_BICgRPC_2eproto}, {}};
 
-static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_BICgRPC_2eproto[13];
-static const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* file_level_enum_descriptors_BICgRPC_2eproto[1];
+static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_BICgRPC_2eproto[23];
+static const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* file_level_enum_descriptors_BICgRPC_2eproto[2];
 static constexpr ::PROTOBUF_NAMESPACE_ID::ServiceDescriptor const** file_level_service_descriptors_BICgRPC_2eproto = nullptr;
 
 const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_BICgRPC_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-  ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicNullRequest, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::BICgRPC::bicSuccessReply, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -269,11 +453,25 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_BICgRPC_2eproto::offsets[] PRO
   ~0u,  // no _weak_field_map_
   PROTOBUF_FIELD_OFFSET(::BICgRPC::bicSuccessReply, success_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicInitRequest, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::ScanDevicesRequest, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicInitRequest, logfilename_),
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::ScanDevicesRequest, bridgename_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::ScanDevicesReply, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::ScanDevicesReply, name_),
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::ScanDevicesReply, discovereddevice_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::ConnectDeviceRequest, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::ConnectDeviceRequest, deviceaddress_),
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::ConnectDeviceRequest, logfilename_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::BICgRPC::bicGetImplantInfoRequest, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -355,27 +553,101 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_BICgRPC_2eproto::offsets[] PRO
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::TemperatureUpdate, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::TemperatureUpdate, temperature_),
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::TemperatureUpdate, units_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::Bridge, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::Bridge, name_),
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::Bridge, implanttype_),
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::Bridge, deviceid_),
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::Bridge, firmwareversion_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::QueryBridgesRequest, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::QueryBridgesRequest, query_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::QueryBridgesResponse, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::QueryBridgesResponse, bridges_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::ConnectBridgeRequest, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::ConnectBridgeRequest, name_),
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::ConnectBridgeRequest, parameters_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::ConnectBridgeResponse, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::ConnectBridgeResponse, name_),
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::ConnectBridgeResponse, connection_status_),
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::ConnectBridgeResponse, details_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::DescribeBridgeRequest, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::DescribeBridgeRequest, name_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::DescribeBridgeResponse, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::DescribeBridgeResponse, name_),
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::DescribeBridgeResponse, details_),
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::DescribeBridgeResponse, error_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::DisconnectBridgeRequest, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::DisconnectBridgeRequest, name_),
 };
 static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-  { 0, -1, sizeof(::BICgRPC::bicNullRequest)},
-  { 5, -1, sizeof(::BICgRPC::bicSuccessReply)},
-  { 11, -1, sizeof(::BICgRPC::bicInitRequest)},
-  { 17, -1, sizeof(::BICgRPC::bicGetImplantInfoRequest)},
-  { 23, -1, sizeof(::BICgRPC::bicGetImplantInfoReply_bicChannelInfo)},
-  { 36, -1, sizeof(::BICgRPC::bicGetImplantInfoReply)},
-  { 50, -1, sizeof(::BICgRPC::bicGetImpedanceRequest)},
-  { 56, -1, sizeof(::BICgRPC::bicGetImpedanceReply)},
-  { 64, -1, sizeof(::BICgRPC::bicGetTemperatureReply)},
-  { 72, -1, sizeof(::BICgRPC::bicGetHumidityReply)},
-  { 80, -1, sizeof(::BICgRPC::bicSetSensingEnableRequest)},
-  { 87, -1, sizeof(::BICgRPC::bicSetImplantPowerRequest)},
-  { 93, -1, sizeof(::BICgRPC::bicStartStimulationRequest)},
+  { 0, -1, sizeof(::BICgRPC::bicSuccessReply)},
+  { 6, -1, sizeof(::BICgRPC::ScanDevicesRequest)},
+  { 12, -1, sizeof(::BICgRPC::ScanDevicesReply)},
+  { 19, -1, sizeof(::BICgRPC::ConnectDeviceRequest)},
+  { 26, -1, sizeof(::BICgRPC::bicGetImplantInfoRequest)},
+  { 32, -1, sizeof(::BICgRPC::bicGetImplantInfoReply_bicChannelInfo)},
+  { 45, -1, sizeof(::BICgRPC::bicGetImplantInfoReply)},
+  { 59, -1, sizeof(::BICgRPC::bicGetImpedanceRequest)},
+  { 65, -1, sizeof(::BICgRPC::bicGetImpedanceReply)},
+  { 73, -1, sizeof(::BICgRPC::bicGetTemperatureReply)},
+  { 81, -1, sizeof(::BICgRPC::bicGetHumidityReply)},
+  { 89, -1, sizeof(::BICgRPC::bicSetSensingEnableRequest)},
+  { 96, -1, sizeof(::BICgRPC::bicSetImplantPowerRequest)},
+  { 102, -1, sizeof(::BICgRPC::bicStartStimulationRequest)},
+  { 107, -1, sizeof(::BICgRPC::TemperatureUpdate)},
+  { 114, -1, sizeof(::BICgRPC::Bridge)},
+  { 123, -1, sizeof(::BICgRPC::QueryBridgesRequest)},
+  { 129, -1, sizeof(::BICgRPC::QueryBridgesResponse)},
+  { 135, -1, sizeof(::BICgRPC::ConnectBridgeRequest)},
+  { 142, -1, sizeof(::BICgRPC::ConnectBridgeResponse)},
+  { 150, -1, sizeof(::BICgRPC::DescribeBridgeRequest)},
+  { 156, -1, sizeof(::BICgRPC::DescribeBridgeResponse)},
+  { 164, -1, sizeof(::BICgRPC::DisconnectBridgeRequest)},
 };
 
 static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::BICgRPC::_bicNullRequest_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::BICgRPC::_bicSuccessReply_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::BICgRPC::_bicInitRequest_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::BICgRPC::_ScanDevicesRequest_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::BICgRPC::_ScanDevicesReply_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::BICgRPC::_ConnectDeviceRequest_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::BICgRPC::_bicGetImplantInfoRequest_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::BICgRPC::_bicGetImplantInfoReply_bicChannelInfo_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::BICgRPC::_bicGetImplantInfoReply_default_instance_),
@@ -386,66 +658,130 @@ static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] =
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::BICgRPC::_bicSetSensingEnableRequest_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::BICgRPC::_bicSetImplantPowerRequest_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::BICgRPC::_bicStartStimulationRequest_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::BICgRPC::_TemperatureUpdate_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::BICgRPC::_Bridge_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::BICgRPC::_QueryBridgesRequest_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::BICgRPC::_QueryBridgesResponse_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::BICgRPC::_ConnectBridgeRequest_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::BICgRPC::_ConnectBridgeResponse_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::BICgRPC::_DescribeBridgeRequest_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::BICgRPC::_DescribeBridgeResponse_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::BICgRPC::_DisconnectBridgeRequest_default_instance_),
 };
 
 const char descriptor_table_protodef_BICgRPC_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
-  "\n\rBICgRPC.proto\022\007BICgRPC\"\020\n\016bicNullReque"
-  "st\"\"\n\017bicSuccessReply\022\017\n\007success\030\001 \001(\t\"%"
-  "\n\016bicInitRequest\022\023\n\013logFileName\030\001 \001(\t\"4\n"
-  "\030bicGetImplantInfoRequest\022\030\n\020updateCache"
-  "dInfo\030\001 \001(\010\"\363\004\n\026bicGetImplantInfoReply\022\027"
-  "\n\017firmwareVersion\030\001 \001(\t\022\022\n\ndeviceType\030\002 "
-  "\001(\t\022\020\n\010deviceId\030\003 \001(\t\022G\n\017channelInfoList"
-  "\030\004 \003(\0132..BICgRPC.bicGetImplantInfoReply."
-  "bicChannelInfo\022\024\n\014channelCount\030\005 \001(\r\022\037\n\027"
-  "measurementChannelCount\030\006 \001(\r\022\037\n\027stimula"
-  "tionChannelCount\030\007 \001(\r\022\024\n\014samplingRate\030\010"
-  " \001(\r\022\017\n\007success\030\t \001(\t\032\321\002\n\016bicChannelInfo"
-  "\022\022\n\ncanMeasure\030\001 \001(\010\022\027\n\017measureValueMin\030"
-  "\002 \001(\001\022\027\n\017measureValueMax\030\003 \001(\001\022\024\n\014canSti"
-  "mulate\030\004 \001(\010\022P\n\017stimulationUnit\030\005 \001(\01627."
-  "BICgRPC.bicGetImplantInfoReply.bicChanne"
-  "lInfo.UnitType\022\024\n\014stimValueMin\030\006 \001(\001\022\024\n\014"
-  "stimValueMax\030\007 \001(\001\022\033\n\023canMeasureImpedanc"
-  "e\030\010 \001(\010\"H\n\010UnitType\022\016\n\nUT_NO_UNIT\020\000\022\016\n\nU"
-  "T_CURRENT\020\001\022\016\n\nUT_VOLTAGE\020\002\022\014\n\010UT_COUNT\020"
-  "\003\")\n\026bicGetImpedanceRequest\022\017\n\007channel\030\001"
-  " \001(\r\"P\n\024bicGetImpedanceReply\022\030\n\020channelI"
-  "mpedance\030\001 \001(\001\022\r\n\005units\030\002 \001(\t\022\017\n\007success"
-  "\030\003 \001(\t\"M\n\026bicGetTemperatureReply\022\023\n\013temp"
-  "erature\030\001 \001(\001\022\r\n\005units\030\002 \001(\t\022\017\n\007success\030"
-  "\003 \001(\t\"G\n\023bicGetHumidityReply\022\020\n\010humidity"
-  "\030\001 \001(\001\022\r\n\005units\030\002 \001(\t\022\017\n\007success\030\003 \001(\t\"H"
-  "\n\032bicSetSensingEnableRequest\022\025\n\renableSe"
-  "nsing\030\001 \001(\010\022\023\n\013refChannels\030\002 \003(\r\"1\n\031bicS"
-  "etImplantPowerRequest\022\024\n\014powerEnabled\030\001 "
-  "\001(\010\"\034\n\032bicStartStimulationRequest2\254\006\n\nBI"
-  "CManager\022>\n\007bicInit\022\027.BICgRPC.bicInitReq"
-  "uest\032\030.BICgRPC.bicSuccessReply\"\000\022Y\n\021bicG"
-  "etImplantInfo\022!.BICgRPC.bicGetImplantInf"
-  "oRequest\032\037.BICgRPC.bicGetImplantInfoRepl"
-  "y\"\000\022S\n\017bicGetImpedance\022\037.BICgRPC.bicGetI"
-  "mpedanceRequest\032\035.BICgRPC.bicGetImpedanc"
-  "eReply\"\000\022O\n\021bicGetTemperature\022\027.BICgRPC."
-  "bicNullRequest\032\037.BICgRPC.bicGetTemperatu"
-  "reReply\"\000\022I\n\016bicGetHumidity\022\027.BICgRPC.bi"
-  "cNullRequest\032\034.BICgRPC.bicGetHumidityRep"
-  "ly\"\000\022V\n\023bicSetSensingEnable\022#.BICgRPC.bi"
-  "cSetSensingEnableRequest\032\030.BICgRPC.bicSu"
-  "ccessReply\"\000\022T\n\022bicSetImplantPower\022\".BIC"
-  "gRPC.bicSetImplantPowerRequest\032\030.BICgRPC"
-  ".bicSuccessReply\"\000\022V\n\023bicStartStimulatio"
-  "n\022#.BICgRPC.bicStartStimulationRequest\032\030"
-  ".BICgRPC.bicSuccessReply\"\000\022I\n\022bicStopSti"
-  "mulation\022\027.BICgRPC.bicNullRequest\032\030.BICg"
-  "RPC.bicSuccessReply\"\000\022A\n\nbicDispose\022\027.BI"
-  "CgRPC.bicNullRequest\032\030.BICgRPC.bicSucces"
-  "sReply\"\000B\"\n\017io.grpc.BICgRPCB\007BICgRPCP\001\242\002"
-  "\003HLWb\006proto3"
+  "\n\rBICgRPC.proto\022\007BICgRPC\032\031google/protobu"
+  "f/any.proto\032\033google/protobuf/empty.proto"
+  "\"\"\n\017bicSuccessReply\022\017\n\007success\030\001 \001(\t\"(\n\022"
+  "ScanDevicesRequest\022\022\n\nbridgeName\030\001 \001(\t\"["
+  "\n\020ScanDevicesReply\022\014\n\004name\030\001 \001(\t\0229\n\020disc"
+  "overedDevice\030\002 \001(\0132\037.BICgRPC.bicGetImpla"
+  "ntInfoReply\"B\n\024ConnectDeviceRequest\022\025\n\rd"
+  "eviceAddress\030\001 \001(\t\022\023\n\013logFileName\030\002 \001(\t\""
+  "4\n\030bicGetImplantInfoRequest\022\030\n\020updateCac"
+  "hedInfo\030\001 \001(\010\"\363\004\n\026bicGetImplantInfoReply"
+  "\022\027\n\017firmwareVersion\030\001 \001(\t\022\022\n\ndeviceType\030"
+  "\002 \001(\t\022\020\n\010deviceId\030\003 \001(\t\022G\n\017channelInfoLi"
+  "st\030\004 \003(\0132..BICgRPC.bicGetImplantInfoRepl"
+  "y.bicChannelInfo\022\024\n\014channelCount\030\005 \001(\r\022\037"
+  "\n\027measurementChannelCount\030\006 \001(\r\022\037\n\027stimu"
+  "lationChannelCount\030\007 \001(\r\022\024\n\014samplingRate"
+  "\030\010 \001(\r\022\017\n\007success\030\t \001(\t\032\321\002\n\016bicChannelIn"
+  "fo\022\022\n\ncanMeasure\030\001 \001(\010\022\027\n\017measureValueMi"
+  "n\030\002 \001(\001\022\027\n\017measureValueMax\030\003 \001(\001\022\024\n\014canS"
+  "timulate\030\004 \001(\010\022P\n\017stimulationUnit\030\005 \001(\0162"
+  "7.BICgRPC.bicGetImplantInfoReply.bicChan"
+  "nelInfo.UnitType\022\024\n\014stimValueMin\030\006 \001(\001\022\024"
+  "\n\014stimValueMax\030\007 \001(\001\022\033\n\023canMeasureImpeda"
+  "nce\030\010 \001(\010\"H\n\010UnitType\022\016\n\nUT_NO_UNIT\020\000\022\016\n"
+  "\nUT_CURRENT\020\001\022\016\n\nUT_VOLTAGE\020\002\022\014\n\010UT_COUN"
+  "T\020\003\")\n\026bicGetImpedanceRequest\022\017\n\007channel"
+  "\030\001 \001(\r\"P\n\024bicGetImpedanceReply\022\030\n\020channe"
+  "lImpedance\030\001 \001(\001\022\r\n\005units\030\002 \001(\t\022\017\n\007succe"
+  "ss\030\003 \001(\t\"M\n\026bicGetTemperatureReply\022\023\n\013te"
+  "mperature\030\001 \001(\001\022\r\n\005units\030\002 \001(\t\022\017\n\007succes"
+  "s\030\003 \001(\t\"G\n\023bicGetHumidityReply\022\020\n\010humidi"
+  "ty\030\001 \001(\001\022\r\n\005units\030\002 \001(\t\022\017\n\007success\030\003 \001(\t"
+  "\"H\n\032bicSetSensingEnableRequest\022\025\n\renable"
+  "Sensing\030\001 \001(\010\022\023\n\013refChannels\030\002 \003(\r\"1\n\031bi"
+  "cSetImplantPowerRequest\022\024\n\014powerEnabled\030"
+  "\001 \001(\010\"\034\n\032bicStartStimulationRequest\"7\n\021T"
+  "emperatureUpdate\022\023\n\013temperature\030\001 \001(\001\022\r\n"
+  "\005units\030\002 \001(\t\"V\n\006Bridge\022\014\n\004name\030\001 \001(\t\022\023\n\013"
+  "implantType\030\002 \001(\t\022\020\n\010deviceId\030\003 \001(\t\022\027\n\017f"
+  "irmwareVersion\030\004 \001(\t\"$\n\023QueryBridgesRequ"
+  "est\022\r\n\005query\030\001 \001(\t\"8\n\024QueryBridgesRespon"
+  "se\022 \n\007bridges\030\001 \003(\0132\017.BICgRPC.Bridge\"N\n\024"
+  "ConnectBridgeRequest\022\014\n\004name\030\001 \001(\t\022(\n\npa"
+  "rameters\030\002 \001(\0132\024.google.protobuf.Any\"\205\001\n"
+  "\025ConnectBridgeResponse\022\014\n\004name\030\001 \001(\t\0227\n\021"
+  "connection_status\030\002 \001(\0162\034.BICgRPC.Connec"
+  "tBridgeStatus\022%\n\007details\030\003 \001(\0132\024.google."
+  "protobuf.Any\"%\n\025DescribeBridgeRequest\022\014\n"
+  "\004name\030\001 \001(\t\"m\n\026DescribeBridgeResponse\022\014\n"
+  "\004name\030\001 \001(\t\022 \n\007details\030\002 \001(\0132\017.BICgRPC.B"
+  "ridge\022#\n\005error\030\003 \001(\0132\024.google.protobuf.A"
+  "ny\"\'\n\027DisconnectBridgeRequest\022\014\n\004name\030\001 "
+  "\001(\t*l\n\023ConnectBridgeStatus\022%\n!CONNECT_BR"
+  "IDGE_STATUS_UNSPECIFIED\020\000\022\026\n\022CONNECTION_"
+  "SUCCESS\020\001\022\026\n\022CONNECTION_FAILURE\020\0022\354\003\n\020BI"
+  "CBridgeService\022J\n\013ListBridges\022\034.BICgRPC."
+  "QueryBridgesRequest\032\035.BICgRPC.QueryBridg"
+  "esResponse\022J\n\013ScanBridges\022\034.BICgRPC.Quer"
+  "yBridgesRequest\032\035.BICgRPC.QueryBridgesRe"
+  "sponse\022O\n\020ConnectedBridges\022\034.BICgRPC.Que"
+  "ryBridgesRequest\032\035.BICgRPC.QueryBridgesR"
+  "esponse\022N\n\rConnectBridge\022\035.BICgRPC.Conne"
+  "ctBridgeRequest\032\036.BICgRPC.ConnectBridgeR"
+  "esponse\022Q\n\016DescribeBridge\022\036.BICgRPC.Desc"
+  "ribeBridgeRequest\032\037.BICgRPC.DescribeBrid"
+  "geResponse\022L\n\020DisconnectBridge\022 .BICgRPC"
+  ".DisconnectBridgeRequest\032\026.google.protob"
+  "uf.Empty2\323\007\n\020BICDeviceService\022G\n\013ScanDev"
+  "ices\022\033.BICgRPC.ScanDevicesRequest\032\031.BICg"
+  "RPC.ScanDevicesReply\"\000\022J\n\rConnectDevice\022"
+  "\035.BICgRPC.ConnectDeviceRequest\032\030.BICgRPC"
+  ".bicSuccessReply\"\000\022@\n\nbicDispose\022\026.googl"
+  "e.protobuf.Empty\032\030.BICgRPC.bicSuccessRep"
+  "ly\"\000\022Y\n\021bicGetImplantInfo\022!.BICgRPC.bicG"
+  "etImplantInfoRequest\032\037.BICgRPC.bicGetImp"
+  "lantInfoReply\"\000\022S\n\017bicGetImpedance\022\037.BIC"
+  "gRPC.bicGetImpedanceRequest\032\035.BICgRPC.bi"
+  "cGetImpedanceReply\"\000\022N\n\021bicGetTemperatur"
+  "e\022\026.google.protobuf.Empty\032\037.BICgRPC.bicG"
+  "etTemperatureReply\"\000\022H\n\016bicGetHumidity\022\026"
+  ".google.protobuf.Empty\032\034.BICgRPC.bicGetH"
+  "umidityReply\"\000\022V\n\023bicSetSensingEnable\022#."
+  "BICgRPC.bicSetSensingEnableRequest\032\030.BIC"
+  "gRPC.bicSuccessReply\"\000\022T\n\022bicSetImplantP"
+  "ower\022\".BICgRPC.bicSetImplantPowerRequest"
+  "\032\030.BICgRPC.bicSuccessReply\"\000\022V\n\023bicStart"
+  "Stimulation\022#.BICgRPC.bicStartStimulatio"
+  "nRequest\032\030.BICgRPC.bicSuccessReply\"\000\022H\n\022"
+  "bicStopStimulation\022\026.google.protobuf.Emp"
+  "ty\032\030.BICgRPC.bicSuccessReply\"\000\022N\n\024bicTem"
+  "peratureStream\022\026.google.protobuf.Empty\032\032"
+  ".BICgRPC.TemperatureUpdate\"\0000\001B,\n\017io.grp"
+  "c.BICgRPCB\007BICgRPCP\001\242\002\003HLW\252\002\007BICgRPCb\006pr"
+  "oto3"
   ;
-static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_BICgRPC_2eproto_deps[1] = {
+static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_BICgRPC_2eproto_deps[2] = {
+  &::descriptor_table_google_2fprotobuf_2fany_2eproto,
+  &::descriptor_table_google_2fprotobuf_2fempty_2eproto,
 };
-static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_BICgRPC_2eproto_sccs[13] = {
+static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_BICgRPC_2eproto_sccs[23] = {
+  &scc_info_Bridge_BICgRPC_2eproto.base,
+  &scc_info_ConnectBridgeRequest_BICgRPC_2eproto.base,
+  &scc_info_ConnectBridgeResponse_BICgRPC_2eproto.base,
+  &scc_info_ConnectDeviceRequest_BICgRPC_2eproto.base,
+  &scc_info_DescribeBridgeRequest_BICgRPC_2eproto.base,
+  &scc_info_DescribeBridgeResponse_BICgRPC_2eproto.base,
+  &scc_info_DisconnectBridgeRequest_BICgRPC_2eproto.base,
+  &scc_info_QueryBridgesRequest_BICgRPC_2eproto.base,
+  &scc_info_QueryBridgesResponse_BICgRPC_2eproto.base,
+  &scc_info_ScanDevicesReply_BICgRPC_2eproto.base,
+  &scc_info_ScanDevicesRequest_BICgRPC_2eproto.base,
+  &scc_info_TemperatureUpdate_BICgRPC_2eproto.base,
   &scc_info_bicGetHumidityReply_BICgRPC_2eproto.base,
   &scc_info_bicGetImpedanceReply_BICgRPC_2eproto.base,
   &scc_info_bicGetImpedanceRequest_BICgRPC_2eproto.base,
@@ -453,8 +789,6 @@ static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_BIC
   &scc_info_bicGetImplantInfoReply_bicChannelInfo_BICgRPC_2eproto.base,
   &scc_info_bicGetImplantInfoRequest_BICgRPC_2eproto.base,
   &scc_info_bicGetTemperatureReply_BICgRPC_2eproto.base,
-  &scc_info_bicInitRequest_BICgRPC_2eproto.base,
-  &scc_info_bicNullRequest_BICgRPC_2eproto.base,
   &scc_info_bicSetImplantPowerRequest_BICgRPC_2eproto.base,
   &scc_info_bicSetSensingEnableRequest_BICgRPC_2eproto.base,
   &scc_info_bicStartStimulationRequest_BICgRPC_2eproto.base,
@@ -462,10 +796,10 @@ static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_BIC
 };
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_BICgRPC_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_BICgRPC_2eproto = {
-  false, false, descriptor_table_protodef_BICgRPC_2eproto, "BICgRPC.proto", 2092,
-  &descriptor_table_BICgRPC_2eproto_once, descriptor_table_BICgRPC_2eproto_sccs, descriptor_table_BICgRPC_2eproto_deps, 13, 0,
+  false, false, descriptor_table_protodef_BICgRPC_2eproto, "BICgRPC.proto", 3724,
+  &descriptor_table_BICgRPC_2eproto_once, descriptor_table_BICgRPC_2eproto_sccs, descriptor_table_BICgRPC_2eproto_deps, 23, 2,
   schemas, file_default_instances, TableStruct_BICgRPC_2eproto::offsets,
-  file_level_metadata_BICgRPC_2eproto, 13, file_level_enum_descriptors_BICgRPC_2eproto, file_level_service_descriptors_BICgRPC_2eproto,
+  file_level_metadata_BICgRPC_2eproto, 23, file_level_enum_descriptors_BICgRPC_2eproto, file_level_service_descriptors_BICgRPC_2eproto,
 };
 
 // Force running AddDescriptors() at dynamic initialization time.
@@ -496,169 +830,19 @@ constexpr bicGetImplantInfoReply_bicChannelInfo_UnitType bicGetImplantInfoReply_
 constexpr bicGetImplantInfoReply_bicChannelInfo_UnitType bicGetImplantInfoReply_bicChannelInfo::UnitType_MAX;
 constexpr int bicGetImplantInfoReply_bicChannelInfo::UnitType_ARRAYSIZE;
 #endif  // (__cplusplus < 201703) && (!defined(_MSC_VER) || _MSC_VER >= 1900)
-
-// ===================================================================
-
-void bicNullRequest::InitAsDefaultInstance() {
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* ConnectBridgeStatus_descriptor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&descriptor_table_BICgRPC_2eproto);
+  return file_level_enum_descriptors_BICgRPC_2eproto[1];
 }
-class bicNullRequest::_Internal {
- public:
-};
-
-bicNullRequest::bicNullRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
-  SharedCtor();
-  RegisterArenaDtor(arena);
-  // @@protoc_insertion_point(arena_constructor:BICgRPC.bicNullRequest)
-}
-bicNullRequest::bicNullRequest(const bicNullRequest& from)
-  : ::PROTOBUF_NAMESPACE_ID::Message() {
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  // @@protoc_insertion_point(copy_constructor:BICgRPC.bicNullRequest)
-}
-
-void bicNullRequest::SharedCtor() {
-}
-
-bicNullRequest::~bicNullRequest() {
-  // @@protoc_insertion_point(destructor:BICgRPC.bicNullRequest)
-  SharedDtor();
-  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-}
-
-void bicNullRequest::SharedDtor() {
-  GOOGLE_DCHECK(GetArena() == nullptr);
-}
-
-void bicNullRequest::ArenaDtor(void* object) {
-  bicNullRequest* _this = reinterpret_cast< bicNullRequest* >(object);
-  (void)_this;
-}
-void bicNullRequest::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
-}
-void bicNullRequest::SetCachedSize(int size) const {
-  _cached_size_.Set(size);
-}
-const bicNullRequest& bicNullRequest::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_bicNullRequest_BICgRPC_2eproto.base);
-  return *internal_default_instance();
-}
-
-
-void bicNullRequest::Clear() {
-// @@protoc_insertion_point(message_clear_start:BICgRPC.bicNullRequest)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-}
-
-const char* bicNullRequest::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
-#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
-  ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
-  while (!ctx->Done(&ptr)) {
-    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
-    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
-    CHK_(ptr);
-        if ((tag & 7) == 4 || tag == 0) {
-          ctx->SetLastTag(tag);
-          goto success;
-        }
-        ptr = UnknownFieldParse(tag,
-            _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
-            ptr, ctx);
-        CHK_(ptr != nullptr);
-        continue;
-  }  // while
-success:
-  return ptr;
-failure:
-  ptr = nullptr;
-  goto success;
-#undef CHK_
-}
-
-::PROTOBUF_NAMESPACE_ID::uint8* bicNullRequest::_InternalSerialize(
-    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:BICgRPC.bicNullRequest)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
-        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+bool ConnectBridgeStatus_IsValid(int value) {
+  switch (value) {
+    case 0:
+    case 1:
+    case 2:
+      return true;
+    default:
+      return false;
   }
-  // @@protoc_insertion_point(serialize_to_array_end:BICgRPC.bicNullRequest)
-  return target;
-}
-
-size_t bicNullRequest::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:BICgRPC.bicNullRequest)
-  size_t total_size = 0;
-
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
-        _internal_metadata_, total_size, &_cached_size_);
-  }
-  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
-  SetCachedSize(cached_size);
-  return total_size;
-}
-
-void bicNullRequest::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:BICgRPC.bicNullRequest)
-  GOOGLE_DCHECK_NE(&from, this);
-  const bicNullRequest* source =
-      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<bicNullRequest>(
-          &from);
-  if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:BICgRPC.bicNullRequest)
-    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:BICgRPC.bicNullRequest)
-    MergeFrom(*source);
-  }
-}
-
-void bicNullRequest::MergeFrom(const bicNullRequest& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:BICgRPC.bicNullRequest)
-  GOOGLE_DCHECK_NE(&from, this);
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-}
-
-void bicNullRequest::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:BICgRPC.bicNullRequest)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-void bicNullRequest::CopyFrom(const bicNullRequest& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:BICgRPC.bicNullRequest)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool bicNullRequest::IsInitialized() const {
-  return true;
-}
-
-void bicNullRequest::InternalSwap(bicNullRequest* other) {
-  using std::swap;
-  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
-}
-
-::PROTOBUF_NAMESPACE_ID::Metadata bicNullRequest::GetMetadata() const {
-  return GetMetadataStatic();
 }
 
 
@@ -873,71 +1057,71 @@ void bicSuccessReply::InternalSwap(bicSuccessReply* other) {
 
 // ===================================================================
 
-void bicInitRequest::InitAsDefaultInstance() {
+void ScanDevicesRequest::InitAsDefaultInstance() {
 }
-class bicInitRequest::_Internal {
+class ScanDevicesRequest::_Internal {
  public:
 };
 
-bicInitRequest::bicInitRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+ScanDevicesRequest::ScanDevicesRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena)
   : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
   SharedCtor();
   RegisterArenaDtor(arena);
-  // @@protoc_insertion_point(arena_constructor:BICgRPC.bicInitRequest)
+  // @@protoc_insertion_point(arena_constructor:BICgRPC.ScanDevicesRequest)
 }
-bicInitRequest::bicInitRequest(const bicInitRequest& from)
+ScanDevicesRequest::ScanDevicesRequest(const ScanDevicesRequest& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  logfilename_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  if (!from._internal_logfilename().empty()) {
-    logfilename_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from._internal_logfilename(),
+  bridgename_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_bridgename().empty()) {
+    bridgename_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from._internal_bridgename(),
       GetArena());
   }
-  // @@protoc_insertion_point(copy_constructor:BICgRPC.bicInitRequest)
+  // @@protoc_insertion_point(copy_constructor:BICgRPC.ScanDevicesRequest)
 }
 
-void bicInitRequest::SharedCtor() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_bicInitRequest_BICgRPC_2eproto.base);
-  logfilename_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+void ScanDevicesRequest::SharedCtor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_ScanDevicesRequest_BICgRPC_2eproto.base);
+  bridgename_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 }
 
-bicInitRequest::~bicInitRequest() {
-  // @@protoc_insertion_point(destructor:BICgRPC.bicInitRequest)
+ScanDevicesRequest::~ScanDevicesRequest() {
+  // @@protoc_insertion_point(destructor:BICgRPC.ScanDevicesRequest)
   SharedDtor();
   _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-void bicInitRequest::SharedDtor() {
+void ScanDevicesRequest::SharedDtor() {
   GOOGLE_DCHECK(GetArena() == nullptr);
-  logfilename_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  bridgename_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 }
 
-void bicInitRequest::ArenaDtor(void* object) {
-  bicInitRequest* _this = reinterpret_cast< bicInitRequest* >(object);
+void ScanDevicesRequest::ArenaDtor(void* object) {
+  ScanDevicesRequest* _this = reinterpret_cast< ScanDevicesRequest* >(object);
   (void)_this;
 }
-void bicInitRequest::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+void ScanDevicesRequest::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
 }
-void bicInitRequest::SetCachedSize(int size) const {
+void ScanDevicesRequest::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const bicInitRequest& bicInitRequest::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_bicInitRequest_BICgRPC_2eproto.base);
+const ScanDevicesRequest& ScanDevicesRequest::default_instance() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_ScanDevicesRequest_BICgRPC_2eproto.base);
   return *internal_default_instance();
 }
 
 
-void bicInitRequest::Clear() {
-// @@protoc_insertion_point(message_clear_start:BICgRPC.bicInitRequest)
+void ScanDevicesRequest::Clear() {
+// @@protoc_insertion_point(message_clear_start:BICgRPC.ScanDevicesRequest)
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  logfilename_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  bridgename_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-const char* bicInitRequest::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+const char* ScanDevicesRequest::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
   ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
   while (!ctx->Done(&ptr)) {
@@ -945,12 +1129,12 @@ const char* bicInitRequest::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE
     ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
     CHK_(ptr);
     switch (tag >> 3) {
-      // string logFileName = 1;
+      // string bridgeName = 1;
       case 1:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
-          auto str = _internal_mutable_logfilename();
+          auto str = _internal_mutable_bridgename();
           ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
-          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "BICgRPC.bicInitRequest.logFileName"));
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "BICgRPC.ScanDevicesRequest.bridgeName"));
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
@@ -976,39 +1160,535 @@ failure:
 #undef CHK_
 }
 
-::PROTOBUF_NAMESPACE_ID::uint8* bicInitRequest::_InternalSerialize(
+::PROTOBUF_NAMESPACE_ID::uint8* ScanDevicesRequest::_InternalSerialize(
     ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:BICgRPC.bicInitRequest)
+  // @@protoc_insertion_point(serialize_to_array_start:BICgRPC.ScanDevicesRequest)
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // string logFileName = 1;
-  if (this->logfilename().size() > 0) {
+  // string bridgeName = 1;
+  if (this->bridgename().size() > 0) {
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
-      this->_internal_logfilename().data(), static_cast<int>(this->_internal_logfilename().length()),
+      this->_internal_bridgename().data(), static_cast<int>(this->_internal_bridgename().length()),
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
-      "BICgRPC.bicInitRequest.logFileName");
+      "BICgRPC.ScanDevicesRequest.bridgeName");
     target = stream->WriteStringMaybeAliased(
-        1, this->_internal_logfilename(), target);
+        1, this->_internal_bridgename(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:BICgRPC.bicInitRequest)
+  // @@protoc_insertion_point(serialize_to_array_end:BICgRPC.ScanDevicesRequest)
   return target;
 }
 
-size_t bicInitRequest::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:BICgRPC.bicInitRequest)
+size_t ScanDevicesRequest::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:BICgRPC.ScanDevicesRequest)
   size_t total_size = 0;
 
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // string logFileName = 1;
+  // string bridgeName = 1;
+  if (this->bridgename().size() > 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_bridgename());
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
+        _internal_metadata_, total_size, &_cached_size_);
+  }
+  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void ScanDevicesRequest::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:BICgRPC.ScanDevicesRequest)
+  GOOGLE_DCHECK_NE(&from, this);
+  const ScanDevicesRequest* source =
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<ScanDevicesRequest>(
+          &from);
+  if (source == nullptr) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:BICgRPC.ScanDevicesRequest)
+    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:BICgRPC.ScanDevicesRequest)
+    MergeFrom(*source);
+  }
+}
+
+void ScanDevicesRequest::MergeFrom(const ScanDevicesRequest& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:BICgRPC.ScanDevicesRequest)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from.bridgename().size() > 0) {
+    _internal_set_bridgename(from._internal_bridgename());
+  }
+}
+
+void ScanDevicesRequest::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:BICgRPC.ScanDevicesRequest)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void ScanDevicesRequest::CopyFrom(const ScanDevicesRequest& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:BICgRPC.ScanDevicesRequest)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool ScanDevicesRequest::IsInitialized() const {
+  return true;
+}
+
+void ScanDevicesRequest::InternalSwap(ScanDevicesRequest* other) {
+  using std::swap;
+  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
+  bridgename_.Swap(&other->bridgename_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata ScanDevicesRequest::GetMetadata() const {
+  return GetMetadataStatic();
+}
+
+
+// ===================================================================
+
+void ScanDevicesReply::InitAsDefaultInstance() {
+  ::BICgRPC::_ScanDevicesReply_default_instance_._instance.get_mutable()->discovereddevice_ = const_cast< ::BICgRPC::bicGetImplantInfoReply*>(
+      ::BICgRPC::bicGetImplantInfoReply::internal_default_instance());
+}
+class ScanDevicesReply::_Internal {
+ public:
+  static const ::BICgRPC::bicGetImplantInfoReply& discovereddevice(const ScanDevicesReply* msg);
+};
+
+const ::BICgRPC::bicGetImplantInfoReply&
+ScanDevicesReply::_Internal::discovereddevice(const ScanDevicesReply* msg) {
+  return *msg->discovereddevice_;
+}
+ScanDevicesReply::ScanDevicesReply(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+  SharedCtor();
+  RegisterArenaDtor(arena);
+  // @@protoc_insertion_point(arena_constructor:BICgRPC.ScanDevicesReply)
+}
+ScanDevicesReply::ScanDevicesReply(const ScanDevicesReply& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_name().empty()) {
+    name_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from._internal_name(),
+      GetArena());
+  }
+  if (from._internal_has_discovereddevice()) {
+    discovereddevice_ = new ::BICgRPC::bicGetImplantInfoReply(*from.discovereddevice_);
+  } else {
+    discovereddevice_ = nullptr;
+  }
+  // @@protoc_insertion_point(copy_constructor:BICgRPC.ScanDevicesReply)
+}
+
+void ScanDevicesReply::SharedCtor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_ScanDevicesReply_BICgRPC_2eproto.base);
+  name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  discovereddevice_ = nullptr;
+}
+
+ScanDevicesReply::~ScanDevicesReply() {
+  // @@protoc_insertion_point(destructor:BICgRPC.ScanDevicesReply)
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+void ScanDevicesReply::SharedDtor() {
+  GOOGLE_DCHECK(GetArena() == nullptr);
+  name_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (this != internal_default_instance()) delete discovereddevice_;
+}
+
+void ScanDevicesReply::ArenaDtor(void* object) {
+  ScanDevicesReply* _this = reinterpret_cast< ScanDevicesReply* >(object);
+  (void)_this;
+}
+void ScanDevicesReply::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void ScanDevicesReply::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+const ScanDevicesReply& ScanDevicesReply::default_instance() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_ScanDevicesReply_BICgRPC_2eproto.base);
+  return *internal_default_instance();
+}
+
+
+void ScanDevicesReply::Clear() {
+// @@protoc_insertion_point(message_clear_start:BICgRPC.ScanDevicesReply)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  name_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  if (GetArena() == nullptr && discovereddevice_ != nullptr) {
+    delete discovereddevice_;
+  }
+  discovereddevice_ = nullptr;
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* ScanDevicesReply::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
+    switch (tag >> 3) {
+      // string name = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          auto str = _internal_mutable_name();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "BICgRPC.ScanDevicesReply.name"));
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // .BICgRPC.bicGetImplantInfoReply discoveredDevice = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
+          ptr = ctx->ParseMessage(_internal_mutable_discovereddevice(), ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      default: {
+      handle_unusual:
+        if ((tag & 7) == 4 || tag == 0) {
+          ctx->SetLastTag(tag);
+          goto success;
+        }
+        ptr = UnknownFieldParse(tag,
+            _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+            ptr, ctx);
+        CHK_(ptr != nullptr);
+        continue;
+      }
+    }  // switch
+  }  // while
+success:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto success;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* ScanDevicesReply::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:BICgRPC.ScanDevicesReply)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // string name = 1;
+  if (this->name().size() > 0) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_name().data(), static_cast<int>(this->_internal_name().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "BICgRPC.ScanDevicesReply.name");
+    target = stream->WriteStringMaybeAliased(
+        1, this->_internal_name(), target);
+  }
+
+  // .BICgRPC.bicGetImplantInfoReply discoveredDevice = 2;
+  if (this->has_discovereddevice()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(
+        2, _Internal::discovereddevice(this), target, stream);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:BICgRPC.ScanDevicesReply)
+  return target;
+}
+
+size_t ScanDevicesReply::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:BICgRPC.ScanDevicesReply)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // string name = 1;
+  if (this->name().size() > 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_name());
+  }
+
+  // .BICgRPC.bicGetImplantInfoReply discoveredDevice = 2;
+  if (this->has_discovereddevice()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+        *discovereddevice_);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
+        _internal_metadata_, total_size, &_cached_size_);
+  }
+  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void ScanDevicesReply::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:BICgRPC.ScanDevicesReply)
+  GOOGLE_DCHECK_NE(&from, this);
+  const ScanDevicesReply* source =
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<ScanDevicesReply>(
+          &from);
+  if (source == nullptr) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:BICgRPC.ScanDevicesReply)
+    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:BICgRPC.ScanDevicesReply)
+    MergeFrom(*source);
+  }
+}
+
+void ScanDevicesReply::MergeFrom(const ScanDevicesReply& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:BICgRPC.ScanDevicesReply)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from.name().size() > 0) {
+    _internal_set_name(from._internal_name());
+  }
+  if (from.has_discovereddevice()) {
+    _internal_mutable_discovereddevice()->::BICgRPC::bicGetImplantInfoReply::MergeFrom(from._internal_discovereddevice());
+  }
+}
+
+void ScanDevicesReply::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:BICgRPC.ScanDevicesReply)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void ScanDevicesReply::CopyFrom(const ScanDevicesReply& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:BICgRPC.ScanDevicesReply)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool ScanDevicesReply::IsInitialized() const {
+  return true;
+}
+
+void ScanDevicesReply::InternalSwap(ScanDevicesReply* other) {
+  using std::swap;
+  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
+  name_.Swap(&other->name_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  swap(discovereddevice_, other->discovereddevice_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata ScanDevicesReply::GetMetadata() const {
+  return GetMetadataStatic();
+}
+
+
+// ===================================================================
+
+void ConnectDeviceRequest::InitAsDefaultInstance() {
+}
+class ConnectDeviceRequest::_Internal {
+ public:
+};
+
+ConnectDeviceRequest::ConnectDeviceRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+  SharedCtor();
+  RegisterArenaDtor(arena);
+  // @@protoc_insertion_point(arena_constructor:BICgRPC.ConnectDeviceRequest)
+}
+ConnectDeviceRequest::ConnectDeviceRequest(const ConnectDeviceRequest& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  deviceaddress_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_deviceaddress().empty()) {
+    deviceaddress_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from._internal_deviceaddress(),
+      GetArena());
+  }
+  logfilename_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_logfilename().empty()) {
+    logfilename_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from._internal_logfilename(),
+      GetArena());
+  }
+  // @@protoc_insertion_point(copy_constructor:BICgRPC.ConnectDeviceRequest)
+}
+
+void ConnectDeviceRequest::SharedCtor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_ConnectDeviceRequest_BICgRPC_2eproto.base);
+  deviceaddress_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  logfilename_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+
+ConnectDeviceRequest::~ConnectDeviceRequest() {
+  // @@protoc_insertion_point(destructor:BICgRPC.ConnectDeviceRequest)
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+void ConnectDeviceRequest::SharedDtor() {
+  GOOGLE_DCHECK(GetArena() == nullptr);
+  deviceaddress_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  logfilename_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+
+void ConnectDeviceRequest::ArenaDtor(void* object) {
+  ConnectDeviceRequest* _this = reinterpret_cast< ConnectDeviceRequest* >(object);
+  (void)_this;
+}
+void ConnectDeviceRequest::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void ConnectDeviceRequest::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+const ConnectDeviceRequest& ConnectDeviceRequest::default_instance() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_ConnectDeviceRequest_BICgRPC_2eproto.base);
+  return *internal_default_instance();
+}
+
+
+void ConnectDeviceRequest::Clear() {
+// @@protoc_insertion_point(message_clear_start:BICgRPC.ConnectDeviceRequest)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  deviceaddress_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  logfilename_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* ConnectDeviceRequest::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
+    switch (tag >> 3) {
+      // string deviceAddress = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          auto str = _internal_mutable_deviceaddress();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "BICgRPC.ConnectDeviceRequest.deviceAddress"));
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // string logFileName = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
+          auto str = _internal_mutable_logfilename();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "BICgRPC.ConnectDeviceRequest.logFileName"));
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      default: {
+      handle_unusual:
+        if ((tag & 7) == 4 || tag == 0) {
+          ctx->SetLastTag(tag);
+          goto success;
+        }
+        ptr = UnknownFieldParse(tag,
+            _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+            ptr, ctx);
+        CHK_(ptr != nullptr);
+        continue;
+      }
+    }  // switch
+  }  // while
+success:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto success;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* ConnectDeviceRequest::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:BICgRPC.ConnectDeviceRequest)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // string deviceAddress = 1;
+  if (this->deviceaddress().size() > 0) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_deviceaddress().data(), static_cast<int>(this->_internal_deviceaddress().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "BICgRPC.ConnectDeviceRequest.deviceAddress");
+    target = stream->WriteStringMaybeAliased(
+        1, this->_internal_deviceaddress(), target);
+  }
+
+  // string logFileName = 2;
+  if (this->logfilename().size() > 0) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_logfilename().data(), static_cast<int>(this->_internal_logfilename().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "BICgRPC.ConnectDeviceRequest.logFileName");
+    target = stream->WriteStringMaybeAliased(
+        2, this->_internal_logfilename(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:BICgRPC.ConnectDeviceRequest)
+  return target;
+}
+
+size_t ConnectDeviceRequest::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:BICgRPC.ConnectDeviceRequest)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // string deviceAddress = 1;
+  if (this->deviceaddress().size() > 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_deviceaddress());
+  }
+
+  // string logFileName = 2;
   if (this->logfilename().size() > 0) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
@@ -1024,58 +1704,62 @@ size_t bicInitRequest::ByteSizeLong() const {
   return total_size;
 }
 
-void bicInitRequest::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:BICgRPC.bicInitRequest)
+void ConnectDeviceRequest::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:BICgRPC.ConnectDeviceRequest)
   GOOGLE_DCHECK_NE(&from, this);
-  const bicInitRequest* source =
-      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<bicInitRequest>(
+  const ConnectDeviceRequest* source =
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<ConnectDeviceRequest>(
           &from);
   if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:BICgRPC.bicInitRequest)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:BICgRPC.ConnectDeviceRequest)
     ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:BICgRPC.bicInitRequest)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:BICgRPC.ConnectDeviceRequest)
     MergeFrom(*source);
   }
 }
 
-void bicInitRequest::MergeFrom(const bicInitRequest& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:BICgRPC.bicInitRequest)
+void ConnectDeviceRequest::MergeFrom(const ConnectDeviceRequest& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:BICgRPC.ConnectDeviceRequest)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
+  if (from.deviceaddress().size() > 0) {
+    _internal_set_deviceaddress(from._internal_deviceaddress());
+  }
   if (from.logfilename().size() > 0) {
     _internal_set_logfilename(from._internal_logfilename());
   }
 }
 
-void bicInitRequest::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:BICgRPC.bicInitRequest)
+void ConnectDeviceRequest::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:BICgRPC.ConnectDeviceRequest)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-void bicInitRequest::CopyFrom(const bicInitRequest& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:BICgRPC.bicInitRequest)
+void ConnectDeviceRequest::CopyFrom(const ConnectDeviceRequest& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:BICgRPC.ConnectDeviceRequest)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-bool bicInitRequest::IsInitialized() const {
+bool ConnectDeviceRequest::IsInitialized() const {
   return true;
 }
 
-void bicInitRequest::InternalSwap(bicInitRequest* other) {
+void ConnectDeviceRequest::InternalSwap(ConnectDeviceRequest* other) {
   using std::swap;
   _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
+  deviceaddress_.Swap(&other->deviceaddress_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
   logfilename_.Swap(&other->logfilename_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
 }
 
-::PROTOBUF_NAMESPACE_ID::Metadata bicInitRequest::GetMetadata() const {
+::PROTOBUF_NAMESPACE_ID::Metadata ConnectDeviceRequest::GetMetadata() const {
   return GetMetadataStatic();
 }
 
@@ -3700,17 +4384,2266 @@ void bicStartStimulationRequest::InternalSwap(bicStartStimulationRequest* other)
 }
 
 
+// ===================================================================
+
+void TemperatureUpdate::InitAsDefaultInstance() {
+}
+class TemperatureUpdate::_Internal {
+ public:
+};
+
+TemperatureUpdate::TemperatureUpdate(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+  SharedCtor();
+  RegisterArenaDtor(arena);
+  // @@protoc_insertion_point(arena_constructor:BICgRPC.TemperatureUpdate)
+}
+TemperatureUpdate::TemperatureUpdate(const TemperatureUpdate& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  units_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_units().empty()) {
+    units_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from._internal_units(),
+      GetArena());
+  }
+  temperature_ = from.temperature_;
+  // @@protoc_insertion_point(copy_constructor:BICgRPC.TemperatureUpdate)
+}
+
+void TemperatureUpdate::SharedCtor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_TemperatureUpdate_BICgRPC_2eproto.base);
+  units_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  temperature_ = 0;
+}
+
+TemperatureUpdate::~TemperatureUpdate() {
+  // @@protoc_insertion_point(destructor:BICgRPC.TemperatureUpdate)
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+void TemperatureUpdate::SharedDtor() {
+  GOOGLE_DCHECK(GetArena() == nullptr);
+  units_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+
+void TemperatureUpdate::ArenaDtor(void* object) {
+  TemperatureUpdate* _this = reinterpret_cast< TemperatureUpdate* >(object);
+  (void)_this;
+}
+void TemperatureUpdate::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void TemperatureUpdate::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+const TemperatureUpdate& TemperatureUpdate::default_instance() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_TemperatureUpdate_BICgRPC_2eproto.base);
+  return *internal_default_instance();
+}
+
+
+void TemperatureUpdate::Clear() {
+// @@protoc_insertion_point(message_clear_start:BICgRPC.TemperatureUpdate)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  units_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  temperature_ = 0;
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* TemperatureUpdate::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
+    switch (tag >> 3) {
+      // double temperature = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 9)) {
+          temperature_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<double>(ptr);
+          ptr += sizeof(double);
+        } else goto handle_unusual;
+        continue;
+      // string units = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
+          auto str = _internal_mutable_units();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "BICgRPC.TemperatureUpdate.units"));
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      default: {
+      handle_unusual:
+        if ((tag & 7) == 4 || tag == 0) {
+          ctx->SetLastTag(tag);
+          goto success;
+        }
+        ptr = UnknownFieldParse(tag,
+            _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+            ptr, ctx);
+        CHK_(ptr != nullptr);
+        continue;
+      }
+    }  // switch
+  }  // while
+success:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto success;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* TemperatureUpdate::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:BICgRPC.TemperatureUpdate)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // double temperature = 1;
+  if (!(this->temperature() <= 0 && this->temperature() >= 0)) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteDoubleToArray(1, this->_internal_temperature(), target);
+  }
+
+  // string units = 2;
+  if (this->units().size() > 0) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_units().data(), static_cast<int>(this->_internal_units().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "BICgRPC.TemperatureUpdate.units");
+    target = stream->WriteStringMaybeAliased(
+        2, this->_internal_units(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:BICgRPC.TemperatureUpdate)
+  return target;
+}
+
+size_t TemperatureUpdate::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:BICgRPC.TemperatureUpdate)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // string units = 2;
+  if (this->units().size() > 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_units());
+  }
+
+  // double temperature = 1;
+  if (!(this->temperature() <= 0 && this->temperature() >= 0)) {
+    total_size += 1 + 8;
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
+        _internal_metadata_, total_size, &_cached_size_);
+  }
+  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void TemperatureUpdate::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:BICgRPC.TemperatureUpdate)
+  GOOGLE_DCHECK_NE(&from, this);
+  const TemperatureUpdate* source =
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<TemperatureUpdate>(
+          &from);
+  if (source == nullptr) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:BICgRPC.TemperatureUpdate)
+    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:BICgRPC.TemperatureUpdate)
+    MergeFrom(*source);
+  }
+}
+
+void TemperatureUpdate::MergeFrom(const TemperatureUpdate& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:BICgRPC.TemperatureUpdate)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from.units().size() > 0) {
+    _internal_set_units(from._internal_units());
+  }
+  if (!(from.temperature() <= 0 && from.temperature() >= 0)) {
+    _internal_set_temperature(from._internal_temperature());
+  }
+}
+
+void TemperatureUpdate::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:BICgRPC.TemperatureUpdate)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void TemperatureUpdate::CopyFrom(const TemperatureUpdate& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:BICgRPC.TemperatureUpdate)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool TemperatureUpdate::IsInitialized() const {
+  return true;
+}
+
+void TemperatureUpdate::InternalSwap(TemperatureUpdate* other) {
+  using std::swap;
+  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
+  units_.Swap(&other->units_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  swap(temperature_, other->temperature_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata TemperatureUpdate::GetMetadata() const {
+  return GetMetadataStatic();
+}
+
+
+// ===================================================================
+
+void Bridge::InitAsDefaultInstance() {
+}
+class Bridge::_Internal {
+ public:
+};
+
+Bridge::Bridge(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+  SharedCtor();
+  RegisterArenaDtor(arena);
+  // @@protoc_insertion_point(arena_constructor:BICgRPC.Bridge)
+}
+Bridge::Bridge(const Bridge& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_name().empty()) {
+    name_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from._internal_name(),
+      GetArena());
+  }
+  implanttype_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_implanttype().empty()) {
+    implanttype_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from._internal_implanttype(),
+      GetArena());
+  }
+  deviceid_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_deviceid().empty()) {
+    deviceid_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from._internal_deviceid(),
+      GetArena());
+  }
+  firmwareversion_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_firmwareversion().empty()) {
+    firmwareversion_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from._internal_firmwareversion(),
+      GetArena());
+  }
+  // @@protoc_insertion_point(copy_constructor:BICgRPC.Bridge)
+}
+
+void Bridge::SharedCtor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_Bridge_BICgRPC_2eproto.base);
+  name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  implanttype_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  deviceid_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  firmwareversion_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+
+Bridge::~Bridge() {
+  // @@protoc_insertion_point(destructor:BICgRPC.Bridge)
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+void Bridge::SharedDtor() {
+  GOOGLE_DCHECK(GetArena() == nullptr);
+  name_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  implanttype_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  deviceid_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  firmwareversion_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+
+void Bridge::ArenaDtor(void* object) {
+  Bridge* _this = reinterpret_cast< Bridge* >(object);
+  (void)_this;
+}
+void Bridge::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void Bridge::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+const Bridge& Bridge::default_instance() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_Bridge_BICgRPC_2eproto.base);
+  return *internal_default_instance();
+}
+
+
+void Bridge::Clear() {
+// @@protoc_insertion_point(message_clear_start:BICgRPC.Bridge)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  name_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  implanttype_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  deviceid_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  firmwareversion_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* Bridge::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
+    switch (tag >> 3) {
+      // string name = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          auto str = _internal_mutable_name();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "BICgRPC.Bridge.name"));
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // string implantType = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
+          auto str = _internal_mutable_implanttype();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "BICgRPC.Bridge.implantType"));
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // string deviceId = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 26)) {
+          auto str = _internal_mutable_deviceid();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "BICgRPC.Bridge.deviceId"));
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // string firmwareVersion = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 34)) {
+          auto str = _internal_mutable_firmwareversion();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "BICgRPC.Bridge.firmwareVersion"));
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      default: {
+      handle_unusual:
+        if ((tag & 7) == 4 || tag == 0) {
+          ctx->SetLastTag(tag);
+          goto success;
+        }
+        ptr = UnknownFieldParse(tag,
+            _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+            ptr, ctx);
+        CHK_(ptr != nullptr);
+        continue;
+      }
+    }  // switch
+  }  // while
+success:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto success;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* Bridge::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:BICgRPC.Bridge)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // string name = 1;
+  if (this->name().size() > 0) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_name().data(), static_cast<int>(this->_internal_name().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "BICgRPC.Bridge.name");
+    target = stream->WriteStringMaybeAliased(
+        1, this->_internal_name(), target);
+  }
+
+  // string implantType = 2;
+  if (this->implanttype().size() > 0) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_implanttype().data(), static_cast<int>(this->_internal_implanttype().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "BICgRPC.Bridge.implantType");
+    target = stream->WriteStringMaybeAliased(
+        2, this->_internal_implanttype(), target);
+  }
+
+  // string deviceId = 3;
+  if (this->deviceid().size() > 0) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_deviceid().data(), static_cast<int>(this->_internal_deviceid().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "BICgRPC.Bridge.deviceId");
+    target = stream->WriteStringMaybeAliased(
+        3, this->_internal_deviceid(), target);
+  }
+
+  // string firmwareVersion = 4;
+  if (this->firmwareversion().size() > 0) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_firmwareversion().data(), static_cast<int>(this->_internal_firmwareversion().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "BICgRPC.Bridge.firmwareVersion");
+    target = stream->WriteStringMaybeAliased(
+        4, this->_internal_firmwareversion(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:BICgRPC.Bridge)
+  return target;
+}
+
+size_t Bridge::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:BICgRPC.Bridge)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // string name = 1;
+  if (this->name().size() > 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_name());
+  }
+
+  // string implantType = 2;
+  if (this->implanttype().size() > 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_implanttype());
+  }
+
+  // string deviceId = 3;
+  if (this->deviceid().size() > 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_deviceid());
+  }
+
+  // string firmwareVersion = 4;
+  if (this->firmwareversion().size() > 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_firmwareversion());
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
+        _internal_metadata_, total_size, &_cached_size_);
+  }
+  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void Bridge::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:BICgRPC.Bridge)
+  GOOGLE_DCHECK_NE(&from, this);
+  const Bridge* source =
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<Bridge>(
+          &from);
+  if (source == nullptr) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:BICgRPC.Bridge)
+    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:BICgRPC.Bridge)
+    MergeFrom(*source);
+  }
+}
+
+void Bridge::MergeFrom(const Bridge& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:BICgRPC.Bridge)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from.name().size() > 0) {
+    _internal_set_name(from._internal_name());
+  }
+  if (from.implanttype().size() > 0) {
+    _internal_set_implanttype(from._internal_implanttype());
+  }
+  if (from.deviceid().size() > 0) {
+    _internal_set_deviceid(from._internal_deviceid());
+  }
+  if (from.firmwareversion().size() > 0) {
+    _internal_set_firmwareversion(from._internal_firmwareversion());
+  }
+}
+
+void Bridge::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:BICgRPC.Bridge)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void Bridge::CopyFrom(const Bridge& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:BICgRPC.Bridge)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool Bridge::IsInitialized() const {
+  return true;
+}
+
+void Bridge::InternalSwap(Bridge* other) {
+  using std::swap;
+  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
+  name_.Swap(&other->name_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  implanttype_.Swap(&other->implanttype_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  deviceid_.Swap(&other->deviceid_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  firmwareversion_.Swap(&other->firmwareversion_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata Bridge::GetMetadata() const {
+  return GetMetadataStatic();
+}
+
+
+// ===================================================================
+
+void QueryBridgesRequest::InitAsDefaultInstance() {
+}
+class QueryBridgesRequest::_Internal {
+ public:
+};
+
+QueryBridgesRequest::QueryBridgesRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+  SharedCtor();
+  RegisterArenaDtor(arena);
+  // @@protoc_insertion_point(arena_constructor:BICgRPC.QueryBridgesRequest)
+}
+QueryBridgesRequest::QueryBridgesRequest(const QueryBridgesRequest& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  query_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_query().empty()) {
+    query_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from._internal_query(),
+      GetArena());
+  }
+  // @@protoc_insertion_point(copy_constructor:BICgRPC.QueryBridgesRequest)
+}
+
+void QueryBridgesRequest::SharedCtor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_QueryBridgesRequest_BICgRPC_2eproto.base);
+  query_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+
+QueryBridgesRequest::~QueryBridgesRequest() {
+  // @@protoc_insertion_point(destructor:BICgRPC.QueryBridgesRequest)
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+void QueryBridgesRequest::SharedDtor() {
+  GOOGLE_DCHECK(GetArena() == nullptr);
+  query_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+
+void QueryBridgesRequest::ArenaDtor(void* object) {
+  QueryBridgesRequest* _this = reinterpret_cast< QueryBridgesRequest* >(object);
+  (void)_this;
+}
+void QueryBridgesRequest::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void QueryBridgesRequest::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+const QueryBridgesRequest& QueryBridgesRequest::default_instance() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_QueryBridgesRequest_BICgRPC_2eproto.base);
+  return *internal_default_instance();
+}
+
+
+void QueryBridgesRequest::Clear() {
+// @@protoc_insertion_point(message_clear_start:BICgRPC.QueryBridgesRequest)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  query_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* QueryBridgesRequest::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
+    switch (tag >> 3) {
+      // string query = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          auto str = _internal_mutable_query();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "BICgRPC.QueryBridgesRequest.query"));
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      default: {
+      handle_unusual:
+        if ((tag & 7) == 4 || tag == 0) {
+          ctx->SetLastTag(tag);
+          goto success;
+        }
+        ptr = UnknownFieldParse(tag,
+            _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+            ptr, ctx);
+        CHK_(ptr != nullptr);
+        continue;
+      }
+    }  // switch
+  }  // while
+success:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto success;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* QueryBridgesRequest::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:BICgRPC.QueryBridgesRequest)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // string query = 1;
+  if (this->query().size() > 0) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_query().data(), static_cast<int>(this->_internal_query().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "BICgRPC.QueryBridgesRequest.query");
+    target = stream->WriteStringMaybeAliased(
+        1, this->_internal_query(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:BICgRPC.QueryBridgesRequest)
+  return target;
+}
+
+size_t QueryBridgesRequest::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:BICgRPC.QueryBridgesRequest)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // string query = 1;
+  if (this->query().size() > 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_query());
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
+        _internal_metadata_, total_size, &_cached_size_);
+  }
+  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void QueryBridgesRequest::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:BICgRPC.QueryBridgesRequest)
+  GOOGLE_DCHECK_NE(&from, this);
+  const QueryBridgesRequest* source =
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<QueryBridgesRequest>(
+          &from);
+  if (source == nullptr) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:BICgRPC.QueryBridgesRequest)
+    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:BICgRPC.QueryBridgesRequest)
+    MergeFrom(*source);
+  }
+}
+
+void QueryBridgesRequest::MergeFrom(const QueryBridgesRequest& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:BICgRPC.QueryBridgesRequest)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from.query().size() > 0) {
+    _internal_set_query(from._internal_query());
+  }
+}
+
+void QueryBridgesRequest::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:BICgRPC.QueryBridgesRequest)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void QueryBridgesRequest::CopyFrom(const QueryBridgesRequest& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:BICgRPC.QueryBridgesRequest)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool QueryBridgesRequest::IsInitialized() const {
+  return true;
+}
+
+void QueryBridgesRequest::InternalSwap(QueryBridgesRequest* other) {
+  using std::swap;
+  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
+  query_.Swap(&other->query_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata QueryBridgesRequest::GetMetadata() const {
+  return GetMetadataStatic();
+}
+
+
+// ===================================================================
+
+void QueryBridgesResponse::InitAsDefaultInstance() {
+}
+class QueryBridgesResponse::_Internal {
+ public:
+};
+
+QueryBridgesResponse::QueryBridgesResponse(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena),
+  bridges_(arena) {
+  SharedCtor();
+  RegisterArenaDtor(arena);
+  // @@protoc_insertion_point(arena_constructor:BICgRPC.QueryBridgesResponse)
+}
+QueryBridgesResponse::QueryBridgesResponse(const QueryBridgesResponse& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message(),
+      bridges_(from.bridges_) {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  // @@protoc_insertion_point(copy_constructor:BICgRPC.QueryBridgesResponse)
+}
+
+void QueryBridgesResponse::SharedCtor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_QueryBridgesResponse_BICgRPC_2eproto.base);
+}
+
+QueryBridgesResponse::~QueryBridgesResponse() {
+  // @@protoc_insertion_point(destructor:BICgRPC.QueryBridgesResponse)
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+void QueryBridgesResponse::SharedDtor() {
+  GOOGLE_DCHECK(GetArena() == nullptr);
+}
+
+void QueryBridgesResponse::ArenaDtor(void* object) {
+  QueryBridgesResponse* _this = reinterpret_cast< QueryBridgesResponse* >(object);
+  (void)_this;
+}
+void QueryBridgesResponse::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void QueryBridgesResponse::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+const QueryBridgesResponse& QueryBridgesResponse::default_instance() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_QueryBridgesResponse_BICgRPC_2eproto.base);
+  return *internal_default_instance();
+}
+
+
+void QueryBridgesResponse::Clear() {
+// @@protoc_insertion_point(message_clear_start:BICgRPC.QueryBridgesResponse)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  bridges_.Clear();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* QueryBridgesResponse::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
+    switch (tag >> 3) {
+      // repeated .BICgRPC.Bridge bridges = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            ptr = ctx->ParseMessage(_internal_add_bridges(), ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<10>(ptr));
+        } else goto handle_unusual;
+        continue;
+      default: {
+      handle_unusual:
+        if ((tag & 7) == 4 || tag == 0) {
+          ctx->SetLastTag(tag);
+          goto success;
+        }
+        ptr = UnknownFieldParse(tag,
+            _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+            ptr, ctx);
+        CHK_(ptr != nullptr);
+        continue;
+      }
+    }  // switch
+  }  // while
+success:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto success;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* QueryBridgesResponse::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:BICgRPC.QueryBridgesResponse)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // repeated .BICgRPC.Bridge bridges = 1;
+  for (unsigned int i = 0,
+      n = static_cast<unsigned int>(this->_internal_bridges_size()); i < n; i++) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(1, this->_internal_bridges(i), target, stream);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:BICgRPC.QueryBridgesResponse)
+  return target;
+}
+
+size_t QueryBridgesResponse::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:BICgRPC.QueryBridgesResponse)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // repeated .BICgRPC.Bridge bridges = 1;
+  total_size += 1UL * this->_internal_bridges_size();
+  for (const auto& msg : this->bridges_) {
+    total_size +=
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
+        _internal_metadata_, total_size, &_cached_size_);
+  }
+  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void QueryBridgesResponse::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:BICgRPC.QueryBridgesResponse)
+  GOOGLE_DCHECK_NE(&from, this);
+  const QueryBridgesResponse* source =
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<QueryBridgesResponse>(
+          &from);
+  if (source == nullptr) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:BICgRPC.QueryBridgesResponse)
+    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:BICgRPC.QueryBridgesResponse)
+    MergeFrom(*source);
+  }
+}
+
+void QueryBridgesResponse::MergeFrom(const QueryBridgesResponse& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:BICgRPC.QueryBridgesResponse)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  bridges_.MergeFrom(from.bridges_);
+}
+
+void QueryBridgesResponse::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:BICgRPC.QueryBridgesResponse)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void QueryBridgesResponse::CopyFrom(const QueryBridgesResponse& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:BICgRPC.QueryBridgesResponse)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool QueryBridgesResponse::IsInitialized() const {
+  return true;
+}
+
+void QueryBridgesResponse::InternalSwap(QueryBridgesResponse* other) {
+  using std::swap;
+  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
+  bridges_.InternalSwap(&other->bridges_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata QueryBridgesResponse::GetMetadata() const {
+  return GetMetadataStatic();
+}
+
+
+// ===================================================================
+
+void ConnectBridgeRequest::InitAsDefaultInstance() {
+  ::BICgRPC::_ConnectBridgeRequest_default_instance_._instance.get_mutable()->parameters_ = const_cast< PROTOBUF_NAMESPACE_ID::Any*>(
+      PROTOBUF_NAMESPACE_ID::Any::internal_default_instance());
+}
+class ConnectBridgeRequest::_Internal {
+ public:
+  static const PROTOBUF_NAMESPACE_ID::Any& parameters(const ConnectBridgeRequest* msg);
+};
+
+const PROTOBUF_NAMESPACE_ID::Any&
+ConnectBridgeRequest::_Internal::parameters(const ConnectBridgeRequest* msg) {
+  return *msg->parameters_;
+}
+void ConnectBridgeRequest::clear_parameters() {
+  if (GetArena() == nullptr && parameters_ != nullptr) {
+    delete parameters_;
+  }
+  parameters_ = nullptr;
+}
+ConnectBridgeRequest::ConnectBridgeRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+  SharedCtor();
+  RegisterArenaDtor(arena);
+  // @@protoc_insertion_point(arena_constructor:BICgRPC.ConnectBridgeRequest)
+}
+ConnectBridgeRequest::ConnectBridgeRequest(const ConnectBridgeRequest& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_name().empty()) {
+    name_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from._internal_name(),
+      GetArena());
+  }
+  if (from._internal_has_parameters()) {
+    parameters_ = new PROTOBUF_NAMESPACE_ID::Any(*from.parameters_);
+  } else {
+    parameters_ = nullptr;
+  }
+  // @@protoc_insertion_point(copy_constructor:BICgRPC.ConnectBridgeRequest)
+}
+
+void ConnectBridgeRequest::SharedCtor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_ConnectBridgeRequest_BICgRPC_2eproto.base);
+  name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  parameters_ = nullptr;
+}
+
+ConnectBridgeRequest::~ConnectBridgeRequest() {
+  // @@protoc_insertion_point(destructor:BICgRPC.ConnectBridgeRequest)
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+void ConnectBridgeRequest::SharedDtor() {
+  GOOGLE_DCHECK(GetArena() == nullptr);
+  name_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (this != internal_default_instance()) delete parameters_;
+}
+
+void ConnectBridgeRequest::ArenaDtor(void* object) {
+  ConnectBridgeRequest* _this = reinterpret_cast< ConnectBridgeRequest* >(object);
+  (void)_this;
+}
+void ConnectBridgeRequest::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void ConnectBridgeRequest::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+const ConnectBridgeRequest& ConnectBridgeRequest::default_instance() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_ConnectBridgeRequest_BICgRPC_2eproto.base);
+  return *internal_default_instance();
+}
+
+
+void ConnectBridgeRequest::Clear() {
+// @@protoc_insertion_point(message_clear_start:BICgRPC.ConnectBridgeRequest)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  name_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  if (GetArena() == nullptr && parameters_ != nullptr) {
+    delete parameters_;
+  }
+  parameters_ = nullptr;
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* ConnectBridgeRequest::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
+    switch (tag >> 3) {
+      // string name = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          auto str = _internal_mutable_name();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "BICgRPC.ConnectBridgeRequest.name"));
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // .google.protobuf.Any parameters = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
+          ptr = ctx->ParseMessage(_internal_mutable_parameters(), ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      default: {
+      handle_unusual:
+        if ((tag & 7) == 4 || tag == 0) {
+          ctx->SetLastTag(tag);
+          goto success;
+        }
+        ptr = UnknownFieldParse(tag,
+            _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+            ptr, ctx);
+        CHK_(ptr != nullptr);
+        continue;
+      }
+    }  // switch
+  }  // while
+success:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto success;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* ConnectBridgeRequest::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:BICgRPC.ConnectBridgeRequest)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // string name = 1;
+  if (this->name().size() > 0) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_name().data(), static_cast<int>(this->_internal_name().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "BICgRPC.ConnectBridgeRequest.name");
+    target = stream->WriteStringMaybeAliased(
+        1, this->_internal_name(), target);
+  }
+
+  // .google.protobuf.Any parameters = 2;
+  if (this->has_parameters()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(
+        2, _Internal::parameters(this), target, stream);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:BICgRPC.ConnectBridgeRequest)
+  return target;
+}
+
+size_t ConnectBridgeRequest::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:BICgRPC.ConnectBridgeRequest)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // string name = 1;
+  if (this->name().size() > 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_name());
+  }
+
+  // .google.protobuf.Any parameters = 2;
+  if (this->has_parameters()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+        *parameters_);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
+        _internal_metadata_, total_size, &_cached_size_);
+  }
+  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void ConnectBridgeRequest::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:BICgRPC.ConnectBridgeRequest)
+  GOOGLE_DCHECK_NE(&from, this);
+  const ConnectBridgeRequest* source =
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<ConnectBridgeRequest>(
+          &from);
+  if (source == nullptr) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:BICgRPC.ConnectBridgeRequest)
+    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:BICgRPC.ConnectBridgeRequest)
+    MergeFrom(*source);
+  }
+}
+
+void ConnectBridgeRequest::MergeFrom(const ConnectBridgeRequest& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:BICgRPC.ConnectBridgeRequest)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from.name().size() > 0) {
+    _internal_set_name(from._internal_name());
+  }
+  if (from.has_parameters()) {
+    _internal_mutable_parameters()->PROTOBUF_NAMESPACE_ID::Any::MergeFrom(from._internal_parameters());
+  }
+}
+
+void ConnectBridgeRequest::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:BICgRPC.ConnectBridgeRequest)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void ConnectBridgeRequest::CopyFrom(const ConnectBridgeRequest& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:BICgRPC.ConnectBridgeRequest)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool ConnectBridgeRequest::IsInitialized() const {
+  return true;
+}
+
+void ConnectBridgeRequest::InternalSwap(ConnectBridgeRequest* other) {
+  using std::swap;
+  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
+  name_.Swap(&other->name_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  swap(parameters_, other->parameters_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata ConnectBridgeRequest::GetMetadata() const {
+  return GetMetadataStatic();
+}
+
+
+// ===================================================================
+
+void ConnectBridgeResponse::InitAsDefaultInstance() {
+  ::BICgRPC::_ConnectBridgeResponse_default_instance_._instance.get_mutable()->details_ = const_cast< PROTOBUF_NAMESPACE_ID::Any*>(
+      PROTOBUF_NAMESPACE_ID::Any::internal_default_instance());
+}
+class ConnectBridgeResponse::_Internal {
+ public:
+  static const PROTOBUF_NAMESPACE_ID::Any& details(const ConnectBridgeResponse* msg);
+};
+
+const PROTOBUF_NAMESPACE_ID::Any&
+ConnectBridgeResponse::_Internal::details(const ConnectBridgeResponse* msg) {
+  return *msg->details_;
+}
+void ConnectBridgeResponse::clear_details() {
+  if (GetArena() == nullptr && details_ != nullptr) {
+    delete details_;
+  }
+  details_ = nullptr;
+}
+ConnectBridgeResponse::ConnectBridgeResponse(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+  SharedCtor();
+  RegisterArenaDtor(arena);
+  // @@protoc_insertion_point(arena_constructor:BICgRPC.ConnectBridgeResponse)
+}
+ConnectBridgeResponse::ConnectBridgeResponse(const ConnectBridgeResponse& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_name().empty()) {
+    name_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from._internal_name(),
+      GetArena());
+  }
+  if (from._internal_has_details()) {
+    details_ = new PROTOBUF_NAMESPACE_ID::Any(*from.details_);
+  } else {
+    details_ = nullptr;
+  }
+  connection_status_ = from.connection_status_;
+  // @@protoc_insertion_point(copy_constructor:BICgRPC.ConnectBridgeResponse)
+}
+
+void ConnectBridgeResponse::SharedCtor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_ConnectBridgeResponse_BICgRPC_2eproto.base);
+  name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  ::memset(&details_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&connection_status_) -
+      reinterpret_cast<char*>(&details_)) + sizeof(connection_status_));
+}
+
+ConnectBridgeResponse::~ConnectBridgeResponse() {
+  // @@protoc_insertion_point(destructor:BICgRPC.ConnectBridgeResponse)
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+void ConnectBridgeResponse::SharedDtor() {
+  GOOGLE_DCHECK(GetArena() == nullptr);
+  name_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (this != internal_default_instance()) delete details_;
+}
+
+void ConnectBridgeResponse::ArenaDtor(void* object) {
+  ConnectBridgeResponse* _this = reinterpret_cast< ConnectBridgeResponse* >(object);
+  (void)_this;
+}
+void ConnectBridgeResponse::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void ConnectBridgeResponse::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+const ConnectBridgeResponse& ConnectBridgeResponse::default_instance() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_ConnectBridgeResponse_BICgRPC_2eproto.base);
+  return *internal_default_instance();
+}
+
+
+void ConnectBridgeResponse::Clear() {
+// @@protoc_insertion_point(message_clear_start:BICgRPC.ConnectBridgeResponse)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  name_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  if (GetArena() == nullptr && details_ != nullptr) {
+    delete details_;
+  }
+  details_ = nullptr;
+  connection_status_ = 0;
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* ConnectBridgeResponse::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
+    switch (tag >> 3) {
+      // string name = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          auto str = _internal_mutable_name();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "BICgRPC.ConnectBridgeResponse.name"));
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // .BICgRPC.ConnectBridgeStatus connection_status = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 16)) {
+          ::PROTOBUF_NAMESPACE_ID::uint64 val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+          _internal_set_connection_status(static_cast<::BICgRPC::ConnectBridgeStatus>(val));
+        } else goto handle_unusual;
+        continue;
+      // .google.protobuf.Any details = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 26)) {
+          ptr = ctx->ParseMessage(_internal_mutable_details(), ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      default: {
+      handle_unusual:
+        if ((tag & 7) == 4 || tag == 0) {
+          ctx->SetLastTag(tag);
+          goto success;
+        }
+        ptr = UnknownFieldParse(tag,
+            _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+            ptr, ctx);
+        CHK_(ptr != nullptr);
+        continue;
+      }
+    }  // switch
+  }  // while
+success:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto success;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* ConnectBridgeResponse::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:BICgRPC.ConnectBridgeResponse)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // string name = 1;
+  if (this->name().size() > 0) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_name().data(), static_cast<int>(this->_internal_name().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "BICgRPC.ConnectBridgeResponse.name");
+    target = stream->WriteStringMaybeAliased(
+        1, this->_internal_name(), target);
+  }
+
+  // .BICgRPC.ConnectBridgeStatus connection_status = 2;
+  if (this->connection_status() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteEnumToArray(
+      2, this->_internal_connection_status(), target);
+  }
+
+  // .google.protobuf.Any details = 3;
+  if (this->has_details()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(
+        3, _Internal::details(this), target, stream);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:BICgRPC.ConnectBridgeResponse)
+  return target;
+}
+
+size_t ConnectBridgeResponse::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:BICgRPC.ConnectBridgeResponse)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // string name = 1;
+  if (this->name().size() > 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_name());
+  }
+
+  // .google.protobuf.Any details = 3;
+  if (this->has_details()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+        *details_);
+  }
+
+  // .BICgRPC.ConnectBridgeStatus connection_status = 2;
+  if (this->connection_status() != 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::EnumSize(this->_internal_connection_status());
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
+        _internal_metadata_, total_size, &_cached_size_);
+  }
+  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void ConnectBridgeResponse::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:BICgRPC.ConnectBridgeResponse)
+  GOOGLE_DCHECK_NE(&from, this);
+  const ConnectBridgeResponse* source =
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<ConnectBridgeResponse>(
+          &from);
+  if (source == nullptr) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:BICgRPC.ConnectBridgeResponse)
+    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:BICgRPC.ConnectBridgeResponse)
+    MergeFrom(*source);
+  }
+}
+
+void ConnectBridgeResponse::MergeFrom(const ConnectBridgeResponse& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:BICgRPC.ConnectBridgeResponse)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from.name().size() > 0) {
+    _internal_set_name(from._internal_name());
+  }
+  if (from.has_details()) {
+    _internal_mutable_details()->PROTOBUF_NAMESPACE_ID::Any::MergeFrom(from._internal_details());
+  }
+  if (from.connection_status() != 0) {
+    _internal_set_connection_status(from._internal_connection_status());
+  }
+}
+
+void ConnectBridgeResponse::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:BICgRPC.ConnectBridgeResponse)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void ConnectBridgeResponse::CopyFrom(const ConnectBridgeResponse& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:BICgRPC.ConnectBridgeResponse)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool ConnectBridgeResponse::IsInitialized() const {
+  return true;
+}
+
+void ConnectBridgeResponse::InternalSwap(ConnectBridgeResponse* other) {
+  using std::swap;
+  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
+  name_.Swap(&other->name_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(ConnectBridgeResponse, connection_status_)
+      + sizeof(ConnectBridgeResponse::connection_status_)
+      - PROTOBUF_FIELD_OFFSET(ConnectBridgeResponse, details_)>(
+          reinterpret_cast<char*>(&details_),
+          reinterpret_cast<char*>(&other->details_));
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata ConnectBridgeResponse::GetMetadata() const {
+  return GetMetadataStatic();
+}
+
+
+// ===================================================================
+
+void DescribeBridgeRequest::InitAsDefaultInstance() {
+}
+class DescribeBridgeRequest::_Internal {
+ public:
+};
+
+DescribeBridgeRequest::DescribeBridgeRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+  SharedCtor();
+  RegisterArenaDtor(arena);
+  // @@protoc_insertion_point(arena_constructor:BICgRPC.DescribeBridgeRequest)
+}
+DescribeBridgeRequest::DescribeBridgeRequest(const DescribeBridgeRequest& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_name().empty()) {
+    name_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from._internal_name(),
+      GetArena());
+  }
+  // @@protoc_insertion_point(copy_constructor:BICgRPC.DescribeBridgeRequest)
+}
+
+void DescribeBridgeRequest::SharedCtor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_DescribeBridgeRequest_BICgRPC_2eproto.base);
+  name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+
+DescribeBridgeRequest::~DescribeBridgeRequest() {
+  // @@protoc_insertion_point(destructor:BICgRPC.DescribeBridgeRequest)
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+void DescribeBridgeRequest::SharedDtor() {
+  GOOGLE_DCHECK(GetArena() == nullptr);
+  name_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+
+void DescribeBridgeRequest::ArenaDtor(void* object) {
+  DescribeBridgeRequest* _this = reinterpret_cast< DescribeBridgeRequest* >(object);
+  (void)_this;
+}
+void DescribeBridgeRequest::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void DescribeBridgeRequest::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+const DescribeBridgeRequest& DescribeBridgeRequest::default_instance() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_DescribeBridgeRequest_BICgRPC_2eproto.base);
+  return *internal_default_instance();
+}
+
+
+void DescribeBridgeRequest::Clear() {
+// @@protoc_insertion_point(message_clear_start:BICgRPC.DescribeBridgeRequest)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  name_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* DescribeBridgeRequest::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
+    switch (tag >> 3) {
+      // string name = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          auto str = _internal_mutable_name();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "BICgRPC.DescribeBridgeRequest.name"));
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      default: {
+      handle_unusual:
+        if ((tag & 7) == 4 || tag == 0) {
+          ctx->SetLastTag(tag);
+          goto success;
+        }
+        ptr = UnknownFieldParse(tag,
+            _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+            ptr, ctx);
+        CHK_(ptr != nullptr);
+        continue;
+      }
+    }  // switch
+  }  // while
+success:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto success;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* DescribeBridgeRequest::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:BICgRPC.DescribeBridgeRequest)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // string name = 1;
+  if (this->name().size() > 0) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_name().data(), static_cast<int>(this->_internal_name().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "BICgRPC.DescribeBridgeRequest.name");
+    target = stream->WriteStringMaybeAliased(
+        1, this->_internal_name(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:BICgRPC.DescribeBridgeRequest)
+  return target;
+}
+
+size_t DescribeBridgeRequest::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:BICgRPC.DescribeBridgeRequest)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // string name = 1;
+  if (this->name().size() > 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_name());
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
+        _internal_metadata_, total_size, &_cached_size_);
+  }
+  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void DescribeBridgeRequest::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:BICgRPC.DescribeBridgeRequest)
+  GOOGLE_DCHECK_NE(&from, this);
+  const DescribeBridgeRequest* source =
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<DescribeBridgeRequest>(
+          &from);
+  if (source == nullptr) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:BICgRPC.DescribeBridgeRequest)
+    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:BICgRPC.DescribeBridgeRequest)
+    MergeFrom(*source);
+  }
+}
+
+void DescribeBridgeRequest::MergeFrom(const DescribeBridgeRequest& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:BICgRPC.DescribeBridgeRequest)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from.name().size() > 0) {
+    _internal_set_name(from._internal_name());
+  }
+}
+
+void DescribeBridgeRequest::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:BICgRPC.DescribeBridgeRequest)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void DescribeBridgeRequest::CopyFrom(const DescribeBridgeRequest& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:BICgRPC.DescribeBridgeRequest)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool DescribeBridgeRequest::IsInitialized() const {
+  return true;
+}
+
+void DescribeBridgeRequest::InternalSwap(DescribeBridgeRequest* other) {
+  using std::swap;
+  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
+  name_.Swap(&other->name_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata DescribeBridgeRequest::GetMetadata() const {
+  return GetMetadataStatic();
+}
+
+
+// ===================================================================
+
+void DescribeBridgeResponse::InitAsDefaultInstance() {
+  ::BICgRPC::_DescribeBridgeResponse_default_instance_._instance.get_mutable()->details_ = const_cast< ::BICgRPC::Bridge*>(
+      ::BICgRPC::Bridge::internal_default_instance());
+  ::BICgRPC::_DescribeBridgeResponse_default_instance_._instance.get_mutable()->error_ = const_cast< PROTOBUF_NAMESPACE_ID::Any*>(
+      PROTOBUF_NAMESPACE_ID::Any::internal_default_instance());
+}
+class DescribeBridgeResponse::_Internal {
+ public:
+  static const ::BICgRPC::Bridge& details(const DescribeBridgeResponse* msg);
+  static const PROTOBUF_NAMESPACE_ID::Any& error(const DescribeBridgeResponse* msg);
+};
+
+const ::BICgRPC::Bridge&
+DescribeBridgeResponse::_Internal::details(const DescribeBridgeResponse* msg) {
+  return *msg->details_;
+}
+const PROTOBUF_NAMESPACE_ID::Any&
+DescribeBridgeResponse::_Internal::error(const DescribeBridgeResponse* msg) {
+  return *msg->error_;
+}
+void DescribeBridgeResponse::clear_error() {
+  if (GetArena() == nullptr && error_ != nullptr) {
+    delete error_;
+  }
+  error_ = nullptr;
+}
+DescribeBridgeResponse::DescribeBridgeResponse(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+  SharedCtor();
+  RegisterArenaDtor(arena);
+  // @@protoc_insertion_point(arena_constructor:BICgRPC.DescribeBridgeResponse)
+}
+DescribeBridgeResponse::DescribeBridgeResponse(const DescribeBridgeResponse& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_name().empty()) {
+    name_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from._internal_name(),
+      GetArena());
+  }
+  if (from._internal_has_details()) {
+    details_ = new ::BICgRPC::Bridge(*from.details_);
+  } else {
+    details_ = nullptr;
+  }
+  if (from._internal_has_error()) {
+    error_ = new PROTOBUF_NAMESPACE_ID::Any(*from.error_);
+  } else {
+    error_ = nullptr;
+  }
+  // @@protoc_insertion_point(copy_constructor:BICgRPC.DescribeBridgeResponse)
+}
+
+void DescribeBridgeResponse::SharedCtor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_DescribeBridgeResponse_BICgRPC_2eproto.base);
+  name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  ::memset(&details_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&error_) -
+      reinterpret_cast<char*>(&details_)) + sizeof(error_));
+}
+
+DescribeBridgeResponse::~DescribeBridgeResponse() {
+  // @@protoc_insertion_point(destructor:BICgRPC.DescribeBridgeResponse)
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+void DescribeBridgeResponse::SharedDtor() {
+  GOOGLE_DCHECK(GetArena() == nullptr);
+  name_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (this != internal_default_instance()) delete details_;
+  if (this != internal_default_instance()) delete error_;
+}
+
+void DescribeBridgeResponse::ArenaDtor(void* object) {
+  DescribeBridgeResponse* _this = reinterpret_cast< DescribeBridgeResponse* >(object);
+  (void)_this;
+}
+void DescribeBridgeResponse::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void DescribeBridgeResponse::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+const DescribeBridgeResponse& DescribeBridgeResponse::default_instance() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_DescribeBridgeResponse_BICgRPC_2eproto.base);
+  return *internal_default_instance();
+}
+
+
+void DescribeBridgeResponse::Clear() {
+// @@protoc_insertion_point(message_clear_start:BICgRPC.DescribeBridgeResponse)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  name_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  if (GetArena() == nullptr && details_ != nullptr) {
+    delete details_;
+  }
+  details_ = nullptr;
+  if (GetArena() == nullptr && error_ != nullptr) {
+    delete error_;
+  }
+  error_ = nullptr;
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* DescribeBridgeResponse::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
+    switch (tag >> 3) {
+      // string name = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          auto str = _internal_mutable_name();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "BICgRPC.DescribeBridgeResponse.name"));
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // .BICgRPC.Bridge details = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
+          ptr = ctx->ParseMessage(_internal_mutable_details(), ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // .google.protobuf.Any error = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 26)) {
+          ptr = ctx->ParseMessage(_internal_mutable_error(), ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      default: {
+      handle_unusual:
+        if ((tag & 7) == 4 || tag == 0) {
+          ctx->SetLastTag(tag);
+          goto success;
+        }
+        ptr = UnknownFieldParse(tag,
+            _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+            ptr, ctx);
+        CHK_(ptr != nullptr);
+        continue;
+      }
+    }  // switch
+  }  // while
+success:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto success;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* DescribeBridgeResponse::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:BICgRPC.DescribeBridgeResponse)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // string name = 1;
+  if (this->name().size() > 0) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_name().data(), static_cast<int>(this->_internal_name().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "BICgRPC.DescribeBridgeResponse.name");
+    target = stream->WriteStringMaybeAliased(
+        1, this->_internal_name(), target);
+  }
+
+  // .BICgRPC.Bridge details = 2;
+  if (this->has_details()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(
+        2, _Internal::details(this), target, stream);
+  }
+
+  // .google.protobuf.Any error = 3;
+  if (this->has_error()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(
+        3, _Internal::error(this), target, stream);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:BICgRPC.DescribeBridgeResponse)
+  return target;
+}
+
+size_t DescribeBridgeResponse::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:BICgRPC.DescribeBridgeResponse)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // string name = 1;
+  if (this->name().size() > 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_name());
+  }
+
+  // .BICgRPC.Bridge details = 2;
+  if (this->has_details()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+        *details_);
+  }
+
+  // .google.protobuf.Any error = 3;
+  if (this->has_error()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+        *error_);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
+        _internal_metadata_, total_size, &_cached_size_);
+  }
+  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void DescribeBridgeResponse::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:BICgRPC.DescribeBridgeResponse)
+  GOOGLE_DCHECK_NE(&from, this);
+  const DescribeBridgeResponse* source =
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<DescribeBridgeResponse>(
+          &from);
+  if (source == nullptr) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:BICgRPC.DescribeBridgeResponse)
+    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:BICgRPC.DescribeBridgeResponse)
+    MergeFrom(*source);
+  }
+}
+
+void DescribeBridgeResponse::MergeFrom(const DescribeBridgeResponse& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:BICgRPC.DescribeBridgeResponse)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from.name().size() > 0) {
+    _internal_set_name(from._internal_name());
+  }
+  if (from.has_details()) {
+    _internal_mutable_details()->::BICgRPC::Bridge::MergeFrom(from._internal_details());
+  }
+  if (from.has_error()) {
+    _internal_mutable_error()->PROTOBUF_NAMESPACE_ID::Any::MergeFrom(from._internal_error());
+  }
+}
+
+void DescribeBridgeResponse::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:BICgRPC.DescribeBridgeResponse)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void DescribeBridgeResponse::CopyFrom(const DescribeBridgeResponse& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:BICgRPC.DescribeBridgeResponse)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool DescribeBridgeResponse::IsInitialized() const {
+  return true;
+}
+
+void DescribeBridgeResponse::InternalSwap(DescribeBridgeResponse* other) {
+  using std::swap;
+  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
+  name_.Swap(&other->name_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(DescribeBridgeResponse, error_)
+      + sizeof(DescribeBridgeResponse::error_)
+      - PROTOBUF_FIELD_OFFSET(DescribeBridgeResponse, details_)>(
+          reinterpret_cast<char*>(&details_),
+          reinterpret_cast<char*>(&other->details_));
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata DescribeBridgeResponse::GetMetadata() const {
+  return GetMetadataStatic();
+}
+
+
+// ===================================================================
+
+void DisconnectBridgeRequest::InitAsDefaultInstance() {
+}
+class DisconnectBridgeRequest::_Internal {
+ public:
+};
+
+DisconnectBridgeRequest::DisconnectBridgeRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+  SharedCtor();
+  RegisterArenaDtor(arena);
+  // @@protoc_insertion_point(arena_constructor:BICgRPC.DisconnectBridgeRequest)
+}
+DisconnectBridgeRequest::DisconnectBridgeRequest(const DisconnectBridgeRequest& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_name().empty()) {
+    name_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from._internal_name(),
+      GetArena());
+  }
+  // @@protoc_insertion_point(copy_constructor:BICgRPC.DisconnectBridgeRequest)
+}
+
+void DisconnectBridgeRequest::SharedCtor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_DisconnectBridgeRequest_BICgRPC_2eproto.base);
+  name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+
+DisconnectBridgeRequest::~DisconnectBridgeRequest() {
+  // @@protoc_insertion_point(destructor:BICgRPC.DisconnectBridgeRequest)
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+void DisconnectBridgeRequest::SharedDtor() {
+  GOOGLE_DCHECK(GetArena() == nullptr);
+  name_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+
+void DisconnectBridgeRequest::ArenaDtor(void* object) {
+  DisconnectBridgeRequest* _this = reinterpret_cast< DisconnectBridgeRequest* >(object);
+  (void)_this;
+}
+void DisconnectBridgeRequest::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void DisconnectBridgeRequest::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+const DisconnectBridgeRequest& DisconnectBridgeRequest::default_instance() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_DisconnectBridgeRequest_BICgRPC_2eproto.base);
+  return *internal_default_instance();
+}
+
+
+void DisconnectBridgeRequest::Clear() {
+// @@protoc_insertion_point(message_clear_start:BICgRPC.DisconnectBridgeRequest)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  name_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* DisconnectBridgeRequest::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
+    switch (tag >> 3) {
+      // string name = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          auto str = _internal_mutable_name();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "BICgRPC.DisconnectBridgeRequest.name"));
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      default: {
+      handle_unusual:
+        if ((tag & 7) == 4 || tag == 0) {
+          ctx->SetLastTag(tag);
+          goto success;
+        }
+        ptr = UnknownFieldParse(tag,
+            _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+            ptr, ctx);
+        CHK_(ptr != nullptr);
+        continue;
+      }
+    }  // switch
+  }  // while
+success:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto success;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* DisconnectBridgeRequest::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:BICgRPC.DisconnectBridgeRequest)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // string name = 1;
+  if (this->name().size() > 0) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_name().data(), static_cast<int>(this->_internal_name().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "BICgRPC.DisconnectBridgeRequest.name");
+    target = stream->WriteStringMaybeAliased(
+        1, this->_internal_name(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:BICgRPC.DisconnectBridgeRequest)
+  return target;
+}
+
+size_t DisconnectBridgeRequest::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:BICgRPC.DisconnectBridgeRequest)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // string name = 1;
+  if (this->name().size() > 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_name());
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
+        _internal_metadata_, total_size, &_cached_size_);
+  }
+  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void DisconnectBridgeRequest::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:BICgRPC.DisconnectBridgeRequest)
+  GOOGLE_DCHECK_NE(&from, this);
+  const DisconnectBridgeRequest* source =
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<DisconnectBridgeRequest>(
+          &from);
+  if (source == nullptr) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:BICgRPC.DisconnectBridgeRequest)
+    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:BICgRPC.DisconnectBridgeRequest)
+    MergeFrom(*source);
+  }
+}
+
+void DisconnectBridgeRequest::MergeFrom(const DisconnectBridgeRequest& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:BICgRPC.DisconnectBridgeRequest)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from.name().size() > 0) {
+    _internal_set_name(from._internal_name());
+  }
+}
+
+void DisconnectBridgeRequest::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:BICgRPC.DisconnectBridgeRequest)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void DisconnectBridgeRequest::CopyFrom(const DisconnectBridgeRequest& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:BICgRPC.DisconnectBridgeRequest)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool DisconnectBridgeRequest::IsInitialized() const {
+  return true;
+}
+
+void DisconnectBridgeRequest::InternalSwap(DisconnectBridgeRequest* other) {
+  using std::swap;
+  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
+  name_.Swap(&other->name_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata DisconnectBridgeRequest::GetMetadata() const {
+  return GetMetadataStatic();
+}
+
+
 // @@protoc_insertion_point(namespace_scope)
 }  // namespace BICgRPC
 PROTOBUF_NAMESPACE_OPEN
-template<> PROTOBUF_NOINLINE ::BICgRPC::bicNullRequest* Arena::CreateMaybeMessage< ::BICgRPC::bicNullRequest >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::BICgRPC::bicNullRequest >(arena);
-}
 template<> PROTOBUF_NOINLINE ::BICgRPC::bicSuccessReply* Arena::CreateMaybeMessage< ::BICgRPC::bicSuccessReply >(Arena* arena) {
   return Arena::CreateMessageInternal< ::BICgRPC::bicSuccessReply >(arena);
 }
-template<> PROTOBUF_NOINLINE ::BICgRPC::bicInitRequest* Arena::CreateMaybeMessage< ::BICgRPC::bicInitRequest >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::BICgRPC::bicInitRequest >(arena);
+template<> PROTOBUF_NOINLINE ::BICgRPC::ScanDevicesRequest* Arena::CreateMaybeMessage< ::BICgRPC::ScanDevicesRequest >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::BICgRPC::ScanDevicesRequest >(arena);
+}
+template<> PROTOBUF_NOINLINE ::BICgRPC::ScanDevicesReply* Arena::CreateMaybeMessage< ::BICgRPC::ScanDevicesReply >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::BICgRPC::ScanDevicesReply >(arena);
+}
+template<> PROTOBUF_NOINLINE ::BICgRPC::ConnectDeviceRequest* Arena::CreateMaybeMessage< ::BICgRPC::ConnectDeviceRequest >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::BICgRPC::ConnectDeviceRequest >(arena);
 }
 template<> PROTOBUF_NOINLINE ::BICgRPC::bicGetImplantInfoRequest* Arena::CreateMaybeMessage< ::BICgRPC::bicGetImplantInfoRequest >(Arena* arena) {
   return Arena::CreateMessageInternal< ::BICgRPC::bicGetImplantInfoRequest >(arena);
@@ -3741,6 +6674,33 @@ template<> PROTOBUF_NOINLINE ::BICgRPC::bicSetImplantPowerRequest* Arena::Create
 }
 template<> PROTOBUF_NOINLINE ::BICgRPC::bicStartStimulationRequest* Arena::CreateMaybeMessage< ::BICgRPC::bicStartStimulationRequest >(Arena* arena) {
   return Arena::CreateMessageInternal< ::BICgRPC::bicStartStimulationRequest >(arena);
+}
+template<> PROTOBUF_NOINLINE ::BICgRPC::TemperatureUpdate* Arena::CreateMaybeMessage< ::BICgRPC::TemperatureUpdate >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::BICgRPC::TemperatureUpdate >(arena);
+}
+template<> PROTOBUF_NOINLINE ::BICgRPC::Bridge* Arena::CreateMaybeMessage< ::BICgRPC::Bridge >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::BICgRPC::Bridge >(arena);
+}
+template<> PROTOBUF_NOINLINE ::BICgRPC::QueryBridgesRequest* Arena::CreateMaybeMessage< ::BICgRPC::QueryBridgesRequest >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::BICgRPC::QueryBridgesRequest >(arena);
+}
+template<> PROTOBUF_NOINLINE ::BICgRPC::QueryBridgesResponse* Arena::CreateMaybeMessage< ::BICgRPC::QueryBridgesResponse >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::BICgRPC::QueryBridgesResponse >(arena);
+}
+template<> PROTOBUF_NOINLINE ::BICgRPC::ConnectBridgeRequest* Arena::CreateMaybeMessage< ::BICgRPC::ConnectBridgeRequest >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::BICgRPC::ConnectBridgeRequest >(arena);
+}
+template<> PROTOBUF_NOINLINE ::BICgRPC::ConnectBridgeResponse* Arena::CreateMaybeMessage< ::BICgRPC::ConnectBridgeResponse >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::BICgRPC::ConnectBridgeResponse >(arena);
+}
+template<> PROTOBUF_NOINLINE ::BICgRPC::DescribeBridgeRequest* Arena::CreateMaybeMessage< ::BICgRPC::DescribeBridgeRequest >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::BICgRPC::DescribeBridgeRequest >(arena);
+}
+template<> PROTOBUF_NOINLINE ::BICgRPC::DescribeBridgeResponse* Arena::CreateMaybeMessage< ::BICgRPC::DescribeBridgeResponse >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::BICgRPC::DescribeBridgeResponse >(arena);
+}
+template<> PROTOBUF_NOINLINE ::BICgRPC::DisconnectBridgeRequest* Arena::CreateMaybeMessage< ::BICgRPC::DisconnectBridgeRequest >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::BICgRPC::DisconnectBridgeRequest >(arena);
 }
 PROTOBUF_NAMESPACE_CLOSE
 

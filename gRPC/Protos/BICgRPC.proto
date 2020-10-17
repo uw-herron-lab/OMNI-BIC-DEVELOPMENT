@@ -18,40 +18,75 @@ option java_multiple_files = true;
 option java_package = "io.grpc.BICgRPC";
 option java_outer_classname = "BICgRPC";
 option objc_class_prefix = "HLW";
+option csharp_namespace = "BICgRPC";
 
 package BICgRPC;
 
-// The greeting service definition.
-service BICManager{
-  // Sends a greeting
-  rpc bicInit (bicInitRequest) returns (bicSuccessReply) {}
-  rpc bicGetImplantInfo (bicGetImplantInfoRequest) returns (bicGetImplantInfoReply) {}
-  rpc bicGetImpedance (bicGetImpedanceRequest) returns (bicGetImpedanceReply) {}
-  rpc bicGetTemperature (bicNullRequest) returns (bicGetTemperatureReply) {}
-  rpc bicGetHumidity (bicNullRequest) returns (bicGetHumidityReply) {}
-  rpc bicSetSensingEnable (bicSetSensingEnableRequest) returns (bicSuccessReply) {}
-  rpc bicSetImplantPower (bicSetImplantPowerRequest) returns (bicSuccessReply) {}
-  rpc bicStartStimulation (bicStartStimulationRequest) returns (bicSuccessReply) {}
-  rpc bicStopStimulation (bicNullRequest) returns (bicSuccessReply) {}
-  rpc bicDispose (bicNullRequest) returns (bicSuccessReply) {}
+import "google/protobuf/any.proto";
+import "google/protobuf/empty.proto";
+
+// The BICBridgeService definition
+service BICBridgeService {
+	rpc ListBridges(QueryBridgesRequest) returns (QueryBridgesResponse);
+	rpc ScanBridges(QueryBridgesRequest) returns (QueryBridgesResponse);
+	rpc ConnectedBridges(QueryBridgesRequest) returns (QueryBridgesResponse);
+	rpc ConnectBridge(ConnectBridgeRequest) returns (ConnectBridgeResponse);
+	rpc DescribeBridge(DescribeBridgeRequest) returns (DescribeBridgeResponse);
+	rpc DisconnectBridge(DisconnectBridgeRequest) returns (google.protobuf.Empty);
+}
+
+// The BICDeviceService definition.
+service BICDeviceService{
+	// Initialization/Destruction
+	rpc ScanDevices (ScanDevicesRequest) returns (ScanDevicesReply) {}
+	rpc ConnectDevice (ConnectDeviceRequest) returns (bicSuccessReply) {}
+	rpc bicDispose (google.protobuf.Empty) returns (bicSuccessReply) {}
+
+	// Get Functions
+	rpc bicGetImplantInfo (bicGetImplantInfoRequest) returns (bicGetImplantInfoReply) {}
+	rpc bicGetImpedance (bicGetImpedanceRequest) returns (bicGetImpedanceReply) {}
+	rpc bicGetTemperature (google.protobuf.Empty) returns (bicGetTemperatureReply) {}
+	rpc bicGetHumidity (google.protobuf.Empty) returns (bicGetHumidityReply) {}
+
+	// Set Functions
+	rpc bicSetSensingEnable (bicSetSensingEnableRequest) returns (bicSuccessReply) {}
+	rpc bicSetImplantPower (bicSetImplantPowerRequest) returns (bicSuccessReply) {}
+
+	// Stim Functions
+	rpc bicStartStimulation (bicStartStimulationRequest) returns (bicSuccessReply) {}
+	rpc bicStopStimulation (google.protobuf.Empty) returns (bicSuccessReply) {}
+	
+	// Streaming endpoints
+	rpc bicTemperatureStream (google.protobuf.Empty) returns (stream TemperatureUpdate) {}
 }
 
 // Basic Messages
-message bicNullRequest{ }
-
 message bicSuccessReply{
 	string success = 1;
 }
 
-// bicInit Messages
-message bicInitRequest {
-  string logFileName = 1;
+// ScanDevices Messages
+message ScanDevicesRequest {
+  string bridgeName = 1;
+}
+
+message ScanDevicesReply{
+	string name = 1;
+	bicGetImplantInfoReply discoveredDevice = 2;
+}
+
+// ConnectDevice Messages
+message ConnectDeviceRequest{
+	string deviceAddress = 1;
+	string logFileName = 2;
 }
 
 // bicGetImplantInfo Messages
 message bicGetImplantInfoRequest{
 	bool updateCachedInfo = 1;
 }
+
+// bicGetImplantInfo Messages
 message bicGetImplantInfoReply {
 	message bicChannelInfo {
 		enum UnitType{
@@ -81,6 +116,7 @@ message bicGetImplantInfoReply {
 	string success = 9;
 }
 
+// *************************** Device Service Messages ***************************
 // bicGetImpedance Messages
 message bicGetImpedanceRequest {
 	uint32 channel = 1;
@@ -120,4 +156,137 @@ message bicSetImplantPowerRequest{
 // bicStartStimulation Messages
 message bicStartStimulationRequest{
 	
+}
+
+message TemperatureUpdate{
+	double temperature = 1;
+	string units = 2;
+}
+
+// *************************** Bridge Service Messages ***************************
+message Bridge {
+  /**
+   * Scheme-less URI describing the bridge resource.
+   * For example, '//summit/bridge/xxxxxxxxx' where
+   * 'xxxxxxxxx' is the serial number of the bridge.
+   */
+  string name = 1;
+
+  /**
+   * Additional platform specific details. These are defined in a separate
+   * protobuf files, one per device manufacturer.
+   */
+  string implantType = 2;
+  string deviceId = 3;
+  string firmwareVersion = 4;
+}
+
+/**
+ * This message is used for all of the query functions on the BridgeService.
+ * All the query functions have the same shape if there's a need we can split
+ * out different messages later.
+ */
+message QueryBridgesRequest {
+  /**
+   * The partial scheme-less URI for the resource. For example,
+   * '//summit/bridge/123' will search for all bridges whose
+   * serial number begins with 123.
+   */
+  string query = 1;
+}
+
+/**
+ * This message is used for all of the query functions on the BridgeService.
+ * All the query functions have the same shape if there's a need we can split
+ * out different messages later.
+ */
+message QueryBridgesResponse {
+  /**
+   * List of bridges.
+   */
+  repeated Bridge bridges = 1;
+}
+
+message ConnectBridgeRequest {
+  /**
+   * Scheme-less URI describing the bridge resource.
+   * For example, '//summit/bridge/xxxxxxxxx' where
+   * 'xxxxxxxxx' is the serial number of the bridge.
+   */
+  string name = 1;
+
+  /**
+   * Additional platform specific arguments. These are defined in separate
+   * protobuf files, one per device manufacturer.
+   */
+  google.protobuf.Any parameters = 2;
+}
+
+/**
+ * Common connection states for Bridges, additional details provide by manufacturer
+ * specific connection status codes.
+ */
+enum ConnectBridgeStatus {
+  CONNECT_BRIDGE_STATUS_UNSPECIFIED = 0;
+  CONNECTION_SUCCESS = 1;
+  CONNECTION_FAILURE = 2;
+}
+
+message ConnectBridgeResponse {
+  /**
+   * Scheme-less URI describing the bridge resource.
+   * For example, '//summit/bridge/xxxxxxxxx' where
+   * 'xxxxxxxxx' is the serial number of the bridge.
+   */
+  string name = 1;  
+
+  /**
+   * Status of the connection attempt.
+   */
+  ConnectBridgeStatus connection_status = 2;
+
+  /**
+   * Additional platform specific details. These are defined in a separate
+   * protobuf files, one per device manufacturer.
+   */
+  google.protobuf.Any details = 3;
+}
+
+message DescribeBridgeRequest {
+  /**
+   * Scheme-less URI describing the bridge resource.
+   * For example, '//summit/bridge/xxxxxxxxx' where
+   * 'xxxxxxxxx' is the serial number of the bridge.
+   */
+  string name = 1; 
+}
+
+message DescribeBridgeResponse {
+  /**
+   * Scheme-less URI describing the bridge resource.
+   * For example, '//summit/bridge/xxxxxxxxx' where
+   * 'xxxxxxxxx' is the serial number of the bridge.
+   */
+  string name = 1;  
+
+  /**
+   * Additional platform specific bridge information. These are defined in a separate
+   * protobuf files, one per device manufacturer.
+   */
+  Bridge details = 2;
+
+  /**
+   * Additional platform specific error details. These are defined in a separate
+   * protobuf files, one per manufacturer.
+   */
+  google.protobuf.Any error = 3;
+}
+
+message DisconnectBridgeRequest {
+  /**
+   * Scheme-less URI describing the bridge resource.
+   * For example, '//summit/bridge/xxxxxxxxx' where
+   * 'xxxxxxxxx' is the serial number of the bridge.
+   */
+  string name = 1;
 }

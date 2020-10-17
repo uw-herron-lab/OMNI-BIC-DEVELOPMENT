@@ -43,23 +43,1374 @@
 
 namespace BICgRPC {
 
-// The greeting service definition.
-class BICManager final {
+// The BICBridgeService definition
+class BICBridgeService final {
  public:
   static constexpr char const* service_full_name() {
-    return "BICgRPC.BICManager";
+    return "BICgRPC.BICBridgeService";
   }
   class StubInterface {
    public:
     virtual ~StubInterface() {}
-    // Sends a greeting
-    virtual ::grpc::Status bicInit(::grpc::ClientContext* context, const ::BICgRPC::bicInitRequest& request, ::BICgRPC::bicSuccessReply* response) = 0;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>> AsyncbicInit(::grpc::ClientContext* context, const ::BICgRPC::bicInitRequest& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>>(AsyncbicInitRaw(context, request, cq));
+    virtual ::grpc::Status ListBridges(::grpc::ClientContext* context, const ::BICgRPC::QueryBridgesRequest& request, ::BICgRPC::QueryBridgesResponse* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::QueryBridgesResponse>> AsyncListBridges(::grpc::ClientContext* context, const ::BICgRPC::QueryBridgesRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::QueryBridgesResponse>>(AsyncListBridgesRaw(context, request, cq));
     }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>> PrepareAsyncbicInit(::grpc::ClientContext* context, const ::BICgRPC::bicInitRequest& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>>(PrepareAsyncbicInitRaw(context, request, cq));
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::QueryBridgesResponse>> PrepareAsyncListBridges(::grpc::ClientContext* context, const ::BICgRPC::QueryBridgesRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::QueryBridgesResponse>>(PrepareAsyncListBridgesRaw(context, request, cq));
     }
+    virtual ::grpc::Status ScanBridges(::grpc::ClientContext* context, const ::BICgRPC::QueryBridgesRequest& request, ::BICgRPC::QueryBridgesResponse* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::QueryBridgesResponse>> AsyncScanBridges(::grpc::ClientContext* context, const ::BICgRPC::QueryBridgesRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::QueryBridgesResponse>>(AsyncScanBridgesRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::QueryBridgesResponse>> PrepareAsyncScanBridges(::grpc::ClientContext* context, const ::BICgRPC::QueryBridgesRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::QueryBridgesResponse>>(PrepareAsyncScanBridgesRaw(context, request, cq));
+    }
+    virtual ::grpc::Status ConnectedBridges(::grpc::ClientContext* context, const ::BICgRPC::QueryBridgesRequest& request, ::BICgRPC::QueryBridgesResponse* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::QueryBridgesResponse>> AsyncConnectedBridges(::grpc::ClientContext* context, const ::BICgRPC::QueryBridgesRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::QueryBridgesResponse>>(AsyncConnectedBridgesRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::QueryBridgesResponse>> PrepareAsyncConnectedBridges(::grpc::ClientContext* context, const ::BICgRPC::QueryBridgesRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::QueryBridgesResponse>>(PrepareAsyncConnectedBridgesRaw(context, request, cq));
+    }
+    virtual ::grpc::Status ConnectBridge(::grpc::ClientContext* context, const ::BICgRPC::ConnectBridgeRequest& request, ::BICgRPC::ConnectBridgeResponse* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::ConnectBridgeResponse>> AsyncConnectBridge(::grpc::ClientContext* context, const ::BICgRPC::ConnectBridgeRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::ConnectBridgeResponse>>(AsyncConnectBridgeRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::ConnectBridgeResponse>> PrepareAsyncConnectBridge(::grpc::ClientContext* context, const ::BICgRPC::ConnectBridgeRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::ConnectBridgeResponse>>(PrepareAsyncConnectBridgeRaw(context, request, cq));
+    }
+    virtual ::grpc::Status DescribeBridge(::grpc::ClientContext* context, const ::BICgRPC::DescribeBridgeRequest& request, ::BICgRPC::DescribeBridgeResponse* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::DescribeBridgeResponse>> AsyncDescribeBridge(::grpc::ClientContext* context, const ::BICgRPC::DescribeBridgeRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::DescribeBridgeResponse>>(AsyncDescribeBridgeRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::DescribeBridgeResponse>> PrepareAsyncDescribeBridge(::grpc::ClientContext* context, const ::BICgRPC::DescribeBridgeRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::DescribeBridgeResponse>>(PrepareAsyncDescribeBridgeRaw(context, request, cq));
+    }
+    virtual ::grpc::Status DisconnectBridge(::grpc::ClientContext* context, const ::BICgRPC::DisconnectBridgeRequest& request, ::google::protobuf::Empty* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::google::protobuf::Empty>> AsyncDisconnectBridge(::grpc::ClientContext* context, const ::BICgRPC::DisconnectBridgeRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::google::protobuf::Empty>>(AsyncDisconnectBridgeRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::google::protobuf::Empty>> PrepareAsyncDisconnectBridge(::grpc::ClientContext* context, const ::BICgRPC::DisconnectBridgeRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::google::protobuf::Empty>>(PrepareAsyncDisconnectBridgeRaw(context, request, cq));
+    }
+    class experimental_async_interface {
+     public:
+      virtual ~experimental_async_interface() {}
+      virtual void ListBridges(::grpc::ClientContext* context, const ::BICgRPC::QueryBridgesRequest* request, ::BICgRPC::QueryBridgesResponse* response, std::function<void(::grpc::Status)>) = 0;
+      virtual void ListBridges(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::QueryBridgesResponse* response, std::function<void(::grpc::Status)>) = 0;
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      virtual void ListBridges(::grpc::ClientContext* context, const ::BICgRPC::QueryBridgesRequest* request, ::BICgRPC::QueryBridgesResponse* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      #else
+      virtual void ListBridges(::grpc::ClientContext* context, const ::BICgRPC::QueryBridgesRequest* request, ::BICgRPC::QueryBridgesResponse* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
+      #endif
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      virtual void ListBridges(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::QueryBridgesResponse* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      #else
+      virtual void ListBridges(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::QueryBridgesResponse* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
+      #endif
+      virtual void ScanBridges(::grpc::ClientContext* context, const ::BICgRPC::QueryBridgesRequest* request, ::BICgRPC::QueryBridgesResponse* response, std::function<void(::grpc::Status)>) = 0;
+      virtual void ScanBridges(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::QueryBridgesResponse* response, std::function<void(::grpc::Status)>) = 0;
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      virtual void ScanBridges(::grpc::ClientContext* context, const ::BICgRPC::QueryBridgesRequest* request, ::BICgRPC::QueryBridgesResponse* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      #else
+      virtual void ScanBridges(::grpc::ClientContext* context, const ::BICgRPC::QueryBridgesRequest* request, ::BICgRPC::QueryBridgesResponse* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
+      #endif
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      virtual void ScanBridges(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::QueryBridgesResponse* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      #else
+      virtual void ScanBridges(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::QueryBridgesResponse* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
+      #endif
+      virtual void ConnectedBridges(::grpc::ClientContext* context, const ::BICgRPC::QueryBridgesRequest* request, ::BICgRPC::QueryBridgesResponse* response, std::function<void(::grpc::Status)>) = 0;
+      virtual void ConnectedBridges(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::QueryBridgesResponse* response, std::function<void(::grpc::Status)>) = 0;
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      virtual void ConnectedBridges(::grpc::ClientContext* context, const ::BICgRPC::QueryBridgesRequest* request, ::BICgRPC::QueryBridgesResponse* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      #else
+      virtual void ConnectedBridges(::grpc::ClientContext* context, const ::BICgRPC::QueryBridgesRequest* request, ::BICgRPC::QueryBridgesResponse* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
+      #endif
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      virtual void ConnectedBridges(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::QueryBridgesResponse* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      #else
+      virtual void ConnectedBridges(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::QueryBridgesResponse* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
+      #endif
+      virtual void ConnectBridge(::grpc::ClientContext* context, const ::BICgRPC::ConnectBridgeRequest* request, ::BICgRPC::ConnectBridgeResponse* response, std::function<void(::grpc::Status)>) = 0;
+      virtual void ConnectBridge(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::ConnectBridgeResponse* response, std::function<void(::grpc::Status)>) = 0;
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      virtual void ConnectBridge(::grpc::ClientContext* context, const ::BICgRPC::ConnectBridgeRequest* request, ::BICgRPC::ConnectBridgeResponse* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      #else
+      virtual void ConnectBridge(::grpc::ClientContext* context, const ::BICgRPC::ConnectBridgeRequest* request, ::BICgRPC::ConnectBridgeResponse* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
+      #endif
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      virtual void ConnectBridge(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::ConnectBridgeResponse* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      #else
+      virtual void ConnectBridge(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::ConnectBridgeResponse* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
+      #endif
+      virtual void DescribeBridge(::grpc::ClientContext* context, const ::BICgRPC::DescribeBridgeRequest* request, ::BICgRPC::DescribeBridgeResponse* response, std::function<void(::grpc::Status)>) = 0;
+      virtual void DescribeBridge(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::DescribeBridgeResponse* response, std::function<void(::grpc::Status)>) = 0;
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      virtual void DescribeBridge(::grpc::ClientContext* context, const ::BICgRPC::DescribeBridgeRequest* request, ::BICgRPC::DescribeBridgeResponse* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      #else
+      virtual void DescribeBridge(::grpc::ClientContext* context, const ::BICgRPC::DescribeBridgeRequest* request, ::BICgRPC::DescribeBridgeResponse* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
+      #endif
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      virtual void DescribeBridge(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::DescribeBridgeResponse* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      #else
+      virtual void DescribeBridge(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::DescribeBridgeResponse* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
+      #endif
+      virtual void DisconnectBridge(::grpc::ClientContext* context, const ::BICgRPC::DisconnectBridgeRequest* request, ::google::protobuf::Empty* response, std::function<void(::grpc::Status)>) = 0;
+      virtual void DisconnectBridge(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::google::protobuf::Empty* response, std::function<void(::grpc::Status)>) = 0;
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      virtual void DisconnectBridge(::grpc::ClientContext* context, const ::BICgRPC::DisconnectBridgeRequest* request, ::google::protobuf::Empty* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      #else
+      virtual void DisconnectBridge(::grpc::ClientContext* context, const ::BICgRPC::DisconnectBridgeRequest* request, ::google::protobuf::Empty* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
+      #endif
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      virtual void DisconnectBridge(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::google::protobuf::Empty* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      #else
+      virtual void DisconnectBridge(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::google::protobuf::Empty* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
+      #endif
+    };
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+    typedef class experimental_async_interface async_interface;
+    #endif
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+    async_interface* async() { return experimental_async(); }
+    #endif
+    virtual class experimental_async_interface* experimental_async() { return nullptr; }
+  private:
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::QueryBridgesResponse>* AsyncListBridgesRaw(::grpc::ClientContext* context, const ::BICgRPC::QueryBridgesRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::QueryBridgesResponse>* PrepareAsyncListBridgesRaw(::grpc::ClientContext* context, const ::BICgRPC::QueryBridgesRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::QueryBridgesResponse>* AsyncScanBridgesRaw(::grpc::ClientContext* context, const ::BICgRPC::QueryBridgesRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::QueryBridgesResponse>* PrepareAsyncScanBridgesRaw(::grpc::ClientContext* context, const ::BICgRPC::QueryBridgesRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::QueryBridgesResponse>* AsyncConnectedBridgesRaw(::grpc::ClientContext* context, const ::BICgRPC::QueryBridgesRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::QueryBridgesResponse>* PrepareAsyncConnectedBridgesRaw(::grpc::ClientContext* context, const ::BICgRPC::QueryBridgesRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::ConnectBridgeResponse>* AsyncConnectBridgeRaw(::grpc::ClientContext* context, const ::BICgRPC::ConnectBridgeRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::ConnectBridgeResponse>* PrepareAsyncConnectBridgeRaw(::grpc::ClientContext* context, const ::BICgRPC::ConnectBridgeRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::DescribeBridgeResponse>* AsyncDescribeBridgeRaw(::grpc::ClientContext* context, const ::BICgRPC::DescribeBridgeRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::DescribeBridgeResponse>* PrepareAsyncDescribeBridgeRaw(::grpc::ClientContext* context, const ::BICgRPC::DescribeBridgeRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::google::protobuf::Empty>* AsyncDisconnectBridgeRaw(::grpc::ClientContext* context, const ::BICgRPC::DisconnectBridgeRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::google::protobuf::Empty>* PrepareAsyncDisconnectBridgeRaw(::grpc::ClientContext* context, const ::BICgRPC::DisconnectBridgeRequest& request, ::grpc::CompletionQueue* cq) = 0;
+  };
+  class Stub final : public StubInterface {
+   public:
+    Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel);
+    ::grpc::Status ListBridges(::grpc::ClientContext* context, const ::BICgRPC::QueryBridgesRequest& request, ::BICgRPC::QueryBridgesResponse* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::QueryBridgesResponse>> AsyncListBridges(::grpc::ClientContext* context, const ::BICgRPC::QueryBridgesRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::QueryBridgesResponse>>(AsyncListBridgesRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::QueryBridgesResponse>> PrepareAsyncListBridges(::grpc::ClientContext* context, const ::BICgRPC::QueryBridgesRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::QueryBridgesResponse>>(PrepareAsyncListBridgesRaw(context, request, cq));
+    }
+    ::grpc::Status ScanBridges(::grpc::ClientContext* context, const ::BICgRPC::QueryBridgesRequest& request, ::BICgRPC::QueryBridgesResponse* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::QueryBridgesResponse>> AsyncScanBridges(::grpc::ClientContext* context, const ::BICgRPC::QueryBridgesRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::QueryBridgesResponse>>(AsyncScanBridgesRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::QueryBridgesResponse>> PrepareAsyncScanBridges(::grpc::ClientContext* context, const ::BICgRPC::QueryBridgesRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::QueryBridgesResponse>>(PrepareAsyncScanBridgesRaw(context, request, cq));
+    }
+    ::grpc::Status ConnectedBridges(::grpc::ClientContext* context, const ::BICgRPC::QueryBridgesRequest& request, ::BICgRPC::QueryBridgesResponse* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::QueryBridgesResponse>> AsyncConnectedBridges(::grpc::ClientContext* context, const ::BICgRPC::QueryBridgesRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::QueryBridgesResponse>>(AsyncConnectedBridgesRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::QueryBridgesResponse>> PrepareAsyncConnectedBridges(::grpc::ClientContext* context, const ::BICgRPC::QueryBridgesRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::QueryBridgesResponse>>(PrepareAsyncConnectedBridgesRaw(context, request, cq));
+    }
+    ::grpc::Status ConnectBridge(::grpc::ClientContext* context, const ::BICgRPC::ConnectBridgeRequest& request, ::BICgRPC::ConnectBridgeResponse* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::ConnectBridgeResponse>> AsyncConnectBridge(::grpc::ClientContext* context, const ::BICgRPC::ConnectBridgeRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::ConnectBridgeResponse>>(AsyncConnectBridgeRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::ConnectBridgeResponse>> PrepareAsyncConnectBridge(::grpc::ClientContext* context, const ::BICgRPC::ConnectBridgeRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::ConnectBridgeResponse>>(PrepareAsyncConnectBridgeRaw(context, request, cq));
+    }
+    ::grpc::Status DescribeBridge(::grpc::ClientContext* context, const ::BICgRPC::DescribeBridgeRequest& request, ::BICgRPC::DescribeBridgeResponse* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::DescribeBridgeResponse>> AsyncDescribeBridge(::grpc::ClientContext* context, const ::BICgRPC::DescribeBridgeRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::DescribeBridgeResponse>>(AsyncDescribeBridgeRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::DescribeBridgeResponse>> PrepareAsyncDescribeBridge(::grpc::ClientContext* context, const ::BICgRPC::DescribeBridgeRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::DescribeBridgeResponse>>(PrepareAsyncDescribeBridgeRaw(context, request, cq));
+    }
+    ::grpc::Status DisconnectBridge(::grpc::ClientContext* context, const ::BICgRPC::DisconnectBridgeRequest& request, ::google::protobuf::Empty* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::google::protobuf::Empty>> AsyncDisconnectBridge(::grpc::ClientContext* context, const ::BICgRPC::DisconnectBridgeRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::google::protobuf::Empty>>(AsyncDisconnectBridgeRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::google::protobuf::Empty>> PrepareAsyncDisconnectBridge(::grpc::ClientContext* context, const ::BICgRPC::DisconnectBridgeRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::google::protobuf::Empty>>(PrepareAsyncDisconnectBridgeRaw(context, request, cq));
+    }
+    class experimental_async final :
+      public StubInterface::experimental_async_interface {
+     public:
+      void ListBridges(::grpc::ClientContext* context, const ::BICgRPC::QueryBridgesRequest* request, ::BICgRPC::QueryBridgesResponse* response, std::function<void(::grpc::Status)>) override;
+      void ListBridges(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::QueryBridgesResponse* response, std::function<void(::grpc::Status)>) override;
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      void ListBridges(::grpc::ClientContext* context, const ::BICgRPC::QueryBridgesRequest* request, ::BICgRPC::QueryBridgesResponse* response, ::grpc::ClientUnaryReactor* reactor) override;
+      #else
+      void ListBridges(::grpc::ClientContext* context, const ::BICgRPC::QueryBridgesRequest* request, ::BICgRPC::QueryBridgesResponse* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
+      #endif
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      void ListBridges(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::QueryBridgesResponse* response, ::grpc::ClientUnaryReactor* reactor) override;
+      #else
+      void ListBridges(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::QueryBridgesResponse* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
+      #endif
+      void ScanBridges(::grpc::ClientContext* context, const ::BICgRPC::QueryBridgesRequest* request, ::BICgRPC::QueryBridgesResponse* response, std::function<void(::grpc::Status)>) override;
+      void ScanBridges(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::QueryBridgesResponse* response, std::function<void(::grpc::Status)>) override;
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      void ScanBridges(::grpc::ClientContext* context, const ::BICgRPC::QueryBridgesRequest* request, ::BICgRPC::QueryBridgesResponse* response, ::grpc::ClientUnaryReactor* reactor) override;
+      #else
+      void ScanBridges(::grpc::ClientContext* context, const ::BICgRPC::QueryBridgesRequest* request, ::BICgRPC::QueryBridgesResponse* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
+      #endif
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      void ScanBridges(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::QueryBridgesResponse* response, ::grpc::ClientUnaryReactor* reactor) override;
+      #else
+      void ScanBridges(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::QueryBridgesResponse* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
+      #endif
+      void ConnectedBridges(::grpc::ClientContext* context, const ::BICgRPC::QueryBridgesRequest* request, ::BICgRPC::QueryBridgesResponse* response, std::function<void(::grpc::Status)>) override;
+      void ConnectedBridges(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::QueryBridgesResponse* response, std::function<void(::grpc::Status)>) override;
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      void ConnectedBridges(::grpc::ClientContext* context, const ::BICgRPC::QueryBridgesRequest* request, ::BICgRPC::QueryBridgesResponse* response, ::grpc::ClientUnaryReactor* reactor) override;
+      #else
+      void ConnectedBridges(::grpc::ClientContext* context, const ::BICgRPC::QueryBridgesRequest* request, ::BICgRPC::QueryBridgesResponse* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
+      #endif
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      void ConnectedBridges(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::QueryBridgesResponse* response, ::grpc::ClientUnaryReactor* reactor) override;
+      #else
+      void ConnectedBridges(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::QueryBridgesResponse* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
+      #endif
+      void ConnectBridge(::grpc::ClientContext* context, const ::BICgRPC::ConnectBridgeRequest* request, ::BICgRPC::ConnectBridgeResponse* response, std::function<void(::grpc::Status)>) override;
+      void ConnectBridge(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::ConnectBridgeResponse* response, std::function<void(::grpc::Status)>) override;
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      void ConnectBridge(::grpc::ClientContext* context, const ::BICgRPC::ConnectBridgeRequest* request, ::BICgRPC::ConnectBridgeResponse* response, ::grpc::ClientUnaryReactor* reactor) override;
+      #else
+      void ConnectBridge(::grpc::ClientContext* context, const ::BICgRPC::ConnectBridgeRequest* request, ::BICgRPC::ConnectBridgeResponse* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
+      #endif
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      void ConnectBridge(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::ConnectBridgeResponse* response, ::grpc::ClientUnaryReactor* reactor) override;
+      #else
+      void ConnectBridge(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::ConnectBridgeResponse* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
+      #endif
+      void DescribeBridge(::grpc::ClientContext* context, const ::BICgRPC::DescribeBridgeRequest* request, ::BICgRPC::DescribeBridgeResponse* response, std::function<void(::grpc::Status)>) override;
+      void DescribeBridge(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::DescribeBridgeResponse* response, std::function<void(::grpc::Status)>) override;
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      void DescribeBridge(::grpc::ClientContext* context, const ::BICgRPC::DescribeBridgeRequest* request, ::BICgRPC::DescribeBridgeResponse* response, ::grpc::ClientUnaryReactor* reactor) override;
+      #else
+      void DescribeBridge(::grpc::ClientContext* context, const ::BICgRPC::DescribeBridgeRequest* request, ::BICgRPC::DescribeBridgeResponse* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
+      #endif
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      void DescribeBridge(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::DescribeBridgeResponse* response, ::grpc::ClientUnaryReactor* reactor) override;
+      #else
+      void DescribeBridge(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::DescribeBridgeResponse* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
+      #endif
+      void DisconnectBridge(::grpc::ClientContext* context, const ::BICgRPC::DisconnectBridgeRequest* request, ::google::protobuf::Empty* response, std::function<void(::grpc::Status)>) override;
+      void DisconnectBridge(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::google::protobuf::Empty* response, std::function<void(::grpc::Status)>) override;
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      void DisconnectBridge(::grpc::ClientContext* context, const ::BICgRPC::DisconnectBridgeRequest* request, ::google::protobuf::Empty* response, ::grpc::ClientUnaryReactor* reactor) override;
+      #else
+      void DisconnectBridge(::grpc::ClientContext* context, const ::BICgRPC::DisconnectBridgeRequest* request, ::google::protobuf::Empty* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
+      #endif
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      void DisconnectBridge(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::google::protobuf::Empty* response, ::grpc::ClientUnaryReactor* reactor) override;
+      #else
+      void DisconnectBridge(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::google::protobuf::Empty* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
+      #endif
+     private:
+      friend class Stub;
+      explicit experimental_async(Stub* stub): stub_(stub) { }
+      Stub* stub() { return stub_; }
+      Stub* stub_;
+    };
+    class experimental_async_interface* experimental_async() override { return &async_stub_; }
+
+   private:
+    std::shared_ptr< ::grpc::ChannelInterface> channel_;
+    class experimental_async async_stub_{this};
+    ::grpc::ClientAsyncResponseReader< ::BICgRPC::QueryBridgesResponse>* AsyncListBridgesRaw(::grpc::ClientContext* context, const ::BICgRPC::QueryBridgesRequest& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::BICgRPC::QueryBridgesResponse>* PrepareAsyncListBridgesRaw(::grpc::ClientContext* context, const ::BICgRPC::QueryBridgesRequest& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::BICgRPC::QueryBridgesResponse>* AsyncScanBridgesRaw(::grpc::ClientContext* context, const ::BICgRPC::QueryBridgesRequest& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::BICgRPC::QueryBridgesResponse>* PrepareAsyncScanBridgesRaw(::grpc::ClientContext* context, const ::BICgRPC::QueryBridgesRequest& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::BICgRPC::QueryBridgesResponse>* AsyncConnectedBridgesRaw(::grpc::ClientContext* context, const ::BICgRPC::QueryBridgesRequest& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::BICgRPC::QueryBridgesResponse>* PrepareAsyncConnectedBridgesRaw(::grpc::ClientContext* context, const ::BICgRPC::QueryBridgesRequest& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::BICgRPC::ConnectBridgeResponse>* AsyncConnectBridgeRaw(::grpc::ClientContext* context, const ::BICgRPC::ConnectBridgeRequest& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::BICgRPC::ConnectBridgeResponse>* PrepareAsyncConnectBridgeRaw(::grpc::ClientContext* context, const ::BICgRPC::ConnectBridgeRequest& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::BICgRPC::DescribeBridgeResponse>* AsyncDescribeBridgeRaw(::grpc::ClientContext* context, const ::BICgRPC::DescribeBridgeRequest& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::BICgRPC::DescribeBridgeResponse>* PrepareAsyncDescribeBridgeRaw(::grpc::ClientContext* context, const ::BICgRPC::DescribeBridgeRequest& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::google::protobuf::Empty>* AsyncDisconnectBridgeRaw(::grpc::ClientContext* context, const ::BICgRPC::DisconnectBridgeRequest& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::google::protobuf::Empty>* PrepareAsyncDisconnectBridgeRaw(::grpc::ClientContext* context, const ::BICgRPC::DisconnectBridgeRequest& request, ::grpc::CompletionQueue* cq) override;
+    const ::grpc::internal::RpcMethod rpcmethod_ListBridges_;
+    const ::grpc::internal::RpcMethod rpcmethod_ScanBridges_;
+    const ::grpc::internal::RpcMethod rpcmethod_ConnectedBridges_;
+    const ::grpc::internal::RpcMethod rpcmethod_ConnectBridge_;
+    const ::grpc::internal::RpcMethod rpcmethod_DescribeBridge_;
+    const ::grpc::internal::RpcMethod rpcmethod_DisconnectBridge_;
+  };
+  static std::unique_ptr<Stub> NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options = ::grpc::StubOptions());
+
+  class Service : public ::grpc::Service {
+   public:
+    Service();
+    virtual ~Service();
+    virtual ::grpc::Status ListBridges(::grpc::ServerContext* context, const ::BICgRPC::QueryBridgesRequest* request, ::BICgRPC::QueryBridgesResponse* response);
+    virtual ::grpc::Status ScanBridges(::grpc::ServerContext* context, const ::BICgRPC::QueryBridgesRequest* request, ::BICgRPC::QueryBridgesResponse* response);
+    virtual ::grpc::Status ConnectedBridges(::grpc::ServerContext* context, const ::BICgRPC::QueryBridgesRequest* request, ::BICgRPC::QueryBridgesResponse* response);
+    virtual ::grpc::Status ConnectBridge(::grpc::ServerContext* context, const ::BICgRPC::ConnectBridgeRequest* request, ::BICgRPC::ConnectBridgeResponse* response);
+    virtual ::grpc::Status DescribeBridge(::grpc::ServerContext* context, const ::BICgRPC::DescribeBridgeRequest* request, ::BICgRPC::DescribeBridgeResponse* response);
+    virtual ::grpc::Status DisconnectBridge(::grpc::ServerContext* context, const ::BICgRPC::DisconnectBridgeRequest* request, ::google::protobuf::Empty* response);
+  };
+  template <class BaseClass>
+  class WithAsyncMethod_ListBridges : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithAsyncMethod_ListBridges() {
+      ::grpc::Service::MarkMethodAsync(0);
+    }
+    ~WithAsyncMethod_ListBridges() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ListBridges(::grpc::ServerContext* /*context*/, const ::BICgRPC::QueryBridgesRequest* /*request*/, ::BICgRPC::QueryBridgesResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestListBridges(::grpc::ServerContext* context, ::BICgRPC::QueryBridgesRequest* request, ::grpc::ServerAsyncResponseWriter< ::BICgRPC::QueryBridgesResponse>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(0, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class WithAsyncMethod_ScanBridges : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithAsyncMethod_ScanBridges() {
+      ::grpc::Service::MarkMethodAsync(1);
+    }
+    ~WithAsyncMethod_ScanBridges() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ScanBridges(::grpc::ServerContext* /*context*/, const ::BICgRPC::QueryBridgesRequest* /*request*/, ::BICgRPC::QueryBridgesResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestScanBridges(::grpc::ServerContext* context, ::BICgRPC::QueryBridgesRequest* request, ::grpc::ServerAsyncResponseWriter< ::BICgRPC::QueryBridgesResponse>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(1, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class WithAsyncMethod_ConnectedBridges : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithAsyncMethod_ConnectedBridges() {
+      ::grpc::Service::MarkMethodAsync(2);
+    }
+    ~WithAsyncMethod_ConnectedBridges() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ConnectedBridges(::grpc::ServerContext* /*context*/, const ::BICgRPC::QueryBridgesRequest* /*request*/, ::BICgRPC::QueryBridgesResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestConnectedBridges(::grpc::ServerContext* context, ::BICgRPC::QueryBridgesRequest* request, ::grpc::ServerAsyncResponseWriter< ::BICgRPC::QueryBridgesResponse>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(2, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class WithAsyncMethod_ConnectBridge : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithAsyncMethod_ConnectBridge() {
+      ::grpc::Service::MarkMethodAsync(3);
+    }
+    ~WithAsyncMethod_ConnectBridge() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ConnectBridge(::grpc::ServerContext* /*context*/, const ::BICgRPC::ConnectBridgeRequest* /*request*/, ::BICgRPC::ConnectBridgeResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestConnectBridge(::grpc::ServerContext* context, ::BICgRPC::ConnectBridgeRequest* request, ::grpc::ServerAsyncResponseWriter< ::BICgRPC::ConnectBridgeResponse>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(3, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class WithAsyncMethod_DescribeBridge : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithAsyncMethod_DescribeBridge() {
+      ::grpc::Service::MarkMethodAsync(4);
+    }
+    ~WithAsyncMethod_DescribeBridge() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status DescribeBridge(::grpc::ServerContext* /*context*/, const ::BICgRPC::DescribeBridgeRequest* /*request*/, ::BICgRPC::DescribeBridgeResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestDescribeBridge(::grpc::ServerContext* context, ::BICgRPC::DescribeBridgeRequest* request, ::grpc::ServerAsyncResponseWriter< ::BICgRPC::DescribeBridgeResponse>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(4, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class WithAsyncMethod_DisconnectBridge : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithAsyncMethod_DisconnectBridge() {
+      ::grpc::Service::MarkMethodAsync(5);
+    }
+    ~WithAsyncMethod_DisconnectBridge() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status DisconnectBridge(::grpc::ServerContext* /*context*/, const ::BICgRPC::DisconnectBridgeRequest* /*request*/, ::google::protobuf::Empty* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestDisconnectBridge(::grpc::ServerContext* context, ::BICgRPC::DisconnectBridgeRequest* request, ::grpc::ServerAsyncResponseWriter< ::google::protobuf::Empty>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(5, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  typedef WithAsyncMethod_ListBridges<WithAsyncMethod_ScanBridges<WithAsyncMethod_ConnectedBridges<WithAsyncMethod_ConnectBridge<WithAsyncMethod_DescribeBridge<WithAsyncMethod_DisconnectBridge<Service > > > > > > AsyncService;
+  template <class BaseClass>
+  class ExperimentalWithCallbackMethod_ListBridges : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    ExperimentalWithCallbackMethod_ListBridges() {
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      ::grpc::Service::
+    #else
+      ::grpc::Service::experimental().
+    #endif
+        MarkMethodCallback(0,
+          new ::grpc_impl::internal::CallbackUnaryHandler< ::BICgRPC::QueryBridgesRequest, ::BICgRPC::QueryBridgesResponse>(
+            [this](
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+                   ::grpc::CallbackServerContext*
+    #else
+                   ::grpc::experimental::CallbackServerContext*
+    #endif
+                     context, const ::BICgRPC::QueryBridgesRequest* request, ::BICgRPC::QueryBridgesResponse* response) { return this->ListBridges(context, request, response); }));}
+    void SetMessageAllocatorFor_ListBridges(
+        ::grpc::experimental::MessageAllocator< ::BICgRPC::QueryBridgesRequest, ::BICgRPC::QueryBridgesResponse>* allocator) {
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(0);
+    #else
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::experimental().GetHandler(0);
+    #endif
+      static_cast<::grpc_impl::internal::CallbackUnaryHandler< ::BICgRPC::QueryBridgesRequest, ::BICgRPC::QueryBridgesResponse>*>(handler)
+              ->SetMessageAllocator(allocator);
+    }
+    ~ExperimentalWithCallbackMethod_ListBridges() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ListBridges(::grpc::ServerContext* /*context*/, const ::BICgRPC::QueryBridgesRequest* /*request*/, ::BICgRPC::QueryBridgesResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+    virtual ::grpc::ServerUnaryReactor* ListBridges(
+      ::grpc::CallbackServerContext* /*context*/, const ::BICgRPC::QueryBridgesRequest* /*request*/, ::BICgRPC::QueryBridgesResponse* /*response*/)
+    #else
+    virtual ::grpc::experimental::ServerUnaryReactor* ListBridges(
+      ::grpc::experimental::CallbackServerContext* /*context*/, const ::BICgRPC::QueryBridgesRequest* /*request*/, ::BICgRPC::QueryBridgesResponse* /*response*/)
+    #endif
+      { return nullptr; }
+  };
+  template <class BaseClass>
+  class ExperimentalWithCallbackMethod_ScanBridges : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    ExperimentalWithCallbackMethod_ScanBridges() {
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      ::grpc::Service::
+    #else
+      ::grpc::Service::experimental().
+    #endif
+        MarkMethodCallback(1,
+          new ::grpc_impl::internal::CallbackUnaryHandler< ::BICgRPC::QueryBridgesRequest, ::BICgRPC::QueryBridgesResponse>(
+            [this](
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+                   ::grpc::CallbackServerContext*
+    #else
+                   ::grpc::experimental::CallbackServerContext*
+    #endif
+                     context, const ::BICgRPC::QueryBridgesRequest* request, ::BICgRPC::QueryBridgesResponse* response) { return this->ScanBridges(context, request, response); }));}
+    void SetMessageAllocatorFor_ScanBridges(
+        ::grpc::experimental::MessageAllocator< ::BICgRPC::QueryBridgesRequest, ::BICgRPC::QueryBridgesResponse>* allocator) {
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(1);
+    #else
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::experimental().GetHandler(1);
+    #endif
+      static_cast<::grpc_impl::internal::CallbackUnaryHandler< ::BICgRPC::QueryBridgesRequest, ::BICgRPC::QueryBridgesResponse>*>(handler)
+              ->SetMessageAllocator(allocator);
+    }
+    ~ExperimentalWithCallbackMethod_ScanBridges() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ScanBridges(::grpc::ServerContext* /*context*/, const ::BICgRPC::QueryBridgesRequest* /*request*/, ::BICgRPC::QueryBridgesResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+    virtual ::grpc::ServerUnaryReactor* ScanBridges(
+      ::grpc::CallbackServerContext* /*context*/, const ::BICgRPC::QueryBridgesRequest* /*request*/, ::BICgRPC::QueryBridgesResponse* /*response*/)
+    #else
+    virtual ::grpc::experimental::ServerUnaryReactor* ScanBridges(
+      ::grpc::experimental::CallbackServerContext* /*context*/, const ::BICgRPC::QueryBridgesRequest* /*request*/, ::BICgRPC::QueryBridgesResponse* /*response*/)
+    #endif
+      { return nullptr; }
+  };
+  template <class BaseClass>
+  class ExperimentalWithCallbackMethod_ConnectedBridges : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    ExperimentalWithCallbackMethod_ConnectedBridges() {
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      ::grpc::Service::
+    #else
+      ::grpc::Service::experimental().
+    #endif
+        MarkMethodCallback(2,
+          new ::grpc_impl::internal::CallbackUnaryHandler< ::BICgRPC::QueryBridgesRequest, ::BICgRPC::QueryBridgesResponse>(
+            [this](
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+                   ::grpc::CallbackServerContext*
+    #else
+                   ::grpc::experimental::CallbackServerContext*
+    #endif
+                     context, const ::BICgRPC::QueryBridgesRequest* request, ::BICgRPC::QueryBridgesResponse* response) { return this->ConnectedBridges(context, request, response); }));}
+    void SetMessageAllocatorFor_ConnectedBridges(
+        ::grpc::experimental::MessageAllocator< ::BICgRPC::QueryBridgesRequest, ::BICgRPC::QueryBridgesResponse>* allocator) {
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(2);
+    #else
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::experimental().GetHandler(2);
+    #endif
+      static_cast<::grpc_impl::internal::CallbackUnaryHandler< ::BICgRPC::QueryBridgesRequest, ::BICgRPC::QueryBridgesResponse>*>(handler)
+              ->SetMessageAllocator(allocator);
+    }
+    ~ExperimentalWithCallbackMethod_ConnectedBridges() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ConnectedBridges(::grpc::ServerContext* /*context*/, const ::BICgRPC::QueryBridgesRequest* /*request*/, ::BICgRPC::QueryBridgesResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+    virtual ::grpc::ServerUnaryReactor* ConnectedBridges(
+      ::grpc::CallbackServerContext* /*context*/, const ::BICgRPC::QueryBridgesRequest* /*request*/, ::BICgRPC::QueryBridgesResponse* /*response*/)
+    #else
+    virtual ::grpc::experimental::ServerUnaryReactor* ConnectedBridges(
+      ::grpc::experimental::CallbackServerContext* /*context*/, const ::BICgRPC::QueryBridgesRequest* /*request*/, ::BICgRPC::QueryBridgesResponse* /*response*/)
+    #endif
+      { return nullptr; }
+  };
+  template <class BaseClass>
+  class ExperimentalWithCallbackMethod_ConnectBridge : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    ExperimentalWithCallbackMethod_ConnectBridge() {
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      ::grpc::Service::
+    #else
+      ::grpc::Service::experimental().
+    #endif
+        MarkMethodCallback(3,
+          new ::grpc_impl::internal::CallbackUnaryHandler< ::BICgRPC::ConnectBridgeRequest, ::BICgRPC::ConnectBridgeResponse>(
+            [this](
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+                   ::grpc::CallbackServerContext*
+    #else
+                   ::grpc::experimental::CallbackServerContext*
+    #endif
+                     context, const ::BICgRPC::ConnectBridgeRequest* request, ::BICgRPC::ConnectBridgeResponse* response) { return this->ConnectBridge(context, request, response); }));}
+    void SetMessageAllocatorFor_ConnectBridge(
+        ::grpc::experimental::MessageAllocator< ::BICgRPC::ConnectBridgeRequest, ::BICgRPC::ConnectBridgeResponse>* allocator) {
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(3);
+    #else
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::experimental().GetHandler(3);
+    #endif
+      static_cast<::grpc_impl::internal::CallbackUnaryHandler< ::BICgRPC::ConnectBridgeRequest, ::BICgRPC::ConnectBridgeResponse>*>(handler)
+              ->SetMessageAllocator(allocator);
+    }
+    ~ExperimentalWithCallbackMethod_ConnectBridge() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ConnectBridge(::grpc::ServerContext* /*context*/, const ::BICgRPC::ConnectBridgeRequest* /*request*/, ::BICgRPC::ConnectBridgeResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+    virtual ::grpc::ServerUnaryReactor* ConnectBridge(
+      ::grpc::CallbackServerContext* /*context*/, const ::BICgRPC::ConnectBridgeRequest* /*request*/, ::BICgRPC::ConnectBridgeResponse* /*response*/)
+    #else
+    virtual ::grpc::experimental::ServerUnaryReactor* ConnectBridge(
+      ::grpc::experimental::CallbackServerContext* /*context*/, const ::BICgRPC::ConnectBridgeRequest* /*request*/, ::BICgRPC::ConnectBridgeResponse* /*response*/)
+    #endif
+      { return nullptr; }
+  };
+  template <class BaseClass>
+  class ExperimentalWithCallbackMethod_DescribeBridge : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    ExperimentalWithCallbackMethod_DescribeBridge() {
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      ::grpc::Service::
+    #else
+      ::grpc::Service::experimental().
+    #endif
+        MarkMethodCallback(4,
+          new ::grpc_impl::internal::CallbackUnaryHandler< ::BICgRPC::DescribeBridgeRequest, ::BICgRPC::DescribeBridgeResponse>(
+            [this](
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+                   ::grpc::CallbackServerContext*
+    #else
+                   ::grpc::experimental::CallbackServerContext*
+    #endif
+                     context, const ::BICgRPC::DescribeBridgeRequest* request, ::BICgRPC::DescribeBridgeResponse* response) { return this->DescribeBridge(context, request, response); }));}
+    void SetMessageAllocatorFor_DescribeBridge(
+        ::grpc::experimental::MessageAllocator< ::BICgRPC::DescribeBridgeRequest, ::BICgRPC::DescribeBridgeResponse>* allocator) {
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(4);
+    #else
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::experimental().GetHandler(4);
+    #endif
+      static_cast<::grpc_impl::internal::CallbackUnaryHandler< ::BICgRPC::DescribeBridgeRequest, ::BICgRPC::DescribeBridgeResponse>*>(handler)
+              ->SetMessageAllocator(allocator);
+    }
+    ~ExperimentalWithCallbackMethod_DescribeBridge() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status DescribeBridge(::grpc::ServerContext* /*context*/, const ::BICgRPC::DescribeBridgeRequest* /*request*/, ::BICgRPC::DescribeBridgeResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+    virtual ::grpc::ServerUnaryReactor* DescribeBridge(
+      ::grpc::CallbackServerContext* /*context*/, const ::BICgRPC::DescribeBridgeRequest* /*request*/, ::BICgRPC::DescribeBridgeResponse* /*response*/)
+    #else
+    virtual ::grpc::experimental::ServerUnaryReactor* DescribeBridge(
+      ::grpc::experimental::CallbackServerContext* /*context*/, const ::BICgRPC::DescribeBridgeRequest* /*request*/, ::BICgRPC::DescribeBridgeResponse* /*response*/)
+    #endif
+      { return nullptr; }
+  };
+  template <class BaseClass>
+  class ExperimentalWithCallbackMethod_DisconnectBridge : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    ExperimentalWithCallbackMethod_DisconnectBridge() {
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      ::grpc::Service::
+    #else
+      ::grpc::Service::experimental().
+    #endif
+        MarkMethodCallback(5,
+          new ::grpc_impl::internal::CallbackUnaryHandler< ::BICgRPC::DisconnectBridgeRequest, ::google::protobuf::Empty>(
+            [this](
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+                   ::grpc::CallbackServerContext*
+    #else
+                   ::grpc::experimental::CallbackServerContext*
+    #endif
+                     context, const ::BICgRPC::DisconnectBridgeRequest* request, ::google::protobuf::Empty* response) { return this->DisconnectBridge(context, request, response); }));}
+    void SetMessageAllocatorFor_DisconnectBridge(
+        ::grpc::experimental::MessageAllocator< ::BICgRPC::DisconnectBridgeRequest, ::google::protobuf::Empty>* allocator) {
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(5);
+    #else
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::experimental().GetHandler(5);
+    #endif
+      static_cast<::grpc_impl::internal::CallbackUnaryHandler< ::BICgRPC::DisconnectBridgeRequest, ::google::protobuf::Empty>*>(handler)
+              ->SetMessageAllocator(allocator);
+    }
+    ~ExperimentalWithCallbackMethod_DisconnectBridge() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status DisconnectBridge(::grpc::ServerContext* /*context*/, const ::BICgRPC::DisconnectBridgeRequest* /*request*/, ::google::protobuf::Empty* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+    virtual ::grpc::ServerUnaryReactor* DisconnectBridge(
+      ::grpc::CallbackServerContext* /*context*/, const ::BICgRPC::DisconnectBridgeRequest* /*request*/, ::google::protobuf::Empty* /*response*/)
+    #else
+    virtual ::grpc::experimental::ServerUnaryReactor* DisconnectBridge(
+      ::grpc::experimental::CallbackServerContext* /*context*/, const ::BICgRPC::DisconnectBridgeRequest* /*request*/, ::google::protobuf::Empty* /*response*/)
+    #endif
+      { return nullptr; }
+  };
+  #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+  typedef ExperimentalWithCallbackMethod_ListBridges<ExperimentalWithCallbackMethod_ScanBridges<ExperimentalWithCallbackMethod_ConnectedBridges<ExperimentalWithCallbackMethod_ConnectBridge<ExperimentalWithCallbackMethod_DescribeBridge<ExperimentalWithCallbackMethod_DisconnectBridge<Service > > > > > > CallbackService;
+  #endif
+
+  typedef ExperimentalWithCallbackMethod_ListBridges<ExperimentalWithCallbackMethod_ScanBridges<ExperimentalWithCallbackMethod_ConnectedBridges<ExperimentalWithCallbackMethod_ConnectBridge<ExperimentalWithCallbackMethod_DescribeBridge<ExperimentalWithCallbackMethod_DisconnectBridge<Service > > > > > > ExperimentalCallbackService;
+  template <class BaseClass>
+  class WithGenericMethod_ListBridges : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithGenericMethod_ListBridges() {
+      ::grpc::Service::MarkMethodGeneric(0);
+    }
+    ~WithGenericMethod_ListBridges() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ListBridges(::grpc::ServerContext* /*context*/, const ::BICgRPC::QueryBridgesRequest* /*request*/, ::BICgRPC::QueryBridgesResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+  };
+  template <class BaseClass>
+  class WithGenericMethod_ScanBridges : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithGenericMethod_ScanBridges() {
+      ::grpc::Service::MarkMethodGeneric(1);
+    }
+    ~WithGenericMethod_ScanBridges() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ScanBridges(::grpc::ServerContext* /*context*/, const ::BICgRPC::QueryBridgesRequest* /*request*/, ::BICgRPC::QueryBridgesResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+  };
+  template <class BaseClass>
+  class WithGenericMethod_ConnectedBridges : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithGenericMethod_ConnectedBridges() {
+      ::grpc::Service::MarkMethodGeneric(2);
+    }
+    ~WithGenericMethod_ConnectedBridges() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ConnectedBridges(::grpc::ServerContext* /*context*/, const ::BICgRPC::QueryBridgesRequest* /*request*/, ::BICgRPC::QueryBridgesResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+  };
+  template <class BaseClass>
+  class WithGenericMethod_ConnectBridge : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithGenericMethod_ConnectBridge() {
+      ::grpc::Service::MarkMethodGeneric(3);
+    }
+    ~WithGenericMethod_ConnectBridge() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ConnectBridge(::grpc::ServerContext* /*context*/, const ::BICgRPC::ConnectBridgeRequest* /*request*/, ::BICgRPC::ConnectBridgeResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+  };
+  template <class BaseClass>
+  class WithGenericMethod_DescribeBridge : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithGenericMethod_DescribeBridge() {
+      ::grpc::Service::MarkMethodGeneric(4);
+    }
+    ~WithGenericMethod_DescribeBridge() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status DescribeBridge(::grpc::ServerContext* /*context*/, const ::BICgRPC::DescribeBridgeRequest* /*request*/, ::BICgRPC::DescribeBridgeResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+  };
+  template <class BaseClass>
+  class WithGenericMethod_DisconnectBridge : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithGenericMethod_DisconnectBridge() {
+      ::grpc::Service::MarkMethodGeneric(5);
+    }
+    ~WithGenericMethod_DisconnectBridge() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status DisconnectBridge(::grpc::ServerContext* /*context*/, const ::BICgRPC::DisconnectBridgeRequest* /*request*/, ::google::protobuf::Empty* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+  };
+  template <class BaseClass>
+  class WithRawMethod_ListBridges : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawMethod_ListBridges() {
+      ::grpc::Service::MarkMethodRaw(0);
+    }
+    ~WithRawMethod_ListBridges() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ListBridges(::grpc::ServerContext* /*context*/, const ::BICgRPC::QueryBridgesRequest* /*request*/, ::BICgRPC::QueryBridgesResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestListBridges(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(0, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class WithRawMethod_ScanBridges : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawMethod_ScanBridges() {
+      ::grpc::Service::MarkMethodRaw(1);
+    }
+    ~WithRawMethod_ScanBridges() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ScanBridges(::grpc::ServerContext* /*context*/, const ::BICgRPC::QueryBridgesRequest* /*request*/, ::BICgRPC::QueryBridgesResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestScanBridges(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(1, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class WithRawMethod_ConnectedBridges : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawMethod_ConnectedBridges() {
+      ::grpc::Service::MarkMethodRaw(2);
+    }
+    ~WithRawMethod_ConnectedBridges() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ConnectedBridges(::grpc::ServerContext* /*context*/, const ::BICgRPC::QueryBridgesRequest* /*request*/, ::BICgRPC::QueryBridgesResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestConnectedBridges(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(2, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class WithRawMethod_ConnectBridge : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawMethod_ConnectBridge() {
+      ::grpc::Service::MarkMethodRaw(3);
+    }
+    ~WithRawMethod_ConnectBridge() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ConnectBridge(::grpc::ServerContext* /*context*/, const ::BICgRPC::ConnectBridgeRequest* /*request*/, ::BICgRPC::ConnectBridgeResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestConnectBridge(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(3, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class WithRawMethod_DescribeBridge : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawMethod_DescribeBridge() {
+      ::grpc::Service::MarkMethodRaw(4);
+    }
+    ~WithRawMethod_DescribeBridge() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status DescribeBridge(::grpc::ServerContext* /*context*/, const ::BICgRPC::DescribeBridgeRequest* /*request*/, ::BICgRPC::DescribeBridgeResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestDescribeBridge(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(4, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class WithRawMethod_DisconnectBridge : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawMethod_DisconnectBridge() {
+      ::grpc::Service::MarkMethodRaw(5);
+    }
+    ~WithRawMethod_DisconnectBridge() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status DisconnectBridge(::grpc::ServerContext* /*context*/, const ::BICgRPC::DisconnectBridgeRequest* /*request*/, ::google::protobuf::Empty* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestDisconnectBridge(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(5, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class ExperimentalWithRawCallbackMethod_ListBridges : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    ExperimentalWithRawCallbackMethod_ListBridges() {
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      ::grpc::Service::
+    #else
+      ::grpc::Service::experimental().
+    #endif
+        MarkMethodRawCallback(0,
+          new ::grpc_impl::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
+            [this](
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+                   ::grpc::CallbackServerContext*
+    #else
+                   ::grpc::experimental::CallbackServerContext*
+    #endif
+                     context, const ::grpc::ByteBuffer* request, ::grpc::ByteBuffer* response) { return this->ListBridges(context, request, response); }));
+    }
+    ~ExperimentalWithRawCallbackMethod_ListBridges() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ListBridges(::grpc::ServerContext* /*context*/, const ::BICgRPC::QueryBridgesRequest* /*request*/, ::BICgRPC::QueryBridgesResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+    virtual ::grpc::ServerUnaryReactor* ListBridges(
+      ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)
+    #else
+    virtual ::grpc::experimental::ServerUnaryReactor* ListBridges(
+      ::grpc::experimental::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)
+    #endif
+      { return nullptr; }
+  };
+  template <class BaseClass>
+  class ExperimentalWithRawCallbackMethod_ScanBridges : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    ExperimentalWithRawCallbackMethod_ScanBridges() {
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      ::grpc::Service::
+    #else
+      ::grpc::Service::experimental().
+    #endif
+        MarkMethodRawCallback(1,
+          new ::grpc_impl::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
+            [this](
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+                   ::grpc::CallbackServerContext*
+    #else
+                   ::grpc::experimental::CallbackServerContext*
+    #endif
+                     context, const ::grpc::ByteBuffer* request, ::grpc::ByteBuffer* response) { return this->ScanBridges(context, request, response); }));
+    }
+    ~ExperimentalWithRawCallbackMethod_ScanBridges() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ScanBridges(::grpc::ServerContext* /*context*/, const ::BICgRPC::QueryBridgesRequest* /*request*/, ::BICgRPC::QueryBridgesResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+    virtual ::grpc::ServerUnaryReactor* ScanBridges(
+      ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)
+    #else
+    virtual ::grpc::experimental::ServerUnaryReactor* ScanBridges(
+      ::grpc::experimental::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)
+    #endif
+      { return nullptr; }
+  };
+  template <class BaseClass>
+  class ExperimentalWithRawCallbackMethod_ConnectedBridges : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    ExperimentalWithRawCallbackMethod_ConnectedBridges() {
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      ::grpc::Service::
+    #else
+      ::grpc::Service::experimental().
+    #endif
+        MarkMethodRawCallback(2,
+          new ::grpc_impl::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
+            [this](
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+                   ::grpc::CallbackServerContext*
+    #else
+                   ::grpc::experimental::CallbackServerContext*
+    #endif
+                     context, const ::grpc::ByteBuffer* request, ::grpc::ByteBuffer* response) { return this->ConnectedBridges(context, request, response); }));
+    }
+    ~ExperimentalWithRawCallbackMethod_ConnectedBridges() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ConnectedBridges(::grpc::ServerContext* /*context*/, const ::BICgRPC::QueryBridgesRequest* /*request*/, ::BICgRPC::QueryBridgesResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+    virtual ::grpc::ServerUnaryReactor* ConnectedBridges(
+      ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)
+    #else
+    virtual ::grpc::experimental::ServerUnaryReactor* ConnectedBridges(
+      ::grpc::experimental::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)
+    #endif
+      { return nullptr; }
+  };
+  template <class BaseClass>
+  class ExperimentalWithRawCallbackMethod_ConnectBridge : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    ExperimentalWithRawCallbackMethod_ConnectBridge() {
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      ::grpc::Service::
+    #else
+      ::grpc::Service::experimental().
+    #endif
+        MarkMethodRawCallback(3,
+          new ::grpc_impl::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
+            [this](
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+                   ::grpc::CallbackServerContext*
+    #else
+                   ::grpc::experimental::CallbackServerContext*
+    #endif
+                     context, const ::grpc::ByteBuffer* request, ::grpc::ByteBuffer* response) { return this->ConnectBridge(context, request, response); }));
+    }
+    ~ExperimentalWithRawCallbackMethod_ConnectBridge() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ConnectBridge(::grpc::ServerContext* /*context*/, const ::BICgRPC::ConnectBridgeRequest* /*request*/, ::BICgRPC::ConnectBridgeResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+    virtual ::grpc::ServerUnaryReactor* ConnectBridge(
+      ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)
+    #else
+    virtual ::grpc::experimental::ServerUnaryReactor* ConnectBridge(
+      ::grpc::experimental::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)
+    #endif
+      { return nullptr; }
+  };
+  template <class BaseClass>
+  class ExperimentalWithRawCallbackMethod_DescribeBridge : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    ExperimentalWithRawCallbackMethod_DescribeBridge() {
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      ::grpc::Service::
+    #else
+      ::grpc::Service::experimental().
+    #endif
+        MarkMethodRawCallback(4,
+          new ::grpc_impl::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
+            [this](
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+                   ::grpc::CallbackServerContext*
+    #else
+                   ::grpc::experimental::CallbackServerContext*
+    #endif
+                     context, const ::grpc::ByteBuffer* request, ::grpc::ByteBuffer* response) { return this->DescribeBridge(context, request, response); }));
+    }
+    ~ExperimentalWithRawCallbackMethod_DescribeBridge() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status DescribeBridge(::grpc::ServerContext* /*context*/, const ::BICgRPC::DescribeBridgeRequest* /*request*/, ::BICgRPC::DescribeBridgeResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+    virtual ::grpc::ServerUnaryReactor* DescribeBridge(
+      ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)
+    #else
+    virtual ::grpc::experimental::ServerUnaryReactor* DescribeBridge(
+      ::grpc::experimental::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)
+    #endif
+      { return nullptr; }
+  };
+  template <class BaseClass>
+  class ExperimentalWithRawCallbackMethod_DisconnectBridge : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    ExperimentalWithRawCallbackMethod_DisconnectBridge() {
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      ::grpc::Service::
+    #else
+      ::grpc::Service::experimental().
+    #endif
+        MarkMethodRawCallback(5,
+          new ::grpc_impl::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
+            [this](
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+                   ::grpc::CallbackServerContext*
+    #else
+                   ::grpc::experimental::CallbackServerContext*
+    #endif
+                     context, const ::grpc::ByteBuffer* request, ::grpc::ByteBuffer* response) { return this->DisconnectBridge(context, request, response); }));
+    }
+    ~ExperimentalWithRawCallbackMethod_DisconnectBridge() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status DisconnectBridge(::grpc::ServerContext* /*context*/, const ::BICgRPC::DisconnectBridgeRequest* /*request*/, ::google::protobuf::Empty* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+    virtual ::grpc::ServerUnaryReactor* DisconnectBridge(
+      ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)
+    #else
+    virtual ::grpc::experimental::ServerUnaryReactor* DisconnectBridge(
+      ::grpc::experimental::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)
+    #endif
+      { return nullptr; }
+  };
+  template <class BaseClass>
+  class WithStreamedUnaryMethod_ListBridges : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithStreamedUnaryMethod_ListBridges() {
+      ::grpc::Service::MarkMethodStreamed(0,
+        new ::grpc::internal::StreamedUnaryHandler<
+          ::BICgRPC::QueryBridgesRequest, ::BICgRPC::QueryBridgesResponse>(
+            [this](::grpc_impl::ServerContext* context,
+                   ::grpc_impl::ServerUnaryStreamer<
+                     ::BICgRPC::QueryBridgesRequest, ::BICgRPC::QueryBridgesResponse>* streamer) {
+                       return this->StreamedListBridges(context,
+                         streamer);
+                  }));
+    }
+    ~WithStreamedUnaryMethod_ListBridges() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable regular version of this method
+    ::grpc::Status ListBridges(::grpc::ServerContext* /*context*/, const ::BICgRPC::QueryBridgesRequest* /*request*/, ::BICgRPC::QueryBridgesResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    // replace default version of method with streamed unary
+    virtual ::grpc::Status StreamedListBridges(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::BICgRPC::QueryBridgesRequest,::BICgRPC::QueryBridgesResponse>* server_unary_streamer) = 0;
+  };
+  template <class BaseClass>
+  class WithStreamedUnaryMethod_ScanBridges : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithStreamedUnaryMethod_ScanBridges() {
+      ::grpc::Service::MarkMethodStreamed(1,
+        new ::grpc::internal::StreamedUnaryHandler<
+          ::BICgRPC::QueryBridgesRequest, ::BICgRPC::QueryBridgesResponse>(
+            [this](::grpc_impl::ServerContext* context,
+                   ::grpc_impl::ServerUnaryStreamer<
+                     ::BICgRPC::QueryBridgesRequest, ::BICgRPC::QueryBridgesResponse>* streamer) {
+                       return this->StreamedScanBridges(context,
+                         streamer);
+                  }));
+    }
+    ~WithStreamedUnaryMethod_ScanBridges() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable regular version of this method
+    ::grpc::Status ScanBridges(::grpc::ServerContext* /*context*/, const ::BICgRPC::QueryBridgesRequest* /*request*/, ::BICgRPC::QueryBridgesResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    // replace default version of method with streamed unary
+    virtual ::grpc::Status StreamedScanBridges(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::BICgRPC::QueryBridgesRequest,::BICgRPC::QueryBridgesResponse>* server_unary_streamer) = 0;
+  };
+  template <class BaseClass>
+  class WithStreamedUnaryMethod_ConnectedBridges : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithStreamedUnaryMethod_ConnectedBridges() {
+      ::grpc::Service::MarkMethodStreamed(2,
+        new ::grpc::internal::StreamedUnaryHandler<
+          ::BICgRPC::QueryBridgesRequest, ::BICgRPC::QueryBridgesResponse>(
+            [this](::grpc_impl::ServerContext* context,
+                   ::grpc_impl::ServerUnaryStreamer<
+                     ::BICgRPC::QueryBridgesRequest, ::BICgRPC::QueryBridgesResponse>* streamer) {
+                       return this->StreamedConnectedBridges(context,
+                         streamer);
+                  }));
+    }
+    ~WithStreamedUnaryMethod_ConnectedBridges() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable regular version of this method
+    ::grpc::Status ConnectedBridges(::grpc::ServerContext* /*context*/, const ::BICgRPC::QueryBridgesRequest* /*request*/, ::BICgRPC::QueryBridgesResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    // replace default version of method with streamed unary
+    virtual ::grpc::Status StreamedConnectedBridges(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::BICgRPC::QueryBridgesRequest,::BICgRPC::QueryBridgesResponse>* server_unary_streamer) = 0;
+  };
+  template <class BaseClass>
+  class WithStreamedUnaryMethod_ConnectBridge : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithStreamedUnaryMethod_ConnectBridge() {
+      ::grpc::Service::MarkMethodStreamed(3,
+        new ::grpc::internal::StreamedUnaryHandler<
+          ::BICgRPC::ConnectBridgeRequest, ::BICgRPC::ConnectBridgeResponse>(
+            [this](::grpc_impl::ServerContext* context,
+                   ::grpc_impl::ServerUnaryStreamer<
+                     ::BICgRPC::ConnectBridgeRequest, ::BICgRPC::ConnectBridgeResponse>* streamer) {
+                       return this->StreamedConnectBridge(context,
+                         streamer);
+                  }));
+    }
+    ~WithStreamedUnaryMethod_ConnectBridge() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable regular version of this method
+    ::grpc::Status ConnectBridge(::grpc::ServerContext* /*context*/, const ::BICgRPC::ConnectBridgeRequest* /*request*/, ::BICgRPC::ConnectBridgeResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    // replace default version of method with streamed unary
+    virtual ::grpc::Status StreamedConnectBridge(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::BICgRPC::ConnectBridgeRequest,::BICgRPC::ConnectBridgeResponse>* server_unary_streamer) = 0;
+  };
+  template <class BaseClass>
+  class WithStreamedUnaryMethod_DescribeBridge : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithStreamedUnaryMethod_DescribeBridge() {
+      ::grpc::Service::MarkMethodStreamed(4,
+        new ::grpc::internal::StreamedUnaryHandler<
+          ::BICgRPC::DescribeBridgeRequest, ::BICgRPC::DescribeBridgeResponse>(
+            [this](::grpc_impl::ServerContext* context,
+                   ::grpc_impl::ServerUnaryStreamer<
+                     ::BICgRPC::DescribeBridgeRequest, ::BICgRPC::DescribeBridgeResponse>* streamer) {
+                       return this->StreamedDescribeBridge(context,
+                         streamer);
+                  }));
+    }
+    ~WithStreamedUnaryMethod_DescribeBridge() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable regular version of this method
+    ::grpc::Status DescribeBridge(::grpc::ServerContext* /*context*/, const ::BICgRPC::DescribeBridgeRequest* /*request*/, ::BICgRPC::DescribeBridgeResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    // replace default version of method with streamed unary
+    virtual ::grpc::Status StreamedDescribeBridge(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::BICgRPC::DescribeBridgeRequest,::BICgRPC::DescribeBridgeResponse>* server_unary_streamer) = 0;
+  };
+  template <class BaseClass>
+  class WithStreamedUnaryMethod_DisconnectBridge : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithStreamedUnaryMethod_DisconnectBridge() {
+      ::grpc::Service::MarkMethodStreamed(5,
+        new ::grpc::internal::StreamedUnaryHandler<
+          ::BICgRPC::DisconnectBridgeRequest, ::google::protobuf::Empty>(
+            [this](::grpc_impl::ServerContext* context,
+                   ::grpc_impl::ServerUnaryStreamer<
+                     ::BICgRPC::DisconnectBridgeRequest, ::google::protobuf::Empty>* streamer) {
+                       return this->StreamedDisconnectBridge(context,
+                         streamer);
+                  }));
+    }
+    ~WithStreamedUnaryMethod_DisconnectBridge() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable regular version of this method
+    ::grpc::Status DisconnectBridge(::grpc::ServerContext* /*context*/, const ::BICgRPC::DisconnectBridgeRequest* /*request*/, ::google::protobuf::Empty* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    // replace default version of method with streamed unary
+    virtual ::grpc::Status StreamedDisconnectBridge(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::BICgRPC::DisconnectBridgeRequest,::google::protobuf::Empty>* server_unary_streamer) = 0;
+  };
+  typedef WithStreamedUnaryMethod_ListBridges<WithStreamedUnaryMethod_ScanBridges<WithStreamedUnaryMethod_ConnectedBridges<WithStreamedUnaryMethod_ConnectBridge<WithStreamedUnaryMethod_DescribeBridge<WithStreamedUnaryMethod_DisconnectBridge<Service > > > > > > StreamedUnaryService;
+  typedef Service SplitStreamedService;
+  typedef WithStreamedUnaryMethod_ListBridges<WithStreamedUnaryMethod_ScanBridges<WithStreamedUnaryMethod_ConnectedBridges<WithStreamedUnaryMethod_ConnectBridge<WithStreamedUnaryMethod_DescribeBridge<WithStreamedUnaryMethod_DisconnectBridge<Service > > > > > > StreamedService;
+};
+
+// The BICDeviceService definition.
+class BICDeviceService final {
+ public:
+  static constexpr char const* service_full_name() {
+    return "BICgRPC.BICDeviceService";
+  }
+  class StubInterface {
+   public:
+    virtual ~StubInterface() {}
+    // Initialization/Destruction
+    virtual ::grpc::Status ScanDevices(::grpc::ClientContext* context, const ::BICgRPC::ScanDevicesRequest& request, ::BICgRPC::ScanDevicesReply* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::ScanDevicesReply>> AsyncScanDevices(::grpc::ClientContext* context, const ::BICgRPC::ScanDevicesRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::ScanDevicesReply>>(AsyncScanDevicesRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::ScanDevicesReply>> PrepareAsyncScanDevices(::grpc::ClientContext* context, const ::BICgRPC::ScanDevicesRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::ScanDevicesReply>>(PrepareAsyncScanDevicesRaw(context, request, cq));
+    }
+    virtual ::grpc::Status ConnectDevice(::grpc::ClientContext* context, const ::BICgRPC::ConnectDeviceRequest& request, ::BICgRPC::bicSuccessReply* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>> AsyncConnectDevice(::grpc::ClientContext* context, const ::BICgRPC::ConnectDeviceRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>>(AsyncConnectDeviceRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>> PrepareAsyncConnectDevice(::grpc::ClientContext* context, const ::BICgRPC::ConnectDeviceRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>>(PrepareAsyncConnectDeviceRaw(context, request, cq));
+    }
+    virtual ::grpc::Status bicDispose(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::BICgRPC::bicSuccessReply* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>> AsyncbicDispose(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>>(AsyncbicDisposeRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>> PrepareAsyncbicDispose(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>>(PrepareAsyncbicDisposeRaw(context, request, cq));
+    }
+    // Get Functions
     virtual ::grpc::Status bicGetImplantInfo(::grpc::ClientContext* context, const ::BICgRPC::bicGetImplantInfoRequest& request, ::BICgRPC::bicGetImplantInfoReply* response) = 0;
     std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetImplantInfoReply>> AsyncbicGetImplantInfo(::grpc::ClientContext* context, const ::BICgRPC::bicGetImplantInfoRequest& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetImplantInfoReply>>(AsyncbicGetImplantInfoRaw(context, request, cq));
@@ -74,20 +1425,21 @@ class BICManager final {
     std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetImpedanceReply>> PrepareAsyncbicGetImpedance(::grpc::ClientContext* context, const ::BICgRPC::bicGetImpedanceRequest& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetImpedanceReply>>(PrepareAsyncbicGetImpedanceRaw(context, request, cq));
     }
-    virtual ::grpc::Status bicGetTemperature(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::BICgRPC::bicGetTemperatureReply* response) = 0;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetTemperatureReply>> AsyncbicGetTemperature(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::grpc::CompletionQueue* cq) {
+    virtual ::grpc::Status bicGetTemperature(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::BICgRPC::bicGetTemperatureReply* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetTemperatureReply>> AsyncbicGetTemperature(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetTemperatureReply>>(AsyncbicGetTemperatureRaw(context, request, cq));
     }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetTemperatureReply>> PrepareAsyncbicGetTemperature(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::grpc::CompletionQueue* cq) {
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetTemperatureReply>> PrepareAsyncbicGetTemperature(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetTemperatureReply>>(PrepareAsyncbicGetTemperatureRaw(context, request, cq));
     }
-    virtual ::grpc::Status bicGetHumidity(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::BICgRPC::bicGetHumidityReply* response) = 0;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetHumidityReply>> AsyncbicGetHumidity(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::grpc::CompletionQueue* cq) {
+    virtual ::grpc::Status bicGetHumidity(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::BICgRPC::bicGetHumidityReply* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetHumidityReply>> AsyncbicGetHumidity(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetHumidityReply>>(AsyncbicGetHumidityRaw(context, request, cq));
     }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetHumidityReply>> PrepareAsyncbicGetHumidity(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::grpc::CompletionQueue* cq) {
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetHumidityReply>> PrepareAsyncbicGetHumidity(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetHumidityReply>>(PrepareAsyncbicGetHumidityRaw(context, request, cq));
     }
+    // Set Functions
     virtual ::grpc::Status bicSetSensingEnable(::grpc::ClientContext* context, const ::BICgRPC::bicSetSensingEnableRequest& request, ::BICgRPC::bicSuccessReply* response) = 0;
     std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>> AsyncbicSetSensingEnable(::grpc::ClientContext* context, const ::BICgRPC::bicSetSensingEnableRequest& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>>(AsyncbicSetSensingEnableRaw(context, request, cq));
@@ -102,6 +1454,7 @@ class BICManager final {
     std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>> PrepareAsyncbicSetImplantPower(::grpc::ClientContext* context, const ::BICgRPC::bicSetImplantPowerRequest& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>>(PrepareAsyncbicSetImplantPowerRaw(context, request, cq));
     }
+    // Stim Functions
     virtual ::grpc::Status bicStartStimulation(::grpc::ClientContext* context, const ::BICgRPC::bicStartStimulationRequest& request, ::BICgRPC::bicSuccessReply* response) = 0;
     std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>> AsyncbicStartStimulation(::grpc::ClientContext* context, const ::BICgRPC::bicStartStimulationRequest& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>>(AsyncbicStartStimulationRaw(context, request, cq));
@@ -109,36 +1462,64 @@ class BICManager final {
     std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>> PrepareAsyncbicStartStimulation(::grpc::ClientContext* context, const ::BICgRPC::bicStartStimulationRequest& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>>(PrepareAsyncbicStartStimulationRaw(context, request, cq));
     }
-    virtual ::grpc::Status bicStopStimulation(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::BICgRPC::bicSuccessReply* response) = 0;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>> AsyncbicStopStimulation(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::grpc::CompletionQueue* cq) {
+    virtual ::grpc::Status bicStopStimulation(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::BICgRPC::bicSuccessReply* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>> AsyncbicStopStimulation(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>>(AsyncbicStopStimulationRaw(context, request, cq));
     }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>> PrepareAsyncbicStopStimulation(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::grpc::CompletionQueue* cq) {
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>> PrepareAsyncbicStopStimulation(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>>(PrepareAsyncbicStopStimulationRaw(context, request, cq));
     }
-    virtual ::grpc::Status bicDispose(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::BICgRPC::bicSuccessReply* response) = 0;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>> AsyncbicDispose(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>>(AsyncbicDisposeRaw(context, request, cq));
+    // Streaming endpoints
+    std::unique_ptr< ::grpc::ClientReaderInterface< ::BICgRPC::TemperatureUpdate>> bicTemperatureStream(::grpc::ClientContext* context, const ::google::protobuf::Empty& request) {
+      return std::unique_ptr< ::grpc::ClientReaderInterface< ::BICgRPC::TemperatureUpdate>>(bicTemperatureStreamRaw(context, request));
     }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>> PrepareAsyncbicDispose(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>>(PrepareAsyncbicDisposeRaw(context, request, cq));
+    std::unique_ptr< ::grpc::ClientAsyncReaderInterface< ::BICgRPC::TemperatureUpdate>> AsyncbicTemperatureStream(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq, void* tag) {
+      return std::unique_ptr< ::grpc::ClientAsyncReaderInterface< ::BICgRPC::TemperatureUpdate>>(AsyncbicTemperatureStreamRaw(context, request, cq, tag));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncReaderInterface< ::BICgRPC::TemperatureUpdate>> PrepareAsyncbicTemperatureStream(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncReaderInterface< ::BICgRPC::TemperatureUpdate>>(PrepareAsyncbicTemperatureStreamRaw(context, request, cq));
     }
     class experimental_async_interface {
      public:
       virtual ~experimental_async_interface() {}
-      // Sends a greeting
-      virtual void bicInit(::grpc::ClientContext* context, const ::BICgRPC::bicInitRequest* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)>) = 0;
-      virtual void bicInit(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)>) = 0;
+      // Initialization/Destruction
+      virtual void ScanDevices(::grpc::ClientContext* context, const ::BICgRPC::ScanDevicesRequest* request, ::BICgRPC::ScanDevicesReply* response, std::function<void(::grpc::Status)>) = 0;
+      virtual void ScanDevices(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::ScanDevicesReply* response, std::function<void(::grpc::Status)>) = 0;
       #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-      virtual void bicInit(::grpc::ClientContext* context, const ::BICgRPC::bicInitRequest* request, ::BICgRPC::bicSuccessReply* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      virtual void ScanDevices(::grpc::ClientContext* context, const ::BICgRPC::ScanDevicesRequest* request, ::BICgRPC::ScanDevicesReply* response, ::grpc::ClientUnaryReactor* reactor) = 0;
       #else
-      virtual void bicInit(::grpc::ClientContext* context, const ::BICgRPC::bicInitRequest* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
+      virtual void ScanDevices(::grpc::ClientContext* context, const ::BICgRPC::ScanDevicesRequest* request, ::BICgRPC::ScanDevicesReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
       #endif
       #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-      virtual void bicInit(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      virtual void ScanDevices(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::ScanDevicesReply* response, ::grpc::ClientUnaryReactor* reactor) = 0;
       #else
-      virtual void bicInit(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
+      virtual void ScanDevices(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::ScanDevicesReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
       #endif
+      virtual void ConnectDevice(::grpc::ClientContext* context, const ::BICgRPC::ConnectDeviceRequest* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)>) = 0;
+      virtual void ConnectDevice(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)>) = 0;
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      virtual void ConnectDevice(::grpc::ClientContext* context, const ::BICgRPC::ConnectDeviceRequest* request, ::BICgRPC::bicSuccessReply* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      #else
+      virtual void ConnectDevice(::grpc::ClientContext* context, const ::BICgRPC::ConnectDeviceRequest* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
+      #endif
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      virtual void ConnectDevice(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      #else
+      virtual void ConnectDevice(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
+      #endif
+      virtual void bicDispose(::grpc::ClientContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)>) = 0;
+      virtual void bicDispose(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)>) = 0;
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      virtual void bicDispose(::grpc::ClientContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicSuccessReply* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      #else
+      virtual void bicDispose(::grpc::ClientContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
+      #endif
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      virtual void bicDispose(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      #else
+      virtual void bicDispose(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
+      #endif
+      // Get Functions
       virtual void bicGetImplantInfo(::grpc::ClientContext* context, const ::BICgRPC::bicGetImplantInfoRequest* request, ::BICgRPC::bicGetImplantInfoReply* response, std::function<void(::grpc::Status)>) = 0;
       virtual void bicGetImplantInfo(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicGetImplantInfoReply* response, std::function<void(::grpc::Status)>) = 0;
       #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
@@ -163,30 +1544,31 @@ class BICManager final {
       #else
       virtual void bicGetImpedance(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicGetImpedanceReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
       #endif
-      virtual void bicGetTemperature(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest* request, ::BICgRPC::bicGetTemperatureReply* response, std::function<void(::grpc::Status)>) = 0;
+      virtual void bicGetTemperature(::grpc::ClientContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicGetTemperatureReply* response, std::function<void(::grpc::Status)>) = 0;
       virtual void bicGetTemperature(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicGetTemperatureReply* response, std::function<void(::grpc::Status)>) = 0;
       #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-      virtual void bicGetTemperature(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest* request, ::BICgRPC::bicGetTemperatureReply* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      virtual void bicGetTemperature(::grpc::ClientContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicGetTemperatureReply* response, ::grpc::ClientUnaryReactor* reactor) = 0;
       #else
-      virtual void bicGetTemperature(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest* request, ::BICgRPC::bicGetTemperatureReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
+      virtual void bicGetTemperature(::grpc::ClientContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicGetTemperatureReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
       #endif
       #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
       virtual void bicGetTemperature(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicGetTemperatureReply* response, ::grpc::ClientUnaryReactor* reactor) = 0;
       #else
       virtual void bicGetTemperature(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicGetTemperatureReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
       #endif
-      virtual void bicGetHumidity(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest* request, ::BICgRPC::bicGetHumidityReply* response, std::function<void(::grpc::Status)>) = 0;
+      virtual void bicGetHumidity(::grpc::ClientContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicGetHumidityReply* response, std::function<void(::grpc::Status)>) = 0;
       virtual void bicGetHumidity(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicGetHumidityReply* response, std::function<void(::grpc::Status)>) = 0;
       #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-      virtual void bicGetHumidity(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest* request, ::BICgRPC::bicGetHumidityReply* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      virtual void bicGetHumidity(::grpc::ClientContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicGetHumidityReply* response, ::grpc::ClientUnaryReactor* reactor) = 0;
       #else
-      virtual void bicGetHumidity(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest* request, ::BICgRPC::bicGetHumidityReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
+      virtual void bicGetHumidity(::grpc::ClientContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicGetHumidityReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
       #endif
       #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
       virtual void bicGetHumidity(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicGetHumidityReply* response, ::grpc::ClientUnaryReactor* reactor) = 0;
       #else
       virtual void bicGetHumidity(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicGetHumidityReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
       #endif
+      // Set Functions
       virtual void bicSetSensingEnable(::grpc::ClientContext* context, const ::BICgRPC::bicSetSensingEnableRequest* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)>) = 0;
       virtual void bicSetSensingEnable(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)>) = 0;
       #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
@@ -211,6 +1593,7 @@ class BICManager final {
       #else
       virtual void bicSetImplantPower(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
       #endif
+      // Stim Functions
       virtual void bicStartStimulation(::grpc::ClientContext* context, const ::BICgRPC::bicStartStimulationRequest* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)>) = 0;
       virtual void bicStartStimulation(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)>) = 0;
       #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
@@ -223,29 +1606,23 @@ class BICManager final {
       #else
       virtual void bicStartStimulation(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
       #endif
-      virtual void bicStopStimulation(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)>) = 0;
+      virtual void bicStopStimulation(::grpc::ClientContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)>) = 0;
       virtual void bicStopStimulation(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)>) = 0;
       #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-      virtual void bicStopStimulation(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest* request, ::BICgRPC::bicSuccessReply* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      virtual void bicStopStimulation(::grpc::ClientContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicSuccessReply* response, ::grpc::ClientUnaryReactor* reactor) = 0;
       #else
-      virtual void bicStopStimulation(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
+      virtual void bicStopStimulation(::grpc::ClientContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
       #endif
       #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
       virtual void bicStopStimulation(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, ::grpc::ClientUnaryReactor* reactor) = 0;
       #else
       virtual void bicStopStimulation(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
       #endif
-      virtual void bicDispose(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)>) = 0;
-      virtual void bicDispose(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)>) = 0;
+      // Streaming endpoints
       #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-      virtual void bicDispose(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest* request, ::BICgRPC::bicSuccessReply* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      virtual void bicTemperatureStream(::grpc::ClientContext* context, ::google::protobuf::Empty* request, ::grpc::ClientReadReactor< ::BICgRPC::TemperatureUpdate>* reactor) = 0;
       #else
-      virtual void bicDispose(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
-      #endif
-      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-      virtual void bicDispose(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, ::grpc::ClientUnaryReactor* reactor) = 0;
-      #else
-      virtual void bicDispose(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
+      virtual void bicTemperatureStream(::grpc::ClientContext* context, ::google::protobuf::Empty* request, ::grpc::experimental::ClientReadReactor< ::BICgRPC::TemperatureUpdate>* reactor) = 0;
       #endif
     };
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
@@ -256,36 +1633,55 @@ class BICManager final {
     #endif
     virtual class experimental_async_interface* experimental_async() { return nullptr; }
   private:
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>* AsyncbicInitRaw(::grpc::ClientContext* context, const ::BICgRPC::bicInitRequest& request, ::grpc::CompletionQueue* cq) = 0;
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>* PrepareAsyncbicInitRaw(::grpc::ClientContext* context, const ::BICgRPC::bicInitRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::ScanDevicesReply>* AsyncScanDevicesRaw(::grpc::ClientContext* context, const ::BICgRPC::ScanDevicesRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::ScanDevicesReply>* PrepareAsyncScanDevicesRaw(::grpc::ClientContext* context, const ::BICgRPC::ScanDevicesRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>* AsyncConnectDeviceRaw(::grpc::ClientContext* context, const ::BICgRPC::ConnectDeviceRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>* PrepareAsyncConnectDeviceRaw(::grpc::ClientContext* context, const ::BICgRPC::ConnectDeviceRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>* AsyncbicDisposeRaw(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>* PrepareAsyncbicDisposeRaw(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetImplantInfoReply>* AsyncbicGetImplantInfoRaw(::grpc::ClientContext* context, const ::BICgRPC::bicGetImplantInfoRequest& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetImplantInfoReply>* PrepareAsyncbicGetImplantInfoRaw(::grpc::ClientContext* context, const ::BICgRPC::bicGetImplantInfoRequest& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetImpedanceReply>* AsyncbicGetImpedanceRaw(::grpc::ClientContext* context, const ::BICgRPC::bicGetImpedanceRequest& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetImpedanceReply>* PrepareAsyncbicGetImpedanceRaw(::grpc::ClientContext* context, const ::BICgRPC::bicGetImpedanceRequest& request, ::grpc::CompletionQueue* cq) = 0;
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetTemperatureReply>* AsyncbicGetTemperatureRaw(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::grpc::CompletionQueue* cq) = 0;
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetTemperatureReply>* PrepareAsyncbicGetTemperatureRaw(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::grpc::CompletionQueue* cq) = 0;
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetHumidityReply>* AsyncbicGetHumidityRaw(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::grpc::CompletionQueue* cq) = 0;
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetHumidityReply>* PrepareAsyncbicGetHumidityRaw(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetTemperatureReply>* AsyncbicGetTemperatureRaw(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetTemperatureReply>* PrepareAsyncbicGetTemperatureRaw(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetHumidityReply>* AsyncbicGetHumidityRaw(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetHumidityReply>* PrepareAsyncbicGetHumidityRaw(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>* AsyncbicSetSensingEnableRaw(::grpc::ClientContext* context, const ::BICgRPC::bicSetSensingEnableRequest& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>* PrepareAsyncbicSetSensingEnableRaw(::grpc::ClientContext* context, const ::BICgRPC::bicSetSensingEnableRequest& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>* AsyncbicSetImplantPowerRaw(::grpc::ClientContext* context, const ::BICgRPC::bicSetImplantPowerRequest& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>* PrepareAsyncbicSetImplantPowerRaw(::grpc::ClientContext* context, const ::BICgRPC::bicSetImplantPowerRequest& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>* AsyncbicStartStimulationRaw(::grpc::ClientContext* context, const ::BICgRPC::bicStartStimulationRequest& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>* PrepareAsyncbicStartStimulationRaw(::grpc::ClientContext* context, const ::BICgRPC::bicStartStimulationRequest& request, ::grpc::CompletionQueue* cq) = 0;
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>* AsyncbicStopStimulationRaw(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::grpc::CompletionQueue* cq) = 0;
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>* PrepareAsyncbicStopStimulationRaw(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::grpc::CompletionQueue* cq) = 0;
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>* AsyncbicDisposeRaw(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::grpc::CompletionQueue* cq) = 0;
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>* PrepareAsyncbicDisposeRaw(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>* AsyncbicStopStimulationRaw(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>* PrepareAsyncbicStopStimulationRaw(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientReaderInterface< ::BICgRPC::TemperatureUpdate>* bicTemperatureStreamRaw(::grpc::ClientContext* context, const ::google::protobuf::Empty& request) = 0;
+    virtual ::grpc::ClientAsyncReaderInterface< ::BICgRPC::TemperatureUpdate>* AsyncbicTemperatureStreamRaw(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq, void* tag) = 0;
+    virtual ::grpc::ClientAsyncReaderInterface< ::BICgRPC::TemperatureUpdate>* PrepareAsyncbicTemperatureStreamRaw(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) = 0;
   };
   class Stub final : public StubInterface {
    public:
     Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel);
-    ::grpc::Status bicInit(::grpc::ClientContext* context, const ::BICgRPC::bicInitRequest& request, ::BICgRPC::bicSuccessReply* response) override;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>> AsyncbicInit(::grpc::ClientContext* context, const ::BICgRPC::bicInitRequest& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>>(AsyncbicInitRaw(context, request, cq));
+    ::grpc::Status ScanDevices(::grpc::ClientContext* context, const ::BICgRPC::ScanDevicesRequest& request, ::BICgRPC::ScanDevicesReply* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::ScanDevicesReply>> AsyncScanDevices(::grpc::ClientContext* context, const ::BICgRPC::ScanDevicesRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::ScanDevicesReply>>(AsyncScanDevicesRaw(context, request, cq));
     }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>> PrepareAsyncbicInit(::grpc::ClientContext* context, const ::BICgRPC::bicInitRequest& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>>(PrepareAsyncbicInitRaw(context, request, cq));
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::ScanDevicesReply>> PrepareAsyncScanDevices(::grpc::ClientContext* context, const ::BICgRPC::ScanDevicesRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::ScanDevicesReply>>(PrepareAsyncScanDevicesRaw(context, request, cq));
+    }
+    ::grpc::Status ConnectDevice(::grpc::ClientContext* context, const ::BICgRPC::ConnectDeviceRequest& request, ::BICgRPC::bicSuccessReply* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>> AsyncConnectDevice(::grpc::ClientContext* context, const ::BICgRPC::ConnectDeviceRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>>(AsyncConnectDeviceRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>> PrepareAsyncConnectDevice(::grpc::ClientContext* context, const ::BICgRPC::ConnectDeviceRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>>(PrepareAsyncConnectDeviceRaw(context, request, cq));
+    }
+    ::grpc::Status bicDispose(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::BICgRPC::bicSuccessReply* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>> AsyncbicDispose(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>>(AsyncbicDisposeRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>> PrepareAsyncbicDispose(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>>(PrepareAsyncbicDisposeRaw(context, request, cq));
     }
     ::grpc::Status bicGetImplantInfo(::grpc::ClientContext* context, const ::BICgRPC::bicGetImplantInfoRequest& request, ::BICgRPC::bicGetImplantInfoReply* response) override;
     std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetImplantInfoReply>> AsyncbicGetImplantInfo(::grpc::ClientContext* context, const ::BICgRPC::bicGetImplantInfoRequest& request, ::grpc::CompletionQueue* cq) {
@@ -301,18 +1697,18 @@ class BICManager final {
     std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetImpedanceReply>> PrepareAsyncbicGetImpedance(::grpc::ClientContext* context, const ::BICgRPC::bicGetImpedanceRequest& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetImpedanceReply>>(PrepareAsyncbicGetImpedanceRaw(context, request, cq));
     }
-    ::grpc::Status bicGetTemperature(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::BICgRPC::bicGetTemperatureReply* response) override;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetTemperatureReply>> AsyncbicGetTemperature(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::grpc::CompletionQueue* cq) {
+    ::grpc::Status bicGetTemperature(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::BICgRPC::bicGetTemperatureReply* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetTemperatureReply>> AsyncbicGetTemperature(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetTemperatureReply>>(AsyncbicGetTemperatureRaw(context, request, cq));
     }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetTemperatureReply>> PrepareAsyncbicGetTemperature(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::grpc::CompletionQueue* cq) {
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetTemperatureReply>> PrepareAsyncbicGetTemperature(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetTemperatureReply>>(PrepareAsyncbicGetTemperatureRaw(context, request, cq));
     }
-    ::grpc::Status bicGetHumidity(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::BICgRPC::bicGetHumidityReply* response) override;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetHumidityReply>> AsyncbicGetHumidity(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::grpc::CompletionQueue* cq) {
+    ::grpc::Status bicGetHumidity(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::BICgRPC::bicGetHumidityReply* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetHumidityReply>> AsyncbicGetHumidity(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetHumidityReply>>(AsyncbicGetHumidityRaw(context, request, cq));
     }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetHumidityReply>> PrepareAsyncbicGetHumidity(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::grpc::CompletionQueue* cq) {
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetHumidityReply>> PrepareAsyncbicGetHumidity(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetHumidityReply>>(PrepareAsyncbicGetHumidityRaw(context, request, cq));
     }
     ::grpc::Status bicSetSensingEnable(::grpc::ClientContext* context, const ::BICgRPC::bicSetSensingEnableRequest& request, ::BICgRPC::bicSuccessReply* response) override;
@@ -336,34 +1732,60 @@ class BICManager final {
     std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>> PrepareAsyncbicStartStimulation(::grpc::ClientContext* context, const ::BICgRPC::bicStartStimulationRequest& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>>(PrepareAsyncbicStartStimulationRaw(context, request, cq));
     }
-    ::grpc::Status bicStopStimulation(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::BICgRPC::bicSuccessReply* response) override;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>> AsyncbicStopStimulation(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::grpc::CompletionQueue* cq) {
+    ::grpc::Status bicStopStimulation(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::BICgRPC::bicSuccessReply* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>> AsyncbicStopStimulation(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>>(AsyncbicStopStimulationRaw(context, request, cq));
     }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>> PrepareAsyncbicStopStimulation(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::grpc::CompletionQueue* cq) {
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>> PrepareAsyncbicStopStimulation(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>>(PrepareAsyncbicStopStimulationRaw(context, request, cq));
     }
-    ::grpc::Status bicDispose(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::BICgRPC::bicSuccessReply* response) override;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>> AsyncbicDispose(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>>(AsyncbicDisposeRaw(context, request, cq));
+    std::unique_ptr< ::grpc::ClientReader< ::BICgRPC::TemperatureUpdate>> bicTemperatureStream(::grpc::ClientContext* context, const ::google::protobuf::Empty& request) {
+      return std::unique_ptr< ::grpc::ClientReader< ::BICgRPC::TemperatureUpdate>>(bicTemperatureStreamRaw(context, request));
     }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>> PrepareAsyncbicDispose(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>>(PrepareAsyncbicDisposeRaw(context, request, cq));
+    std::unique_ptr< ::grpc::ClientAsyncReader< ::BICgRPC::TemperatureUpdate>> AsyncbicTemperatureStream(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq, void* tag) {
+      return std::unique_ptr< ::grpc::ClientAsyncReader< ::BICgRPC::TemperatureUpdate>>(AsyncbicTemperatureStreamRaw(context, request, cq, tag));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncReader< ::BICgRPC::TemperatureUpdate>> PrepareAsyncbicTemperatureStream(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncReader< ::BICgRPC::TemperatureUpdate>>(PrepareAsyncbicTemperatureStreamRaw(context, request, cq));
     }
     class experimental_async final :
       public StubInterface::experimental_async_interface {
      public:
-      void bicInit(::grpc::ClientContext* context, const ::BICgRPC::bicInitRequest* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)>) override;
-      void bicInit(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)>) override;
+      void ScanDevices(::grpc::ClientContext* context, const ::BICgRPC::ScanDevicesRequest* request, ::BICgRPC::ScanDevicesReply* response, std::function<void(::grpc::Status)>) override;
+      void ScanDevices(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::ScanDevicesReply* response, std::function<void(::grpc::Status)>) override;
       #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-      void bicInit(::grpc::ClientContext* context, const ::BICgRPC::bicInitRequest* request, ::BICgRPC::bicSuccessReply* response, ::grpc::ClientUnaryReactor* reactor) override;
+      void ScanDevices(::grpc::ClientContext* context, const ::BICgRPC::ScanDevicesRequest* request, ::BICgRPC::ScanDevicesReply* response, ::grpc::ClientUnaryReactor* reactor) override;
       #else
-      void bicInit(::grpc::ClientContext* context, const ::BICgRPC::bicInitRequest* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
+      void ScanDevices(::grpc::ClientContext* context, const ::BICgRPC::ScanDevicesRequest* request, ::BICgRPC::ScanDevicesReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
       #endif
       #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-      void bicInit(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, ::grpc::ClientUnaryReactor* reactor) override;
+      void ScanDevices(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::ScanDevicesReply* response, ::grpc::ClientUnaryReactor* reactor) override;
       #else
-      void bicInit(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
+      void ScanDevices(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::ScanDevicesReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
+      #endif
+      void ConnectDevice(::grpc::ClientContext* context, const ::BICgRPC::ConnectDeviceRequest* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)>) override;
+      void ConnectDevice(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)>) override;
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      void ConnectDevice(::grpc::ClientContext* context, const ::BICgRPC::ConnectDeviceRequest* request, ::BICgRPC::bicSuccessReply* response, ::grpc::ClientUnaryReactor* reactor) override;
+      #else
+      void ConnectDevice(::grpc::ClientContext* context, const ::BICgRPC::ConnectDeviceRequest* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
+      #endif
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      void ConnectDevice(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, ::grpc::ClientUnaryReactor* reactor) override;
+      #else
+      void ConnectDevice(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
+      #endif
+      void bicDispose(::grpc::ClientContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)>) override;
+      void bicDispose(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)>) override;
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      void bicDispose(::grpc::ClientContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicSuccessReply* response, ::grpc::ClientUnaryReactor* reactor) override;
+      #else
+      void bicDispose(::grpc::ClientContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
+      #endif
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      void bicDispose(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, ::grpc::ClientUnaryReactor* reactor) override;
+      #else
+      void bicDispose(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
       #endif
       void bicGetImplantInfo(::grpc::ClientContext* context, const ::BICgRPC::bicGetImplantInfoRequest* request, ::BICgRPC::bicGetImplantInfoReply* response, std::function<void(::grpc::Status)>) override;
       void bicGetImplantInfo(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicGetImplantInfoReply* response, std::function<void(::grpc::Status)>) override;
@@ -389,24 +1811,24 @@ class BICManager final {
       #else
       void bicGetImpedance(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicGetImpedanceReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
       #endif
-      void bicGetTemperature(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest* request, ::BICgRPC::bicGetTemperatureReply* response, std::function<void(::grpc::Status)>) override;
+      void bicGetTemperature(::grpc::ClientContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicGetTemperatureReply* response, std::function<void(::grpc::Status)>) override;
       void bicGetTemperature(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicGetTemperatureReply* response, std::function<void(::grpc::Status)>) override;
       #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-      void bicGetTemperature(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest* request, ::BICgRPC::bicGetTemperatureReply* response, ::grpc::ClientUnaryReactor* reactor) override;
+      void bicGetTemperature(::grpc::ClientContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicGetTemperatureReply* response, ::grpc::ClientUnaryReactor* reactor) override;
       #else
-      void bicGetTemperature(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest* request, ::BICgRPC::bicGetTemperatureReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
+      void bicGetTemperature(::grpc::ClientContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicGetTemperatureReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
       #endif
       #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
       void bicGetTemperature(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicGetTemperatureReply* response, ::grpc::ClientUnaryReactor* reactor) override;
       #else
       void bicGetTemperature(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicGetTemperatureReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
       #endif
-      void bicGetHumidity(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest* request, ::BICgRPC::bicGetHumidityReply* response, std::function<void(::grpc::Status)>) override;
+      void bicGetHumidity(::grpc::ClientContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicGetHumidityReply* response, std::function<void(::grpc::Status)>) override;
       void bicGetHumidity(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicGetHumidityReply* response, std::function<void(::grpc::Status)>) override;
       #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-      void bicGetHumidity(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest* request, ::BICgRPC::bicGetHumidityReply* response, ::grpc::ClientUnaryReactor* reactor) override;
+      void bicGetHumidity(::grpc::ClientContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicGetHumidityReply* response, ::grpc::ClientUnaryReactor* reactor) override;
       #else
-      void bicGetHumidity(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest* request, ::BICgRPC::bicGetHumidityReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
+      void bicGetHumidity(::grpc::ClientContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicGetHumidityReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
       #endif
       #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
       void bicGetHumidity(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicGetHumidityReply* response, ::grpc::ClientUnaryReactor* reactor) override;
@@ -449,29 +1871,22 @@ class BICManager final {
       #else
       void bicStartStimulation(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
       #endif
-      void bicStopStimulation(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)>) override;
+      void bicStopStimulation(::grpc::ClientContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)>) override;
       void bicStopStimulation(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)>) override;
       #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-      void bicStopStimulation(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest* request, ::BICgRPC::bicSuccessReply* response, ::grpc::ClientUnaryReactor* reactor) override;
+      void bicStopStimulation(::grpc::ClientContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicSuccessReply* response, ::grpc::ClientUnaryReactor* reactor) override;
       #else
-      void bicStopStimulation(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
+      void bicStopStimulation(::grpc::ClientContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
       #endif
       #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
       void bicStopStimulation(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, ::grpc::ClientUnaryReactor* reactor) override;
       #else
       void bicStopStimulation(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
       #endif
-      void bicDispose(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)>) override;
-      void bicDispose(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)>) override;
       #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-      void bicDispose(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest* request, ::BICgRPC::bicSuccessReply* response, ::grpc::ClientUnaryReactor* reactor) override;
+      void bicTemperatureStream(::grpc::ClientContext* context, ::google::protobuf::Empty* request, ::grpc::ClientReadReactor< ::BICgRPC::TemperatureUpdate>* reactor) override;
       #else
-      void bicDispose(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
-      #endif
-      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-      void bicDispose(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, ::grpc::ClientUnaryReactor* reactor) override;
-      #else
-      void bicDispose(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
+      void bicTemperatureStream(::grpc::ClientContext* context, ::google::protobuf::Empty* request, ::grpc::experimental::ClientReadReactor< ::BICgRPC::TemperatureUpdate>* reactor) override;
       #endif
      private:
       friend class Stub;
@@ -484,27 +1899,34 @@ class BICManager final {
    private:
     std::shared_ptr< ::grpc::ChannelInterface> channel_;
     class experimental_async async_stub_{this};
-    ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* AsyncbicInitRaw(::grpc::ClientContext* context, const ::BICgRPC::bicInitRequest& request, ::grpc::CompletionQueue* cq) override;
-    ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* PrepareAsyncbicInitRaw(::grpc::ClientContext* context, const ::BICgRPC::bicInitRequest& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::BICgRPC::ScanDevicesReply>* AsyncScanDevicesRaw(::grpc::ClientContext* context, const ::BICgRPC::ScanDevicesRequest& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::BICgRPC::ScanDevicesReply>* PrepareAsyncScanDevicesRaw(::grpc::ClientContext* context, const ::BICgRPC::ScanDevicesRequest& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* AsyncConnectDeviceRaw(::grpc::ClientContext* context, const ::BICgRPC::ConnectDeviceRequest& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* PrepareAsyncConnectDeviceRaw(::grpc::ClientContext* context, const ::BICgRPC::ConnectDeviceRequest& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* AsyncbicDisposeRaw(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* PrepareAsyncbicDisposeRaw(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetImplantInfoReply>* AsyncbicGetImplantInfoRaw(::grpc::ClientContext* context, const ::BICgRPC::bicGetImplantInfoRequest& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetImplantInfoReply>* PrepareAsyncbicGetImplantInfoRaw(::grpc::ClientContext* context, const ::BICgRPC::bicGetImplantInfoRequest& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetImpedanceReply>* AsyncbicGetImpedanceRaw(::grpc::ClientContext* context, const ::BICgRPC::bicGetImpedanceRequest& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetImpedanceReply>* PrepareAsyncbicGetImpedanceRaw(::grpc::ClientContext* context, const ::BICgRPC::bicGetImpedanceRequest& request, ::grpc::CompletionQueue* cq) override;
-    ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetTemperatureReply>* AsyncbicGetTemperatureRaw(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::grpc::CompletionQueue* cq) override;
-    ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetTemperatureReply>* PrepareAsyncbicGetTemperatureRaw(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::grpc::CompletionQueue* cq) override;
-    ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetHumidityReply>* AsyncbicGetHumidityRaw(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::grpc::CompletionQueue* cq) override;
-    ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetHumidityReply>* PrepareAsyncbicGetHumidityRaw(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetTemperatureReply>* AsyncbicGetTemperatureRaw(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetTemperatureReply>* PrepareAsyncbicGetTemperatureRaw(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetHumidityReply>* AsyncbicGetHumidityRaw(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetHumidityReply>* PrepareAsyncbicGetHumidityRaw(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* AsyncbicSetSensingEnableRaw(::grpc::ClientContext* context, const ::BICgRPC::bicSetSensingEnableRequest& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* PrepareAsyncbicSetSensingEnableRaw(::grpc::ClientContext* context, const ::BICgRPC::bicSetSensingEnableRequest& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* AsyncbicSetImplantPowerRaw(::grpc::ClientContext* context, const ::BICgRPC::bicSetImplantPowerRequest& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* PrepareAsyncbicSetImplantPowerRaw(::grpc::ClientContext* context, const ::BICgRPC::bicSetImplantPowerRequest& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* AsyncbicStartStimulationRaw(::grpc::ClientContext* context, const ::BICgRPC::bicStartStimulationRequest& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* PrepareAsyncbicStartStimulationRaw(::grpc::ClientContext* context, const ::BICgRPC::bicStartStimulationRequest& request, ::grpc::CompletionQueue* cq) override;
-    ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* AsyncbicStopStimulationRaw(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::grpc::CompletionQueue* cq) override;
-    ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* PrepareAsyncbicStopStimulationRaw(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::grpc::CompletionQueue* cq) override;
-    ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* AsyncbicDisposeRaw(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::grpc::CompletionQueue* cq) override;
-    ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* PrepareAsyncbicDisposeRaw(::grpc::ClientContext* context, const ::BICgRPC::bicNullRequest& request, ::grpc::CompletionQueue* cq) override;
-    const ::grpc::internal::RpcMethod rpcmethod_bicInit_;
+    ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* AsyncbicStopStimulationRaw(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* PrepareAsyncbicStopStimulationRaw(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientReader< ::BICgRPC::TemperatureUpdate>* bicTemperatureStreamRaw(::grpc::ClientContext* context, const ::google::protobuf::Empty& request) override;
+    ::grpc::ClientAsyncReader< ::BICgRPC::TemperatureUpdate>* AsyncbicTemperatureStreamRaw(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq, void* tag) override;
+    ::grpc::ClientAsyncReader< ::BICgRPC::TemperatureUpdate>* PrepareAsyncbicTemperatureStreamRaw(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) override;
+    const ::grpc::internal::RpcMethod rpcmethod_ScanDevices_;
+    const ::grpc::internal::RpcMethod rpcmethod_ConnectDevice_;
+    const ::grpc::internal::RpcMethod rpcmethod_bicDispose_;
     const ::grpc::internal::RpcMethod rpcmethod_bicGetImplantInfo_;
     const ::grpc::internal::RpcMethod rpcmethod_bicGetImpedance_;
     const ::grpc::internal::RpcMethod rpcmethod_bicGetTemperature_;
@@ -513,7 +1935,7 @@ class BICManager final {
     const ::grpc::internal::RpcMethod rpcmethod_bicSetImplantPower_;
     const ::grpc::internal::RpcMethod rpcmethod_bicStartStimulation_;
     const ::grpc::internal::RpcMethod rpcmethod_bicStopStimulation_;
-    const ::grpc::internal::RpcMethod rpcmethod_bicDispose_;
+    const ::grpc::internal::RpcMethod rpcmethod_bicTemperatureStream_;
   };
   static std::unique_ptr<Stub> NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options = ::grpc::StubOptions());
 
@@ -521,36 +1943,82 @@ class BICManager final {
    public:
     Service();
     virtual ~Service();
-    // Sends a greeting
-    virtual ::grpc::Status bicInit(::grpc::ServerContext* context, const ::BICgRPC::bicInitRequest* request, ::BICgRPC::bicSuccessReply* response);
+    // Initialization/Destruction
+    virtual ::grpc::Status ScanDevices(::grpc::ServerContext* context, const ::BICgRPC::ScanDevicesRequest* request, ::BICgRPC::ScanDevicesReply* response);
+    virtual ::grpc::Status ConnectDevice(::grpc::ServerContext* context, const ::BICgRPC::ConnectDeviceRequest* request, ::BICgRPC::bicSuccessReply* response);
+    virtual ::grpc::Status bicDispose(::grpc::ServerContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicSuccessReply* response);
+    // Get Functions
     virtual ::grpc::Status bicGetImplantInfo(::grpc::ServerContext* context, const ::BICgRPC::bicGetImplantInfoRequest* request, ::BICgRPC::bicGetImplantInfoReply* response);
     virtual ::grpc::Status bicGetImpedance(::grpc::ServerContext* context, const ::BICgRPC::bicGetImpedanceRequest* request, ::BICgRPC::bicGetImpedanceReply* response);
-    virtual ::grpc::Status bicGetTemperature(::grpc::ServerContext* context, const ::BICgRPC::bicNullRequest* request, ::BICgRPC::bicGetTemperatureReply* response);
-    virtual ::grpc::Status bicGetHumidity(::grpc::ServerContext* context, const ::BICgRPC::bicNullRequest* request, ::BICgRPC::bicGetHumidityReply* response);
+    virtual ::grpc::Status bicGetTemperature(::grpc::ServerContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicGetTemperatureReply* response);
+    virtual ::grpc::Status bicGetHumidity(::grpc::ServerContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicGetHumidityReply* response);
+    // Set Functions
     virtual ::grpc::Status bicSetSensingEnable(::grpc::ServerContext* context, const ::BICgRPC::bicSetSensingEnableRequest* request, ::BICgRPC::bicSuccessReply* response);
     virtual ::grpc::Status bicSetImplantPower(::grpc::ServerContext* context, const ::BICgRPC::bicSetImplantPowerRequest* request, ::BICgRPC::bicSuccessReply* response);
+    // Stim Functions
     virtual ::grpc::Status bicStartStimulation(::grpc::ServerContext* context, const ::BICgRPC::bicStartStimulationRequest* request, ::BICgRPC::bicSuccessReply* response);
-    virtual ::grpc::Status bicStopStimulation(::grpc::ServerContext* context, const ::BICgRPC::bicNullRequest* request, ::BICgRPC::bicSuccessReply* response);
-    virtual ::grpc::Status bicDispose(::grpc::ServerContext* context, const ::BICgRPC::bicNullRequest* request, ::BICgRPC::bicSuccessReply* response);
+    virtual ::grpc::Status bicStopStimulation(::grpc::ServerContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicSuccessReply* response);
+    // Streaming endpoints
+    virtual ::grpc::Status bicTemperatureStream(::grpc::ServerContext* context, const ::google::protobuf::Empty* request, ::grpc::ServerWriter< ::BICgRPC::TemperatureUpdate>* writer);
   };
   template <class BaseClass>
-  class WithAsyncMethod_bicInit : public BaseClass {
+  class WithAsyncMethod_ScanDevices : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
-    WithAsyncMethod_bicInit() {
+    WithAsyncMethod_ScanDevices() {
       ::grpc::Service::MarkMethodAsync(0);
     }
-    ~WithAsyncMethod_bicInit() override {
+    ~WithAsyncMethod_ScanDevices() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status bicInit(::grpc::ServerContext* /*context*/, const ::BICgRPC::bicInitRequest* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
+    ::grpc::Status ScanDevices(::grpc::ServerContext* /*context*/, const ::BICgRPC::ScanDevicesRequest* /*request*/, ::BICgRPC::ScanDevicesReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
-    void RequestbicInit(::grpc::ServerContext* context, ::BICgRPC::bicInitRequest* request, ::grpc::ServerAsyncResponseWriter< ::BICgRPC::bicSuccessReply>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+    void RequestScanDevices(::grpc::ServerContext* context, ::BICgRPC::ScanDevicesRequest* request, ::grpc::ServerAsyncResponseWriter< ::BICgRPC::ScanDevicesReply>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
       ::grpc::Service::RequestAsyncUnary(0, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class WithAsyncMethod_ConnectDevice : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithAsyncMethod_ConnectDevice() {
+      ::grpc::Service::MarkMethodAsync(1);
+    }
+    ~WithAsyncMethod_ConnectDevice() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ConnectDevice(::grpc::ServerContext* /*context*/, const ::BICgRPC::ConnectDeviceRequest* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestConnectDevice(::grpc::ServerContext* context, ::BICgRPC::ConnectDeviceRequest* request, ::grpc::ServerAsyncResponseWriter< ::BICgRPC::bicSuccessReply>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(1, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class WithAsyncMethod_bicDispose : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithAsyncMethod_bicDispose() {
+      ::grpc::Service::MarkMethodAsync(2);
+    }
+    ~WithAsyncMethod_bicDispose() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status bicDispose(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestbicDispose(::grpc::ServerContext* context, ::google::protobuf::Empty* request, ::grpc::ServerAsyncResponseWriter< ::BICgRPC::bicSuccessReply>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(2, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -559,7 +2027,7 @@ class BICManager final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithAsyncMethod_bicGetImplantInfo() {
-      ::grpc::Service::MarkMethodAsync(1);
+      ::grpc::Service::MarkMethodAsync(3);
     }
     ~WithAsyncMethod_bicGetImplantInfo() override {
       BaseClassMustBeDerivedFromService(this);
@@ -570,7 +2038,7 @@ class BICManager final {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     void RequestbicGetImplantInfo(::grpc::ServerContext* context, ::BICgRPC::bicGetImplantInfoRequest* request, ::grpc::ServerAsyncResponseWriter< ::BICgRPC::bicGetImplantInfoReply>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncUnary(1, context, request, response, new_call_cq, notification_cq, tag);
+      ::grpc::Service::RequestAsyncUnary(3, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -579,7 +2047,7 @@ class BICManager final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithAsyncMethod_bicGetImpedance() {
-      ::grpc::Service::MarkMethodAsync(2);
+      ::grpc::Service::MarkMethodAsync(4);
     }
     ~WithAsyncMethod_bicGetImpedance() override {
       BaseClassMustBeDerivedFromService(this);
@@ -590,7 +2058,7 @@ class BICManager final {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     void RequestbicGetImpedance(::grpc::ServerContext* context, ::BICgRPC::bicGetImpedanceRequest* request, ::grpc::ServerAsyncResponseWriter< ::BICgRPC::bicGetImpedanceReply>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncUnary(2, context, request, response, new_call_cq, notification_cq, tag);
+      ::grpc::Service::RequestAsyncUnary(4, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -599,18 +2067,18 @@ class BICManager final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithAsyncMethod_bicGetTemperature() {
-      ::grpc::Service::MarkMethodAsync(3);
+      ::grpc::Service::MarkMethodAsync(5);
     }
     ~WithAsyncMethod_bicGetTemperature() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status bicGetTemperature(::grpc::ServerContext* /*context*/, const ::BICgRPC::bicNullRequest* /*request*/, ::BICgRPC::bicGetTemperatureReply* /*response*/) override {
+    ::grpc::Status bicGetTemperature(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicGetTemperatureReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
-    void RequestbicGetTemperature(::grpc::ServerContext* context, ::BICgRPC::bicNullRequest* request, ::grpc::ServerAsyncResponseWriter< ::BICgRPC::bicGetTemperatureReply>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncUnary(3, context, request, response, new_call_cq, notification_cq, tag);
+    void RequestbicGetTemperature(::grpc::ServerContext* context, ::google::protobuf::Empty* request, ::grpc::ServerAsyncResponseWriter< ::BICgRPC::bicGetTemperatureReply>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(5, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -619,18 +2087,18 @@ class BICManager final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithAsyncMethod_bicGetHumidity() {
-      ::grpc::Service::MarkMethodAsync(4);
+      ::grpc::Service::MarkMethodAsync(6);
     }
     ~WithAsyncMethod_bicGetHumidity() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status bicGetHumidity(::grpc::ServerContext* /*context*/, const ::BICgRPC::bicNullRequest* /*request*/, ::BICgRPC::bicGetHumidityReply* /*response*/) override {
+    ::grpc::Status bicGetHumidity(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicGetHumidityReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
-    void RequestbicGetHumidity(::grpc::ServerContext* context, ::BICgRPC::bicNullRequest* request, ::grpc::ServerAsyncResponseWriter< ::BICgRPC::bicGetHumidityReply>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncUnary(4, context, request, response, new_call_cq, notification_cq, tag);
+    void RequestbicGetHumidity(::grpc::ServerContext* context, ::google::protobuf::Empty* request, ::grpc::ServerAsyncResponseWriter< ::BICgRPC::bicGetHumidityReply>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(6, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -639,7 +2107,7 @@ class BICManager final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithAsyncMethod_bicSetSensingEnable() {
-      ::grpc::Service::MarkMethodAsync(5);
+      ::grpc::Service::MarkMethodAsync(7);
     }
     ~WithAsyncMethod_bicSetSensingEnable() override {
       BaseClassMustBeDerivedFromService(this);
@@ -650,7 +2118,7 @@ class BICManager final {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     void RequestbicSetSensingEnable(::grpc::ServerContext* context, ::BICgRPC::bicSetSensingEnableRequest* request, ::grpc::ServerAsyncResponseWriter< ::BICgRPC::bicSuccessReply>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncUnary(5, context, request, response, new_call_cq, notification_cq, tag);
+      ::grpc::Service::RequestAsyncUnary(7, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -659,7 +2127,7 @@ class BICManager final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithAsyncMethod_bicSetImplantPower() {
-      ::grpc::Service::MarkMethodAsync(6);
+      ::grpc::Service::MarkMethodAsync(8);
     }
     ~WithAsyncMethod_bicSetImplantPower() override {
       BaseClassMustBeDerivedFromService(this);
@@ -670,7 +2138,7 @@ class BICManager final {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     void RequestbicSetImplantPower(::grpc::ServerContext* context, ::BICgRPC::bicSetImplantPowerRequest* request, ::grpc::ServerAsyncResponseWriter< ::BICgRPC::bicSuccessReply>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncUnary(6, context, request, response, new_call_cq, notification_cq, tag);
+      ::grpc::Service::RequestAsyncUnary(8, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -679,7 +2147,7 @@ class BICManager final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithAsyncMethod_bicStartStimulation() {
-      ::grpc::Service::MarkMethodAsync(7);
+      ::grpc::Service::MarkMethodAsync(9);
     }
     ~WithAsyncMethod_bicStartStimulation() override {
       BaseClassMustBeDerivedFromService(this);
@@ -690,7 +2158,7 @@ class BICManager final {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     void RequestbicStartStimulation(::grpc::ServerContext* context, ::BICgRPC::bicStartStimulationRequest* request, ::grpc::ServerAsyncResponseWriter< ::BICgRPC::bicSuccessReply>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncUnary(7, context, request, response, new_call_cq, notification_cq, tag);
+      ::grpc::Service::RequestAsyncUnary(9, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -699,85 +2167,179 @@ class BICManager final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithAsyncMethod_bicStopStimulation() {
-      ::grpc::Service::MarkMethodAsync(8);
+      ::grpc::Service::MarkMethodAsync(10);
     }
     ~WithAsyncMethod_bicStopStimulation() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status bicStopStimulation(::grpc::ServerContext* /*context*/, const ::BICgRPC::bicNullRequest* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
+    ::grpc::Status bicStopStimulation(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
-    void RequestbicStopStimulation(::grpc::ServerContext* context, ::BICgRPC::bicNullRequest* request, ::grpc::ServerAsyncResponseWriter< ::BICgRPC::bicSuccessReply>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncUnary(8, context, request, response, new_call_cq, notification_cq, tag);
+    void RequestbicStopStimulation(::grpc::ServerContext* context, ::google::protobuf::Empty* request, ::grpc::ServerAsyncResponseWriter< ::BICgRPC::bicSuccessReply>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(10, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
-  class WithAsyncMethod_bicDispose : public BaseClass {
+  class WithAsyncMethod_bicTemperatureStream : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
-    WithAsyncMethod_bicDispose() {
-      ::grpc::Service::MarkMethodAsync(9);
+    WithAsyncMethod_bicTemperatureStream() {
+      ::grpc::Service::MarkMethodAsync(11);
     }
-    ~WithAsyncMethod_bicDispose() override {
+    ~WithAsyncMethod_bicTemperatureStream() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status bicDispose(::grpc::ServerContext* /*context*/, const ::BICgRPC::bicNullRequest* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
+    ::grpc::Status bicTemperatureStream(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::grpc::ServerWriter< ::BICgRPC::TemperatureUpdate>* /*writer*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
-    void RequestbicDispose(::grpc::ServerContext* context, ::BICgRPC::bicNullRequest* request, ::grpc::ServerAsyncResponseWriter< ::BICgRPC::bicSuccessReply>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncUnary(9, context, request, response, new_call_cq, notification_cq, tag);
+    void RequestbicTemperatureStream(::grpc::ServerContext* context, ::google::protobuf::Empty* request, ::grpc::ServerAsyncWriter< ::BICgRPC::TemperatureUpdate>* writer, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncServerStreaming(11, context, request, writer, new_call_cq, notification_cq, tag);
     }
   };
-  typedef WithAsyncMethod_bicInit<WithAsyncMethod_bicGetImplantInfo<WithAsyncMethod_bicGetImpedance<WithAsyncMethod_bicGetTemperature<WithAsyncMethod_bicGetHumidity<WithAsyncMethod_bicSetSensingEnable<WithAsyncMethod_bicSetImplantPower<WithAsyncMethod_bicStartStimulation<WithAsyncMethod_bicStopStimulation<WithAsyncMethod_bicDispose<Service > > > > > > > > > > AsyncService;
+  typedef WithAsyncMethod_ScanDevices<WithAsyncMethod_ConnectDevice<WithAsyncMethod_bicDispose<WithAsyncMethod_bicGetImplantInfo<WithAsyncMethod_bicGetImpedance<WithAsyncMethod_bicGetTemperature<WithAsyncMethod_bicGetHumidity<WithAsyncMethod_bicSetSensingEnable<WithAsyncMethod_bicSetImplantPower<WithAsyncMethod_bicStartStimulation<WithAsyncMethod_bicStopStimulation<WithAsyncMethod_bicTemperatureStream<Service > > > > > > > > > > > > AsyncService;
   template <class BaseClass>
-  class ExperimentalWithCallbackMethod_bicInit : public BaseClass {
+  class ExperimentalWithCallbackMethod_ScanDevices : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
-    ExperimentalWithCallbackMethod_bicInit() {
+    ExperimentalWithCallbackMethod_ScanDevices() {
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
       ::grpc::Service::
     #else
       ::grpc::Service::experimental().
     #endif
         MarkMethodCallback(0,
-          new ::grpc_impl::internal::CallbackUnaryHandler< ::BICgRPC::bicInitRequest, ::BICgRPC::bicSuccessReply>(
+          new ::grpc_impl::internal::CallbackUnaryHandler< ::BICgRPC::ScanDevicesRequest, ::BICgRPC::ScanDevicesReply>(
             [this](
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
                    ::grpc::CallbackServerContext*
     #else
                    ::grpc::experimental::CallbackServerContext*
     #endif
-                     context, const ::BICgRPC::bicInitRequest* request, ::BICgRPC::bicSuccessReply* response) { return this->bicInit(context, request, response); }));}
-    void SetMessageAllocatorFor_bicInit(
-        ::grpc::experimental::MessageAllocator< ::BICgRPC::bicInitRequest, ::BICgRPC::bicSuccessReply>* allocator) {
+                     context, const ::BICgRPC::ScanDevicesRequest* request, ::BICgRPC::ScanDevicesReply* response) { return this->ScanDevices(context, request, response); }));}
+    void SetMessageAllocatorFor_ScanDevices(
+        ::grpc::experimental::MessageAllocator< ::BICgRPC::ScanDevicesRequest, ::BICgRPC::ScanDevicesReply>* allocator) {
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
       ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(0);
     #else
       ::grpc::internal::MethodHandler* const handler = ::grpc::Service::experimental().GetHandler(0);
     #endif
-      static_cast<::grpc_impl::internal::CallbackUnaryHandler< ::BICgRPC::bicInitRequest, ::BICgRPC::bicSuccessReply>*>(handler)
+      static_cast<::grpc_impl::internal::CallbackUnaryHandler< ::BICgRPC::ScanDevicesRequest, ::BICgRPC::ScanDevicesReply>*>(handler)
               ->SetMessageAllocator(allocator);
     }
-    ~ExperimentalWithCallbackMethod_bicInit() override {
+    ~ExperimentalWithCallbackMethod_ScanDevices() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status bicInit(::grpc::ServerContext* /*context*/, const ::BICgRPC::bicInitRequest* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
+    ::grpc::Status ScanDevices(::grpc::ServerContext* /*context*/, const ::BICgRPC::ScanDevicesRequest* /*request*/, ::BICgRPC::ScanDevicesReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-    virtual ::grpc::ServerUnaryReactor* bicInit(
-      ::grpc::CallbackServerContext* /*context*/, const ::BICgRPC::bicInitRequest* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/)
+    virtual ::grpc::ServerUnaryReactor* ScanDevices(
+      ::grpc::CallbackServerContext* /*context*/, const ::BICgRPC::ScanDevicesRequest* /*request*/, ::BICgRPC::ScanDevicesReply* /*response*/)
     #else
-    virtual ::grpc::experimental::ServerUnaryReactor* bicInit(
-      ::grpc::experimental::CallbackServerContext* /*context*/, const ::BICgRPC::bicInitRequest* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/)
+    virtual ::grpc::experimental::ServerUnaryReactor* ScanDevices(
+      ::grpc::experimental::CallbackServerContext* /*context*/, const ::BICgRPC::ScanDevicesRequest* /*request*/, ::BICgRPC::ScanDevicesReply* /*response*/)
+    #endif
+      { return nullptr; }
+  };
+  template <class BaseClass>
+  class ExperimentalWithCallbackMethod_ConnectDevice : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    ExperimentalWithCallbackMethod_ConnectDevice() {
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      ::grpc::Service::
+    #else
+      ::grpc::Service::experimental().
+    #endif
+        MarkMethodCallback(1,
+          new ::grpc_impl::internal::CallbackUnaryHandler< ::BICgRPC::ConnectDeviceRequest, ::BICgRPC::bicSuccessReply>(
+            [this](
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+                   ::grpc::CallbackServerContext*
+    #else
+                   ::grpc::experimental::CallbackServerContext*
+    #endif
+                     context, const ::BICgRPC::ConnectDeviceRequest* request, ::BICgRPC::bicSuccessReply* response) { return this->ConnectDevice(context, request, response); }));}
+    void SetMessageAllocatorFor_ConnectDevice(
+        ::grpc::experimental::MessageAllocator< ::BICgRPC::ConnectDeviceRequest, ::BICgRPC::bicSuccessReply>* allocator) {
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(1);
+    #else
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::experimental().GetHandler(1);
+    #endif
+      static_cast<::grpc_impl::internal::CallbackUnaryHandler< ::BICgRPC::ConnectDeviceRequest, ::BICgRPC::bicSuccessReply>*>(handler)
+              ->SetMessageAllocator(allocator);
+    }
+    ~ExperimentalWithCallbackMethod_ConnectDevice() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ConnectDevice(::grpc::ServerContext* /*context*/, const ::BICgRPC::ConnectDeviceRequest* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+    virtual ::grpc::ServerUnaryReactor* ConnectDevice(
+      ::grpc::CallbackServerContext* /*context*/, const ::BICgRPC::ConnectDeviceRequest* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/)
+    #else
+    virtual ::grpc::experimental::ServerUnaryReactor* ConnectDevice(
+      ::grpc::experimental::CallbackServerContext* /*context*/, const ::BICgRPC::ConnectDeviceRequest* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/)
+    #endif
+      { return nullptr; }
+  };
+  template <class BaseClass>
+  class ExperimentalWithCallbackMethod_bicDispose : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    ExperimentalWithCallbackMethod_bicDispose() {
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      ::grpc::Service::
+    #else
+      ::grpc::Service::experimental().
+    #endif
+        MarkMethodCallback(2,
+          new ::grpc_impl::internal::CallbackUnaryHandler< ::google::protobuf::Empty, ::BICgRPC::bicSuccessReply>(
+            [this](
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+                   ::grpc::CallbackServerContext*
+    #else
+                   ::grpc::experimental::CallbackServerContext*
+    #endif
+                     context, const ::google::protobuf::Empty* request, ::BICgRPC::bicSuccessReply* response) { return this->bicDispose(context, request, response); }));}
+    void SetMessageAllocatorFor_bicDispose(
+        ::grpc::experimental::MessageAllocator< ::google::protobuf::Empty, ::BICgRPC::bicSuccessReply>* allocator) {
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(2);
+    #else
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::experimental().GetHandler(2);
+    #endif
+      static_cast<::grpc_impl::internal::CallbackUnaryHandler< ::google::protobuf::Empty, ::BICgRPC::bicSuccessReply>*>(handler)
+              ->SetMessageAllocator(allocator);
+    }
+    ~ExperimentalWithCallbackMethod_bicDispose() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status bicDispose(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+    virtual ::grpc::ServerUnaryReactor* bicDispose(
+      ::grpc::CallbackServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/)
+    #else
+    virtual ::grpc::experimental::ServerUnaryReactor* bicDispose(
+      ::grpc::experimental::CallbackServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/)
     #endif
       { return nullptr; }
   };
@@ -792,7 +2354,7 @@ class BICManager final {
     #else
       ::grpc::Service::experimental().
     #endif
-        MarkMethodCallback(1,
+        MarkMethodCallback(3,
           new ::grpc_impl::internal::CallbackUnaryHandler< ::BICgRPC::bicGetImplantInfoRequest, ::BICgRPC::bicGetImplantInfoReply>(
             [this](
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
@@ -804,9 +2366,9 @@ class BICManager final {
     void SetMessageAllocatorFor_bicGetImplantInfo(
         ::grpc::experimental::MessageAllocator< ::BICgRPC::bicGetImplantInfoRequest, ::BICgRPC::bicGetImplantInfoReply>* allocator) {
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(1);
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(3);
     #else
-      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::experimental().GetHandler(1);
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::experimental().GetHandler(3);
     #endif
       static_cast<::grpc_impl::internal::CallbackUnaryHandler< ::BICgRPC::bicGetImplantInfoRequest, ::BICgRPC::bicGetImplantInfoReply>*>(handler)
               ->SetMessageAllocator(allocator);
@@ -839,7 +2401,7 @@ class BICManager final {
     #else
       ::grpc::Service::experimental().
     #endif
-        MarkMethodCallback(2,
+        MarkMethodCallback(4,
           new ::grpc_impl::internal::CallbackUnaryHandler< ::BICgRPC::bicGetImpedanceRequest, ::BICgRPC::bicGetImpedanceReply>(
             [this](
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
@@ -851,9 +2413,9 @@ class BICManager final {
     void SetMessageAllocatorFor_bicGetImpedance(
         ::grpc::experimental::MessageAllocator< ::BICgRPC::bicGetImpedanceRequest, ::BICgRPC::bicGetImpedanceReply>* allocator) {
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(2);
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(4);
     #else
-      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::experimental().GetHandler(2);
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::experimental().GetHandler(4);
     #endif
       static_cast<::grpc_impl::internal::CallbackUnaryHandler< ::BICgRPC::bicGetImpedanceRequest, ::BICgRPC::bicGetImpedanceReply>*>(handler)
               ->SetMessageAllocator(allocator);
@@ -886,39 +2448,39 @@ class BICManager final {
     #else
       ::grpc::Service::experimental().
     #endif
-        MarkMethodCallback(3,
-          new ::grpc_impl::internal::CallbackUnaryHandler< ::BICgRPC::bicNullRequest, ::BICgRPC::bicGetTemperatureReply>(
+        MarkMethodCallback(5,
+          new ::grpc_impl::internal::CallbackUnaryHandler< ::google::protobuf::Empty, ::BICgRPC::bicGetTemperatureReply>(
             [this](
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
                    ::grpc::CallbackServerContext*
     #else
                    ::grpc::experimental::CallbackServerContext*
     #endif
-                     context, const ::BICgRPC::bicNullRequest* request, ::BICgRPC::bicGetTemperatureReply* response) { return this->bicGetTemperature(context, request, response); }));}
+                     context, const ::google::protobuf::Empty* request, ::BICgRPC::bicGetTemperatureReply* response) { return this->bicGetTemperature(context, request, response); }));}
     void SetMessageAllocatorFor_bicGetTemperature(
-        ::grpc::experimental::MessageAllocator< ::BICgRPC::bicNullRequest, ::BICgRPC::bicGetTemperatureReply>* allocator) {
+        ::grpc::experimental::MessageAllocator< ::google::protobuf::Empty, ::BICgRPC::bicGetTemperatureReply>* allocator) {
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(3);
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(5);
     #else
-      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::experimental().GetHandler(3);
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::experimental().GetHandler(5);
     #endif
-      static_cast<::grpc_impl::internal::CallbackUnaryHandler< ::BICgRPC::bicNullRequest, ::BICgRPC::bicGetTemperatureReply>*>(handler)
+      static_cast<::grpc_impl::internal::CallbackUnaryHandler< ::google::protobuf::Empty, ::BICgRPC::bicGetTemperatureReply>*>(handler)
               ->SetMessageAllocator(allocator);
     }
     ~ExperimentalWithCallbackMethod_bicGetTemperature() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status bicGetTemperature(::grpc::ServerContext* /*context*/, const ::BICgRPC::bicNullRequest* /*request*/, ::BICgRPC::bicGetTemperatureReply* /*response*/) override {
+    ::grpc::Status bicGetTemperature(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicGetTemperatureReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
     virtual ::grpc::ServerUnaryReactor* bicGetTemperature(
-      ::grpc::CallbackServerContext* /*context*/, const ::BICgRPC::bicNullRequest* /*request*/, ::BICgRPC::bicGetTemperatureReply* /*response*/)
+      ::grpc::CallbackServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicGetTemperatureReply* /*response*/)
     #else
     virtual ::grpc::experimental::ServerUnaryReactor* bicGetTemperature(
-      ::grpc::experimental::CallbackServerContext* /*context*/, const ::BICgRPC::bicNullRequest* /*request*/, ::BICgRPC::bicGetTemperatureReply* /*response*/)
+      ::grpc::experimental::CallbackServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicGetTemperatureReply* /*response*/)
     #endif
       { return nullptr; }
   };
@@ -933,39 +2495,39 @@ class BICManager final {
     #else
       ::grpc::Service::experimental().
     #endif
-        MarkMethodCallback(4,
-          new ::grpc_impl::internal::CallbackUnaryHandler< ::BICgRPC::bicNullRequest, ::BICgRPC::bicGetHumidityReply>(
+        MarkMethodCallback(6,
+          new ::grpc_impl::internal::CallbackUnaryHandler< ::google::protobuf::Empty, ::BICgRPC::bicGetHumidityReply>(
             [this](
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
                    ::grpc::CallbackServerContext*
     #else
                    ::grpc::experimental::CallbackServerContext*
     #endif
-                     context, const ::BICgRPC::bicNullRequest* request, ::BICgRPC::bicGetHumidityReply* response) { return this->bicGetHumidity(context, request, response); }));}
+                     context, const ::google::protobuf::Empty* request, ::BICgRPC::bicGetHumidityReply* response) { return this->bicGetHumidity(context, request, response); }));}
     void SetMessageAllocatorFor_bicGetHumidity(
-        ::grpc::experimental::MessageAllocator< ::BICgRPC::bicNullRequest, ::BICgRPC::bicGetHumidityReply>* allocator) {
+        ::grpc::experimental::MessageAllocator< ::google::protobuf::Empty, ::BICgRPC::bicGetHumidityReply>* allocator) {
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(4);
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(6);
     #else
-      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::experimental().GetHandler(4);
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::experimental().GetHandler(6);
     #endif
-      static_cast<::grpc_impl::internal::CallbackUnaryHandler< ::BICgRPC::bicNullRequest, ::BICgRPC::bicGetHumidityReply>*>(handler)
+      static_cast<::grpc_impl::internal::CallbackUnaryHandler< ::google::protobuf::Empty, ::BICgRPC::bicGetHumidityReply>*>(handler)
               ->SetMessageAllocator(allocator);
     }
     ~ExperimentalWithCallbackMethod_bicGetHumidity() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status bicGetHumidity(::grpc::ServerContext* /*context*/, const ::BICgRPC::bicNullRequest* /*request*/, ::BICgRPC::bicGetHumidityReply* /*response*/) override {
+    ::grpc::Status bicGetHumidity(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicGetHumidityReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
     virtual ::grpc::ServerUnaryReactor* bicGetHumidity(
-      ::grpc::CallbackServerContext* /*context*/, const ::BICgRPC::bicNullRequest* /*request*/, ::BICgRPC::bicGetHumidityReply* /*response*/)
+      ::grpc::CallbackServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicGetHumidityReply* /*response*/)
     #else
     virtual ::grpc::experimental::ServerUnaryReactor* bicGetHumidity(
-      ::grpc::experimental::CallbackServerContext* /*context*/, const ::BICgRPC::bicNullRequest* /*request*/, ::BICgRPC::bicGetHumidityReply* /*response*/)
+      ::grpc::experimental::CallbackServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicGetHumidityReply* /*response*/)
     #endif
       { return nullptr; }
   };
@@ -980,7 +2542,7 @@ class BICManager final {
     #else
       ::grpc::Service::experimental().
     #endif
-        MarkMethodCallback(5,
+        MarkMethodCallback(7,
           new ::grpc_impl::internal::CallbackUnaryHandler< ::BICgRPC::bicSetSensingEnableRequest, ::BICgRPC::bicSuccessReply>(
             [this](
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
@@ -992,9 +2554,9 @@ class BICManager final {
     void SetMessageAllocatorFor_bicSetSensingEnable(
         ::grpc::experimental::MessageAllocator< ::BICgRPC::bicSetSensingEnableRequest, ::BICgRPC::bicSuccessReply>* allocator) {
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(5);
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(7);
     #else
-      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::experimental().GetHandler(5);
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::experimental().GetHandler(7);
     #endif
       static_cast<::grpc_impl::internal::CallbackUnaryHandler< ::BICgRPC::bicSetSensingEnableRequest, ::BICgRPC::bicSuccessReply>*>(handler)
               ->SetMessageAllocator(allocator);
@@ -1027,7 +2589,7 @@ class BICManager final {
     #else
       ::grpc::Service::experimental().
     #endif
-        MarkMethodCallback(6,
+        MarkMethodCallback(8,
           new ::grpc_impl::internal::CallbackUnaryHandler< ::BICgRPC::bicSetImplantPowerRequest, ::BICgRPC::bicSuccessReply>(
             [this](
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
@@ -1039,9 +2601,9 @@ class BICManager final {
     void SetMessageAllocatorFor_bicSetImplantPower(
         ::grpc::experimental::MessageAllocator< ::BICgRPC::bicSetImplantPowerRequest, ::BICgRPC::bicSuccessReply>* allocator) {
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(6);
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(8);
     #else
-      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::experimental().GetHandler(6);
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::experimental().GetHandler(8);
     #endif
       static_cast<::grpc_impl::internal::CallbackUnaryHandler< ::BICgRPC::bicSetImplantPowerRequest, ::BICgRPC::bicSuccessReply>*>(handler)
               ->SetMessageAllocator(allocator);
@@ -1074,7 +2636,7 @@ class BICManager final {
     #else
       ::grpc::Service::experimental().
     #endif
-        MarkMethodCallback(7,
+        MarkMethodCallback(9,
           new ::grpc_impl::internal::CallbackUnaryHandler< ::BICgRPC::bicStartStimulationRequest, ::BICgRPC::bicSuccessReply>(
             [this](
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
@@ -1086,9 +2648,9 @@ class BICManager final {
     void SetMessageAllocatorFor_bicStartStimulation(
         ::grpc::experimental::MessageAllocator< ::BICgRPC::bicStartStimulationRequest, ::BICgRPC::bicSuccessReply>* allocator) {
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(7);
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(9);
     #else
-      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::experimental().GetHandler(7);
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::experimental().GetHandler(9);
     #endif
       static_cast<::grpc_impl::internal::CallbackUnaryHandler< ::BICgRPC::bicStartStimulationRequest, ::BICgRPC::bicSuccessReply>*>(handler)
               ->SetMessageAllocator(allocator);
@@ -1121,107 +2683,132 @@ class BICManager final {
     #else
       ::grpc::Service::experimental().
     #endif
-        MarkMethodCallback(8,
-          new ::grpc_impl::internal::CallbackUnaryHandler< ::BICgRPC::bicNullRequest, ::BICgRPC::bicSuccessReply>(
+        MarkMethodCallback(10,
+          new ::grpc_impl::internal::CallbackUnaryHandler< ::google::protobuf::Empty, ::BICgRPC::bicSuccessReply>(
             [this](
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
                    ::grpc::CallbackServerContext*
     #else
                    ::grpc::experimental::CallbackServerContext*
     #endif
-                     context, const ::BICgRPC::bicNullRequest* request, ::BICgRPC::bicSuccessReply* response) { return this->bicStopStimulation(context, request, response); }));}
+                     context, const ::google::protobuf::Empty* request, ::BICgRPC::bicSuccessReply* response) { return this->bicStopStimulation(context, request, response); }));}
     void SetMessageAllocatorFor_bicStopStimulation(
-        ::grpc::experimental::MessageAllocator< ::BICgRPC::bicNullRequest, ::BICgRPC::bicSuccessReply>* allocator) {
+        ::grpc::experimental::MessageAllocator< ::google::protobuf::Empty, ::BICgRPC::bicSuccessReply>* allocator) {
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(8);
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(10);
     #else
-      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::experimental().GetHandler(8);
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::experimental().GetHandler(10);
     #endif
-      static_cast<::grpc_impl::internal::CallbackUnaryHandler< ::BICgRPC::bicNullRequest, ::BICgRPC::bicSuccessReply>*>(handler)
+      static_cast<::grpc_impl::internal::CallbackUnaryHandler< ::google::protobuf::Empty, ::BICgRPC::bicSuccessReply>*>(handler)
               ->SetMessageAllocator(allocator);
     }
     ~ExperimentalWithCallbackMethod_bicStopStimulation() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status bicStopStimulation(::grpc::ServerContext* /*context*/, const ::BICgRPC::bicNullRequest* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
+    ::grpc::Status bicStopStimulation(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
     virtual ::grpc::ServerUnaryReactor* bicStopStimulation(
-      ::grpc::CallbackServerContext* /*context*/, const ::BICgRPC::bicNullRequest* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/)
+      ::grpc::CallbackServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/)
     #else
     virtual ::grpc::experimental::ServerUnaryReactor* bicStopStimulation(
-      ::grpc::experimental::CallbackServerContext* /*context*/, const ::BICgRPC::bicNullRequest* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/)
+      ::grpc::experimental::CallbackServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/)
     #endif
       { return nullptr; }
   };
   template <class BaseClass>
-  class ExperimentalWithCallbackMethod_bicDispose : public BaseClass {
+  class ExperimentalWithCallbackMethod_bicTemperatureStream : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
-    ExperimentalWithCallbackMethod_bicDispose() {
+    ExperimentalWithCallbackMethod_bicTemperatureStream() {
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
       ::grpc::Service::
     #else
       ::grpc::Service::experimental().
     #endif
-        MarkMethodCallback(9,
-          new ::grpc_impl::internal::CallbackUnaryHandler< ::BICgRPC::bicNullRequest, ::BICgRPC::bicSuccessReply>(
+        MarkMethodCallback(11,
+          new ::grpc_impl::internal::CallbackServerStreamingHandler< ::google::protobuf::Empty, ::BICgRPC::TemperatureUpdate>(
             [this](
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
                    ::grpc::CallbackServerContext*
     #else
                    ::grpc::experimental::CallbackServerContext*
     #endif
-                     context, const ::BICgRPC::bicNullRequest* request, ::BICgRPC::bicSuccessReply* response) { return this->bicDispose(context, request, response); }));}
-    void SetMessageAllocatorFor_bicDispose(
-        ::grpc::experimental::MessageAllocator< ::BICgRPC::bicNullRequest, ::BICgRPC::bicSuccessReply>* allocator) {
-    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(9);
-    #else
-      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::experimental().GetHandler(9);
-    #endif
-      static_cast<::grpc_impl::internal::CallbackUnaryHandler< ::BICgRPC::bicNullRequest, ::BICgRPC::bicSuccessReply>*>(handler)
-              ->SetMessageAllocator(allocator);
+                     context, const ::google::protobuf::Empty* request) { return this->bicTemperatureStream(context, request); }));
     }
-    ~ExperimentalWithCallbackMethod_bicDispose() override {
+    ~ExperimentalWithCallbackMethod_bicTemperatureStream() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status bicDispose(::grpc::ServerContext* /*context*/, const ::BICgRPC::bicNullRequest* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
+    ::grpc::Status bicTemperatureStream(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::grpc::ServerWriter< ::BICgRPC::TemperatureUpdate>* /*writer*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-    virtual ::grpc::ServerUnaryReactor* bicDispose(
-      ::grpc::CallbackServerContext* /*context*/, const ::BICgRPC::bicNullRequest* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/)
+    virtual ::grpc::ServerWriteReactor< ::BICgRPC::TemperatureUpdate>* bicTemperatureStream(
+      ::grpc::CallbackServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/)
     #else
-    virtual ::grpc::experimental::ServerUnaryReactor* bicDispose(
-      ::grpc::experimental::CallbackServerContext* /*context*/, const ::BICgRPC::bicNullRequest* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/)
+    virtual ::grpc::experimental::ServerWriteReactor< ::BICgRPC::TemperatureUpdate>* bicTemperatureStream(
+      ::grpc::experimental::CallbackServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/)
     #endif
       { return nullptr; }
   };
   #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-  typedef ExperimentalWithCallbackMethod_bicInit<ExperimentalWithCallbackMethod_bicGetImplantInfo<ExperimentalWithCallbackMethod_bicGetImpedance<ExperimentalWithCallbackMethod_bicGetTemperature<ExperimentalWithCallbackMethod_bicGetHumidity<ExperimentalWithCallbackMethod_bicSetSensingEnable<ExperimentalWithCallbackMethod_bicSetImplantPower<ExperimentalWithCallbackMethod_bicStartStimulation<ExperimentalWithCallbackMethod_bicStopStimulation<ExperimentalWithCallbackMethod_bicDispose<Service > > > > > > > > > > CallbackService;
+  typedef ExperimentalWithCallbackMethod_ScanDevices<ExperimentalWithCallbackMethod_ConnectDevice<ExperimentalWithCallbackMethod_bicDispose<ExperimentalWithCallbackMethod_bicGetImplantInfo<ExperimentalWithCallbackMethod_bicGetImpedance<ExperimentalWithCallbackMethod_bicGetTemperature<ExperimentalWithCallbackMethod_bicGetHumidity<ExperimentalWithCallbackMethod_bicSetSensingEnable<ExperimentalWithCallbackMethod_bicSetImplantPower<ExperimentalWithCallbackMethod_bicStartStimulation<ExperimentalWithCallbackMethod_bicStopStimulation<ExperimentalWithCallbackMethod_bicTemperatureStream<Service > > > > > > > > > > > > CallbackService;
   #endif
 
-  typedef ExperimentalWithCallbackMethod_bicInit<ExperimentalWithCallbackMethod_bicGetImplantInfo<ExperimentalWithCallbackMethod_bicGetImpedance<ExperimentalWithCallbackMethod_bicGetTemperature<ExperimentalWithCallbackMethod_bicGetHumidity<ExperimentalWithCallbackMethod_bicSetSensingEnable<ExperimentalWithCallbackMethod_bicSetImplantPower<ExperimentalWithCallbackMethod_bicStartStimulation<ExperimentalWithCallbackMethod_bicStopStimulation<ExperimentalWithCallbackMethod_bicDispose<Service > > > > > > > > > > ExperimentalCallbackService;
+  typedef ExperimentalWithCallbackMethod_ScanDevices<ExperimentalWithCallbackMethod_ConnectDevice<ExperimentalWithCallbackMethod_bicDispose<ExperimentalWithCallbackMethod_bicGetImplantInfo<ExperimentalWithCallbackMethod_bicGetImpedance<ExperimentalWithCallbackMethod_bicGetTemperature<ExperimentalWithCallbackMethod_bicGetHumidity<ExperimentalWithCallbackMethod_bicSetSensingEnable<ExperimentalWithCallbackMethod_bicSetImplantPower<ExperimentalWithCallbackMethod_bicStartStimulation<ExperimentalWithCallbackMethod_bicStopStimulation<ExperimentalWithCallbackMethod_bicTemperatureStream<Service > > > > > > > > > > > > ExperimentalCallbackService;
   template <class BaseClass>
-  class WithGenericMethod_bicInit : public BaseClass {
+  class WithGenericMethod_ScanDevices : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
-    WithGenericMethod_bicInit() {
+    WithGenericMethod_ScanDevices() {
       ::grpc::Service::MarkMethodGeneric(0);
     }
-    ~WithGenericMethod_bicInit() override {
+    ~WithGenericMethod_ScanDevices() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status bicInit(::grpc::ServerContext* /*context*/, const ::BICgRPC::bicInitRequest* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
+    ::grpc::Status ScanDevices(::grpc::ServerContext* /*context*/, const ::BICgRPC::ScanDevicesRequest* /*request*/, ::BICgRPC::ScanDevicesReply* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+  };
+  template <class BaseClass>
+  class WithGenericMethod_ConnectDevice : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithGenericMethod_ConnectDevice() {
+      ::grpc::Service::MarkMethodGeneric(1);
+    }
+    ~WithGenericMethod_ConnectDevice() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ConnectDevice(::grpc::ServerContext* /*context*/, const ::BICgRPC::ConnectDeviceRequest* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+  };
+  template <class BaseClass>
+  class WithGenericMethod_bicDispose : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithGenericMethod_bicDispose() {
+      ::grpc::Service::MarkMethodGeneric(2);
+    }
+    ~WithGenericMethod_bicDispose() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status bicDispose(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -1232,7 +2819,7 @@ class BICManager final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithGenericMethod_bicGetImplantInfo() {
-      ::grpc::Service::MarkMethodGeneric(1);
+      ::grpc::Service::MarkMethodGeneric(3);
     }
     ~WithGenericMethod_bicGetImplantInfo() override {
       BaseClassMustBeDerivedFromService(this);
@@ -1249,7 +2836,7 @@ class BICManager final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithGenericMethod_bicGetImpedance() {
-      ::grpc::Service::MarkMethodGeneric(2);
+      ::grpc::Service::MarkMethodGeneric(4);
     }
     ~WithGenericMethod_bicGetImpedance() override {
       BaseClassMustBeDerivedFromService(this);
@@ -1266,13 +2853,13 @@ class BICManager final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithGenericMethod_bicGetTemperature() {
-      ::grpc::Service::MarkMethodGeneric(3);
+      ::grpc::Service::MarkMethodGeneric(5);
     }
     ~WithGenericMethod_bicGetTemperature() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status bicGetTemperature(::grpc::ServerContext* /*context*/, const ::BICgRPC::bicNullRequest* /*request*/, ::BICgRPC::bicGetTemperatureReply* /*response*/) override {
+    ::grpc::Status bicGetTemperature(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicGetTemperatureReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -1283,13 +2870,13 @@ class BICManager final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithGenericMethod_bicGetHumidity() {
-      ::grpc::Service::MarkMethodGeneric(4);
+      ::grpc::Service::MarkMethodGeneric(6);
     }
     ~WithGenericMethod_bicGetHumidity() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status bicGetHumidity(::grpc::ServerContext* /*context*/, const ::BICgRPC::bicNullRequest* /*request*/, ::BICgRPC::bicGetHumidityReply* /*response*/) override {
+    ::grpc::Status bicGetHumidity(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicGetHumidityReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -1300,7 +2887,7 @@ class BICManager final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithGenericMethod_bicSetSensingEnable() {
-      ::grpc::Service::MarkMethodGeneric(5);
+      ::grpc::Service::MarkMethodGeneric(7);
     }
     ~WithGenericMethod_bicSetSensingEnable() override {
       BaseClassMustBeDerivedFromService(this);
@@ -1317,7 +2904,7 @@ class BICManager final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithGenericMethod_bicSetImplantPower() {
-      ::grpc::Service::MarkMethodGeneric(6);
+      ::grpc::Service::MarkMethodGeneric(8);
     }
     ~WithGenericMethod_bicSetImplantPower() override {
       BaseClassMustBeDerivedFromService(this);
@@ -1334,7 +2921,7 @@ class BICManager final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithGenericMethod_bicStartStimulation() {
-      ::grpc::Service::MarkMethodGeneric(7);
+      ::grpc::Service::MarkMethodGeneric(9);
     }
     ~WithGenericMethod_bicStartStimulation() override {
       BaseClassMustBeDerivedFromService(this);
@@ -1351,52 +2938,92 @@ class BICManager final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithGenericMethod_bicStopStimulation() {
-      ::grpc::Service::MarkMethodGeneric(8);
+      ::grpc::Service::MarkMethodGeneric(10);
     }
     ~WithGenericMethod_bicStopStimulation() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status bicStopStimulation(::grpc::ServerContext* /*context*/, const ::BICgRPC::bicNullRequest* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
+    ::grpc::Status bicStopStimulation(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
   };
   template <class BaseClass>
-  class WithGenericMethod_bicDispose : public BaseClass {
+  class WithGenericMethod_bicTemperatureStream : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
-    WithGenericMethod_bicDispose() {
-      ::grpc::Service::MarkMethodGeneric(9);
+    WithGenericMethod_bicTemperatureStream() {
+      ::grpc::Service::MarkMethodGeneric(11);
     }
-    ~WithGenericMethod_bicDispose() override {
+    ~WithGenericMethod_bicTemperatureStream() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status bicDispose(::grpc::ServerContext* /*context*/, const ::BICgRPC::bicNullRequest* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
+    ::grpc::Status bicTemperatureStream(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::grpc::ServerWriter< ::BICgRPC::TemperatureUpdate>* /*writer*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
   };
   template <class BaseClass>
-  class WithRawMethod_bicInit : public BaseClass {
+  class WithRawMethod_ScanDevices : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
-    WithRawMethod_bicInit() {
+    WithRawMethod_ScanDevices() {
       ::grpc::Service::MarkMethodRaw(0);
     }
-    ~WithRawMethod_bicInit() override {
+    ~WithRawMethod_ScanDevices() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status bicInit(::grpc::ServerContext* /*context*/, const ::BICgRPC::bicInitRequest* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
+    ::grpc::Status ScanDevices(::grpc::ServerContext* /*context*/, const ::BICgRPC::ScanDevicesRequest* /*request*/, ::BICgRPC::ScanDevicesReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
-    void RequestbicInit(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+    void RequestScanDevices(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
       ::grpc::Service::RequestAsyncUnary(0, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class WithRawMethod_ConnectDevice : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawMethod_ConnectDevice() {
+      ::grpc::Service::MarkMethodRaw(1);
+    }
+    ~WithRawMethod_ConnectDevice() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ConnectDevice(::grpc::ServerContext* /*context*/, const ::BICgRPC::ConnectDeviceRequest* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestConnectDevice(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(1, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class WithRawMethod_bicDispose : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawMethod_bicDispose() {
+      ::grpc::Service::MarkMethodRaw(2);
+    }
+    ~WithRawMethod_bicDispose() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status bicDispose(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestbicDispose(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(2, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -1405,7 +3032,7 @@ class BICManager final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithRawMethod_bicGetImplantInfo() {
-      ::grpc::Service::MarkMethodRaw(1);
+      ::grpc::Service::MarkMethodRaw(3);
     }
     ~WithRawMethod_bicGetImplantInfo() override {
       BaseClassMustBeDerivedFromService(this);
@@ -1416,7 +3043,7 @@ class BICManager final {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     void RequestbicGetImplantInfo(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncUnary(1, context, request, response, new_call_cq, notification_cq, tag);
+      ::grpc::Service::RequestAsyncUnary(3, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -1425,7 +3052,7 @@ class BICManager final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithRawMethod_bicGetImpedance() {
-      ::grpc::Service::MarkMethodRaw(2);
+      ::grpc::Service::MarkMethodRaw(4);
     }
     ~WithRawMethod_bicGetImpedance() override {
       BaseClassMustBeDerivedFromService(this);
@@ -1436,7 +3063,7 @@ class BICManager final {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     void RequestbicGetImpedance(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncUnary(2, context, request, response, new_call_cq, notification_cq, tag);
+      ::grpc::Service::RequestAsyncUnary(4, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -1445,18 +3072,18 @@ class BICManager final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithRawMethod_bicGetTemperature() {
-      ::grpc::Service::MarkMethodRaw(3);
+      ::grpc::Service::MarkMethodRaw(5);
     }
     ~WithRawMethod_bicGetTemperature() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status bicGetTemperature(::grpc::ServerContext* /*context*/, const ::BICgRPC::bicNullRequest* /*request*/, ::BICgRPC::bicGetTemperatureReply* /*response*/) override {
+    ::grpc::Status bicGetTemperature(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicGetTemperatureReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     void RequestbicGetTemperature(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncUnary(3, context, request, response, new_call_cq, notification_cq, tag);
+      ::grpc::Service::RequestAsyncUnary(5, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -1465,18 +3092,18 @@ class BICManager final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithRawMethod_bicGetHumidity() {
-      ::grpc::Service::MarkMethodRaw(4);
+      ::grpc::Service::MarkMethodRaw(6);
     }
     ~WithRawMethod_bicGetHumidity() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status bicGetHumidity(::grpc::ServerContext* /*context*/, const ::BICgRPC::bicNullRequest* /*request*/, ::BICgRPC::bicGetHumidityReply* /*response*/) override {
+    ::grpc::Status bicGetHumidity(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicGetHumidityReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     void RequestbicGetHumidity(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncUnary(4, context, request, response, new_call_cq, notification_cq, tag);
+      ::grpc::Service::RequestAsyncUnary(6, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -1485,7 +3112,7 @@ class BICManager final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithRawMethod_bicSetSensingEnable() {
-      ::grpc::Service::MarkMethodRaw(5);
+      ::grpc::Service::MarkMethodRaw(7);
     }
     ~WithRawMethod_bicSetSensingEnable() override {
       BaseClassMustBeDerivedFromService(this);
@@ -1496,7 +3123,7 @@ class BICManager final {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     void RequestbicSetSensingEnable(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncUnary(5, context, request, response, new_call_cq, notification_cq, tag);
+      ::grpc::Service::RequestAsyncUnary(7, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -1505,7 +3132,7 @@ class BICManager final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithRawMethod_bicSetImplantPower() {
-      ::grpc::Service::MarkMethodRaw(6);
+      ::grpc::Service::MarkMethodRaw(8);
     }
     ~WithRawMethod_bicSetImplantPower() override {
       BaseClassMustBeDerivedFromService(this);
@@ -1516,7 +3143,7 @@ class BICManager final {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     void RequestbicSetImplantPower(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncUnary(6, context, request, response, new_call_cq, notification_cq, tag);
+      ::grpc::Service::RequestAsyncUnary(8, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -1525,7 +3152,7 @@ class BICManager final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithRawMethod_bicStartStimulation() {
-      ::grpc::Service::MarkMethodRaw(7);
+      ::grpc::Service::MarkMethodRaw(9);
     }
     ~WithRawMethod_bicStartStimulation() override {
       BaseClassMustBeDerivedFromService(this);
@@ -1536,7 +3163,7 @@ class BICManager final {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     void RequestbicStartStimulation(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncUnary(7, context, request, response, new_call_cq, notification_cq, tag);
+      ::grpc::Service::RequestAsyncUnary(9, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -1545,46 +3172,46 @@ class BICManager final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithRawMethod_bicStopStimulation() {
-      ::grpc::Service::MarkMethodRaw(8);
+      ::grpc::Service::MarkMethodRaw(10);
     }
     ~WithRawMethod_bicStopStimulation() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status bicStopStimulation(::grpc::ServerContext* /*context*/, const ::BICgRPC::bicNullRequest* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
+    ::grpc::Status bicStopStimulation(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     void RequestbicStopStimulation(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncUnary(8, context, request, response, new_call_cq, notification_cq, tag);
+      ::grpc::Service::RequestAsyncUnary(10, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
-  class WithRawMethod_bicDispose : public BaseClass {
+  class WithRawMethod_bicTemperatureStream : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
-    WithRawMethod_bicDispose() {
-      ::grpc::Service::MarkMethodRaw(9);
+    WithRawMethod_bicTemperatureStream() {
+      ::grpc::Service::MarkMethodRaw(11);
     }
-    ~WithRawMethod_bicDispose() override {
+    ~WithRawMethod_bicTemperatureStream() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status bicDispose(::grpc::ServerContext* /*context*/, const ::BICgRPC::bicNullRequest* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
+    ::grpc::Status bicTemperatureStream(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::grpc::ServerWriter< ::BICgRPC::TemperatureUpdate>* /*writer*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
-    void RequestbicDispose(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncUnary(9, context, request, response, new_call_cq, notification_cq, tag);
+    void RequestbicTemperatureStream(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncWriter< ::grpc::ByteBuffer>* writer, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncServerStreaming(11, context, request, writer, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
-  class ExperimentalWithRawCallbackMethod_bicInit : public BaseClass {
+  class ExperimentalWithRawCallbackMethod_ScanDevices : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
-    ExperimentalWithRawCallbackMethod_bicInit() {
+    ExperimentalWithRawCallbackMethod_ScanDevices() {
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
       ::grpc::Service::
     #else
@@ -1598,21 +3225,97 @@ class BICManager final {
     #else
                    ::grpc::experimental::CallbackServerContext*
     #endif
-                     context, const ::grpc::ByteBuffer* request, ::grpc::ByteBuffer* response) { return this->bicInit(context, request, response); }));
+                     context, const ::grpc::ByteBuffer* request, ::grpc::ByteBuffer* response) { return this->ScanDevices(context, request, response); }));
     }
-    ~ExperimentalWithRawCallbackMethod_bicInit() override {
+    ~ExperimentalWithRawCallbackMethod_ScanDevices() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status bicInit(::grpc::ServerContext* /*context*/, const ::BICgRPC::bicInitRequest* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
+    ::grpc::Status ScanDevices(::grpc::ServerContext* /*context*/, const ::BICgRPC::ScanDevicesRequest* /*request*/, ::BICgRPC::ScanDevicesReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-    virtual ::grpc::ServerUnaryReactor* bicInit(
+    virtual ::grpc::ServerUnaryReactor* ScanDevices(
       ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)
     #else
-    virtual ::grpc::experimental::ServerUnaryReactor* bicInit(
+    virtual ::grpc::experimental::ServerUnaryReactor* ScanDevices(
+      ::grpc::experimental::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)
+    #endif
+      { return nullptr; }
+  };
+  template <class BaseClass>
+  class ExperimentalWithRawCallbackMethod_ConnectDevice : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    ExperimentalWithRawCallbackMethod_ConnectDevice() {
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      ::grpc::Service::
+    #else
+      ::grpc::Service::experimental().
+    #endif
+        MarkMethodRawCallback(1,
+          new ::grpc_impl::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
+            [this](
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+                   ::grpc::CallbackServerContext*
+    #else
+                   ::grpc::experimental::CallbackServerContext*
+    #endif
+                     context, const ::grpc::ByteBuffer* request, ::grpc::ByteBuffer* response) { return this->ConnectDevice(context, request, response); }));
+    }
+    ~ExperimentalWithRawCallbackMethod_ConnectDevice() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ConnectDevice(::grpc::ServerContext* /*context*/, const ::BICgRPC::ConnectDeviceRequest* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+    virtual ::grpc::ServerUnaryReactor* ConnectDevice(
+      ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)
+    #else
+    virtual ::grpc::experimental::ServerUnaryReactor* ConnectDevice(
+      ::grpc::experimental::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)
+    #endif
+      { return nullptr; }
+  };
+  template <class BaseClass>
+  class ExperimentalWithRawCallbackMethod_bicDispose : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    ExperimentalWithRawCallbackMethod_bicDispose() {
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      ::grpc::Service::
+    #else
+      ::grpc::Service::experimental().
+    #endif
+        MarkMethodRawCallback(2,
+          new ::grpc_impl::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
+            [this](
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+                   ::grpc::CallbackServerContext*
+    #else
+                   ::grpc::experimental::CallbackServerContext*
+    #endif
+                     context, const ::grpc::ByteBuffer* request, ::grpc::ByteBuffer* response) { return this->bicDispose(context, request, response); }));
+    }
+    ~ExperimentalWithRawCallbackMethod_bicDispose() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status bicDispose(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+    virtual ::grpc::ServerUnaryReactor* bicDispose(
+      ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)
+    #else
+    virtual ::grpc::experimental::ServerUnaryReactor* bicDispose(
       ::grpc::experimental::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)
     #endif
       { return nullptr; }
@@ -1628,7 +3331,7 @@ class BICManager final {
     #else
       ::grpc::Service::experimental().
     #endif
-        MarkMethodRawCallback(1,
+        MarkMethodRawCallback(3,
           new ::grpc_impl::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
             [this](
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
@@ -1666,7 +3369,7 @@ class BICManager final {
     #else
       ::grpc::Service::experimental().
     #endif
-        MarkMethodRawCallback(2,
+        MarkMethodRawCallback(4,
           new ::grpc_impl::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
             [this](
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
@@ -1704,7 +3407,7 @@ class BICManager final {
     #else
       ::grpc::Service::experimental().
     #endif
-        MarkMethodRawCallback(3,
+        MarkMethodRawCallback(5,
           new ::grpc_impl::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
             [this](
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
@@ -1718,7 +3421,7 @@ class BICManager final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status bicGetTemperature(::grpc::ServerContext* /*context*/, const ::BICgRPC::bicNullRequest* /*request*/, ::BICgRPC::bicGetTemperatureReply* /*response*/) override {
+    ::grpc::Status bicGetTemperature(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicGetTemperatureReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -1742,7 +3445,7 @@ class BICManager final {
     #else
       ::grpc::Service::experimental().
     #endif
-        MarkMethodRawCallback(4,
+        MarkMethodRawCallback(6,
           new ::grpc_impl::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
             [this](
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
@@ -1756,7 +3459,7 @@ class BICManager final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status bicGetHumidity(::grpc::ServerContext* /*context*/, const ::BICgRPC::bicNullRequest* /*request*/, ::BICgRPC::bicGetHumidityReply* /*response*/) override {
+    ::grpc::Status bicGetHumidity(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicGetHumidityReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -1780,7 +3483,7 @@ class BICManager final {
     #else
       ::grpc::Service::experimental().
     #endif
-        MarkMethodRawCallback(5,
+        MarkMethodRawCallback(7,
           new ::grpc_impl::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
             [this](
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
@@ -1818,7 +3521,7 @@ class BICManager final {
     #else
       ::grpc::Service::experimental().
     #endif
-        MarkMethodRawCallback(6,
+        MarkMethodRawCallback(8,
           new ::grpc_impl::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
             [this](
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
@@ -1856,7 +3559,7 @@ class BICManager final {
     #else
       ::grpc::Service::experimental().
     #endif
-        MarkMethodRawCallback(7,
+        MarkMethodRawCallback(9,
           new ::grpc_impl::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
             [this](
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
@@ -1894,7 +3597,7 @@ class BICManager final {
     #else
       ::grpc::Service::experimental().
     #endif
-        MarkMethodRawCallback(8,
+        MarkMethodRawCallback(10,
           new ::grpc_impl::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
             [this](
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
@@ -1908,7 +3611,7 @@ class BICManager final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status bicStopStimulation(::grpc::ServerContext* /*context*/, const ::BICgRPC::bicNullRequest* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
+    ::grpc::Status bicStopStimulation(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -1922,69 +3625,123 @@ class BICManager final {
       { return nullptr; }
   };
   template <class BaseClass>
-  class ExperimentalWithRawCallbackMethod_bicDispose : public BaseClass {
+  class ExperimentalWithRawCallbackMethod_bicTemperatureStream : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
-    ExperimentalWithRawCallbackMethod_bicDispose() {
+    ExperimentalWithRawCallbackMethod_bicTemperatureStream() {
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
       ::grpc::Service::
     #else
       ::grpc::Service::experimental().
     #endif
-        MarkMethodRawCallback(9,
-          new ::grpc_impl::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
+        MarkMethodRawCallback(11,
+          new ::grpc_impl::internal::CallbackServerStreamingHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
             [this](
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
                    ::grpc::CallbackServerContext*
     #else
                    ::grpc::experimental::CallbackServerContext*
     #endif
-                     context, const ::grpc::ByteBuffer* request, ::grpc::ByteBuffer* response) { return this->bicDispose(context, request, response); }));
+                     context, const::grpc::ByteBuffer* request) { return this->bicTemperatureStream(context, request); }));
     }
-    ~ExperimentalWithRawCallbackMethod_bicDispose() override {
+    ~ExperimentalWithRawCallbackMethod_bicTemperatureStream() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status bicDispose(::grpc::ServerContext* /*context*/, const ::BICgRPC::bicNullRequest* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
+    ::grpc::Status bicTemperatureStream(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::grpc::ServerWriter< ::BICgRPC::TemperatureUpdate>* /*writer*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-    virtual ::grpc::ServerUnaryReactor* bicDispose(
-      ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)
+    virtual ::grpc::ServerWriteReactor< ::grpc::ByteBuffer>* bicTemperatureStream(
+      ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/)
     #else
-    virtual ::grpc::experimental::ServerUnaryReactor* bicDispose(
-      ::grpc::experimental::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)
+    virtual ::grpc::experimental::ServerWriteReactor< ::grpc::ByteBuffer>* bicTemperatureStream(
+      ::grpc::experimental::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/)
     #endif
       { return nullptr; }
   };
   template <class BaseClass>
-  class WithStreamedUnaryMethod_bicInit : public BaseClass {
+  class WithStreamedUnaryMethod_ScanDevices : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
-    WithStreamedUnaryMethod_bicInit() {
+    WithStreamedUnaryMethod_ScanDevices() {
       ::grpc::Service::MarkMethodStreamed(0,
         new ::grpc::internal::StreamedUnaryHandler<
-          ::BICgRPC::bicInitRequest, ::BICgRPC::bicSuccessReply>(
+          ::BICgRPC::ScanDevicesRequest, ::BICgRPC::ScanDevicesReply>(
             [this](::grpc_impl::ServerContext* context,
                    ::grpc_impl::ServerUnaryStreamer<
-                     ::BICgRPC::bicInitRequest, ::BICgRPC::bicSuccessReply>* streamer) {
-                       return this->StreamedbicInit(context,
+                     ::BICgRPC::ScanDevicesRequest, ::BICgRPC::ScanDevicesReply>* streamer) {
+                       return this->StreamedScanDevices(context,
                          streamer);
                   }));
     }
-    ~WithStreamedUnaryMethod_bicInit() override {
+    ~WithStreamedUnaryMethod_ScanDevices() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable regular version of this method
-    ::grpc::Status bicInit(::grpc::ServerContext* /*context*/, const ::BICgRPC::bicInitRequest* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
+    ::grpc::Status ScanDevices(::grpc::ServerContext* /*context*/, const ::BICgRPC::ScanDevicesRequest* /*request*/, ::BICgRPC::ScanDevicesReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     // replace default version of method with streamed unary
-    virtual ::grpc::Status StreamedbicInit(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::BICgRPC::bicInitRequest,::BICgRPC::bicSuccessReply>* server_unary_streamer) = 0;
+    virtual ::grpc::Status StreamedScanDevices(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::BICgRPC::ScanDevicesRequest,::BICgRPC::ScanDevicesReply>* server_unary_streamer) = 0;
+  };
+  template <class BaseClass>
+  class WithStreamedUnaryMethod_ConnectDevice : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithStreamedUnaryMethod_ConnectDevice() {
+      ::grpc::Service::MarkMethodStreamed(1,
+        new ::grpc::internal::StreamedUnaryHandler<
+          ::BICgRPC::ConnectDeviceRequest, ::BICgRPC::bicSuccessReply>(
+            [this](::grpc_impl::ServerContext* context,
+                   ::grpc_impl::ServerUnaryStreamer<
+                     ::BICgRPC::ConnectDeviceRequest, ::BICgRPC::bicSuccessReply>* streamer) {
+                       return this->StreamedConnectDevice(context,
+                         streamer);
+                  }));
+    }
+    ~WithStreamedUnaryMethod_ConnectDevice() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable regular version of this method
+    ::grpc::Status ConnectDevice(::grpc::ServerContext* /*context*/, const ::BICgRPC::ConnectDeviceRequest* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    // replace default version of method with streamed unary
+    virtual ::grpc::Status StreamedConnectDevice(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::BICgRPC::ConnectDeviceRequest,::BICgRPC::bicSuccessReply>* server_unary_streamer) = 0;
+  };
+  template <class BaseClass>
+  class WithStreamedUnaryMethod_bicDispose : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithStreamedUnaryMethod_bicDispose() {
+      ::grpc::Service::MarkMethodStreamed(2,
+        new ::grpc::internal::StreamedUnaryHandler<
+          ::google::protobuf::Empty, ::BICgRPC::bicSuccessReply>(
+            [this](::grpc_impl::ServerContext* context,
+                   ::grpc_impl::ServerUnaryStreamer<
+                     ::google::protobuf::Empty, ::BICgRPC::bicSuccessReply>* streamer) {
+                       return this->StreamedbicDispose(context,
+                         streamer);
+                  }));
+    }
+    ~WithStreamedUnaryMethod_bicDispose() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable regular version of this method
+    ::grpc::Status bicDispose(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    // replace default version of method with streamed unary
+    virtual ::grpc::Status StreamedbicDispose(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::google::protobuf::Empty,::BICgRPC::bicSuccessReply>* server_unary_streamer) = 0;
   };
   template <class BaseClass>
   class WithStreamedUnaryMethod_bicGetImplantInfo : public BaseClass {
@@ -1992,7 +3749,7 @@ class BICManager final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithStreamedUnaryMethod_bicGetImplantInfo() {
-      ::grpc::Service::MarkMethodStreamed(1,
+      ::grpc::Service::MarkMethodStreamed(3,
         new ::grpc::internal::StreamedUnaryHandler<
           ::BICgRPC::bicGetImplantInfoRequest, ::BICgRPC::bicGetImplantInfoReply>(
             [this](::grpc_impl::ServerContext* context,
@@ -2019,7 +3776,7 @@ class BICManager final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithStreamedUnaryMethod_bicGetImpedance() {
-      ::grpc::Service::MarkMethodStreamed(2,
+      ::grpc::Service::MarkMethodStreamed(4,
         new ::grpc::internal::StreamedUnaryHandler<
           ::BICgRPC::bicGetImpedanceRequest, ::BICgRPC::bicGetImpedanceReply>(
             [this](::grpc_impl::ServerContext* context,
@@ -2046,12 +3803,12 @@ class BICManager final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithStreamedUnaryMethod_bicGetTemperature() {
-      ::grpc::Service::MarkMethodStreamed(3,
+      ::grpc::Service::MarkMethodStreamed(5,
         new ::grpc::internal::StreamedUnaryHandler<
-          ::BICgRPC::bicNullRequest, ::BICgRPC::bicGetTemperatureReply>(
+          ::google::protobuf::Empty, ::BICgRPC::bicGetTemperatureReply>(
             [this](::grpc_impl::ServerContext* context,
                    ::grpc_impl::ServerUnaryStreamer<
-                     ::BICgRPC::bicNullRequest, ::BICgRPC::bicGetTemperatureReply>* streamer) {
+                     ::google::protobuf::Empty, ::BICgRPC::bicGetTemperatureReply>* streamer) {
                        return this->StreamedbicGetTemperature(context,
                          streamer);
                   }));
@@ -2060,12 +3817,12 @@ class BICManager final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable regular version of this method
-    ::grpc::Status bicGetTemperature(::grpc::ServerContext* /*context*/, const ::BICgRPC::bicNullRequest* /*request*/, ::BICgRPC::bicGetTemperatureReply* /*response*/) override {
+    ::grpc::Status bicGetTemperature(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicGetTemperatureReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     // replace default version of method with streamed unary
-    virtual ::grpc::Status StreamedbicGetTemperature(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::BICgRPC::bicNullRequest,::BICgRPC::bicGetTemperatureReply>* server_unary_streamer) = 0;
+    virtual ::grpc::Status StreamedbicGetTemperature(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::google::protobuf::Empty,::BICgRPC::bicGetTemperatureReply>* server_unary_streamer) = 0;
   };
   template <class BaseClass>
   class WithStreamedUnaryMethod_bicGetHumidity : public BaseClass {
@@ -2073,12 +3830,12 @@ class BICManager final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithStreamedUnaryMethod_bicGetHumidity() {
-      ::grpc::Service::MarkMethodStreamed(4,
+      ::grpc::Service::MarkMethodStreamed(6,
         new ::grpc::internal::StreamedUnaryHandler<
-          ::BICgRPC::bicNullRequest, ::BICgRPC::bicGetHumidityReply>(
+          ::google::protobuf::Empty, ::BICgRPC::bicGetHumidityReply>(
             [this](::grpc_impl::ServerContext* context,
                    ::grpc_impl::ServerUnaryStreamer<
-                     ::BICgRPC::bicNullRequest, ::BICgRPC::bicGetHumidityReply>* streamer) {
+                     ::google::protobuf::Empty, ::BICgRPC::bicGetHumidityReply>* streamer) {
                        return this->StreamedbicGetHumidity(context,
                          streamer);
                   }));
@@ -2087,12 +3844,12 @@ class BICManager final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable regular version of this method
-    ::grpc::Status bicGetHumidity(::grpc::ServerContext* /*context*/, const ::BICgRPC::bicNullRequest* /*request*/, ::BICgRPC::bicGetHumidityReply* /*response*/) override {
+    ::grpc::Status bicGetHumidity(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicGetHumidityReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     // replace default version of method with streamed unary
-    virtual ::grpc::Status StreamedbicGetHumidity(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::BICgRPC::bicNullRequest,::BICgRPC::bicGetHumidityReply>* server_unary_streamer) = 0;
+    virtual ::grpc::Status StreamedbicGetHumidity(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::google::protobuf::Empty,::BICgRPC::bicGetHumidityReply>* server_unary_streamer) = 0;
   };
   template <class BaseClass>
   class WithStreamedUnaryMethod_bicSetSensingEnable : public BaseClass {
@@ -2100,7 +3857,7 @@ class BICManager final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithStreamedUnaryMethod_bicSetSensingEnable() {
-      ::grpc::Service::MarkMethodStreamed(5,
+      ::grpc::Service::MarkMethodStreamed(7,
         new ::grpc::internal::StreamedUnaryHandler<
           ::BICgRPC::bicSetSensingEnableRequest, ::BICgRPC::bicSuccessReply>(
             [this](::grpc_impl::ServerContext* context,
@@ -2127,7 +3884,7 @@ class BICManager final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithStreamedUnaryMethod_bicSetImplantPower() {
-      ::grpc::Service::MarkMethodStreamed(6,
+      ::grpc::Service::MarkMethodStreamed(8,
         new ::grpc::internal::StreamedUnaryHandler<
           ::BICgRPC::bicSetImplantPowerRequest, ::BICgRPC::bicSuccessReply>(
             [this](::grpc_impl::ServerContext* context,
@@ -2154,7 +3911,7 @@ class BICManager final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithStreamedUnaryMethod_bicStartStimulation() {
-      ::grpc::Service::MarkMethodStreamed(7,
+      ::grpc::Service::MarkMethodStreamed(9,
         new ::grpc::internal::StreamedUnaryHandler<
           ::BICgRPC::bicStartStimulationRequest, ::BICgRPC::bicSuccessReply>(
             [this](::grpc_impl::ServerContext* context,
@@ -2181,12 +3938,12 @@ class BICManager final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithStreamedUnaryMethod_bicStopStimulation() {
-      ::grpc::Service::MarkMethodStreamed(8,
+      ::grpc::Service::MarkMethodStreamed(10,
         new ::grpc::internal::StreamedUnaryHandler<
-          ::BICgRPC::bicNullRequest, ::BICgRPC::bicSuccessReply>(
+          ::google::protobuf::Empty, ::BICgRPC::bicSuccessReply>(
             [this](::grpc_impl::ServerContext* context,
                    ::grpc_impl::ServerUnaryStreamer<
-                     ::BICgRPC::bicNullRequest, ::BICgRPC::bicSuccessReply>* streamer) {
+                     ::google::protobuf::Empty, ::BICgRPC::bicSuccessReply>* streamer) {
                        return this->StreamedbicStopStimulation(context,
                          streamer);
                   }));
@@ -2195,43 +3952,43 @@ class BICManager final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable regular version of this method
-    ::grpc::Status bicStopStimulation(::grpc::ServerContext* /*context*/, const ::BICgRPC::bicNullRequest* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
+    ::grpc::Status bicStopStimulation(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     // replace default version of method with streamed unary
-    virtual ::grpc::Status StreamedbicStopStimulation(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::BICgRPC::bicNullRequest,::BICgRPC::bicSuccessReply>* server_unary_streamer) = 0;
+    virtual ::grpc::Status StreamedbicStopStimulation(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::google::protobuf::Empty,::BICgRPC::bicSuccessReply>* server_unary_streamer) = 0;
   };
+  typedef WithStreamedUnaryMethod_ScanDevices<WithStreamedUnaryMethod_ConnectDevice<WithStreamedUnaryMethod_bicDispose<WithStreamedUnaryMethod_bicGetImplantInfo<WithStreamedUnaryMethod_bicGetImpedance<WithStreamedUnaryMethod_bicGetTemperature<WithStreamedUnaryMethod_bicGetHumidity<WithStreamedUnaryMethod_bicSetSensingEnable<WithStreamedUnaryMethod_bicSetImplantPower<WithStreamedUnaryMethod_bicStartStimulation<WithStreamedUnaryMethod_bicStopStimulation<Service > > > > > > > > > > > StreamedUnaryService;
   template <class BaseClass>
-  class WithStreamedUnaryMethod_bicDispose : public BaseClass {
+  class WithSplitStreamingMethod_bicTemperatureStream : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
-    WithStreamedUnaryMethod_bicDispose() {
-      ::grpc::Service::MarkMethodStreamed(9,
-        new ::grpc::internal::StreamedUnaryHandler<
-          ::BICgRPC::bicNullRequest, ::BICgRPC::bicSuccessReply>(
+    WithSplitStreamingMethod_bicTemperatureStream() {
+      ::grpc::Service::MarkMethodStreamed(11,
+        new ::grpc::internal::SplitServerStreamingHandler<
+          ::google::protobuf::Empty, ::BICgRPC::TemperatureUpdate>(
             [this](::grpc_impl::ServerContext* context,
-                   ::grpc_impl::ServerUnaryStreamer<
-                     ::BICgRPC::bicNullRequest, ::BICgRPC::bicSuccessReply>* streamer) {
-                       return this->StreamedbicDispose(context,
+                   ::grpc_impl::ServerSplitStreamer<
+                     ::google::protobuf::Empty, ::BICgRPC::TemperatureUpdate>* streamer) {
+                       return this->StreamedbicTemperatureStream(context,
                          streamer);
                   }));
     }
-    ~WithStreamedUnaryMethod_bicDispose() override {
+    ~WithSplitStreamingMethod_bicTemperatureStream() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable regular version of this method
-    ::grpc::Status bicDispose(::grpc::ServerContext* /*context*/, const ::BICgRPC::bicNullRequest* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
+    ::grpc::Status bicTemperatureStream(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::grpc::ServerWriter< ::BICgRPC::TemperatureUpdate>* /*writer*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
-    // replace default version of method with streamed unary
-    virtual ::grpc::Status StreamedbicDispose(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::BICgRPC::bicNullRequest,::BICgRPC::bicSuccessReply>* server_unary_streamer) = 0;
+    // replace default version of method with split streamed
+    virtual ::grpc::Status StreamedbicTemperatureStream(::grpc::ServerContext* context, ::grpc::ServerSplitStreamer< ::google::protobuf::Empty,::BICgRPC::TemperatureUpdate>* server_split_streamer) = 0;
   };
-  typedef WithStreamedUnaryMethod_bicInit<WithStreamedUnaryMethod_bicGetImplantInfo<WithStreamedUnaryMethod_bicGetImpedance<WithStreamedUnaryMethod_bicGetTemperature<WithStreamedUnaryMethod_bicGetHumidity<WithStreamedUnaryMethod_bicSetSensingEnable<WithStreamedUnaryMethod_bicSetImplantPower<WithStreamedUnaryMethod_bicStartStimulation<WithStreamedUnaryMethod_bicStopStimulation<WithStreamedUnaryMethod_bicDispose<Service > > > > > > > > > > StreamedUnaryService;
-  typedef Service SplitStreamedService;
-  typedef WithStreamedUnaryMethod_bicInit<WithStreamedUnaryMethod_bicGetImplantInfo<WithStreamedUnaryMethod_bicGetImpedance<WithStreamedUnaryMethod_bicGetTemperature<WithStreamedUnaryMethod_bicGetHumidity<WithStreamedUnaryMethod_bicSetSensingEnable<WithStreamedUnaryMethod_bicSetImplantPower<WithStreamedUnaryMethod_bicStartStimulation<WithStreamedUnaryMethod_bicStopStimulation<WithStreamedUnaryMethod_bicDispose<Service > > > > > > > > > > StreamedService;
+  typedef WithSplitStreamingMethod_bicTemperatureStream<Service > SplitStreamedService;
+  typedef WithStreamedUnaryMethod_ScanDevices<WithStreamedUnaryMethod_ConnectDevice<WithStreamedUnaryMethod_bicDispose<WithStreamedUnaryMethod_bicGetImplantInfo<WithStreamedUnaryMethod_bicGetImpedance<WithStreamedUnaryMethod_bicGetTemperature<WithStreamedUnaryMethod_bicGetHumidity<WithStreamedUnaryMethod_bicSetSensingEnable<WithStreamedUnaryMethod_bicSetImplantPower<WithStreamedUnaryMethod_bicStartStimulation<WithStreamedUnaryMethod_bicStopStimulation<WithSplitStreamingMethod_bicTemperatureStream<Service > > > > > > > > > > > > StreamedService;
 };
 
 }  // namespace BICgRPC

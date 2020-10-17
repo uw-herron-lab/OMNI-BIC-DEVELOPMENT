@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30320.27
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BICgRPCmicroserver", "BICgRPCServer\cmake\build\BICgRPCmicroserver.vcxproj", "{3BF30F56-2C42-36EC-BB75-8BB0EC24D2E1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gRPCClient", "Client Examples\gRPCClient\gRPCClient\gRPCClient.csproj", "{AA72DD57-AE89-464C-9B05-4A6CABF9A408}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gRPCClient_ConsoleTest", "Client Examples\gRPCClient\gRPCClient\gRPCClient_ConsoleTest.csproj", "{AA72DD57-AE89-464C-9B05-4A6CABF9A408}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Protos", "Protos", "{A76888E9-2F83-4C6C-B552-17DB59E1DCB3}"
 	ProjectSection(SolutionItems) = preProject

@@ -1,20 +1,3 @@
-/*
- *
- * Copyright 2015 gRPC authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
 #include <cppapi/bicapi.h>
 #include <cppapi/IImplantListener.h>
 #include <cppapi/IImplantFactory.h>
@@ -35,21 +18,27 @@
 #include <grpcpp/grpcpp.h>
 #include <grpcpp/health_check_service_interface.h>
 #include <grpcpp/ext/proto_server_reflection_plugin.h>
+#include <google/protobuf/any.pb.h>
+#include <google/protobuf/empty.pb.h>
 
-#ifdef BAZEL_BUILD
-#include "examples/protos/BICgRPC.grpc.pb.h"
-#else
 #include "BICgRPC.grpc.pb.h"
-#endif
 
+// BIC Usings
+using namespace cortec::implantapi;
+
+// GRPC Usings
 using grpc::Server;
 using grpc::ServerBuilder;
 using grpc::ServerContext;
+using grpc::ServerWriter;
 using grpc::Status;
-using BICgRPC::BICManager;
-using BICgRPC::bicNullRequest;
+
+// BIC Device Service Usings
+using BICgRPC::BICDeviceService;
+using BICgRPC::ScanDevicesRequest;
+using BICgRPC::ScanDevicesReply;
+using BICgRPC::ConnectDeviceRequest;
 using BICgRPC::bicSuccessReply;
-using BICgRPC::bicInitRequest;
 using BICgRPC::bicGetImplantInfoRequest;
 using BICgRPC::bicGetImplantInfoReply;
 using BICgRPC::bicGetImplantInfoReply_bicChannelInfo;
@@ -60,7 +49,19 @@ using BICgRPC::bicGetHumidityReply;
 using BICgRPC::bicSetSensingEnableRequest;
 using BICgRPC::bicSetImplantPowerRequest;
 using BICgRPC::bicStartStimulationRequest;
-using namespace cortec::implantapi;
+using BICgRPC::TemperatureUpdate;
+
+// BIC Bridge Service Usings
+using BICgRPC::BICBridgeService;
+using BICgRPC::Bridge;
+using BICgRPC::QueryBridgesRequest;
+using BICgRPC::QueryBridgesResponse;
+using BICgRPC::ConnectBridgeStatus;
+using BICgRPC::DescribeBridgeRequest;
+using BICgRPC::DescribeBridgeResponse;
+using BICgRPC::ConnectBridgeRequest;
+using BICgRPC::ConnectBridgeResponse;
+using BICgRPC::DisconnectBridgeRequest;
 
 /**
   * @brief Writes implant output to std::cout
@@ -180,6 +181,14 @@ public:
     virtual void onTemperatureChanged(const double temperature)
     {
         std::cout << "*** Temperature received: " << temperature << " degree Celsius." << std::endl;
+
+        if (TemperatureWriter != NULL)
+        {
+            TemperatureUpdate tempMessage;
+            tempMessage.set_temperature(temperature);
+            tempMessage.set_units("Celsius");
+            TemperatureWriter->Write(tempMessage);
+        }
     }
 
     // @implements cortec::implantapi::IImplantListener
@@ -200,9 +209,10 @@ public:
         std::cout << "*** Warning: Data processing too slow" << std::endl;
     }
 
+    grpc::ServerWriter<TemperatureUpdate>* TemperatureWriter = NULL;
 private:
     std::mutex m_mutex;
-
+    
     bool m_isStimulating;
     bool m_isMeasuring;
 };
@@ -257,355 +267,569 @@ IStimulationCommand* createStimulationCommand()
 }
 
 // Logic and data behind the server's behavior.
-class BICMangaerServiceImpl final : public BICManager::Service {
+class BICDeviceServiceImpl final : public BICDeviceService::Service {
     // ************************* Cross-Function Service Variable Declarations *************************
+    // Currently only supports one BIC at a time, need to turn these into lists of implants and cached implant info
     std::unique_ptr <IImplant> theImplant;
     std::unique_ptr <IImplantFactory> theImplantFactory;
     std::unique_ptr <CImplantInfo> theImplantInfo;
     CImplantToStdOutListener listener;
+    bool factoryInitialized = false;
+    bool implantInitialized = false;
+    std::mutex rpcLock;
+
+    // ************************* Helper Service Function Declarations *************************
+    void factoryInitializeCheck()
+    {
+        // Check if already initialized
+        if (!factoryInitialized)
+        {
+            // Get implant factory
+            theImplantFactory.reset(createImplantFactory(false, "./bridgeService.log"));
+            factoryInitialized = true;
+        }
+    }
+
+    // ************************* General Service Function Declarations *************************
+    Status ScanDevices(ServerContext* context, const ScanDevicesRequest* request, ScanDevicesReply* reply) override {
+
+        // Pull the mutex for guarding against inappropriate multi-threaded access
+        const std::lock_guard<std::mutex> lock(rpcLock);
+        factoryInitializeCheck();
+
+        // Discover external units
+        std::vector<CExternalUnitInfo*> exInfos = theImplantFactory->getExternalUnitInfos();
+        if (exInfos.empty())
+        {
+            reply->set_name("");
+            return Status::OK;
+        }
+
+        // Find specified exeternal unit
+            // ### TODO Need to simplify ways to find known bridge/device combinations other than iterating through each time
+        for (int i = 0; i < exInfos.size(); i++)
+        {
+            if ("//bic/bridge/" + exInfos[i]->getDeviceId() == request->bridgename())
+            {
+                theImplantInfo.reset(theImplantFactory->getImplantInfo(*exInfos.at(i)));
+
+                // Set the fields of the response with the Implant Information
+                bicGetImplantInfoReply* responseImplantInfo = reply->mutable_discovereddevice();
+                responseImplantInfo->set_firmwareversion(theImplantInfo->getFirmwareVersion());
+                responseImplantInfo->set_devicetype(theImplantInfo->getDeviceType());
+                responseImplantInfo->set_deviceid(theImplantInfo->getDeviceId());
+                responseImplantInfo->set_measurementchannelcount(theImplantInfo->getMeasurementChannelCount());
+                responseImplantInfo->set_stimulationchannelcount(theImplantInfo->getStimulationChannelCount());
+                responseImplantInfo->set_samplingrate(theImplantInfo->getSamplingRate());
+
+                int numChannels = theImplantInfo->getChannelCount();
+                responseImplantInfo->set_channelcount(numChannels);
+
+                for (int j = 0; j < numChannels; j++)
+                {
+                    CChannelInfo* sourceChannel = theImplantInfo->getChannelInfo()[i];
+                    bicGetImplantInfoReply_bicChannelInfo* addChannel = responseImplantInfo->add_channelinfolist();
+
+                    addChannel->set_canmeasure(sourceChannel->canMeasure());
+                    addChannel->set_measurevaluemin(sourceChannel->getMeasureValueMin());
+                    addChannel->set_measurevaluemax(sourceChannel->getMeasureValueMax());
+                    addChannel->set_canstimulate(sourceChannel->canStimulate());
+                    addChannel->set_stimulationunit((bicGetImplantInfoReply::bicChannelInfo::UnitType)(sourceChannel->getStimulationUnit()));
+                    addChannel->set_stimvaluemin(sourceChannel->getStimValueMin());
+                    addChannel->set_stimvaluemax(sourceChannel->getStimValueMax());
+                }
+                reply->set_name(request->bridgename() + "/device/" + theImplantInfo->getDeviceId());
+                return Status::OK;
+            }
+        }
+
+        reply->set_name("");
+        return Status::OK;
+    }
+
+    Status ConnectDevice(ServerContext* context, const ConnectDeviceRequest* request, bicSuccessReply* reply) override {
+        // Pull the mutex for guarding against inappropriate multi-threaded access
+        const std::lock_guard<std::mutex> lock(rpcLock);
+      
+        // Split requested bridge/address strings from request
+        int deviceIdIndex = request->deviceaddress().find("/device/");
+        std::string deviceId = request->deviceaddress().substr((int)deviceIdIndex + 8);
+        std::string bridgeId = request->deviceaddress().substr(13, (int)deviceIdIndex - 13);
+
+        // Discover external units
+        std::vector<CExternalUnitInfo*> exInfos = theImplantFactory->getExternalUnitInfos();
+        if (exInfos.empty())
+        {
+            reply->set_success("error: no bridges");
+            return Status::OK;
+        }
+
+        // Find the Bridge, confirm that device/bridge pair match
+        int exInfoIndex = 0;
+        for (exInfoIndex; exInfoIndex < exInfos.size(); exInfoIndex++)
+        {
+            if (exInfos[exInfoIndex]->getDeviceId() == bridgeId)
+            {
+                // pull the info from the device
+                theImplantInfo.reset(theImplantFactory->getImplantInfo(*exInfos.at(exInfoIndex)));
+
+                // Check that deviceId matches
+                if (theImplantInfo->getDeviceId() != deviceId)
+                {
+                    reply->set_success("error: Bridge/Device Id mismatch");
+                    return Status::OK;
+                }
+
+                break;
+            }
+        }
+
+        // Found Device/Bridge Match - Proceed with System Initialization
+        theImplantFactory.reset(createImplantFactory(true, request->logfilename()));
+        theImplant.reset(theImplantFactory->create(*exInfos.at(exInfoIndex), *theImplantInfo));
+        theImplant->registerListener(&listener);
+        implantInitialized = true;
+        reply->set_success("success");
+        return Status::OK;
+    }
+
+    Status bicDispose(ServerContext* context, const google::protobuf::Empty* request, bicSuccessReply* reply) override {
+      
+        // Pull the mutex for guarding against inappropriate multi-threaded access
+        const std::lock_guard<std::mutex> lock(rpcLock);
+
+        // Check if 
+        if (!implantInitialized)
+        {
+            reply->set_success("error: not initialized");
+            return Status::OK;
+        }
+
+        // Dispose the things!
+        theImplant->setImplantPower(false);
+        theImplant->~IImplant();
+        theImplantFactory->~IImplantFactory();
+
+        // Reset initialized flag
+        implantInitialized = false;
+
+        // Respond to client
+        reply->set_success("success");
+        return Status::OK;
+    }
+
+    // ************************* Implant Function Declarations *************************
+    Status bicGetImplantInfo(ServerContext* context, const bicGetImplantInfoRequest* request, bicGetImplantInfoReply* reply) override {
+
+        // Pull the mutex for guarding against inappropriate multi-threaded access
+        const std::lock_guard<std::mutex> lock(rpcLock);
+
+        // Check if already initialized
+        if (!implantInitialized)
+        {
+            reply->set_success("error: not initialized");
+            return Status::OK;
+        }
+
+        // Check if we need to update cache
+        if (request->updatecachedinfo())
+        {
+            try
+            {
+                theImplantInfo.reset(theImplant->getImplantInfo());
+            }
+            catch (const std::exception& theError)
+            {
+                reply->set_success("error: exception (useful I know?)");
+                return Status::OK;
+            }
+        }
+
+        // Set the fields of the response with the Implant Information
+        reply->set_firmwareversion(theImplantInfo->getFirmwareVersion());
+        reply->set_devicetype(theImplantInfo->getDeviceType());
+        reply->set_deviceid(theImplantInfo->getDeviceId());
+        reply->set_measurementchannelcount(theImplantInfo->getMeasurementChannelCount());
+        reply->set_stimulationchannelcount(theImplantInfo->getStimulationChannelCount());
+        reply->set_samplingrate(theImplantInfo->getSamplingRate());
+
+        int numChannels = theImplantInfo->getChannelCount();
+        reply->set_channelcount(numChannels);
+
+        for (int i = 0; i < numChannels; i++)
+        {
+            CChannelInfo* sourceChannel = theImplantInfo->getChannelInfo()[i];
+            bicGetImplantInfoReply_bicChannelInfo* addChannel = reply->add_channelinfolist();
+
+            addChannel->set_canmeasure(sourceChannel->canMeasure());
+            addChannel->set_measurevaluemin(sourceChannel->getMeasureValueMin());
+            addChannel->set_measurevaluemax(sourceChannel->getMeasureValueMax());
+            addChannel->set_canstimulate(sourceChannel->canStimulate());
+            addChannel->set_stimulationunit((bicGetImplantInfoReply::bicChannelInfo::UnitType)(sourceChannel->getStimulationUnit()));
+            addChannel->set_stimvaluemin(sourceChannel->getStimValueMin());
+            addChannel->set_stimvaluemax(sourceChannel->getStimValueMax());
+        }
+
+        // Respond to client
+        reply->set_success("success");
+        return Status::OK;
+    }
+
+    Status bicGetImpedance(ServerContext* context, const bicGetImpedanceRequest* request, bicGetImpedanceReply* reply) override {
+        // Pull the mutex for guarding against inappropriate multi-threaded access
+        const std::lock_guard<std::mutex> lock(rpcLock);
+
+        // Check if already initialized
+        if (!implantInitialized)
+        {
+            reply->set_success("error: not initialized");
+            return Status::OK;
+        }
+
+        // Perform the operation
+        double impedanceValue;
+        try
+        {
+            impedanceValue = theImplant->getImpedance(request->channel());
+        }
+        catch (const std::exception&)
+        {
+            reply->set_success("error: exception (useful I know?)");
+            return Status::OK;
+        }
+
+        // Respond to client
+        reply->set_channelimpedance(impedanceValue);
+        reply->set_units("ohms");
+        reply->set_success("success");
+        return Status::OK;
+    }
+
+    Status bicGetTemperature(ServerContext* context, const google::protobuf::Empty* request, bicGetTemperatureReply* reply) override {
+        // Pull the mutex for guarding against inappropriate multi-threaded access
+        const std::lock_guard<std::mutex> lock(rpcLock);
+
+        // Check if already initialized
+        if (!implantInitialized)
+        {
+            reply->set_success("error: not initialized");
+            return Status::OK;
+        }
+
+        // Perform the operation
+        double temperatureValue;
+        try
+        {
+            temperatureValue = theImplant->getTemperature();
+        }
+        catch (const std::exception&)
+        {
+            reply->set_success("error: exception (useful I know?)");
+            return Status::OK;
+        }
+
+        // Respond to client
+        reply->set_temperature(temperatureValue);
+        reply->set_units("celsius");
+        reply->set_success("success");
+        return Status::OK;
+    }
+
+    Status bicGetHumidity(ServerContext* context, const google::protobuf::Empty* request, bicGetHumidityReply* reply) override {
+        // Pull the mutex for guarding against inappropriate multi-threaded access
+        const std::lock_guard<std::mutex> lock(rpcLock);
+
+        // Check if already initialized
+        if (!implantInitialized)
+        {
+            reply->set_success("error: not initialized");
+            return Status::OK;
+        }
+
+        // Perform the operation
+        double humidityValue;
+        try
+        {
+            humidityValue = theImplant->getHumidity();
+        }
+        catch (const std::exception&)
+        {
+            reply->set_success("error: exception (useful I know?)");
+            return Status::OK;
+        }
+
+        // Respond to client
+        reply->set_humidity(humidityValue);
+        reply->set_units("celsius");
+        reply->set_success("success");
+        return Status::OK;
+    }
+
+    Status bicSetSensingEnable(ServerContext* context, const bicSetSensingEnableRequest* request, bicSuccessReply* reply) override {
+        // Pull the mutex for guarding against inappropriate multi-threaded access
+        const std::lock_guard<std::mutex> lock(rpcLock);
+
+        // Check if already initialized
+        if (!implantInitialized)
+        {
+            reply->set_success("error: not initialized");
+            return Status::OK;
+        }
+
+        // Perform the operation
+        try
+        {
+            if (request->enablesensing())
+            {
+                std::set<uint32_t> referenceElectrodes;
+                for (int i = 0; i < request->refchannels_size(); i++)
+                {
+                    referenceElectrodes.insert(referenceElectrodes.begin(), request->refchannels()[i]);
+                }
+
+                theImplant->startMeasurement(referenceElectrodes);
+            }
+            else
+            {
+                theImplant->stopMeasurement();
+            }
+        }
+        catch (const std::exception&)
+        {
+            reply->set_success("error: exception (useful I know?)");
+            return Status::OK;
+        }
+
+        // Respond to client
+        reply->set_success("success");
+        return Status::OK;
+    }
+
+    Status bicSetImplantPower(ServerContext* context, const bicSetImplantPowerRequest* request, bicSuccessReply* reply) override {
+        // Pull the mutex for guarding against inappropriate multi-threaded access
+        const std::lock_guard<std::mutex> lock(rpcLock);
+
+        // Check if already initialized
+        if (!implantInitialized)
+        {
+            reply->set_success("error: not initialized");
+            return Status::OK;
+        }
+
+        // Perform the operation
+        try
+        {
+            theImplant->setImplantPower(request->powerenabled());
+        }
+        catch (const std::exception&)
+        {
+            reply->set_success("error: exception (useful I know?)");
+            return Status::OK;
+        }
+
+        // Respond to client
+        reply->set_success("success");
+        return Status::OK;
+    }
+
+    Status bicStartStimulation(ServerContext* context, const bicStartStimulationRequest* request, bicSuccessReply* reply) override {
+        // Pull the mutex for guarding against inappropriate multi-threaded access
+        const std::lock_guard<std::mutex> lock(rpcLock);
+
+        // Check if already initialized
+        if (!implantInitialized)
+        {
+            reply->set_success("error: not initialized");
+            return Status::OK;
+        }
+
+        // Perform the operation
+        try
+        {
+
+        }
+        catch (const std::exception&)
+        {
+            reply->set_success("error: exception (useful I know?)");
+            return Status::OK;
+        }
+
+        // Respond to client
+        reply->set_success("success");
+        return Status::OK;
+    }
+
+    Status bicStopStimulation(ServerContext* context, const google::protobuf::Empty* request, bicSuccessReply* reply) override {
+        // Pull the mutex for guarding against inappropriate multi-threaded access
+        const std::lock_guard<std::mutex> lock(rpcLock);
+
+        // Check if already initialized
+        if (!implantInitialized)
+        {
+            reply->set_success("error: not initialized");
+            return Status::OK;
+        }
+
+        // Perform the operation
+        try
+        {
+            theImplant->stopStimulation();
+        }
+        catch (const std::exception&)
+        {
+            reply->set_success("error: exception (useful I know?)");
+            return Status::OK;
+        }
+
+        // Respond to client
+        reply->set_success("success");
+        return Status::OK;
+    }
+
+    Status bicTemperatureStream(ServerContext* context, const google::protobuf::Empty* request, ServerWriter<TemperatureUpdate>* writer) override {
+        listener.TemperatureWriter = writer;
+        
+        /*TemperatureUpdate tempMessage;
+        tempMessage.set_temperature(-100);
+        tempMessage.set_units("Celsius");
+        writer->Write(tempMessage);
+        tempMessage.set_temperature(101);
+        tempMessage.set_units("lol");
+        ServerWriter<TemperatureUpdate>* aNewWriterPtr;
+        ServerWriter<TemperatureUpdate> aNewWriter();
+        aNewWriterPtr = &aNewWriter;
+        writer = aNewWriterPtr;*/
+
+        while(true)
+
+        return Status::OK;
+    }
+};
+
+class BICBridgeServiceImpl final : public BICBridgeService::Service {
+    // ************************* Cross-Function Service Variable Declarations *************************
+    std::unique_ptr <IImplantFactory> theImplantFactory;
     bool initialized = false;
     std::mutex rpcLock;
 
-  // ************************* General Service Function Declarations *************************
-  Status bicInit(ServerContext* context, const bicInitRequest* request, bicSuccessReply* reply) override {
-
-    // Pull the mutex for guarding against inappropriate multi-threaded access
-    const std::lock_guard<std::mutex> lock(rpcLock);
-
-    // Check if already initialized
-    if (initialized)
+    // Initialize
+    void initializeCheck()
     {
-        reply->set_success("error: already initialized, dispose first");
+        // Check if already initialized
+        if (!initialized)
+        {
+            // Get implant factory
+            theImplantFactory.reset(createImplantFactory(false, "./bridgeService.log"));
+            initialized = true;
+        }
+    }
+
+    // ************************* General Service Function Declarations *************************
+    Status ListBridges(ServerContext* context, const QueryBridgesRequest* request, QueryBridgesResponse* reply) override {
+        initializeCheck();
+
+        // Finds all bridges connected to the PC
+        std::vector<CExternalUnitInfo*> exInfos = theImplantFactory->getExternalUnitInfos();
+        
+        for (int i = 0; i < exInfos.size(); i++)
+        {
+            //construct URIs
+            Bridge* aBridge = reply->add_bridges();
+            aBridge->set_name("//bic/bridge/" + exInfos[i]->getDeviceId());
+        }
+        
         return Status::OK;
     }
 
-    // Pull file for logging out of request
-    std::string fileName = request->logfilename();
+    Status ScanBridges(ServerContext* context, const QueryBridgesRequest* request, QueryBridgesResponse* reply) override {
+        initializeCheck();
 
-    // Get implant factory
-    // WARNING TODO: WHAT HAPPENS IF FILE CAN'T BE OPENED?
-    theImplantFactory.reset(createImplantFactory(true, fileName));
+        // Finds all bridges connected to the PC
+        std::vector<CExternalUnitInfo*> exInfos = theImplantFactory->getExternalUnitInfos();
 
-    // Discover implant
-    std::vector<CExternalUnitInfo*> exInfos = theImplantFactory->getExternalUnitInfos();
-    if (exInfos.empty())
-    {
-        reply->set_success("error: no implants");
+        for (int i = 0; i < exInfos.size(); i++)
+        {
+            //construct URIs
+            Bridge* aBridge = reply->add_bridges();
+            aBridge->set_name("//bic/bridge/" + exInfos[i]->getDeviceId());
+        }
+
         return Status::OK;
     }
-    theImplantInfo.reset(theImplantFactory->getImplantInfo(*exInfos.at(0)));
 
-    // Create implant for a specific external unit / implant type
-    theImplant.reset(theImplantFactory->create(*exInfos.at(0), *theImplantInfo));
+    Status ConnectedBridges(ServerContext* context, const QueryBridgesRequest* request, QueryBridgesResponse* reply) override {
+        initializeCheck();
 
-    // Register output listener and start measurement loop
-    theImplant->registerListener(&listener);
+        // All bridges found by this function are connected to the PC
+        std::vector<CExternalUnitInfo*> exInfos = theImplantFactory->getExternalUnitInfos();
 
-    // System is initialized, open up other functions
-    initialized = true;
+        for (int i = 0; i < exInfos.size(); i++)
+        {
+            //construct URIs
+            Bridge* aBridge = reply->add_bridges();
+            aBridge->set_name("//bic/bridge/" + exInfos[i]->getDeviceId());
+            aBridge->set_firmwareversion(exInfos[i]->getFirmwareVersion());
+            aBridge->set_implanttype(exInfos[i]->getImplantType());
+            aBridge->set_deviceid(exInfos[i]->getDeviceId());
+        }
+        exInfos.~vector();
+        return Status::OK;
+    }
 
-    // Respond to client
-    reply->set_success("success");
-    return Status::OK;
-  }
+    Status ConnectBridge(ServerContext* context, const ConnectBridgeRequest* request, ConnectBridgeResponse* reply) override {
+        initializeCheck();
 
-  Status bicDispose(ServerContext* context, const bicNullRequest* request, bicSuccessReply* reply) override {
-      
-      // Pull the mutex for guarding against inappropriate multi-threaded access
-      const std::lock_guard<std::mutex> lock(rpcLock);
+        // All bridges are by definition 'connected' via USB, so if it exists in the list it's connected
+        reply->set_name(request->name());
+        std::vector<CExternalUnitInfo*> exInfos = theImplantFactory->getExternalUnitInfos();
 
-      // Check if 
-      if (!initialized)
-      {
-          reply->set_success("error: not initialized");
-          return Status::OK;
-      }
+        for (int i = 0; i < exInfos.size(); i++)
+        {
+            if ("//bic/bridge/" + exInfos[i]->getDeviceId() == request->name())
+            {
+                reply->set_connection_status((ConnectBridgeStatus)1);
+                return Status::OK;
+            }
+        }
 
-      // Dispose the things!
-      theImplant->setImplantPower(false);
-      theImplant->~IImplant();
-      theImplantFactory->~IImplantFactory();
+        reply->set_connection_status((ConnectBridgeStatus)2);
+        return Status::OK;
+    }
 
-      // Reset initialized flag
-      initialized = false;
+    Status DescribeBridge(ServerContext* context, const DescribeBridgeRequest* request, DescribeBridgeResponse* reply) override {
+        initializeCheck();
 
-      // Respond to client
-      reply->set_success("success");
-      return Status::OK;
-  }
+        std::vector<CExternalUnitInfo*> exInfos = theImplantFactory->getExternalUnitInfos();
 
-  // ************************* Implant Function Declarations *************************
-  Status bicGetImplantInfo(ServerContext* context, const bicGetImplantInfoRequest* request, bicGetImplantInfoReply* reply) override {
+        for (int i = 0; i < exInfos.size(); i++)
+        {
+            if ("//bic/bridge/" + exInfos[i]->getDeviceId() == request->name())
+            {
+                reply->set_name("//bic/bridge/" + exInfos[i]->getDeviceId());
+                Bridge* aBridge = reply->mutable_details();
+                aBridge->set_name("//bic/bridge/" + exInfos[i]->getDeviceId());
+                aBridge->set_firmwareversion(exInfos[i]->getFirmwareVersion());
+                aBridge->set_implanttype(exInfos[i]->getImplantType());
+                aBridge->set_deviceid(exInfos[i]->getDeviceId());
+                return Status::OK;
+            }
+        }
 
-      // Pull the mutex for guarding against inappropriate multi-threaded access
-      const std::lock_guard<std::mutex> lock(rpcLock);
+        return Status::OK;
+    }
 
-      // Check if already initialized
-      if (!initialized)
-      {
-          reply->set_success("error: not initialized");
-          return Status::OK;
-      }
+    Status DisconnectBridge(ServerContext* context, const DisconnectBridgeRequest* request, google::protobuf::Empty* reply) override {
+        initializeCheck();
 
-      // Check if we need to update cache
-      if (request->updatecachedinfo())
-      {
-          try
-          {
-              theImplantInfo.reset(theImplant->getImplantInfo());
-          }
-          catch (const std::exception& theError)
-          {
-              reply->set_success("error: exception (useful I know?)");
-              return Status::OK;
-          }
-      }
-
-      // Set the fields of the response with the Implant Information
-      reply->set_firmwareversion(theImplantInfo->getFirmwareVersion());
-      reply->set_devicetype(theImplantInfo->getDeviceType());
-      reply->set_deviceid(theImplantInfo->getDeviceId());
-      reply->set_measurementchannelcount(theImplantInfo->getMeasurementChannelCount());
-      reply->set_stimulationchannelcount(theImplantInfo->getStimulationChannelCount());
-      reply->set_samplingrate(theImplantInfo->getSamplingRate());
-
-      int numChannels = theImplantInfo->getChannelCount();
-      reply->set_channelcount(numChannels);
-
-      for (int i = 0; i < numChannels; i++)
-      {
-          CChannelInfo* sourceChannel = theImplantInfo->getChannelInfo()[i];
-          bicGetImplantInfoReply_bicChannelInfo* addChannel = reply->add_channelinfolist();
-
-          addChannel->set_canmeasure(sourceChannel->canMeasure());
-          addChannel->set_measurevaluemin(sourceChannel->getMeasureValueMin());
-          addChannel->set_measurevaluemax(sourceChannel->getMeasureValueMax());
-          addChannel->set_canstimulate(sourceChannel->canStimulate());
-          addChannel->set_stimulationunit((bicGetImplantInfoReply::bicChannelInfo::UnitType)(sourceChannel->getStimulationUnit()));
-          addChannel->set_stimvaluemin(sourceChannel->getStimValueMin());
-          addChannel->set_stimvaluemax(sourceChannel->getStimValueMax());
-      }
-
-      // Respond to client
-      reply->set_success("success");
-      return Status::OK;
-  }
-
-  Status bicGetImpedance(ServerContext* context, const bicGetImpedanceRequest* request, bicGetImpedanceReply* reply) override {
-      // Pull the mutex for guarding against inappropriate multi-threaded access
-      const std::lock_guard<std::mutex> lock(rpcLock);
-
-      // Check if already initialized
-      if (!initialized)
-      {
-          reply->set_success("error: not initialized");
-          return Status::OK;
-      }
-
-      // Perform the operation
-      double impedanceValue;
-      try
-      {
-          impedanceValue = theImplant->getImpedance(request->channel());
-      }
-      catch (const std::exception&)
-      {
-          reply->set_success("error: exception (useful I know?)");
-          return Status::OK;
-      }
-
-      // Respond to client
-      reply->set_channelimpedance(impedanceValue);
-      reply->set_units("ohms");
-      reply->set_success("success");
-      return Status::OK;
-  }
-
-  Status bicGetTemperature(ServerContext* context, const bicNullRequest* request, bicGetTemperatureReply* reply) override {
-      // Pull the mutex for guarding against inappropriate multi-threaded access
-      const std::lock_guard<std::mutex> lock(rpcLock);
-
-      // Check if already initialized
-      if (!initialized)
-      {
-          reply->set_success("error: not initialized");
-          return Status::OK;
-      }
-
-      // Perform the operation
-      double temperatureValue;
-      try
-      {
-          temperatureValue = theImplant->getTemperature();
-      }
-      catch (const std::exception&)
-      {
-          reply->set_success("error: exception (useful I know?)");
-          return Status::OK;
-      }
-
-      // Respond to client
-      reply->set_temperature(temperatureValue);
-      reply->set_units("celsius");
-      reply->set_success("success");
-      return Status::OK;
-  }
-
-  Status bicGetHumidity(ServerContext* context, const bicNullRequest* request, bicGetHumidityReply* reply) override {
-      // Pull the mutex for guarding against inappropriate multi-threaded access
-      const std::lock_guard<std::mutex> lock(rpcLock);
-
-      // Check if already initialized
-      if (!initialized)
-      {
-          reply->set_success("error: not initialized");
-          return Status::OK;
-      }
-
-      // Perform the operation
-      double humidityValue;
-      try
-      {
-          humidityValue = theImplant->getHumidity();
-      }
-      catch (const std::exception&)
-      {
-          reply->set_success("error: exception (useful I know?)");
-          return Status::OK;
-      }
-
-      // Respond to client
-      reply->set_humidity(humidityValue);
-      reply->set_units("celsius");
-      reply->set_success("success");
-      return Status::OK;
-  }
-
-  Status bicSetSensingEnable(ServerContext* context, const bicSetSensingEnableRequest* request, bicSuccessReply* reply) override {
-      // Pull the mutex for guarding against inappropriate multi-threaded access
-      const std::lock_guard<std::mutex> lock(rpcLock);
-
-      // Check if already initialized
-      if (!initialized)
-      {
-          reply->set_success("error: not initialized");
-          return Status::OK;
-      }
-
-      // Perform the operation
-      try
-      {
-          if (request->enablesensing())
-          {
-              std::set<uint32_t> referenceElectrodes;
-              for (int i = 0; i < request->refchannels_size(); i++)
-              {
-                  referenceElectrodes.insert(referenceElectrodes.begin(), request->refchannels()[i]);
-              }
-
-              theImplant->startMeasurement(referenceElectrodes);
-          }
-          else
-          {
-              theImplant->stopMeasurement();
-          }
-      }
-      catch (const std::exception&)
-      {
-          reply->set_success("error: exception (useful I know?)");
-          return Status::OK;
-      }
-
-      // Respond to client
-      reply->set_success("success");
-      return Status::OK;
-  }
-
-  Status bicSetImplantPower(ServerContext* context, const bicSetImplantPowerRequest* request, bicSuccessReply* reply) override {
-      // Pull the mutex for guarding against inappropriate multi-threaded access
-      const std::lock_guard<std::mutex> lock(rpcLock);
-
-      // Check if already initialized
-      if (!initialized)
-      {
-          reply->set_success("error: not initialized");
-          return Status::OK;
-      }
-
-      // Perform the operation
-      try
-      {
-          theImplant->setImplantPower(request->powerenabled());
-      }
-      catch (const std::exception&)
-      {
-          reply->set_success("error: exception (useful I know?)");
-          return Status::OK;
-      }
-
-      // Respond to client
-      reply->set_success("success");
-      return Status::OK;
-  }
-
-  Status bicStartStimulation(ServerContext* context, const bicStartStimulationRequest* request, bicSuccessReply* reply) override {
-      // Pull the mutex for guarding against inappropriate multi-threaded access
-      const std::lock_guard<std::mutex> lock(rpcLock);
-
-      // Check if already initialized
-      if (!initialized)
-      {
-          reply->set_success("error: not initialized");
-          return Status::OK;
-      }
-
-      // Perform the operation
-      try
-      {
-
-      }
-      catch (const std::exception&)
-      {
-          reply->set_success("error: exception (useful I know?)");
-          return Status::OK;
-      }
-
-      // Respond to client
-      reply->set_success("success");
-      return Status::OK;
-  }
-
-  Status bicStopStimulation(ServerContext* context, const bicNullRequest* request, bicSuccessReply* reply) override {
-      // Pull the mutex for guarding against inappropriate multi-threaded access
-      const std::lock_guard<std::mutex> lock(rpcLock);
-
-      // Check if already initialized
-      if (!initialized)
-      {
-          reply->set_success("error: not initialized");
-          return Status::OK;
-      }
-
-      // Perform the operation
-      try
-      {
-          theImplant->stopStimulation();
-      }
-      catch (const std::exception&)
-      {
-          reply->set_success("error: exception (useful I know?)");
-          return Status::OK;
-      }
-
-      // Respond to client
-      reply->set_success("success");
-      return Status::OK;
-  }
+        // All bridges are by definition 'connected' via USB, so they can't be disconnected
+        return Status::OK;
+    }
 };
 
 void RunServer() {
   std::string server_address("0.0.0.0:50051");
-  BICMangaerServiceImpl service;
+  BICDeviceServiceImpl deviceService;
+  BICBridgeServiceImpl bridgeService;
 
   grpc::EnableDefaultHealthCheckService(true);
   grpc::reflection::InitProtoReflectionServerBuilderPlugin();
@@ -614,7 +838,8 @@ void RunServer() {
   builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());
   // Register "service" as the instance through which we'll communicate with
   // clients. In this case it corresponds to an *synchronous* service.
-  builder.RegisterService(&service);
+  builder.RegisterService(&deviceService);
+  builder.RegisterService(&bridgeService);
   // Finally assemble the server.
   std::unique_ptr<Server> server(builder.BuildAndStart());
   std::cout << "Server listening on " << server_address << std::endl;
