@@ -1,12 +1,12 @@
 ﻿  BICgRPCmicroserver.cc
-D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(321,1): warning C4267: 'argument': conversion from 'size_t' to 'google::protobuf::uint32', possible loss of data
-D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(322,1): warning C4267: 'argument': conversion from 'size_t' to 'google::protobuf::uint32', possible loss of data
-D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(325,1): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(355,1): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(452,1): warning C4267: 'argument': conversion from 'size_t' to 'google::protobuf::uint32', possible loss of data
-D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(453,1): warning C4267: 'argument': conversion from 'size_t' to 'google::protobuf::uint32', possible loss of data
-D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(456,1): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(441,42): warning C4101: 'theError': unreferenced local variable
+D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(337,1): warning C4267: 'argument': conversion from 'size_t' to 'google::protobuf::uint32', possible loss of data
+D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(338,1): warning C4267: 'argument': conversion from 'size_t' to 'google::protobuf::uint32', possible loss of data
+D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(341,1): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(371,1): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(468,1): warning C4267: 'argument': conversion from 'size_t' to 'google::protobuf::uint32', possible loss of data
+D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(469,1): warning C4267: 'argument': conversion from 'size_t' to 'google::protobuf::uint32', possible loss of data
+D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(472,1): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(457,42): warning C4101: 'theError': unreferenced local variable
 D:\gitbuilds\include\grpcpp/impl/codegen/proto_utils.h(52,1): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
 D:\gitbuilds\include\grpcpp/impl/codegen/proto_utils.h(107): message : see reference to function template instantiation 'grpc::Status grpc::GenericSerialize<grpc::ProtoBufferWriter,T>(const grpc::protobuf::MessageLite &,grpc::ByteBuffer *,bool *)' being compiled
           with
@@ -48,5 +48,5 @@ D:\gitbuilds\include\grpcpp/impl/codegen/async_stream_impl.h(293): message : see
           [
               R=BICgRPC::TemperatureUpdate
           ]
-D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\cmake\build\BICgRPC.grpc.pb.h(1939): message : see reference to class template instantiation 'grpc_impl::ClientAsyncReader<BICgRPC::TemperatureUpdate>' being compiled
+D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\cmake\build\BICgRPC.grpc.pb.h(1974): message : see reference to class template instantiation 'grpc_impl::ClientAsyncReader<BICgRPC::TemperatureUpdate>' being compiled
   BICgRPCmicroserver.vcxproj -> D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\cmake\build\Debug\BICgRPCmicroserver.exe

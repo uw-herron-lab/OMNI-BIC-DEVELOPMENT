@@ -335,6 +335,7 @@ static const char* BICDeviceService_method_names[] = {
   "/BICgRPC.BICDeviceService/bicStartStimulation",
   "/BICgRPC.BICDeviceService/bicStopStimulation",
   "/BICgRPC.BICDeviceService/bicTemperatureStream",
+  "/BICgRPC.BICDeviceService/bicHumidityStream",
 };
 
 std::unique_ptr< BICDeviceService::Stub> BICDeviceService::NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options) {
@@ -356,6 +357,7 @@ BICDeviceService::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& c
   , rpcmethod_bicStartStimulation_(BICDeviceService_method_names[9], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   , rpcmethod_bicStopStimulation_(BICDeviceService_method_names[10], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   , rpcmethod_bicTemperatureStream_(BICDeviceService_method_names[11], ::grpc::internal::RpcMethod::SERVER_STREAMING, channel)
+  , rpcmethod_bicHumidityStream_(BICDeviceService_method_names[12], ::grpc::internal::RpcMethod::SERVER_STREAMING, channel)
   {}
 
 ::grpc::Status BICDeviceService::Stub::ScanDevices(::grpc::ClientContext* context, const ::BICgRPC::ScanDevicesRequest& request, ::BICgRPC::ScanDevicesReply* response) {
@@ -666,20 +668,36 @@ void BICDeviceService::Stub::experimental_async::bicStopStimulation(::grpc::Clie
   return ::grpc_impl::internal::ClientAsyncResponseReaderFactory< ::BICgRPC::bicSuccessReply>::Create(channel_.get(), cq, rpcmethod_bicStopStimulation_, context, request, false);
 }
 
-::grpc::ClientReader< ::BICgRPC::TemperatureUpdate>* BICDeviceService::Stub::bicTemperatureStreamRaw(::grpc::ClientContext* context, const ::google::protobuf::Empty& request) {
+::grpc::ClientReader< ::BICgRPC::TemperatureUpdate>* BICDeviceService::Stub::bicTemperatureStreamRaw(::grpc::ClientContext* context, const ::BICgRPC::bicSetStreamEnable& request) {
   return ::grpc_impl::internal::ClientReaderFactory< ::BICgRPC::TemperatureUpdate>::Create(channel_.get(), rpcmethod_bicTemperatureStream_, context, request);
 }
 
-void BICDeviceService::Stub::experimental_async::bicTemperatureStream(::grpc::ClientContext* context, ::google::protobuf::Empty* request, ::grpc::experimental::ClientReadReactor< ::BICgRPC::TemperatureUpdate>* reactor) {
+void BICDeviceService::Stub::experimental_async::bicTemperatureStream(::grpc::ClientContext* context, ::BICgRPC::bicSetStreamEnable* request, ::grpc::experimental::ClientReadReactor< ::BICgRPC::TemperatureUpdate>* reactor) {
   ::grpc_impl::internal::ClientCallbackReaderFactory< ::BICgRPC::TemperatureUpdate>::Create(stub_->channel_.get(), stub_->rpcmethod_bicTemperatureStream_, context, request, reactor);
 }
 
-::grpc::ClientAsyncReader< ::BICgRPC::TemperatureUpdate>* BICDeviceService::Stub::AsyncbicTemperatureStreamRaw(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq, void* tag) {
+::grpc::ClientAsyncReader< ::BICgRPC::TemperatureUpdate>* BICDeviceService::Stub::AsyncbicTemperatureStreamRaw(::grpc::ClientContext* context, const ::BICgRPC::bicSetStreamEnable& request, ::grpc::CompletionQueue* cq, void* tag) {
   return ::grpc_impl::internal::ClientAsyncReaderFactory< ::BICgRPC::TemperatureUpdate>::Create(channel_.get(), cq, rpcmethod_bicTemperatureStream_, context, request, true, tag);
 }
 
-::grpc::ClientAsyncReader< ::BICgRPC::TemperatureUpdate>* BICDeviceService::Stub::PrepareAsyncbicTemperatureStreamRaw(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) {
+::grpc::ClientAsyncReader< ::BICgRPC::TemperatureUpdate>* BICDeviceService::Stub::PrepareAsyncbicTemperatureStreamRaw(::grpc::ClientContext* context, const ::BICgRPC::bicSetStreamEnable& request, ::grpc::CompletionQueue* cq) {
   return ::grpc_impl::internal::ClientAsyncReaderFactory< ::BICgRPC::TemperatureUpdate>::Create(channel_.get(), cq, rpcmethod_bicTemperatureStream_, context, request, false, nullptr);
+}
+
+::grpc::ClientReader< ::BICgRPC::HumidityUpdate>* BICDeviceService::Stub::bicHumidityStreamRaw(::grpc::ClientContext* context, const ::BICgRPC::bicSetStreamEnable& request) {
+  return ::grpc_impl::internal::ClientReaderFactory< ::BICgRPC::HumidityUpdate>::Create(channel_.get(), rpcmethod_bicHumidityStream_, context, request);
+}
+
+void BICDeviceService::Stub::experimental_async::bicHumidityStream(::grpc::ClientContext* context, ::BICgRPC::bicSetStreamEnable* request, ::grpc::experimental::ClientReadReactor< ::BICgRPC::HumidityUpdate>* reactor) {
+  ::grpc_impl::internal::ClientCallbackReaderFactory< ::BICgRPC::HumidityUpdate>::Create(stub_->channel_.get(), stub_->rpcmethod_bicHumidityStream_, context, request, reactor);
+}
+
+::grpc::ClientAsyncReader< ::BICgRPC::HumidityUpdate>* BICDeviceService::Stub::AsyncbicHumidityStreamRaw(::grpc::ClientContext* context, const ::BICgRPC::bicSetStreamEnable& request, ::grpc::CompletionQueue* cq, void* tag) {
+  return ::grpc_impl::internal::ClientAsyncReaderFactory< ::BICgRPC::HumidityUpdate>::Create(channel_.get(), cq, rpcmethod_bicHumidityStream_, context, request, true, tag);
+}
+
+::grpc::ClientAsyncReader< ::BICgRPC::HumidityUpdate>* BICDeviceService::Stub::PrepareAsyncbicHumidityStreamRaw(::grpc::ClientContext* context, const ::BICgRPC::bicSetStreamEnable& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc_impl::internal::ClientAsyncReaderFactory< ::BICgRPC::HumidityUpdate>::Create(channel_.get(), cq, rpcmethod_bicHumidityStream_, context, request, false, nullptr);
 }
 
 BICDeviceService::Service::Service() {
@@ -796,12 +814,22 @@ BICDeviceService::Service::Service() {
   AddMethod(new ::grpc::internal::RpcServiceMethod(
       BICDeviceService_method_names[11],
       ::grpc::internal::RpcMethod::SERVER_STREAMING,
-      new ::grpc::internal::ServerStreamingHandler< BICDeviceService::Service, ::google::protobuf::Empty, ::BICgRPC::TemperatureUpdate>(
+      new ::grpc::internal::ServerStreamingHandler< BICDeviceService::Service, ::BICgRPC::bicSetStreamEnable, ::BICgRPC::TemperatureUpdate>(
           [](BICDeviceService::Service* service,
              ::grpc_impl::ServerContext* ctx,
-             const ::google::protobuf::Empty* req,
+             const ::BICgRPC::bicSetStreamEnable* req,
              ::grpc_impl::ServerWriter<::BICgRPC::TemperatureUpdate>* writer) {
                return service->bicTemperatureStream(ctx, req, writer);
+             }, this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      BICDeviceService_method_names[12],
+      ::grpc::internal::RpcMethod::SERVER_STREAMING,
+      new ::grpc::internal::ServerStreamingHandler< BICDeviceService::Service, ::BICgRPC::bicSetStreamEnable, ::BICgRPC::HumidityUpdate>(
+          [](BICDeviceService::Service* service,
+             ::grpc_impl::ServerContext* ctx,
+             const ::BICgRPC::bicSetStreamEnable* req,
+             ::grpc_impl::ServerWriter<::BICgRPC::HumidityUpdate>* writer) {
+               return service->bicHumidityStream(ctx, req, writer);
              }, this)));
 }
 
@@ -885,7 +913,14 @@ BICDeviceService::Service::~Service() {
   return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
 }
 
-::grpc::Status BICDeviceService::Service::bicTemperatureStream(::grpc::ServerContext* context, const ::google::protobuf::Empty* request, ::grpc::ServerWriter< ::BICgRPC::TemperatureUpdate>* writer) {
+::grpc::Status BICDeviceService::Service::bicTemperatureStream(::grpc::ServerContext* context, const ::BICgRPC::bicSetStreamEnable* request, ::grpc::ServerWriter< ::BICgRPC::TemperatureUpdate>* writer) {
+  (void) context;
+  (void) request;
+  (void) writer;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status BICDeviceService::Service::bicHumidityStream(::grpc::ServerContext* context, const ::BICgRPC::bicSetStreamEnable* request, ::grpc::ServerWriter< ::BICgRPC::HumidityUpdate>* writer) {
   (void) context;
   (void) request;
   (void) writer;

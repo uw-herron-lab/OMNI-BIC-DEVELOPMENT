@@ -8,10 +8,9 @@ namespace BICgRPC_ConsoleTest
 {
     class Program
     {
-        // 
+        // Clients
         static BICBridgeService.BICBridgeServiceClient bridgeClient;
         static BICDeviceService.BICDeviceServiceClient deviceClient;
-        static bool tempStreamEnabled = false;
 
         public static void Main(string[] args)
         {
@@ -75,18 +74,22 @@ namespace BICgRPC_ConsoleTest
             Console.WriteLine();
 
             // Connect to the device
-            Console.WriteLine("Connecting to implantable device");
+            Console.WriteLine("Connecting to implantable device.");
             var connectDeviceReply = deviceClient.ConnectDevice(new ConnectDeviceRequest() { DeviceAddress = deviceName, LogFileName = "./deviceLog.txt" });
-            Console.WriteLine("Server Response: " + connectDeviceReply.Success);
 
-            // Test starting up a thread
-            tempStreamEnabled = true;
-            Task tempMonitor = Task.Run(tempMonitorThreadAsync);
+            // Task pointers for streaming methods
+            Task temperMonitor = null;
+            Task humidityMonitor = null;
+            Task connectionMonitor = null;
+            Task powerMonitor = null;
+            Task errorMonitor = null;
+            Task neuroMonitor = null;
 
             // Done initializing, start user controlled loop
             writeCommandMenu();
             Random randomNumGen = new Random();
             ConsoleKeyInfo userCommand;
+            
             do
             {
                 userCommand = Console.ReadKey();
@@ -128,25 +131,45 @@ namespace BICgRPC_ConsoleTest
                     case ConsoleKey.T:
                         bicGetTemperatureReply theTempReply = deviceClient.bicGetTemperature(new Empty());
                         Console.WriteLine("Implant Get Temperature: " + theTempReply.Temperature.ToString() + theTempReply.Units);
+                        if(temperMonitor == null || temperMonitor.IsCompleted)
+                        {
+                            // Start up the stream
+                            temperMonitor = Task.Run(temperMonitorTaskAsync);
+                        }
+                        else
+                        {
+                            // Stop the stream
+                            deviceClient.bicTemperatureStream(new bicSetStreamEnable() { Enable = false });
+                        }
                         break;
                     case ConsoleKey.H:
                         bicGetHumidityReply theHumidReply = deviceClient.bicGetHumidity(new Empty());
                         Console.WriteLine("Implant Get Humidity: " + theHumidReply.Humidity.ToString() + theHumidReply.Units);
+                        if (humidityMonitor == null || humidityMonitor.IsCompleted)
+                        {
+                            // Start up the stream
+                            humidityMonitor = Task.Run(humidMonitorTaskAsync);
+                        }
+                        else
+                        {
+                            // Stop the stream
+                            deviceClient.bicHumidityStream(new bicSetStreamEnable() { Enable = false });
+                        }
                         break;
                     case ConsoleKey.S:
                         bicSetSensingEnableRequest aSensingReq = new bicSetSensingEnableRequest() { EnableSensing = true };
                         // Can define any reference channels by adding them to the list, for simplicity I'm not doping this currently, but this is why I'm declaring aSensingReq.
                         //aSensingReq.RefChannels.Add(0);
-                        Console.WriteLine("Implant Power On Command Result: " + deviceClient.bicSetSensingEnable(aSensingReq).Success);
+                        Console.WriteLine("Implant Power On Command Result: " + deviceClient.bicSetSensingEnable(aSensingReq));
                         break;
                     case ConsoleKey.N:                        
-                        Console.WriteLine("Implant Sensing Off Command Result: " + deviceClient.bicSetSensingEnable(new bicSetSensingEnableRequest() { EnableSensing = false }).Success) ;
+                        Console.WriteLine("Implant Sensing Off Command Result: " + deviceClient.bicSetSensingEnable(new bicSetSensingEnableRequest() { EnableSensing = false })) ;
                         break;
                     case ConsoleKey.P:
-                        Console.WriteLine("Implant Power On Command Result: " + deviceClient.bicSetImplantPower(new bicSetImplantPowerRequest() { PowerEnabled = true }).Success);
+                        Console.WriteLine("Implant Power On Command Result: " + deviceClient.bicSetImplantPower(new bicSetImplantPowerRequest() { PowerEnabled = true }));
                         break;
                     case ConsoleKey.O:
-                        Console.WriteLine("Implant Power Off Command Result: " + deviceClient.bicSetImplantPower(new bicSetImplantPowerRequest() { PowerEnabled = false }).Success);
+                        Console.WriteLine("Implant Power Off Command Result: " + deviceClient.bicSetImplantPower(new bicSetImplantPowerRequest() { PowerEnabled = false }));
                         break;
                     case ConsoleKey.D1:
                         Console.WriteLine("Stim On Not Implemented");
@@ -164,21 +187,30 @@ namespace BICgRPC_ConsoleTest
             } while (userCommand.Key != ConsoleKey.Q);
             
             var reply3 = deviceClient.bicDispose(new Empty()) ;
-            Console.WriteLine("Dispose BIC Response: " + reply3.Success);
+            Console.WriteLine("Dispose BIC Response: " + reply3.ToString());
             channel.ShutdownAsync().Wait();
             Console.WriteLine("Press any key to exit...");
             Console.ReadKey();
         }
 
-        static async Task tempMonitorThreadAsync()
+        static async Task temperMonitorTaskAsync()
         {
-            var tempStream = deviceClient.bicTemperatureStream(new Empty());
-
-            while(tempStreamEnabled)
+            var temperStream = deviceClient.bicTemperatureStream(new bicSetStreamEnable() { Enable = true });
+            while(await temperStream.ResponseStream.MoveNext())
             {
-                await tempStream.ResponseStream.MoveNext();
-                Console.WriteLine("Implant Stream Temperature: " + tempStream.ResponseStream.Current.Temperature.ToString() + tempStream.ResponseStream.Current.Units);
+                Console.WriteLine("Implant Stream Temperature: " + temperStream.ResponseStream.Current.Temperature.ToString() + temperStream.ResponseStream.Current.Units);
             }
+            Console.WriteLine("(Temperature Monitor Task Exited)");
+        }
+
+        static async Task humidMonitorTaskAsync()
+        {
+            var humidStream = deviceClient.bicHumidityStream(new bicSetStreamEnable() { Enable = true });
+            while (await humidStream.ResponseStream.MoveNext())
+            {
+                Console.WriteLine("Implant Stream Humidity: " + humidStream.ResponseStream.Current.Humidity.ToString() + humidStream.ResponseStream.Current.Units);
+            }
+            Console.WriteLine("(Humidity Monitor Task Exited)");
         }
 
         static void writeCommandMenu()
@@ -186,7 +218,7 @@ namespace BICgRPC_ConsoleTest
             Console.WriteLine("Command Test Menu: ");
             Console.WriteLine("\tg : Get Implant Information");
             Console.WriteLine("\ti : Get Impedance Measurement for a random electrode");
-            Console.WriteLine("\tt : Get Temperature");
+            Console.WriteLine("\tt : Get Temperature and toggle Temperature Streaming");
             Console.WriteLine("\th : Get Humidity");
             Console.WriteLine("\ts : Start Sense Streaming");
             Console.WriteLine("\tn : Stop Sense Streaming");

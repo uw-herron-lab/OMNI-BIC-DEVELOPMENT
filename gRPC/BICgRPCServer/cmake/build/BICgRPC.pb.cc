@@ -47,6 +47,10 @@ class bicGetImplantInfoReplyDefaultTypeInternal {
  public:
   ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<bicGetImplantInfoReply> _instance;
 } _bicGetImplantInfoReply_default_instance_;
+class bicSetStreamEnableDefaultTypeInternal {
+ public:
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<bicSetStreamEnable> _instance;
+} _bicSetStreamEnable_default_instance_;
 class bicGetImpedanceRequestDefaultTypeInternal {
  public:
   ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<bicGetImpedanceRequest> _instance;
@@ -79,6 +83,10 @@ class TemperatureUpdateDefaultTypeInternal {
  public:
   ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<TemperatureUpdate> _instance;
 } _TemperatureUpdate_default_instance_;
+class HumidityUpdateDefaultTypeInternal {
+ public:
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<HumidityUpdate> _instance;
+} _HumidityUpdate_default_instance_;
 class BridgeDefaultTypeInternal {
  public:
   ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<Bridge> _instance;
@@ -213,6 +221,20 @@ static void InitDefaultsscc_info_DisconnectBridgeRequest_BICgRPC_2eproto() {
 
 ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_DisconnectBridgeRequest_BICgRPC_2eproto =
     {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_DisconnectBridgeRequest_BICgRPC_2eproto}, {}};
+
+static void InitDefaultsscc_info_HumidityUpdate_BICgRPC_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::BICgRPC::_HumidityUpdate_default_instance_;
+    new (ptr) ::BICgRPC::HumidityUpdate();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::BICgRPC::HumidityUpdate::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_HumidityUpdate_BICgRPC_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_HumidityUpdate_BICgRPC_2eproto}, {}};
 
 static void InitDefaultsscc_info_QueryBridgesRequest_BICgRPC_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
@@ -413,6 +435,20 @@ static void InitDefaultsscc_info_bicSetSensingEnableRequest_BICgRPC_2eproto() {
 ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_bicSetSensingEnableRequest_BICgRPC_2eproto =
     {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_bicSetSensingEnableRequest_BICgRPC_2eproto}, {}};
 
+static void InitDefaultsscc_info_bicSetStreamEnable_BICgRPC_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::BICgRPC::_bicSetStreamEnable_default_instance_;
+    new (ptr) ::BICgRPC::bicSetStreamEnable();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::BICgRPC::bicSetStreamEnable::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_bicSetStreamEnable_BICgRPC_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_bicSetStreamEnable_BICgRPC_2eproto}, {}};
+
 static void InitDefaultsscc_info_bicStartStimulationRequest_BICgRPC_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
@@ -441,7 +477,7 @@ static void InitDefaultsscc_info_bicSuccessReply_BICgRPC_2eproto() {
 ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_bicSuccessReply_BICgRPC_2eproto =
     {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_bicSuccessReply_BICgRPC_2eproto}, {}};
 
-static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_BICgRPC_2eproto[23];
+static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_BICgRPC_2eproto[25];
 static const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* file_level_enum_descriptors_BICgRPC_2eproto[2];
 static constexpr ::PROTOBUF_NAMESPACE_ID::ServiceDescriptor const** file_level_service_descriptors_BICgRPC_2eproto = nullptr;
 
@@ -451,7 +487,6 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_BICgRPC_2eproto::offsets[] PRO
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicSuccessReply, success_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::BICgRPC::ScanDevicesRequest, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -505,6 +540,12 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_BICgRPC_2eproto::offsets[] PRO
   PROTOBUF_FIELD_OFFSET(::BICgRPC::bicGetImplantInfoReply, stimulationchannelcount_),
   PROTOBUF_FIELD_OFFSET(::BICgRPC::bicGetImplantInfoReply, samplingrate_),
   PROTOBUF_FIELD_OFFSET(::BICgRPC::bicGetImplantInfoReply, success_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicSetStreamEnable, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::bicSetStreamEnable, enable_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::BICgRPC::bicGetImpedanceRequest, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -560,6 +601,13 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_BICgRPC_2eproto::offsets[] PRO
   ~0u,  // no _weak_field_map_
   PROTOBUF_FIELD_OFFSET(::BICgRPC::TemperatureUpdate, temperature_),
   PROTOBUF_FIELD_OFFSET(::BICgRPC::TemperatureUpdate, units_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::HumidityUpdate, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::HumidityUpdate, humidity_),
+  PROTOBUF_FIELD_OFFSET(::BICgRPC::HumidityUpdate, units_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::BICgRPC::Bridge, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -619,28 +667,30 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_BICgRPC_2eproto::offsets[] PRO
 };
 static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, sizeof(::BICgRPC::bicSuccessReply)},
-  { 6, -1, sizeof(::BICgRPC::ScanDevicesRequest)},
-  { 12, -1, sizeof(::BICgRPC::ScanDevicesReply)},
-  { 19, -1, sizeof(::BICgRPC::ConnectDeviceRequest)},
-  { 26, -1, sizeof(::BICgRPC::bicGetImplantInfoRequest)},
-  { 32, -1, sizeof(::BICgRPC::bicGetImplantInfoReply_bicChannelInfo)},
-  { 45, -1, sizeof(::BICgRPC::bicGetImplantInfoReply)},
-  { 59, -1, sizeof(::BICgRPC::bicGetImpedanceRequest)},
-  { 65, -1, sizeof(::BICgRPC::bicGetImpedanceReply)},
-  { 73, -1, sizeof(::BICgRPC::bicGetTemperatureReply)},
-  { 81, -1, sizeof(::BICgRPC::bicGetHumidityReply)},
-  { 89, -1, sizeof(::BICgRPC::bicSetSensingEnableRequest)},
-  { 96, -1, sizeof(::BICgRPC::bicSetImplantPowerRequest)},
-  { 102, -1, sizeof(::BICgRPC::bicStartStimulationRequest)},
-  { 107, -1, sizeof(::BICgRPC::TemperatureUpdate)},
-  { 114, -1, sizeof(::BICgRPC::Bridge)},
-  { 123, -1, sizeof(::BICgRPC::QueryBridgesRequest)},
-  { 129, -1, sizeof(::BICgRPC::QueryBridgesResponse)},
-  { 135, -1, sizeof(::BICgRPC::ConnectBridgeRequest)},
-  { 142, -1, sizeof(::BICgRPC::ConnectBridgeResponse)},
-  { 150, -1, sizeof(::BICgRPC::DescribeBridgeRequest)},
-  { 156, -1, sizeof(::BICgRPC::DescribeBridgeResponse)},
-  { 164, -1, sizeof(::BICgRPC::DisconnectBridgeRequest)},
+  { 5, -1, sizeof(::BICgRPC::ScanDevicesRequest)},
+  { 11, -1, sizeof(::BICgRPC::ScanDevicesReply)},
+  { 18, -1, sizeof(::BICgRPC::ConnectDeviceRequest)},
+  { 25, -1, sizeof(::BICgRPC::bicGetImplantInfoRequest)},
+  { 31, -1, sizeof(::BICgRPC::bicGetImplantInfoReply_bicChannelInfo)},
+  { 44, -1, sizeof(::BICgRPC::bicGetImplantInfoReply)},
+  { 58, -1, sizeof(::BICgRPC::bicSetStreamEnable)},
+  { 64, -1, sizeof(::BICgRPC::bicGetImpedanceRequest)},
+  { 70, -1, sizeof(::BICgRPC::bicGetImpedanceReply)},
+  { 78, -1, sizeof(::BICgRPC::bicGetTemperatureReply)},
+  { 86, -1, sizeof(::BICgRPC::bicGetHumidityReply)},
+  { 94, -1, sizeof(::BICgRPC::bicSetSensingEnableRequest)},
+  { 101, -1, sizeof(::BICgRPC::bicSetImplantPowerRequest)},
+  { 107, -1, sizeof(::BICgRPC::bicStartStimulationRequest)},
+  { 112, -1, sizeof(::BICgRPC::TemperatureUpdate)},
+  { 119, -1, sizeof(::BICgRPC::HumidityUpdate)},
+  { 126, -1, sizeof(::BICgRPC::Bridge)},
+  { 135, -1, sizeof(::BICgRPC::QueryBridgesRequest)},
+  { 141, -1, sizeof(::BICgRPC::QueryBridgesResponse)},
+  { 147, -1, sizeof(::BICgRPC::ConnectBridgeRequest)},
+  { 154, -1, sizeof(::BICgRPC::ConnectBridgeResponse)},
+  { 162, -1, sizeof(::BICgRPC::DescribeBridgeRequest)},
+  { 168, -1, sizeof(::BICgRPC::DescribeBridgeResponse)},
+  { 176, -1, sizeof(::BICgRPC::DisconnectBridgeRequest)},
 };
 
 static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
@@ -651,6 +701,7 @@ static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] =
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::BICgRPC::_bicGetImplantInfoRequest_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::BICgRPC::_bicGetImplantInfoReply_bicChannelInfo_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::BICgRPC::_bicGetImplantInfoReply_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::BICgRPC::_bicSetStreamEnable_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::BICgRPC::_bicGetImpedanceRequest_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::BICgRPC::_bicGetImpedanceReply_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::BICgRPC::_bicGetTemperatureReply_default_instance_),
@@ -659,6 +710,7 @@ static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] =
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::BICgRPC::_bicSetImplantPowerRequest_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::BICgRPC::_bicStartStimulationRequest_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::BICgRPC::_TemperatureUpdate_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::BICgRPC::_HumidityUpdate_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::BICgRPC::_Bridge_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::BICgRPC::_QueryBridgesRequest_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::BICgRPC::_QueryBridgesResponse_default_instance_),
@@ -672,104 +724,107 @@ static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] =
 const char descriptor_table_protodef_BICgRPC_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
   "\n\rBICgRPC.proto\022\007BICgRPC\032\031google/protobu"
   "f/any.proto\032\033google/protobuf/empty.proto"
-  "\"\"\n\017bicSuccessReply\022\017\n\007success\030\001 \001(\t\"(\n\022"
-  "ScanDevicesRequest\022\022\n\nbridgeName\030\001 \001(\t\"["
-  "\n\020ScanDevicesReply\022\014\n\004name\030\001 \001(\t\0229\n\020disc"
-  "overedDevice\030\002 \001(\0132\037.BICgRPC.bicGetImpla"
-  "ntInfoReply\"B\n\024ConnectDeviceRequest\022\025\n\rd"
-  "eviceAddress\030\001 \001(\t\022\023\n\013logFileName\030\002 \001(\t\""
-  "4\n\030bicGetImplantInfoRequest\022\030\n\020updateCac"
-  "hedInfo\030\001 \001(\010\"\363\004\n\026bicGetImplantInfoReply"
-  "\022\027\n\017firmwareVersion\030\001 \001(\t\022\022\n\ndeviceType\030"
-  "\002 \001(\t\022\020\n\010deviceId\030\003 \001(\t\022G\n\017channelInfoLi"
-  "st\030\004 \003(\0132..BICgRPC.bicGetImplantInfoRepl"
-  "y.bicChannelInfo\022\024\n\014channelCount\030\005 \001(\r\022\037"
-  "\n\027measurementChannelCount\030\006 \001(\r\022\037\n\027stimu"
-  "lationChannelCount\030\007 \001(\r\022\024\n\014samplingRate"
-  "\030\010 \001(\r\022\017\n\007success\030\t \001(\t\032\321\002\n\016bicChannelIn"
-  "fo\022\022\n\ncanMeasure\030\001 \001(\010\022\027\n\017measureValueMi"
-  "n\030\002 \001(\001\022\027\n\017measureValueMax\030\003 \001(\001\022\024\n\014canS"
-  "timulate\030\004 \001(\010\022P\n\017stimulationUnit\030\005 \001(\0162"
-  "7.BICgRPC.bicGetImplantInfoReply.bicChan"
-  "nelInfo.UnitType\022\024\n\014stimValueMin\030\006 \001(\001\022\024"
-  "\n\014stimValueMax\030\007 \001(\001\022\033\n\023canMeasureImpeda"
-  "nce\030\010 \001(\010\"H\n\010UnitType\022\016\n\nUT_NO_UNIT\020\000\022\016\n"
-  "\nUT_CURRENT\020\001\022\016\n\nUT_VOLTAGE\020\002\022\014\n\010UT_COUN"
-  "T\020\003\")\n\026bicGetImpedanceRequest\022\017\n\007channel"
-  "\030\001 \001(\r\"P\n\024bicGetImpedanceReply\022\030\n\020channe"
-  "lImpedance\030\001 \001(\001\022\r\n\005units\030\002 \001(\t\022\017\n\007succe"
-  "ss\030\003 \001(\t\"M\n\026bicGetTemperatureReply\022\023\n\013te"
-  "mperature\030\001 \001(\001\022\r\n\005units\030\002 \001(\t\022\017\n\007succes"
-  "s\030\003 \001(\t\"G\n\023bicGetHumidityReply\022\020\n\010humidi"
-  "ty\030\001 \001(\001\022\r\n\005units\030\002 \001(\t\022\017\n\007success\030\003 \001(\t"
-  "\"H\n\032bicSetSensingEnableRequest\022\025\n\renable"
-  "Sensing\030\001 \001(\010\022\023\n\013refChannels\030\002 \003(\r\"1\n\031bi"
-  "cSetImplantPowerRequest\022\024\n\014powerEnabled\030"
-  "\001 \001(\010\"\034\n\032bicStartStimulationRequest\"7\n\021T"
-  "emperatureUpdate\022\023\n\013temperature\030\001 \001(\001\022\r\n"
-  "\005units\030\002 \001(\t\"V\n\006Bridge\022\014\n\004name\030\001 \001(\t\022\023\n\013"
-  "implantType\030\002 \001(\t\022\020\n\010deviceId\030\003 \001(\t\022\027\n\017f"
-  "irmwareVersion\030\004 \001(\t\"$\n\023QueryBridgesRequ"
-  "est\022\r\n\005query\030\001 \001(\t\"8\n\024QueryBridgesRespon"
-  "se\022 \n\007bridges\030\001 \003(\0132\017.BICgRPC.Bridge\"N\n\024"
-  "ConnectBridgeRequest\022\014\n\004name\030\001 \001(\t\022(\n\npa"
-  "rameters\030\002 \001(\0132\024.google.protobuf.Any\"\205\001\n"
-  "\025ConnectBridgeResponse\022\014\n\004name\030\001 \001(\t\0227\n\021"
-  "connection_status\030\002 \001(\0162\034.BICgRPC.Connec"
-  "tBridgeStatus\022%\n\007details\030\003 \001(\0132\024.google."
-  "protobuf.Any\"%\n\025DescribeBridgeRequest\022\014\n"
-  "\004name\030\001 \001(\t\"m\n\026DescribeBridgeResponse\022\014\n"
-  "\004name\030\001 \001(\t\022 \n\007details\030\002 \001(\0132\017.BICgRPC.B"
-  "ridge\022#\n\005error\030\003 \001(\0132\024.google.protobuf.A"
-  "ny\"\'\n\027DisconnectBridgeRequest\022\014\n\004name\030\001 "
-  "\001(\t*l\n\023ConnectBridgeStatus\022%\n!CONNECT_BR"
-  "IDGE_STATUS_UNSPECIFIED\020\000\022\026\n\022CONNECTION_"
-  "SUCCESS\020\001\022\026\n\022CONNECTION_FAILURE\020\0022\354\003\n\020BI"
-  "CBridgeService\022J\n\013ListBridges\022\034.BICgRPC."
-  "QueryBridgesRequest\032\035.BICgRPC.QueryBridg"
-  "esResponse\022J\n\013ScanBridges\022\034.BICgRPC.Quer"
-  "yBridgesRequest\032\035.BICgRPC.QueryBridgesRe"
-  "sponse\022O\n\020ConnectedBridges\022\034.BICgRPC.Que"
-  "ryBridgesRequest\032\035.BICgRPC.QueryBridgesR"
-  "esponse\022N\n\rConnectBridge\022\035.BICgRPC.Conne"
-  "ctBridgeRequest\032\036.BICgRPC.ConnectBridgeR"
-  "esponse\022Q\n\016DescribeBridge\022\036.BICgRPC.Desc"
-  "ribeBridgeRequest\032\037.BICgRPC.DescribeBrid"
-  "geResponse\022L\n\020DisconnectBridge\022 .BICgRPC"
-  ".DisconnectBridgeRequest\032\026.google.protob"
-  "uf.Empty2\323\007\n\020BICDeviceService\022G\n\013ScanDev"
-  "ices\022\033.BICgRPC.ScanDevicesRequest\032\031.BICg"
-  "RPC.ScanDevicesReply\"\000\022J\n\rConnectDevice\022"
-  "\035.BICgRPC.ConnectDeviceRequest\032\030.BICgRPC"
-  ".bicSuccessReply\"\000\022@\n\nbicDispose\022\026.googl"
-  "e.protobuf.Empty\032\030.BICgRPC.bicSuccessRep"
-  "ly\"\000\022Y\n\021bicGetImplantInfo\022!.BICgRPC.bicG"
-  "etImplantInfoRequest\032\037.BICgRPC.bicGetImp"
-  "lantInfoReply\"\000\022S\n\017bicGetImpedance\022\037.BIC"
-  "gRPC.bicGetImpedanceRequest\032\035.BICgRPC.bi"
-  "cGetImpedanceReply\"\000\022N\n\021bicGetTemperatur"
-  "e\022\026.google.protobuf.Empty\032\037.BICgRPC.bicG"
-  "etTemperatureReply\"\000\022H\n\016bicGetHumidity\022\026"
-  ".google.protobuf.Empty\032\034.BICgRPC.bicGetH"
-  "umidityReply\"\000\022V\n\023bicSetSensingEnable\022#."
-  "BICgRPC.bicSetSensingEnableRequest\032\030.BIC"
-  "gRPC.bicSuccessReply\"\000\022T\n\022bicSetImplantP"
-  "ower\022\".BICgRPC.bicSetImplantPowerRequest"
-  "\032\030.BICgRPC.bicSuccessReply\"\000\022V\n\023bicStart"
-  "Stimulation\022#.BICgRPC.bicStartStimulatio"
-  "nRequest\032\030.BICgRPC.bicSuccessReply\"\000\022H\n\022"
-  "bicStopStimulation\022\026.google.protobuf.Emp"
-  "ty\032\030.BICgRPC.bicSuccessReply\"\000\022N\n\024bicTem"
-  "peratureStream\022\026.google.protobuf.Empty\032\032"
-  ".BICgRPC.TemperatureUpdate\"\0000\001B,\n\017io.grp"
-  "c.BICgRPCB\007BICgRPCP\001\242\002\003HLW\252\002\007BICgRPCb\006pr"
-  "oto3"
+  "\"\021\n\017bicSuccessReply\"(\n\022ScanDevicesReques"
+  "t\022\022\n\nbridgeName\030\001 \001(\t\"[\n\020ScanDevicesRepl"
+  "y\022\014\n\004name\030\001 \001(\t\0229\n\020discoveredDevice\030\002 \001("
+  "\0132\037.BICgRPC.bicGetImplantInfoReply\"B\n\024Co"
+  "nnectDeviceRequest\022\025\n\rdeviceAddress\030\001 \001("
+  "\t\022\023\n\013logFileName\030\002 \001(\t\"4\n\030bicGetImplantI"
+  "nfoRequest\022\030\n\020updateCachedInfo\030\001 \001(\010\"\363\004\n"
+  "\026bicGetImplantInfoReply\022\027\n\017firmwareVersi"
+  "on\030\001 \001(\t\022\022\n\ndeviceType\030\002 \001(\t\022\020\n\010deviceId"
+  "\030\003 \001(\t\022G\n\017channelInfoList\030\004 \003(\0132..BICgRP"
+  "C.bicGetImplantInfoReply.bicChannelInfo\022"
+  "\024\n\014channelCount\030\005 \001(\r\022\037\n\027measurementChan"
+  "nelCount\030\006 \001(\r\022\037\n\027stimulationChannelCoun"
+  "t\030\007 \001(\r\022\024\n\014samplingRate\030\010 \001(\r\022\017\n\007success"
+  "\030\t \001(\t\032\321\002\n\016bicChannelInfo\022\022\n\ncanMeasure\030"
+  "\001 \001(\010\022\027\n\017measureValueMin\030\002 \001(\001\022\027\n\017measur"
+  "eValueMax\030\003 \001(\001\022\024\n\014canStimulate\030\004 \001(\010\022P\n"
+  "\017stimulationUnit\030\005 \001(\01627.BICgRPC.bicGetI"
+  "mplantInfoReply.bicChannelInfo.UnitType\022"
+  "\024\n\014stimValueMin\030\006 \001(\001\022\024\n\014stimValueMax\030\007 "
+  "\001(\001\022\033\n\023canMeasureImpedance\030\010 \001(\010\"H\n\010Unit"
+  "Type\022\016\n\nUT_NO_UNIT\020\000\022\016\n\nUT_CURRENT\020\001\022\016\n\n"
+  "UT_VOLTAGE\020\002\022\014\n\010UT_COUNT\020\003\"$\n\022bicSetStre"
+  "amEnable\022\016\n\006enable\030\001 \001(\010\")\n\026bicGetImpeda"
+  "nceRequest\022\017\n\007channel\030\001 \001(\r\"P\n\024bicGetImp"
+  "edanceReply\022\030\n\020channelImpedance\030\001 \001(\001\022\r\n"
+  "\005units\030\002 \001(\t\022\017\n\007success\030\003 \001(\t\"M\n\026bicGetT"
+  "emperatureReply\022\023\n\013temperature\030\001 \001(\001\022\r\n\005"
+  "units\030\002 \001(\t\022\017\n\007success\030\003 \001(\t\"G\n\023bicGetHu"
+  "midityReply\022\020\n\010humidity\030\001 \001(\001\022\r\n\005units\030\002"
+  " \001(\t\022\017\n\007success\030\003 \001(\t\"H\n\032bicSetSensingEn"
+  "ableRequest\022\025\n\renableSensing\030\001 \001(\010\022\023\n\013re"
+  "fChannels\030\002 \003(\r\"1\n\031bicSetImplantPowerReq"
+  "uest\022\024\n\014powerEnabled\030\001 \001(\010\"\034\n\032bicStartSt"
+  "imulationRequest\"7\n\021TemperatureUpdate\022\023\n"
+  "\013temperature\030\001 \001(\001\022\r\n\005units\030\002 \001(\t\"1\n\016Hum"
+  "idityUpdate\022\020\n\010humidity\030\001 \001(\001\022\r\n\005units\030\002"
+  " \001(\t\"V\n\006Bridge\022\014\n\004name\030\001 \001(\t\022\023\n\013implantT"
+  "ype\030\002 \001(\t\022\020\n\010deviceId\030\003 \001(\t\022\027\n\017firmwareV"
+  "ersion\030\004 \001(\t\"$\n\023QueryBridgesRequest\022\r\n\005q"
+  "uery\030\001 \001(\t\"8\n\024QueryBridgesResponse\022 \n\007br"
+  "idges\030\001 \003(\0132\017.BICgRPC.Bridge\"N\n\024ConnectB"
+  "ridgeRequest\022\014\n\004name\030\001 \001(\t\022(\n\nparameters"
+  "\030\002 \001(\0132\024.google.protobuf.Any\"\205\001\n\025Connect"
+  "BridgeResponse\022\014\n\004name\030\001 \001(\t\0227\n\021connecti"
+  "on_status\030\002 \001(\0162\034.BICgRPC.ConnectBridgeS"
+  "tatus\022%\n\007details\030\003 \001(\0132\024.google.protobuf"
+  ".Any\"%\n\025DescribeBridgeRequest\022\014\n\004name\030\001 "
+  "\001(\t\"m\n\026DescribeBridgeResponse\022\014\n\004name\030\001 "
+  "\001(\t\022 \n\007details\030\002 \001(\0132\017.BICgRPC.Bridge\022#\n"
+  "\005error\030\003 \001(\0132\024.google.protobuf.Any\"\'\n\027Di"
+  "sconnectBridgeRequest\022\014\n\004name\030\001 \001(\t*l\n\023C"
+  "onnectBridgeStatus\022%\n!CONNECT_BRIDGE_STA"
+  "TUS_UNSPECIFIED\020\000\022\026\n\022CONNECTION_SUCCESS\020"
+  "\001\022\026\n\022CONNECTION_FAILURE\020\0022\354\003\n\020BICBridgeS"
+  "ervice\022J\n\013ListBridges\022\034.BICgRPC.QueryBri"
+  "dgesRequest\032\035.BICgRPC.QueryBridgesRespon"
+  "se\022J\n\013ScanBridges\022\034.BICgRPC.QueryBridges"
+  "Request\032\035.BICgRPC.QueryBridgesResponse\022O"
+  "\n\020ConnectedBridges\022\034.BICgRPC.QueryBridge"
+  "sRequest\032\035.BICgRPC.QueryBridgesResponse\022"
+  "N\n\rConnectBridge\022\035.BICgRPC.ConnectBridge"
+  "Request\032\036.BICgRPC.ConnectBridgeResponse\022"
+  "Q\n\016DescribeBridge\022\036.BICgRPC.DescribeBrid"
+  "geRequest\032\037.BICgRPC.DescribeBridgeRespon"
+  "se\022L\n\020DisconnectBridge\022 .BICgRPC.Disconn"
+  "ectBridgeRequest\032\026.google.protobuf.Empty"
+  "2\247\010\n\020BICDeviceService\022G\n\013ScanDevices\022\033.B"
+  "ICgRPC.ScanDevicesRequest\032\031.BICgRPC.Scan"
+  "DevicesReply\"\000\022J\n\rConnectDevice\022\035.BICgRP"
+  "C.ConnectDeviceRequest\032\030.BICgRPC.bicSucc"
+  "essReply\"\000\022@\n\nbicDispose\022\026.google.protob"
+  "uf.Empty\032\030.BICgRPC.bicSuccessReply\"\000\022Y\n\021"
+  "bicGetImplantInfo\022!.BICgRPC.bicGetImplan"
+  "tInfoRequest\032\037.BICgRPC.bicGetImplantInfo"
+  "Reply\"\000\022S\n\017bicGetImpedance\022\037.BICgRPC.bic"
+  "GetImpedanceRequest\032\035.BICgRPC.bicGetImpe"
+  "danceReply\"\000\022N\n\021bicGetTemperature\022\026.goog"
+  "le.protobuf.Empty\032\037.BICgRPC.bicGetTemper"
+  "atureReply\"\000\022H\n\016bicGetHumidity\022\026.google."
+  "protobuf.Empty\032\034.BICgRPC.bicGetHumidityR"
+  "eply\"\000\022V\n\023bicSetSensingEnable\022#.BICgRPC."
+  "bicSetSensingEnableRequest\032\030.BICgRPC.bic"
+  "SuccessReply\"\000\022T\n\022bicSetImplantPower\022\".B"
+  "ICgRPC.bicSetImplantPowerRequest\032\030.BICgR"
+  "PC.bicSuccessReply\"\000\022V\n\023bicStartStimulat"
+  "ion\022#.BICgRPC.bicStartStimulationRequest"
+  "\032\030.BICgRPC.bicSuccessReply\"\000\022H\n\022bicStopS"
+  "timulation\022\026.google.protobuf.Empty\032\030.BIC"
+  "gRPC.bicSuccessReply\"\000\022S\n\024bicTemperature"
+  "Stream\022\033.BICgRPC.bicSetStreamEnable\032\032.BI"
+  "CgRPC.TemperatureUpdate\"\0000\001\022M\n\021bicHumidi"
+  "tyStream\022\033.BICgRPC.bicSetStreamEnable\032\027."
+  "BICgRPC.HumidityUpdate\"\0000\001B,\n\017io.grpc.BI"
+  "CgRPCB\007BICgRPCP\001\242\002\003HLW\252\002\007BICgRPCb\006proto3"
   ;
 static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_BICgRPC_2eproto_deps[2] = {
   &::descriptor_table_google_2fprotobuf_2fany_2eproto,
   &::descriptor_table_google_2fprotobuf_2fempty_2eproto,
 };
-static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_BICgRPC_2eproto_sccs[23] = {
+static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_BICgRPC_2eproto_sccs[25] = {
   &scc_info_Bridge_BICgRPC_2eproto.base,
   &scc_info_ConnectBridgeRequest_BICgRPC_2eproto.base,
   &scc_info_ConnectBridgeResponse_BICgRPC_2eproto.base,
@@ -777,6 +832,7 @@ static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_BIC
   &scc_info_DescribeBridgeRequest_BICgRPC_2eproto.base,
   &scc_info_DescribeBridgeResponse_BICgRPC_2eproto.base,
   &scc_info_DisconnectBridgeRequest_BICgRPC_2eproto.base,
+  &scc_info_HumidityUpdate_BICgRPC_2eproto.base,
   &scc_info_QueryBridgesRequest_BICgRPC_2eproto.base,
   &scc_info_QueryBridgesResponse_BICgRPC_2eproto.base,
   &scc_info_ScanDevicesReply_BICgRPC_2eproto.base,
@@ -791,15 +847,16 @@ static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_BIC
   &scc_info_bicGetTemperatureReply_BICgRPC_2eproto.base,
   &scc_info_bicSetImplantPowerRequest_BICgRPC_2eproto.base,
   &scc_info_bicSetSensingEnableRequest_BICgRPC_2eproto.base,
+  &scc_info_bicSetStreamEnable_BICgRPC_2eproto.base,
   &scc_info_bicStartStimulationRequest_BICgRPC_2eproto.base,
   &scc_info_bicSuccessReply_BICgRPC_2eproto.base,
 };
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_BICgRPC_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_BICgRPC_2eproto = {
-  false, false, descriptor_table_protodef_BICgRPC_2eproto, "BICgRPC.proto", 3724,
-  &descriptor_table_BICgRPC_2eproto_once, descriptor_table_BICgRPC_2eproto_sccs, descriptor_table_BICgRPC_2eproto_deps, 23, 2,
+  false, false, descriptor_table_protodef_BICgRPC_2eproto, "BICgRPC.proto", 3880,
+  &descriptor_table_BICgRPC_2eproto_once, descriptor_table_BICgRPC_2eproto_sccs, descriptor_table_BICgRPC_2eproto_deps, 25, 2,
   schemas, file_default_instances, TableStruct_BICgRPC_2eproto::offsets,
-  file_level_metadata_BICgRPC_2eproto, 23, file_level_enum_descriptors_BICgRPC_2eproto, file_level_service_descriptors_BICgRPC_2eproto,
+  file_level_metadata_BICgRPC_2eproto, 25, file_level_enum_descriptors_BICgRPC_2eproto, file_level_service_descriptors_BICgRPC_2eproto,
 };
 
 // Force running AddDescriptors() at dynamic initialization time.
@@ -863,17 +920,10 @@ bicSuccessReply::bicSuccessReply(::PROTOBUF_NAMESPACE_ID::Arena* arena)
 bicSuccessReply::bicSuccessReply(const bicSuccessReply& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  success_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  if (!from._internal_success().empty()) {
-    success_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from._internal_success(),
-      GetArena());
-  }
   // @@protoc_insertion_point(copy_constructor:BICgRPC.bicSuccessReply)
 }
 
 void bicSuccessReply::SharedCtor() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_bicSuccessReply_BICgRPC_2eproto.base);
-  success_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 }
 
 bicSuccessReply::~bicSuccessReply() {
@@ -884,7 +934,6 @@ bicSuccessReply::~bicSuccessReply() {
 
 void bicSuccessReply::SharedDtor() {
   GOOGLE_DCHECK(GetArena() == nullptr);
-  success_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 }
 
 void bicSuccessReply::ArenaDtor(void* object) {
@@ -908,7 +957,6 @@ void bicSuccessReply::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  success_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -919,18 +967,6 @@ const char* bicSuccessReply::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPAC
     ::PROTOBUF_NAMESPACE_ID::uint32 tag;
     ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
     CHK_(ptr);
-    switch (tag >> 3) {
-      // string success = 1;
-      case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
-          auto str = _internal_mutable_success();
-          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
-          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "BICgRPC.bicSuccessReply.success"));
-          CHK_(ptr);
-        } else goto handle_unusual;
-        continue;
-      default: {
-      handle_unusual:
         if ((tag & 7) == 4 || tag == 0) {
           ctx->SetLastTag(tag);
           goto success;
@@ -940,8 +976,6 @@ const char* bicSuccessReply::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPAC
             ptr, ctx);
         CHK_(ptr != nullptr);
         continue;
-      }
-    }  // switch
   }  // while
 success:
   return ptr;
@@ -956,16 +990,6 @@ failure:
   // @@protoc_insertion_point(serialize_to_array_start:BICgRPC.bicSuccessReply)
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
-
-  // string success = 1;
-  if (this->success().size() > 0) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
-      this->_internal_success().data(), static_cast<int>(this->_internal_success().length()),
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
-      "BICgRPC.bicSuccessReply.success");
-    target = stream->WriteStringMaybeAliased(
-        1, this->_internal_success(), target);
-  }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
@@ -982,13 +1006,6 @@ size_t bicSuccessReply::ByteSizeLong() const {
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
-
-  // string success = 1;
-  if (this->success().size() > 0) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
-        this->_internal_success());
-  }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
@@ -1021,9 +1038,6 @@ void bicSuccessReply::MergeFrom(const bicSuccessReply& from) {
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (from.success().size() > 0) {
-    _internal_set_success(from._internal_success());
-  }
 }
 
 void bicSuccessReply::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
@@ -1047,7 +1061,6 @@ bool bicSuccessReply::IsInitialized() const {
 void bicSuccessReply::InternalSwap(bicSuccessReply* other) {
   using std::swap;
   _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
-  success_.Swap(&other->success_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata bicSuccessReply::GetMetadata() const {
@@ -2773,6 +2786,201 @@ void bicGetImplantInfoReply::InternalSwap(bicGetImplantInfoReply* other) {
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata bicGetImplantInfoReply::GetMetadata() const {
+  return GetMetadataStatic();
+}
+
+
+// ===================================================================
+
+void bicSetStreamEnable::InitAsDefaultInstance() {
+}
+class bicSetStreamEnable::_Internal {
+ public:
+};
+
+bicSetStreamEnable::bicSetStreamEnable(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+  SharedCtor();
+  RegisterArenaDtor(arena);
+  // @@protoc_insertion_point(arena_constructor:BICgRPC.bicSetStreamEnable)
+}
+bicSetStreamEnable::bicSetStreamEnable(const bicSetStreamEnable& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  enable_ = from.enable_;
+  // @@protoc_insertion_point(copy_constructor:BICgRPC.bicSetStreamEnable)
+}
+
+void bicSetStreamEnable::SharedCtor() {
+  enable_ = false;
+}
+
+bicSetStreamEnable::~bicSetStreamEnable() {
+  // @@protoc_insertion_point(destructor:BICgRPC.bicSetStreamEnable)
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+void bicSetStreamEnable::SharedDtor() {
+  GOOGLE_DCHECK(GetArena() == nullptr);
+}
+
+void bicSetStreamEnable::ArenaDtor(void* object) {
+  bicSetStreamEnable* _this = reinterpret_cast< bicSetStreamEnable* >(object);
+  (void)_this;
+}
+void bicSetStreamEnable::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void bicSetStreamEnable::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+const bicSetStreamEnable& bicSetStreamEnable::default_instance() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_bicSetStreamEnable_BICgRPC_2eproto.base);
+  return *internal_default_instance();
+}
+
+
+void bicSetStreamEnable::Clear() {
+// @@protoc_insertion_point(message_clear_start:BICgRPC.bicSetStreamEnable)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  enable_ = false;
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* bicSetStreamEnable::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
+    switch (tag >> 3) {
+      // bool enable = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 8)) {
+          enable_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      default: {
+      handle_unusual:
+        if ((tag & 7) == 4 || tag == 0) {
+          ctx->SetLastTag(tag);
+          goto success;
+        }
+        ptr = UnknownFieldParse(tag,
+            _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+            ptr, ctx);
+        CHK_(ptr != nullptr);
+        continue;
+      }
+    }  // switch
+  }  // while
+success:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto success;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* bicSetStreamEnable::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:BICgRPC.bicSetStreamEnable)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // bool enable = 1;
+  if (this->enable() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteBoolToArray(1, this->_internal_enable(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:BICgRPC.bicSetStreamEnable)
+  return target;
+}
+
+size_t bicSetStreamEnable::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:BICgRPC.bicSetStreamEnable)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // bool enable = 1;
+  if (this->enable() != 0) {
+    total_size += 1 + 1;
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
+        _internal_metadata_, total_size, &_cached_size_);
+  }
+  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void bicSetStreamEnable::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:BICgRPC.bicSetStreamEnable)
+  GOOGLE_DCHECK_NE(&from, this);
+  const bicSetStreamEnable* source =
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<bicSetStreamEnable>(
+          &from);
+  if (source == nullptr) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:BICgRPC.bicSetStreamEnable)
+    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:BICgRPC.bicSetStreamEnable)
+    MergeFrom(*source);
+  }
+}
+
+void bicSetStreamEnable::MergeFrom(const bicSetStreamEnable& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:BICgRPC.bicSetStreamEnable)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from.enable() != 0) {
+    _internal_set_enable(from._internal_enable());
+  }
+}
+
+void bicSetStreamEnable::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:BICgRPC.bicSetStreamEnable)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void bicSetStreamEnable::CopyFrom(const bicSetStreamEnable& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:BICgRPC.bicSetStreamEnable)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool bicSetStreamEnable::IsInitialized() const {
+  return true;
+}
+
+void bicSetStreamEnable::InternalSwap(bicSetStreamEnable* other) {
+  using std::swap;
+  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
+  swap(enable_, other->enable_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata bicSetStreamEnable::GetMetadata() const {
   return GetMetadataStatic();
 }
 
@@ -4614,6 +4822,240 @@ void TemperatureUpdate::InternalSwap(TemperatureUpdate* other) {
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata TemperatureUpdate::GetMetadata() const {
+  return GetMetadataStatic();
+}
+
+
+// ===================================================================
+
+void HumidityUpdate::InitAsDefaultInstance() {
+}
+class HumidityUpdate::_Internal {
+ public:
+};
+
+HumidityUpdate::HumidityUpdate(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+  SharedCtor();
+  RegisterArenaDtor(arena);
+  // @@protoc_insertion_point(arena_constructor:BICgRPC.HumidityUpdate)
+}
+HumidityUpdate::HumidityUpdate(const HumidityUpdate& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  units_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_units().empty()) {
+    units_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from._internal_units(),
+      GetArena());
+  }
+  humidity_ = from.humidity_;
+  // @@protoc_insertion_point(copy_constructor:BICgRPC.HumidityUpdate)
+}
+
+void HumidityUpdate::SharedCtor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_HumidityUpdate_BICgRPC_2eproto.base);
+  units_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  humidity_ = 0;
+}
+
+HumidityUpdate::~HumidityUpdate() {
+  // @@protoc_insertion_point(destructor:BICgRPC.HumidityUpdate)
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+void HumidityUpdate::SharedDtor() {
+  GOOGLE_DCHECK(GetArena() == nullptr);
+  units_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+
+void HumidityUpdate::ArenaDtor(void* object) {
+  HumidityUpdate* _this = reinterpret_cast< HumidityUpdate* >(object);
+  (void)_this;
+}
+void HumidityUpdate::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void HumidityUpdate::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+const HumidityUpdate& HumidityUpdate::default_instance() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_HumidityUpdate_BICgRPC_2eproto.base);
+  return *internal_default_instance();
+}
+
+
+void HumidityUpdate::Clear() {
+// @@protoc_insertion_point(message_clear_start:BICgRPC.HumidityUpdate)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  units_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  humidity_ = 0;
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* HumidityUpdate::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
+    switch (tag >> 3) {
+      // double humidity = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 9)) {
+          humidity_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<double>(ptr);
+          ptr += sizeof(double);
+        } else goto handle_unusual;
+        continue;
+      // string units = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
+          auto str = _internal_mutable_units();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "BICgRPC.HumidityUpdate.units"));
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      default: {
+      handle_unusual:
+        if ((tag & 7) == 4 || tag == 0) {
+          ctx->SetLastTag(tag);
+          goto success;
+        }
+        ptr = UnknownFieldParse(tag,
+            _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+            ptr, ctx);
+        CHK_(ptr != nullptr);
+        continue;
+      }
+    }  // switch
+  }  // while
+success:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto success;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* HumidityUpdate::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:BICgRPC.HumidityUpdate)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // double humidity = 1;
+  if (!(this->humidity() <= 0 && this->humidity() >= 0)) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteDoubleToArray(1, this->_internal_humidity(), target);
+  }
+
+  // string units = 2;
+  if (this->units().size() > 0) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_units().data(), static_cast<int>(this->_internal_units().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "BICgRPC.HumidityUpdate.units");
+    target = stream->WriteStringMaybeAliased(
+        2, this->_internal_units(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:BICgRPC.HumidityUpdate)
+  return target;
+}
+
+size_t HumidityUpdate::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:BICgRPC.HumidityUpdate)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // string units = 2;
+  if (this->units().size() > 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_units());
+  }
+
+  // double humidity = 1;
+  if (!(this->humidity() <= 0 && this->humidity() >= 0)) {
+    total_size += 1 + 8;
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
+        _internal_metadata_, total_size, &_cached_size_);
+  }
+  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void HumidityUpdate::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:BICgRPC.HumidityUpdate)
+  GOOGLE_DCHECK_NE(&from, this);
+  const HumidityUpdate* source =
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<HumidityUpdate>(
+          &from);
+  if (source == nullptr) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:BICgRPC.HumidityUpdate)
+    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:BICgRPC.HumidityUpdate)
+    MergeFrom(*source);
+  }
+}
+
+void HumidityUpdate::MergeFrom(const HumidityUpdate& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:BICgRPC.HumidityUpdate)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from.units().size() > 0) {
+    _internal_set_units(from._internal_units());
+  }
+  if (!(from.humidity() <= 0 && from.humidity() >= 0)) {
+    _internal_set_humidity(from._internal_humidity());
+  }
+}
+
+void HumidityUpdate::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:BICgRPC.HumidityUpdate)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void HumidityUpdate::CopyFrom(const HumidityUpdate& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:BICgRPC.HumidityUpdate)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool HumidityUpdate::IsInitialized() const {
+  return true;
+}
+
+void HumidityUpdate::InternalSwap(HumidityUpdate* other) {
+  using std::swap;
+  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
+  units_.Swap(&other->units_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  swap(humidity_, other->humidity_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata HumidityUpdate::GetMetadata() const {
   return GetMetadataStatic();
 }
 
@@ -6654,6 +7096,9 @@ template<> PROTOBUF_NOINLINE ::BICgRPC::bicGetImplantInfoReply_bicChannelInfo* A
 template<> PROTOBUF_NOINLINE ::BICgRPC::bicGetImplantInfoReply* Arena::CreateMaybeMessage< ::BICgRPC::bicGetImplantInfoReply >(Arena* arena) {
   return Arena::CreateMessageInternal< ::BICgRPC::bicGetImplantInfoReply >(arena);
 }
+template<> PROTOBUF_NOINLINE ::BICgRPC::bicSetStreamEnable* Arena::CreateMaybeMessage< ::BICgRPC::bicSetStreamEnable >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::BICgRPC::bicSetStreamEnable >(arena);
+}
 template<> PROTOBUF_NOINLINE ::BICgRPC::bicGetImpedanceRequest* Arena::CreateMaybeMessage< ::BICgRPC::bicGetImpedanceRequest >(Arena* arena) {
   return Arena::CreateMessageInternal< ::BICgRPC::bicGetImpedanceRequest >(arena);
 }
@@ -6677,6 +7122,9 @@ template<> PROTOBUF_NOINLINE ::BICgRPC::bicStartStimulationRequest* Arena::Creat
 }
 template<> PROTOBUF_NOINLINE ::BICgRPC::TemperatureUpdate* Arena::CreateMaybeMessage< ::BICgRPC::TemperatureUpdate >(Arena* arena) {
   return Arena::CreateMessageInternal< ::BICgRPC::TemperatureUpdate >(arena);
+}
+template<> PROTOBUF_NOINLINE ::BICgRPC::HumidityUpdate* Arena::CreateMaybeMessage< ::BICgRPC::HumidityUpdate >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::BICgRPC::HumidityUpdate >(arena);
 }
 template<> PROTOBUF_NOINLINE ::BICgRPC::Bridge* Arena::CreateMaybeMessage< ::BICgRPC::Bridge >(Arena* arena) {
   return Arena::CreateMessageInternal< ::BICgRPC::Bridge >(arena);

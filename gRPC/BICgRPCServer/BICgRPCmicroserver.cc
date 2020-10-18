@@ -9,6 +9,7 @@
 #include <cppapi/Sample.h>
 #include <cppapi/IStimulationCommandFactory.h>
 #include <mutex>
+#include <condition_variable>
 
 #include <iostream>
 #include <memory>
@@ -35,10 +36,10 @@ using grpc::Status;
 
 // BIC Device Service Usings
 using BICgRPC::BICDeviceService;
+using BICgRPC::bicSuccessReply;
 using BICgRPC::ScanDevicesRequest;
 using BICgRPC::ScanDevicesReply;
 using BICgRPC::ConnectDeviceRequest;
-using BICgRPC::bicSuccessReply;
 using BICgRPC::bicGetImplantInfoRequest;
 using BICgRPC::bicGetImplantInfoReply;
 using BICgRPC::bicGetImplantInfoReply_bicChannelInfo;
@@ -50,6 +51,7 @@ using BICgRPC::bicSetSensingEnableRequest;
 using BICgRPC::bicSetImplantPowerRequest;
 using BICgRPC::bicStartStimulationRequest;
 using BICgRPC::TemperatureUpdate;
+using BICgRPC::HumidityUpdate;
 
 // BIC Bridge Service Usings
 using BICgRPC::BICBridgeService;
@@ -61,6 +63,7 @@ using BICgRPC::DescribeBridgeRequest;
 using BICgRPC::DescribeBridgeResponse;
 using BICgRPC::ConnectBridgeRequest;
 using BICgRPC::ConnectBridgeResponse;
+using BICgRPC::bicSetStreamEnable;
 using BICgRPC::DisconnectBridgeRequest;
 
 /**
@@ -180,13 +183,11 @@ public:
     // @implements cortec::implantapi::IImplantListener
     virtual void onTemperatureChanged(const double temperature)
     {
-        std::cout << "*** Temperature received: " << temperature << " degree Celsius." << std::endl;
-
         if (TemperatureWriter != NULL)
         {
             TemperatureUpdate tempMessage;
             tempMessage.set_temperature(temperature);
-            tempMessage.set_units("Celsius");
+            tempMessage.set_units("celsius");
             TemperatureWriter->Write(tempMessage);
         }
     }
@@ -194,7 +195,13 @@ public:
     // @implements cortec::implantapi::IImplantListener
     virtual void onHumidityChanged(const double humidity)
     {
-        std::cout << "*** Humidity received: " << humidity << " %rh." << std::endl;
+        if (HumidityWriter != NULL)
+        {
+            HumidityUpdate humidMessage;
+            humidMessage.set_humidity(humidity);
+            humidMessage.set_units("rh");
+            HumidityWriter->Write(humidMessage);
+        }
     }
 
     // @implements cortec::implantapi::IImplantListener
@@ -210,6 +217,7 @@ public:
     }
 
     grpc::ServerWriter<TemperatureUpdate>* TemperatureWriter = NULL;
+    grpc::ServerWriter<HumidityUpdate>* HumidityWriter = NULL;
 private:
     std::mutex m_mutex;
     
@@ -272,11 +280,21 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
     // Currently only supports one BIC at a time, need to turn these into lists of implants and cached implant info
     std::unique_ptr <IImplant> theImplant;
     std::unique_ptr <IImplantFactory> theImplantFactory;
-    std::unique_ptr <CImplantInfo> theImplantInfo;
+    std::unique_ptr <CImplantInfo> theImplantInfo;          // Cached Implant Info
     CImplantToStdOutListener listener;
     bool factoryInitialized = false;
     bool implantInitialized = false;
     std::mutex rpcLock;
+    
+    // Stream States, Mutexs, and Notifiers
+    bool isStreamingTemp = false;
+    bool isStreamingHumid = false;
+
+    std::mutex tempStreamLock;
+    std::mutex humidStreamLock;
+
+    std::condition_variable tempStreamNotify;
+    std::condition_variable humidStreamNotify;
 
     // ************************* Helper Service Function Declarations *************************
     void factoryInitializeCheck()
@@ -353,15 +371,14 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
       
         // Split requested bridge/address strings from request
         int deviceIdIndex = request->deviceaddress().find("/device/");
-        std::string deviceId = request->deviceaddress().substr((int)deviceIdIndex + 8);
-        std::string bridgeId = request->deviceaddress().substr(13, (int)deviceIdIndex - 13);
+        std::string deviceId = request->deviceaddress().substr(((int)deviceIdIndex) + 8);
+        std::string bridgeId = request->deviceaddress().substr(13, ((int)deviceIdIndex) - 13);
 
         // Discover external units
         std::vector<CExternalUnitInfo*> exInfos = theImplantFactory->getExternalUnitInfos();
         if (exInfos.empty())
         {
-            reply->set_success("error: no bridges");
-            return Status::OK;
+            return Status(grpc::StatusCode::FAILED_PRECONDITION, "No Bridges");
         }
 
         // Find the Bridge, confirm that device/bridge pair match
@@ -376,8 +393,7 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
                 // Check that deviceId matches
                 if (theImplantInfo->getDeviceId() != deviceId)
                 {
-                    reply->set_success("error: Bridge/Device Id mismatch");
-                    return Status::OK;
+                    return Status(grpc::StatusCode::NOT_FOUND, "Bridge/Device ID Mismatch");
                 }
 
                 break;
@@ -389,7 +405,6 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
         theImplant.reset(theImplantFactory->create(*exInfos.at(exInfoIndex), *theImplantInfo));
         theImplant->registerListener(&listener);
         implantInitialized = true;
-        reply->set_success("success");
         return Status::OK;
     }
 
@@ -401,9 +416,13 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
         // Check if 
         if (!implantInitialized)
         {
-            reply->set_success("error: not initialized");
+            return Status(grpc::StatusCode::FAILED_PRECONDITION, "Not Initialized");
             return Status::OK;
         }
+        
+        // Stop all streaming!
+        tempStreamNotify.notify_all();
+        humidStreamNotify.notify_all();
 
         // Dispose the things!
         theImplant->setImplantPower(false);
@@ -414,7 +433,6 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
         implantInitialized = false;
 
         // Respond to client
-        reply->set_success("success");
         return Status::OK;
     }
 
@@ -428,7 +446,7 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
         if (!implantInitialized)
         {
             reply->set_success("error: not initialized");
-            return Status::OK;
+            return Status(grpc::StatusCode::FAILED_PRECONDITION, "Not Initialized");
         }
 
         // Check if we need to update cache
@@ -483,7 +501,7 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
         if (!implantInitialized)
         {
             reply->set_success("error: not initialized");
-            return Status::OK;
+            return Status(grpc::StatusCode::FAILED_PRECONDITION, "Not Initialized");
         }
 
         // Perform the operation
@@ -513,7 +531,7 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
         if (!implantInitialized)
         {
             reply->set_success("error: not initialized");
-            return Status::OK;
+            return Status(grpc::StatusCode::FAILED_PRECONDITION, "Not Initialized");
         }
 
         // Perform the operation
@@ -543,7 +561,7 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
         if (!implantInitialized)
         {
             reply->set_success("error: not initialized");
-            return Status::OK;
+            return Status(grpc::StatusCode::FAILED_PRECONDITION, "Not Initialized");
         }
 
         // Perform the operation
@@ -572,8 +590,7 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
         // Check if already initialized
         if (!implantInitialized)
         {
-            reply->set_success("error: not initialized");
-            return Status::OK;
+            return Status(grpc::StatusCode::FAILED_PRECONDITION, "Not Initialized");
         }
 
         // Perform the operation
@@ -596,12 +613,11 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
         }
         catch (const std::exception&)
         {
-            reply->set_success("error: exception (useful I know?)");
+            // TODO add exception handling
             return Status::OK;
         }
 
         // Respond to client
-        reply->set_success("success");
         return Status::OK;
     }
 
@@ -612,7 +628,7 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
         // Check if already initialized
         if (!implantInitialized)
         {
-            reply->set_success("error: not initialized");
+            return Status(grpc::StatusCode::FAILED_PRECONDITION, "Not Initialized");
             return Status::OK;
         }
 
@@ -623,12 +639,11 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
         }
         catch (const std::exception&)
         {
-            reply->set_success("error: exception (useful I know?)");
+            // TODO Exception Handling
             return Status::OK;
         }
 
-        // Respond to client
-        reply->set_success("success");
+        // Respond to client=
         return Status::OK;
     }
 
@@ -639,8 +654,7 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
         // Check if already initialized
         if (!implantInitialized)
         {
-            reply->set_success("error: not initialized");
-            return Status::OK;
+            return Status(grpc::StatusCode::FAILED_PRECONDITION, "Not Initialized");
         }
 
         // Perform the operation
@@ -650,12 +664,11 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
         }
         catch (const std::exception&)
         {
-            reply->set_success("error: exception (useful I know?)");
+            // TODO Exception Handling
             return Status::OK;
         }
 
         // Respond to client
-        reply->set_success("success");
         return Status::OK;
     }
 
@@ -666,8 +679,7 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
         // Check if already initialized
         if (!implantInitialized)
         {
-            reply->set_success("error: not initialized");
-            return Status::OK;
+            return Status(grpc::StatusCode::FAILED_PRECONDITION, "Not Initialized");
         }
 
         // Perform the operation
@@ -677,30 +689,73 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
         }
         catch (const std::exception&)
         {
-            reply->set_success("error: exception (useful I know?)");
+            // TODO Exception Handling
             return Status::OK;
         }
 
         // Respond to client
-        reply->set_success("success");
         return Status::OK;
     }
 
-    Status bicTemperatureStream(ServerContext* context, const google::protobuf::Empty* request, ServerWriter<TemperatureUpdate>* writer) override {
-        listener.TemperatureWriter = writer;
-        
-        /*TemperatureUpdate tempMessage;
-        tempMessage.set_temperature(-100);
-        tempMessage.set_units("Celsius");
-        writer->Write(tempMessage);
-        tempMessage.set_temperature(101);
-        tempMessage.set_units("lol");
-        ServerWriter<TemperatureUpdate>* aNewWriterPtr;
-        ServerWriter<TemperatureUpdate> aNewWriter();
-        aNewWriterPtr = &aNewWriter;
-        writer = aNewWriterPtr;*/
+    // ************************* Streaming Declarations *************************
+    Status bicTemperatureStream(ServerContext* context, const bicSetStreamEnable* request, ServerWriter<TemperatureUpdate>* writer) override {
+        // Check requested stream state and current streaming state (don't want to destroy a previously requested stream without it being stopped first)
+         if (!isStreamingTemp && request->enable())
+        {
+            // Not already streaming and requesting enable
+            isStreamingTemp = true;
+            listener.TemperatureWriter = writer;
 
-        while(true)
+            // Create the waiting objects for notification for end of stream
+            std::unique_lock<std::mutex> tempStreamLockInst(tempStreamLock);
+            tempStreamNotify.wait(tempStreamLockInst);
+
+            // Clean up the writers and busy flags
+            listener.TemperatureWriter = NULL;
+            isStreamingTemp = false;
+        }
+        else if (isStreamingTemp && request->enable())
+        {
+            // Error State, already streaming, do nothing
+                // Would love to send an error back, but if we don't send Status::OK then the "await ResponseStream.MoveNext()" doesn't work right and gracefully exit :/
+            return Status::OK;
+        }
+        else
+        {
+            // disable streaming
+            tempStreamNotify.notify_one();
+        }
+
+        return Status::OK;
+    }
+
+    Status bicHumidityStream(ServerContext* context, const bicSetStreamEnable* request, ServerWriter<HumidityUpdate>* writer) override {
+        // Check requested stream state and current streaming state (don't want to destroy a previously requested stream without it being stopped first)
+        if (!isStreamingHumid && request->enable())
+        {
+            // Not already streaming and requesting enable
+            isStreamingHumid = true;
+            listener.HumidityWriter = writer;
+
+            // Create the waiting objects for notification for end of stream
+            std::unique_lock<std::mutex> humidStreamLockInst(tempStreamLock);
+            humidStreamNotify.wait(humidStreamLockInst);
+
+            // Clean up the writers and busy flags
+            listener.HumidityWriter = NULL;
+            isStreamingHumid = false;
+        }
+        else if (isStreamingHumid && request->enable())
+        {
+            // Error State, already streaming, do nothing
+                // Would love to send an error back, but if we don't send Status::OK then the "await ResponseStream.MoveNext()" doesn't work right and gracefully exit :/
+            return Status::OK;
+        }
+        else
+        {
+            // disable streaming
+            humidStreamNotify.notify_one();
+        }
 
         return Status::OK;
     }

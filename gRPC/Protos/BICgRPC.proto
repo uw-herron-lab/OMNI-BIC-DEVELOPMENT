@@ -57,12 +57,12 @@ service BICDeviceService{
 	rpc bicStopStimulation (google.protobuf.Empty) returns (bicSuccessReply) {}
 	
 	// Streaming endpoints
-	rpc bicTemperatureStream (google.protobuf.Empty) returns (stream TemperatureUpdate) {}
+	rpc bicTemperatureStream (bicSetStreamEnable) returns (stream TemperatureUpdate) {}
+	rpc bicHumidityStream (bicSetStreamEnable) returns (stream HumidityUpdate) {}
 }
 
 // Basic Messages
 message bicSuccessReply{
-	string success = 1;
 }
 
 // ScanDevices Messages
@@ -116,6 +116,10 @@ message bicGetImplantInfoReply {
 	string success = 9;
 }
 
+message bicSetStreamEnable{
+	bool enable = 1;
+}
+
 // *************************** Device Service Messages ***************************
 // bicGetImpedance Messages
 message bicGetImpedanceRequest {
@@ -160,6 +164,11 @@ message bicStartStimulationRequest{
 
 message TemperatureUpdate{
 	double temperature = 1;
+	string units = 2;
+}
+
+message HumidityUpdate{
+	double humidity = 1;
 	string units = 2;
 }
 
