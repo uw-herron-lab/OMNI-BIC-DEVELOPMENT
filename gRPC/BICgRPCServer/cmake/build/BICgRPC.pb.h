@@ -50,7 +50,7 @@ struct TableStruct_BICgRPC_2eproto {
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::AuxiliaryParseTableField aux[]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
-  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[25]
+  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[30]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::FieldMetadata field_metadata[];
   static const ::PROTOBUF_NAMESPACE_ID::internal::SerializationTable serialization_table[];
@@ -70,6 +70,9 @@ extern ConnectBridgeResponseDefaultTypeInternal _ConnectBridgeResponse_default_i
 class ConnectDeviceRequest;
 class ConnectDeviceRequestDefaultTypeInternal;
 extern ConnectDeviceRequestDefaultTypeInternal _ConnectDeviceRequest_default_instance_;
+class ConnectionUpdate;
+class ConnectionUpdateDefaultTypeInternal;
+extern ConnectionUpdateDefaultTypeInternal _ConnectionUpdate_default_instance_;
 class DescribeBridgeRequest;
 class DescribeBridgeRequestDefaultTypeInternal;
 extern DescribeBridgeRequestDefaultTypeInternal _DescribeBridgeRequest_default_instance_;
@@ -79,9 +82,21 @@ extern DescribeBridgeResponseDefaultTypeInternal _DescribeBridgeResponse_default
 class DisconnectBridgeRequest;
 class DisconnectBridgeRequestDefaultTypeInternal;
 extern DisconnectBridgeRequestDefaultTypeInternal _DisconnectBridgeRequest_default_instance_;
+class ErrorUpdate;
+class ErrorUpdateDefaultTypeInternal;
+extern ErrorUpdateDefaultTypeInternal _ErrorUpdate_default_instance_;
 class HumidityUpdate;
 class HumidityUpdateDefaultTypeInternal;
 extern HumidityUpdateDefaultTypeInternal _HumidityUpdate_default_instance_;
+class NeuralSample;
+class NeuralSampleDefaultTypeInternal;
+extern NeuralSampleDefaultTypeInternal _NeuralSample_default_instance_;
+class NeuralUpdate;
+class NeuralUpdateDefaultTypeInternal;
+extern NeuralUpdateDefaultTypeInternal _NeuralUpdate_default_instance_;
+class PowerUpdate;
+class PowerUpdateDefaultTypeInternal;
+extern PowerUpdateDefaultTypeInternal _PowerUpdate_default_instance_;
 class QueryBridgesRequest;
 class QueryBridgesRequestDefaultTypeInternal;
 extern QueryBridgesRequestDefaultTypeInternal _QueryBridgesRequest_default_instance_;
@@ -139,10 +154,15 @@ template<> ::BICgRPC::Bridge* Arena::CreateMaybeMessage<::BICgRPC::Bridge>(Arena
 template<> ::BICgRPC::ConnectBridgeRequest* Arena::CreateMaybeMessage<::BICgRPC::ConnectBridgeRequest>(Arena*);
 template<> ::BICgRPC::ConnectBridgeResponse* Arena::CreateMaybeMessage<::BICgRPC::ConnectBridgeResponse>(Arena*);
 template<> ::BICgRPC::ConnectDeviceRequest* Arena::CreateMaybeMessage<::BICgRPC::ConnectDeviceRequest>(Arena*);
+template<> ::BICgRPC::ConnectionUpdate* Arena::CreateMaybeMessage<::BICgRPC::ConnectionUpdate>(Arena*);
 template<> ::BICgRPC::DescribeBridgeRequest* Arena::CreateMaybeMessage<::BICgRPC::DescribeBridgeRequest>(Arena*);
 template<> ::BICgRPC::DescribeBridgeResponse* Arena::CreateMaybeMessage<::BICgRPC::DescribeBridgeResponse>(Arena*);
 template<> ::BICgRPC::DisconnectBridgeRequest* Arena::CreateMaybeMessage<::BICgRPC::DisconnectBridgeRequest>(Arena*);
+template<> ::BICgRPC::ErrorUpdate* Arena::CreateMaybeMessage<::BICgRPC::ErrorUpdate>(Arena*);
 template<> ::BICgRPC::HumidityUpdate* Arena::CreateMaybeMessage<::BICgRPC::HumidityUpdate>(Arena*);
+template<> ::BICgRPC::NeuralSample* Arena::CreateMaybeMessage<::BICgRPC::NeuralSample>(Arena*);
+template<> ::BICgRPC::NeuralUpdate* Arena::CreateMaybeMessage<::BICgRPC::NeuralUpdate>(Arena*);
+template<> ::BICgRPC::PowerUpdate* Arena::CreateMaybeMessage<::BICgRPC::PowerUpdate>(Arena*);
 template<> ::BICgRPC::QueryBridgesRequest* Arena::CreateMaybeMessage<::BICgRPC::QueryBridgesRequest>(Arena*);
 template<> ::BICgRPC::QueryBridgesResponse* Arena::CreateMaybeMessage<::BICgRPC::QueryBridgesResponse>(Arena*);
 template<> ::BICgRPC::ScanDevicesReply* Arena::CreateMaybeMessage<::BICgRPC::ScanDevicesReply>(Arena*);
@@ -2369,6 +2389,7 @@ class bicSetSensingEnableRequest PROTOBUF_FINAL :
   enum : int {
     kRefChannelsFieldNumber = 2,
     kEnableSensingFieldNumber = 1,
+    kBufferSizeFieldNumber = 3,
   };
   // repeated uint32 refChannels = 2;
   int refchannels_size() const;
@@ -2401,6 +2422,15 @@ class bicSetSensingEnableRequest PROTOBUF_FINAL :
   void _internal_set_enablesensing(bool value);
   public:
 
+  // uint32 bufferSize = 3;
+  void clear_buffersize();
+  ::PROTOBUF_NAMESPACE_ID::uint32 buffersize() const;
+  void set_buffersize(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::uint32 _internal_buffersize() const;
+  void _internal_set_buffersize(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  public:
+
   // @@protoc_insertion_point(class_scope:BICgRPC.bicSetSensingEnableRequest)
  private:
   class _Internal;
@@ -2411,6 +2441,7 @@ class bicSetSensingEnableRequest PROTOBUF_FINAL :
   ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::uint32 > refchannels_;
   mutable std::atomic<int> _refchannels_cached_byte_size_;
   bool enablesensing_;
+  ::PROTOBUF_NAMESPACE_ID::uint32 buffersize_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_BICgRPC_2eproto;
 };
@@ -2987,6 +3018,841 @@ class HumidityUpdate PROTOBUF_FINAL :
 };
 // -------------------------------------------------------------------
 
+class NeuralUpdate PROTOBUF_FINAL :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:BICgRPC.NeuralUpdate) */ {
+ public:
+  inline NeuralUpdate() : NeuralUpdate(nullptr) {}
+  virtual ~NeuralUpdate();
+
+  NeuralUpdate(const NeuralUpdate& from);
+  NeuralUpdate(NeuralUpdate&& from) noexcept
+    : NeuralUpdate() {
+    *this = ::std::move(from);
+  }
+
+  inline NeuralUpdate& operator=(const NeuralUpdate& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline NeuralUpdate& operator=(NeuralUpdate&& from) noexcept {
+    if (GetArena() == from.GetArena()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return GetMetadataStatic().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return GetMetadataStatic().reflection;
+  }
+  static const NeuralUpdate& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const NeuralUpdate* internal_default_instance() {
+    return reinterpret_cast<const NeuralUpdate*>(
+               &_NeuralUpdate_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    17;
+
+  friend void swap(NeuralUpdate& a, NeuralUpdate& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(NeuralUpdate* other) {
+    if (other == this) return;
+    if (GetArena() == other->GetArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(NeuralUpdate* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline NeuralUpdate* New() const final {
+    return CreateMaybeMessage<NeuralUpdate>(nullptr);
+  }
+
+  NeuralUpdate* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<NeuralUpdate>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const NeuralUpdate& from);
+  void MergeFrom(const NeuralUpdate& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  inline void SharedCtor();
+  inline void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(NeuralUpdate* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "BICgRPC.NeuralUpdate";
+  }
+  protected:
+  explicit NeuralUpdate(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  private:
+  static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
+    ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&::descriptor_table_BICgRPC_2eproto);
+    return ::descriptor_table_BICgRPC_2eproto.file_level_metadata[kIndexInFileMessages];
+  }
+
+  public:
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kSamplesFieldNumber = 1,
+  };
+  // repeated .BICgRPC.NeuralSample samples = 1;
+  int samples_size() const;
+  private:
+  int _internal_samples_size() const;
+  public:
+  void clear_samples();
+  ::BICgRPC::NeuralSample* mutable_samples(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::BICgRPC::NeuralSample >*
+      mutable_samples();
+  private:
+  const ::BICgRPC::NeuralSample& _internal_samples(int index) const;
+  ::BICgRPC::NeuralSample* _internal_add_samples();
+  public:
+  const ::BICgRPC::NeuralSample& samples(int index) const;
+  ::BICgRPC::NeuralSample* add_samples();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::BICgRPC::NeuralSample >&
+      samples() const;
+
+  // @@protoc_insertion_point(class_scope:BICgRPC.NeuralUpdate)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::BICgRPC::NeuralSample > samples_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_BICgRPC_2eproto;
+};
+// -------------------------------------------------------------------
+
+class NeuralSample PROTOBUF_FINAL :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:BICgRPC.NeuralSample) */ {
+ public:
+  inline NeuralSample() : NeuralSample(nullptr) {}
+  virtual ~NeuralSample();
+
+  NeuralSample(const NeuralSample& from);
+  NeuralSample(NeuralSample&& from) noexcept
+    : NeuralSample() {
+    *this = ::std::move(from);
+  }
+
+  inline NeuralSample& operator=(const NeuralSample& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline NeuralSample& operator=(NeuralSample&& from) noexcept {
+    if (GetArena() == from.GetArena()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return GetMetadataStatic().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return GetMetadataStatic().reflection;
+  }
+  static const NeuralSample& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const NeuralSample* internal_default_instance() {
+    return reinterpret_cast<const NeuralSample*>(
+               &_NeuralSample_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    18;
+
+  friend void swap(NeuralSample& a, NeuralSample& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(NeuralSample* other) {
+    if (other == this) return;
+    if (GetArena() == other->GetArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(NeuralSample* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline NeuralSample* New() const final {
+    return CreateMaybeMessage<NeuralSample>(nullptr);
+  }
+
+  NeuralSample* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<NeuralSample>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const NeuralSample& from);
+  void MergeFrom(const NeuralSample& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  inline void SharedCtor();
+  inline void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(NeuralSample* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "BICgRPC.NeuralSample";
+  }
+  protected:
+  explicit NeuralSample(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  private:
+  static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
+    ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&::descriptor_table_BICgRPC_2eproto);
+    return ::descriptor_table_BICgRPC_2eproto.file_level_metadata[kIndexInFileMessages];
+  }
+
+  public:
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kMeasurementsFieldNumber = 2,
+    kNumberOfMeasurementsFieldNumber = 1,
+    kSupplyVoltageFieldNumber = 3,
+    kStimulationNumberFieldNumber = 5,
+    kIsConnectedFieldNumber = 4,
+    kStimulationActiveFieldNumber = 6,
+    kSampleCounterFieldNumber = 7,
+  };
+  // repeated double measurements = 2;
+  int measurements_size() const;
+  private:
+  int _internal_measurements_size() const;
+  public:
+  void clear_measurements();
+  private:
+  double _internal_measurements(int index) const;
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< double >&
+      _internal_measurements() const;
+  void _internal_add_measurements(double value);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< double >*
+      _internal_mutable_measurements();
+  public:
+  double measurements(int index) const;
+  void set_measurements(int index, double value);
+  void add_measurements(double value);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< double >&
+      measurements() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< double >*
+      mutable_measurements();
+
+  // uint32 numberOfMeasurements = 1;
+  void clear_numberofmeasurements();
+  ::PROTOBUF_NAMESPACE_ID::uint32 numberofmeasurements() const;
+  void set_numberofmeasurements(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::uint32 _internal_numberofmeasurements() const;
+  void _internal_set_numberofmeasurements(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  public:
+
+  // uint32 supplyVoltage = 3;
+  void clear_supplyvoltage();
+  ::PROTOBUF_NAMESPACE_ID::uint32 supplyvoltage() const;
+  void set_supplyvoltage(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::uint32 _internal_supplyvoltage() const;
+  void _internal_set_supplyvoltage(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  public:
+
+  // uint32 stimulationNumber = 5;
+  void clear_stimulationnumber();
+  ::PROTOBUF_NAMESPACE_ID::uint32 stimulationnumber() const;
+  void set_stimulationnumber(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::uint32 _internal_stimulationnumber() const;
+  void _internal_set_stimulationnumber(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  public:
+
+  // bool isConnected = 4;
+  void clear_isconnected();
+  bool isconnected() const;
+  void set_isconnected(bool value);
+  private:
+  bool _internal_isconnected() const;
+  void _internal_set_isconnected(bool value);
+  public:
+
+  // bool stimulationActive = 6;
+  void clear_stimulationactive();
+  bool stimulationactive() const;
+  void set_stimulationactive(bool value);
+  private:
+  bool _internal_stimulationactive() const;
+  void _internal_set_stimulationactive(bool value);
+  public:
+
+  // uint32 sampleCounter = 7;
+  void clear_samplecounter();
+  ::PROTOBUF_NAMESPACE_ID::uint32 samplecounter() const;
+  void set_samplecounter(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::uint32 _internal_samplecounter() const;
+  void _internal_set_samplecounter(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:BICgRPC.NeuralSample)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< double > measurements_;
+  mutable std::atomic<int> _measurements_cached_byte_size_;
+  ::PROTOBUF_NAMESPACE_ID::uint32 numberofmeasurements_;
+  ::PROTOBUF_NAMESPACE_ID::uint32 supplyvoltage_;
+  ::PROTOBUF_NAMESPACE_ID::uint32 stimulationnumber_;
+  bool isconnected_;
+  bool stimulationactive_;
+  ::PROTOBUF_NAMESPACE_ID::uint32 samplecounter_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_BICgRPC_2eproto;
+};
+// -------------------------------------------------------------------
+
+class ConnectionUpdate PROTOBUF_FINAL :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:BICgRPC.ConnectionUpdate) */ {
+ public:
+  inline ConnectionUpdate() : ConnectionUpdate(nullptr) {}
+  virtual ~ConnectionUpdate();
+
+  ConnectionUpdate(const ConnectionUpdate& from);
+  ConnectionUpdate(ConnectionUpdate&& from) noexcept
+    : ConnectionUpdate() {
+    *this = ::std::move(from);
+  }
+
+  inline ConnectionUpdate& operator=(const ConnectionUpdate& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline ConnectionUpdate& operator=(ConnectionUpdate&& from) noexcept {
+    if (GetArena() == from.GetArena()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return GetMetadataStatic().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return GetMetadataStatic().reflection;
+  }
+  static const ConnectionUpdate& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const ConnectionUpdate* internal_default_instance() {
+    return reinterpret_cast<const ConnectionUpdate*>(
+               &_ConnectionUpdate_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    19;
+
+  friend void swap(ConnectionUpdate& a, ConnectionUpdate& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(ConnectionUpdate* other) {
+    if (other == this) return;
+    if (GetArena() == other->GetArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(ConnectionUpdate* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline ConnectionUpdate* New() const final {
+    return CreateMaybeMessage<ConnectionUpdate>(nullptr);
+  }
+
+  ConnectionUpdate* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<ConnectionUpdate>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const ConnectionUpdate& from);
+  void MergeFrom(const ConnectionUpdate& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  inline void SharedCtor();
+  inline void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(ConnectionUpdate* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "BICgRPC.ConnectionUpdate";
+  }
+  protected:
+  explicit ConnectionUpdate(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  private:
+  static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
+    ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&::descriptor_table_BICgRPC_2eproto);
+    return ::descriptor_table_BICgRPC_2eproto.file_level_metadata[kIndexInFileMessages];
+  }
+
+  public:
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kConnectionTypeFieldNumber = 1,
+    kIsConnectedFieldNumber = 2,
+  };
+  // string connectionType = 1;
+  void clear_connectiontype();
+  const std::string& connectiontype() const;
+  void set_connectiontype(const std::string& value);
+  void set_connectiontype(std::string&& value);
+  void set_connectiontype(const char* value);
+  void set_connectiontype(const char* value, size_t size);
+  std::string* mutable_connectiontype();
+  std::string* release_connectiontype();
+  void set_allocated_connectiontype(std::string* connectiontype);
+  private:
+  const std::string& _internal_connectiontype() const;
+  void _internal_set_connectiontype(const std::string& value);
+  std::string* _internal_mutable_connectiontype();
+  public:
+
+  // bool isConnected = 2;
+  void clear_isconnected();
+  bool isconnected() const;
+  void set_isconnected(bool value);
+  private:
+  bool _internal_isconnected() const;
+  void _internal_set_isconnected(bool value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:BICgRPC.ConnectionUpdate)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr connectiontype_;
+  bool isconnected_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_BICgRPC_2eproto;
+};
+// -------------------------------------------------------------------
+
+class PowerUpdate PROTOBUF_FINAL :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:BICgRPC.PowerUpdate) */ {
+ public:
+  inline PowerUpdate() : PowerUpdate(nullptr) {}
+  virtual ~PowerUpdate();
+
+  PowerUpdate(const PowerUpdate& from);
+  PowerUpdate(PowerUpdate&& from) noexcept
+    : PowerUpdate() {
+    *this = ::std::move(from);
+  }
+
+  inline PowerUpdate& operator=(const PowerUpdate& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline PowerUpdate& operator=(PowerUpdate&& from) noexcept {
+    if (GetArena() == from.GetArena()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return GetMetadataStatic().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return GetMetadataStatic().reflection;
+  }
+  static const PowerUpdate& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const PowerUpdate* internal_default_instance() {
+    return reinterpret_cast<const PowerUpdate*>(
+               &_PowerUpdate_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    20;
+
+  friend void swap(PowerUpdate& a, PowerUpdate& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(PowerUpdate* other) {
+    if (other == this) return;
+    if (GetArena() == other->GetArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(PowerUpdate* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline PowerUpdate* New() const final {
+    return CreateMaybeMessage<PowerUpdate>(nullptr);
+  }
+
+  PowerUpdate* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<PowerUpdate>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const PowerUpdate& from);
+  void MergeFrom(const PowerUpdate& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  inline void SharedCtor();
+  inline void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(PowerUpdate* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "BICgRPC.PowerUpdate";
+  }
+  protected:
+  explicit PowerUpdate(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  private:
+  static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
+    ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&::descriptor_table_BICgRPC_2eproto);
+    return ::descriptor_table_BICgRPC_2eproto.file_level_metadata[kIndexInFileMessages];
+  }
+
+  public:
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kParameterFieldNumber = 1,
+    kUnitsFieldNumber = 3,
+    kValueFieldNumber = 2,
+  };
+  // string parameter = 1;
+  void clear_parameter();
+  const std::string& parameter() const;
+  void set_parameter(const std::string& value);
+  void set_parameter(std::string&& value);
+  void set_parameter(const char* value);
+  void set_parameter(const char* value, size_t size);
+  std::string* mutable_parameter();
+  std::string* release_parameter();
+  void set_allocated_parameter(std::string* parameter);
+  private:
+  const std::string& _internal_parameter() const;
+  void _internal_set_parameter(const std::string& value);
+  std::string* _internal_mutable_parameter();
+  public:
+
+  // string units = 3;
+  void clear_units();
+  const std::string& units() const;
+  void set_units(const std::string& value);
+  void set_units(std::string&& value);
+  void set_units(const char* value);
+  void set_units(const char* value, size_t size);
+  std::string* mutable_units();
+  std::string* release_units();
+  void set_allocated_units(std::string* units);
+  private:
+  const std::string& _internal_units() const;
+  void _internal_set_units(const std::string& value);
+  std::string* _internal_mutable_units();
+  public:
+
+  // double value = 2;
+  void clear_value();
+  double value() const;
+  void set_value(double value);
+  private:
+  double _internal_value() const;
+  void _internal_set_value(double value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:BICgRPC.PowerUpdate)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr parameter_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr units_;
+  double value_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_BICgRPC_2eproto;
+};
+// -------------------------------------------------------------------
+
+class ErrorUpdate PROTOBUF_FINAL :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:BICgRPC.ErrorUpdate) */ {
+ public:
+  inline ErrorUpdate() : ErrorUpdate(nullptr) {}
+  virtual ~ErrorUpdate();
+
+  ErrorUpdate(const ErrorUpdate& from);
+  ErrorUpdate(ErrorUpdate&& from) noexcept
+    : ErrorUpdate() {
+    *this = ::std::move(from);
+  }
+
+  inline ErrorUpdate& operator=(const ErrorUpdate& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline ErrorUpdate& operator=(ErrorUpdate&& from) noexcept {
+    if (GetArena() == from.GetArena()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return GetMetadataStatic().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return GetMetadataStatic().reflection;
+  }
+  static const ErrorUpdate& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const ErrorUpdate* internal_default_instance() {
+    return reinterpret_cast<const ErrorUpdate*>(
+               &_ErrorUpdate_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    21;
+
+  friend void swap(ErrorUpdate& a, ErrorUpdate& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(ErrorUpdate* other) {
+    if (other == this) return;
+    if (GetArena() == other->GetArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(ErrorUpdate* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline ErrorUpdate* New() const final {
+    return CreateMaybeMessage<ErrorUpdate>(nullptr);
+  }
+
+  ErrorUpdate* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<ErrorUpdate>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const ErrorUpdate& from);
+  void MergeFrom(const ErrorUpdate& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  inline void SharedCtor();
+  inline void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(ErrorUpdate* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "BICgRPC.ErrorUpdate";
+  }
+  protected:
+  explicit ErrorUpdate(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  private:
+  static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
+    ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&::descriptor_table_BICgRPC_2eproto);
+    return ::descriptor_table_BICgRPC_2eproto.file_level_metadata[kIndexInFileMessages];
+  }
+
+  public:
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kMessageFieldNumber = 1,
+  };
+  // string message = 1;
+  void clear_message();
+  const std::string& message() const;
+  void set_message(const std::string& value);
+  void set_message(std::string&& value);
+  void set_message(const char* value);
+  void set_message(const char* value, size_t size);
+  std::string* mutable_message();
+  std::string* release_message();
+  void set_allocated_message(std::string* message);
+  private:
+  const std::string& _internal_message() const;
+  void _internal_set_message(const std::string& value);
+  std::string* _internal_mutable_message();
+  public:
+
+  // @@protoc_insertion_point(class_scope:BICgRPC.ErrorUpdate)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr message_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_BICgRPC_2eproto;
+};
+// -------------------------------------------------------------------
+
 class Bridge PROTOBUF_FINAL :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:BICgRPC.Bridge) */ {
  public:
@@ -3029,7 +3895,7 @@ class Bridge PROTOBUF_FINAL :
                &_Bridge_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    17;
+    22;
 
   friend void swap(Bridge& a, Bridge& b) {
     a.Swap(&b);
@@ -3227,7 +4093,7 @@ class QueryBridgesRequest PROTOBUF_FINAL :
                &_QueryBridgesRequest_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    18;
+    23;
 
   friend void swap(QueryBridgesRequest& a, QueryBridgesRequest& b) {
     a.Swap(&b);
@@ -3371,7 +4237,7 @@ class QueryBridgesResponse PROTOBUF_FINAL :
                &_QueryBridgesResponse_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    19;
+    24;
 
   friend void swap(QueryBridgesResponse& a, QueryBridgesResponse& b) {
     a.Swap(&b);
@@ -3517,7 +4383,7 @@ class ConnectBridgeRequest PROTOBUF_FINAL :
                &_ConnectBridgeRequest_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    20;
+    25;
 
   friend void swap(ConnectBridgeRequest& a, ConnectBridgeRequest& b) {
     a.Swap(&b);
@@ -3681,7 +4547,7 @@ class ConnectBridgeResponse PROTOBUF_FINAL :
                &_ConnectBridgeResponse_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    21;
+    26;
 
   friend void swap(ConnectBridgeResponse& a, ConnectBridgeResponse& b) {
     a.Swap(&b);
@@ -3856,7 +4722,7 @@ class DescribeBridgeRequest PROTOBUF_FINAL :
                &_DescribeBridgeRequest_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    22;
+    27;
 
   friend void swap(DescribeBridgeRequest& a, DescribeBridgeRequest& b) {
     a.Swap(&b);
@@ -4000,7 +4866,7 @@ class DescribeBridgeResponse PROTOBUF_FINAL :
                &_DescribeBridgeResponse_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    23;
+    28;
 
   friend void swap(DescribeBridgeResponse& a, DescribeBridgeResponse& b) {
     a.Swap(&b);
@@ -4184,7 +5050,7 @@ class DisconnectBridgeRequest PROTOBUF_FINAL :
                &_DisconnectBridgeRequest_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    24;
+    29;
 
   friend void swap(DisconnectBridgeRequest& a, DisconnectBridgeRequest& b) {
     a.Swap(&b);
@@ -5760,6 +6626,26 @@ bicSetSensingEnableRequest::mutable_refchannels() {
   return _internal_mutable_refchannels();
 }
 
+// uint32 bufferSize = 3;
+inline void bicSetSensingEnableRequest::clear_buffersize() {
+  buffersize_ = 0u;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 bicSetSensingEnableRequest::_internal_buffersize() const {
+  return buffersize_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 bicSetSensingEnableRequest::buffersize() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.bicSetSensingEnableRequest.bufferSize)
+  return _internal_buffersize();
+}
+inline void bicSetSensingEnableRequest::_internal_set_buffersize(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  
+  buffersize_ = value;
+}
+inline void bicSetSensingEnableRequest::set_buffersize(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  _internal_set_buffersize(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.bicSetSensingEnableRequest.bufferSize)
+}
+
 // -------------------------------------------------------------------
 
 // bicSetImplantPowerRequest
@@ -5958,6 +6844,520 @@ inline void HumidityUpdate::set_allocated_units(std::string* units) {
   units_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), units,
       GetArena());
   // @@protoc_insertion_point(field_set_allocated:BICgRPC.HumidityUpdate.units)
+}
+
+// -------------------------------------------------------------------
+
+// NeuralUpdate
+
+// repeated .BICgRPC.NeuralSample samples = 1;
+inline int NeuralUpdate::_internal_samples_size() const {
+  return samples_.size();
+}
+inline int NeuralUpdate::samples_size() const {
+  return _internal_samples_size();
+}
+inline void NeuralUpdate::clear_samples() {
+  samples_.Clear();
+}
+inline ::BICgRPC::NeuralSample* NeuralUpdate::mutable_samples(int index) {
+  // @@protoc_insertion_point(field_mutable:BICgRPC.NeuralUpdate.samples)
+  return samples_.Mutable(index);
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::BICgRPC::NeuralSample >*
+NeuralUpdate::mutable_samples() {
+  // @@protoc_insertion_point(field_mutable_list:BICgRPC.NeuralUpdate.samples)
+  return &samples_;
+}
+inline const ::BICgRPC::NeuralSample& NeuralUpdate::_internal_samples(int index) const {
+  return samples_.Get(index);
+}
+inline const ::BICgRPC::NeuralSample& NeuralUpdate::samples(int index) const {
+  // @@protoc_insertion_point(field_get:BICgRPC.NeuralUpdate.samples)
+  return _internal_samples(index);
+}
+inline ::BICgRPC::NeuralSample* NeuralUpdate::_internal_add_samples() {
+  return samples_.Add();
+}
+inline ::BICgRPC::NeuralSample* NeuralUpdate::add_samples() {
+  // @@protoc_insertion_point(field_add:BICgRPC.NeuralUpdate.samples)
+  return _internal_add_samples();
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::BICgRPC::NeuralSample >&
+NeuralUpdate::samples() const {
+  // @@protoc_insertion_point(field_list:BICgRPC.NeuralUpdate.samples)
+  return samples_;
+}
+
+// -------------------------------------------------------------------
+
+// NeuralSample
+
+// uint32 numberOfMeasurements = 1;
+inline void NeuralSample::clear_numberofmeasurements() {
+  numberofmeasurements_ = 0u;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 NeuralSample::_internal_numberofmeasurements() const {
+  return numberofmeasurements_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 NeuralSample::numberofmeasurements() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.NeuralSample.numberOfMeasurements)
+  return _internal_numberofmeasurements();
+}
+inline void NeuralSample::_internal_set_numberofmeasurements(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  
+  numberofmeasurements_ = value;
+}
+inline void NeuralSample::set_numberofmeasurements(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  _internal_set_numberofmeasurements(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.NeuralSample.numberOfMeasurements)
+}
+
+// repeated double measurements = 2;
+inline int NeuralSample::_internal_measurements_size() const {
+  return measurements_.size();
+}
+inline int NeuralSample::measurements_size() const {
+  return _internal_measurements_size();
+}
+inline void NeuralSample::clear_measurements() {
+  measurements_.Clear();
+}
+inline double NeuralSample::_internal_measurements(int index) const {
+  return measurements_.Get(index);
+}
+inline double NeuralSample::measurements(int index) const {
+  // @@protoc_insertion_point(field_get:BICgRPC.NeuralSample.measurements)
+  return _internal_measurements(index);
+}
+inline void NeuralSample::set_measurements(int index, double value) {
+  measurements_.Set(index, value);
+  // @@protoc_insertion_point(field_set:BICgRPC.NeuralSample.measurements)
+}
+inline void NeuralSample::_internal_add_measurements(double value) {
+  measurements_.Add(value);
+}
+inline void NeuralSample::add_measurements(double value) {
+  _internal_add_measurements(value);
+  // @@protoc_insertion_point(field_add:BICgRPC.NeuralSample.measurements)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< double >&
+NeuralSample::_internal_measurements() const {
+  return measurements_;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< double >&
+NeuralSample::measurements() const {
+  // @@protoc_insertion_point(field_list:BICgRPC.NeuralSample.measurements)
+  return _internal_measurements();
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< double >*
+NeuralSample::_internal_mutable_measurements() {
+  return &measurements_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< double >*
+NeuralSample::mutable_measurements() {
+  // @@protoc_insertion_point(field_mutable_list:BICgRPC.NeuralSample.measurements)
+  return _internal_mutable_measurements();
+}
+
+// uint32 supplyVoltage = 3;
+inline void NeuralSample::clear_supplyvoltage() {
+  supplyvoltage_ = 0u;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 NeuralSample::_internal_supplyvoltage() const {
+  return supplyvoltage_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 NeuralSample::supplyvoltage() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.NeuralSample.supplyVoltage)
+  return _internal_supplyvoltage();
+}
+inline void NeuralSample::_internal_set_supplyvoltage(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  
+  supplyvoltage_ = value;
+}
+inline void NeuralSample::set_supplyvoltage(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  _internal_set_supplyvoltage(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.NeuralSample.supplyVoltage)
+}
+
+// bool isConnected = 4;
+inline void NeuralSample::clear_isconnected() {
+  isconnected_ = false;
+}
+inline bool NeuralSample::_internal_isconnected() const {
+  return isconnected_;
+}
+inline bool NeuralSample::isconnected() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.NeuralSample.isConnected)
+  return _internal_isconnected();
+}
+inline void NeuralSample::_internal_set_isconnected(bool value) {
+  
+  isconnected_ = value;
+}
+inline void NeuralSample::set_isconnected(bool value) {
+  _internal_set_isconnected(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.NeuralSample.isConnected)
+}
+
+// uint32 stimulationNumber = 5;
+inline void NeuralSample::clear_stimulationnumber() {
+  stimulationnumber_ = 0u;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 NeuralSample::_internal_stimulationnumber() const {
+  return stimulationnumber_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 NeuralSample::stimulationnumber() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.NeuralSample.stimulationNumber)
+  return _internal_stimulationnumber();
+}
+inline void NeuralSample::_internal_set_stimulationnumber(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  
+  stimulationnumber_ = value;
+}
+inline void NeuralSample::set_stimulationnumber(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  _internal_set_stimulationnumber(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.NeuralSample.stimulationNumber)
+}
+
+// bool stimulationActive = 6;
+inline void NeuralSample::clear_stimulationactive() {
+  stimulationactive_ = false;
+}
+inline bool NeuralSample::_internal_stimulationactive() const {
+  return stimulationactive_;
+}
+inline bool NeuralSample::stimulationactive() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.NeuralSample.stimulationActive)
+  return _internal_stimulationactive();
+}
+inline void NeuralSample::_internal_set_stimulationactive(bool value) {
+  
+  stimulationactive_ = value;
+}
+inline void NeuralSample::set_stimulationactive(bool value) {
+  _internal_set_stimulationactive(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.NeuralSample.stimulationActive)
+}
+
+// uint32 sampleCounter = 7;
+inline void NeuralSample::clear_samplecounter() {
+  samplecounter_ = 0u;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 NeuralSample::_internal_samplecounter() const {
+  return samplecounter_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 NeuralSample::samplecounter() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.NeuralSample.sampleCounter)
+  return _internal_samplecounter();
+}
+inline void NeuralSample::_internal_set_samplecounter(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  
+  samplecounter_ = value;
+}
+inline void NeuralSample::set_samplecounter(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  _internal_set_samplecounter(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.NeuralSample.sampleCounter)
+}
+
+// -------------------------------------------------------------------
+
+// ConnectionUpdate
+
+// string connectionType = 1;
+inline void ConnectionUpdate::clear_connectiontype() {
+  connectiontype_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline const std::string& ConnectionUpdate::connectiontype() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.ConnectionUpdate.connectionType)
+  return _internal_connectiontype();
+}
+inline void ConnectionUpdate::set_connectiontype(const std::string& value) {
+  _internal_set_connectiontype(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.ConnectionUpdate.connectionType)
+}
+inline std::string* ConnectionUpdate::mutable_connectiontype() {
+  // @@protoc_insertion_point(field_mutable:BICgRPC.ConnectionUpdate.connectionType)
+  return _internal_mutable_connectiontype();
+}
+inline const std::string& ConnectionUpdate::_internal_connectiontype() const {
+  return connectiontype_.Get();
+}
+inline void ConnectionUpdate::_internal_set_connectiontype(const std::string& value) {
+  
+  connectiontype_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value, GetArena());
+}
+inline void ConnectionUpdate::set_connectiontype(std::string&& value) {
+  
+  connectiontype_.Set(
+    &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::move(value), GetArena());
+  // @@protoc_insertion_point(field_set_rvalue:BICgRPC.ConnectionUpdate.connectionType)
+}
+inline void ConnectionUpdate::set_connectiontype(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  
+  connectiontype_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(value),
+              GetArena());
+  // @@protoc_insertion_point(field_set_char:BICgRPC.ConnectionUpdate.connectionType)
+}
+inline void ConnectionUpdate::set_connectiontype(const char* value,
+    size_t size) {
+  
+  connectiontype_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(
+      reinterpret_cast<const char*>(value), size), GetArena());
+  // @@protoc_insertion_point(field_set_pointer:BICgRPC.ConnectionUpdate.connectionType)
+}
+inline std::string* ConnectionUpdate::_internal_mutable_connectiontype() {
+  
+  return connectiontype_.Mutable(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline std::string* ConnectionUpdate::release_connectiontype() {
+  // @@protoc_insertion_point(field_release:BICgRPC.ConnectionUpdate.connectionType)
+  return connectiontype_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline void ConnectionUpdate::set_allocated_connectiontype(std::string* connectiontype) {
+  if (connectiontype != nullptr) {
+    
+  } else {
+    
+  }
+  connectiontype_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), connectiontype,
+      GetArena());
+  // @@protoc_insertion_point(field_set_allocated:BICgRPC.ConnectionUpdate.connectionType)
+}
+
+// bool isConnected = 2;
+inline void ConnectionUpdate::clear_isconnected() {
+  isconnected_ = false;
+}
+inline bool ConnectionUpdate::_internal_isconnected() const {
+  return isconnected_;
+}
+inline bool ConnectionUpdate::isconnected() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.ConnectionUpdate.isConnected)
+  return _internal_isconnected();
+}
+inline void ConnectionUpdate::_internal_set_isconnected(bool value) {
+  
+  isconnected_ = value;
+}
+inline void ConnectionUpdate::set_isconnected(bool value) {
+  _internal_set_isconnected(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.ConnectionUpdate.isConnected)
+}
+
+// -------------------------------------------------------------------
+
+// PowerUpdate
+
+// string parameter = 1;
+inline void PowerUpdate::clear_parameter() {
+  parameter_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline const std::string& PowerUpdate::parameter() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.PowerUpdate.parameter)
+  return _internal_parameter();
+}
+inline void PowerUpdate::set_parameter(const std::string& value) {
+  _internal_set_parameter(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.PowerUpdate.parameter)
+}
+inline std::string* PowerUpdate::mutable_parameter() {
+  // @@protoc_insertion_point(field_mutable:BICgRPC.PowerUpdate.parameter)
+  return _internal_mutable_parameter();
+}
+inline const std::string& PowerUpdate::_internal_parameter() const {
+  return parameter_.Get();
+}
+inline void PowerUpdate::_internal_set_parameter(const std::string& value) {
+  
+  parameter_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value, GetArena());
+}
+inline void PowerUpdate::set_parameter(std::string&& value) {
+  
+  parameter_.Set(
+    &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::move(value), GetArena());
+  // @@protoc_insertion_point(field_set_rvalue:BICgRPC.PowerUpdate.parameter)
+}
+inline void PowerUpdate::set_parameter(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  
+  parameter_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(value),
+              GetArena());
+  // @@protoc_insertion_point(field_set_char:BICgRPC.PowerUpdate.parameter)
+}
+inline void PowerUpdate::set_parameter(const char* value,
+    size_t size) {
+  
+  parameter_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(
+      reinterpret_cast<const char*>(value), size), GetArena());
+  // @@protoc_insertion_point(field_set_pointer:BICgRPC.PowerUpdate.parameter)
+}
+inline std::string* PowerUpdate::_internal_mutable_parameter() {
+  
+  return parameter_.Mutable(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline std::string* PowerUpdate::release_parameter() {
+  // @@protoc_insertion_point(field_release:BICgRPC.PowerUpdate.parameter)
+  return parameter_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline void PowerUpdate::set_allocated_parameter(std::string* parameter) {
+  if (parameter != nullptr) {
+    
+  } else {
+    
+  }
+  parameter_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), parameter,
+      GetArena());
+  // @@protoc_insertion_point(field_set_allocated:BICgRPC.PowerUpdate.parameter)
+}
+
+// double value = 2;
+inline void PowerUpdate::clear_value() {
+  value_ = 0;
+}
+inline double PowerUpdate::_internal_value() const {
+  return value_;
+}
+inline double PowerUpdate::value() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.PowerUpdate.value)
+  return _internal_value();
+}
+inline void PowerUpdate::_internal_set_value(double value) {
+  
+  value_ = value;
+}
+inline void PowerUpdate::set_value(double value) {
+  _internal_set_value(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.PowerUpdate.value)
+}
+
+// string units = 3;
+inline void PowerUpdate::clear_units() {
+  units_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline const std::string& PowerUpdate::units() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.PowerUpdate.units)
+  return _internal_units();
+}
+inline void PowerUpdate::set_units(const std::string& value) {
+  _internal_set_units(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.PowerUpdate.units)
+}
+inline std::string* PowerUpdate::mutable_units() {
+  // @@protoc_insertion_point(field_mutable:BICgRPC.PowerUpdate.units)
+  return _internal_mutable_units();
+}
+inline const std::string& PowerUpdate::_internal_units() const {
+  return units_.Get();
+}
+inline void PowerUpdate::_internal_set_units(const std::string& value) {
+  
+  units_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value, GetArena());
+}
+inline void PowerUpdate::set_units(std::string&& value) {
+  
+  units_.Set(
+    &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::move(value), GetArena());
+  // @@protoc_insertion_point(field_set_rvalue:BICgRPC.PowerUpdate.units)
+}
+inline void PowerUpdate::set_units(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  
+  units_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(value),
+              GetArena());
+  // @@protoc_insertion_point(field_set_char:BICgRPC.PowerUpdate.units)
+}
+inline void PowerUpdate::set_units(const char* value,
+    size_t size) {
+  
+  units_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(
+      reinterpret_cast<const char*>(value), size), GetArena());
+  // @@protoc_insertion_point(field_set_pointer:BICgRPC.PowerUpdate.units)
+}
+inline std::string* PowerUpdate::_internal_mutable_units() {
+  
+  return units_.Mutable(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline std::string* PowerUpdate::release_units() {
+  // @@protoc_insertion_point(field_release:BICgRPC.PowerUpdate.units)
+  return units_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline void PowerUpdate::set_allocated_units(std::string* units) {
+  if (units != nullptr) {
+    
+  } else {
+    
+  }
+  units_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), units,
+      GetArena());
+  // @@protoc_insertion_point(field_set_allocated:BICgRPC.PowerUpdate.units)
+}
+
+// -------------------------------------------------------------------
+
+// ErrorUpdate
+
+// string message = 1;
+inline void ErrorUpdate::clear_message() {
+  message_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline const std::string& ErrorUpdate::message() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.ErrorUpdate.message)
+  return _internal_message();
+}
+inline void ErrorUpdate::set_message(const std::string& value) {
+  _internal_set_message(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.ErrorUpdate.message)
+}
+inline std::string* ErrorUpdate::mutable_message() {
+  // @@protoc_insertion_point(field_mutable:BICgRPC.ErrorUpdate.message)
+  return _internal_mutable_message();
+}
+inline const std::string& ErrorUpdate::_internal_message() const {
+  return message_.Get();
+}
+inline void ErrorUpdate::_internal_set_message(const std::string& value) {
+  
+  message_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value, GetArena());
+}
+inline void ErrorUpdate::set_message(std::string&& value) {
+  
+  message_.Set(
+    &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::move(value), GetArena());
+  // @@protoc_insertion_point(field_set_rvalue:BICgRPC.ErrorUpdate.message)
+}
+inline void ErrorUpdate::set_message(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  
+  message_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(value),
+              GetArena());
+  // @@protoc_insertion_point(field_set_char:BICgRPC.ErrorUpdate.message)
+}
+inline void ErrorUpdate::set_message(const char* value,
+    size_t size) {
+  
+  message_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(
+      reinterpret_cast<const char*>(value), size), GetArena());
+  // @@protoc_insertion_point(field_set_pointer:BICgRPC.ErrorUpdate.message)
+}
+inline std::string* ErrorUpdate::_internal_mutable_message() {
+  
+  return message_.Mutable(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline std::string* ErrorUpdate::release_message() {
+  // @@protoc_insertion_point(field_release:BICgRPC.ErrorUpdate.message)
+  return message_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline void ErrorUpdate::set_allocated_message(std::string* message) {
+  if (message != nullptr) {
+    
+  } else {
+    
+  }
+  message_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), message,
+      GetArena());
+  // @@protoc_insertion_point(field_set_allocated:BICgRPC.ErrorUpdate.message)
 }
 
 // -------------------------------------------------------------------
@@ -6988,6 +8388,16 @@ inline void DisconnectBridgeRequest::set_allocated_name(std::string* name) {
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

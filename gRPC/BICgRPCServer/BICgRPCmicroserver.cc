@@ -52,6 +52,11 @@ using BICgRPC::bicSetImplantPowerRequest;
 using BICgRPC::bicStartStimulationRequest;
 using BICgRPC::TemperatureUpdate;
 using BICgRPC::HumidityUpdate;
+using BICgRPC::NeuralUpdate;
+using BICgRPC::PowerUpdate;
+using BICgRPC::ConnectionUpdate;
+using BICgRPC::ErrorUpdate;
+using BICgRPC::NeuralSample;
 
 // BIC Bridge Service Usings
 using BICgRPC::BICBridgeService;
@@ -66,22 +71,15 @@ using BICgRPC::ConnectBridgeResponse;
 using BICgRPC::bicSetStreamEnable;
 using BICgRPC::DisconnectBridgeRequest;
 
-/**
-  * @brief Writes implant output to std::cout
-  *
-  * Important: The implant system sends a large amount of events (e.g. onData will be called an average of once per ms).
-  *            Therefore, the consumer code should avoid expensive operations without decoupling the listener e.g via
-  *            buffering the data.
-  */
 class CImplantToStdOutListener : public IImplantListener
 {
 public:
     virtual ~CImplantToStdOutListener() {}
 
-    // @implements cortec::implantapi::IImplantListener
     virtual void onStimulationStateChanged(const bool isStimulating)
     {
-        std::cout << "*** Stimulation state changed: " << isStimulating << std::endl;
+        // TODO - anything? bug report? Should only trigger when there is a change right?
+        std::cout << "\tDEBUG: Stimulation state changed: " << isStimulating << std::endl;
 
         std::lock_guard<std::mutex> lock(m_mutex);
         m_isStimulating = isStimulating;
@@ -89,14 +87,15 @@ public:
 
     bool isStimulating()
     {
+        // TODO - anything?
         std::lock_guard<std::mutex> lock(m_mutex);
         return m_isStimulating;
     }
 
-    // @implements cortec::implantapi::IImplantListener
     virtual void onMeasurementStateChanged(const bool isMeasuring)
     {
-        std::cout << "*** Measurement state changed: " << isMeasuring << std::endl;
+        // TODO - anything? bug report? Should only trigger when there is a change right?
+        std::cout << "\tDEBUG: Measurement state changed: " << isMeasuring << std::endl;
 
         std::lock_guard<std::mutex> lock(m_mutex);
         m_isMeasuring = isMeasuring;
@@ -104,11 +103,11 @@ public:
 
     bool isMeasuring()
     {
+        // TODO - anything?
         std::lock_guard<std::mutex> lock(m_mutex);
         return m_isMeasuring;
     }
 
-    // @implements cortec::implantapi::IImplantListener 
     virtual void onConnectionStateChanged(const connection_info_t& info)
     {
         if (info.count(ConnectionType::PC_TO_EXT) > 0)
@@ -116,71 +115,156 @@ public:
             const bool isConnected = info.at(ConnectionType::PC_TO_EXT) == ConnectionState::CONNECTED;
             std::cout << "*** Connection state from PC to external unit changed: "
                 << (isConnected ? "connected" : "disconnected") << std::endl;
+
+            if (ConnectionWriter != NULL)
+            {
+                ConnectionUpdate connectionMessage;
+                connectionMessage.set_connectiontype("USB");
+                connectionMessage.set_isconnected(isConnected);
+                ConnectionWriter->Write(connectionMessage);
+            }
         }
         if (info.count(ConnectionType::EXT_TO_IMPLANT) > 0)
         {
             const bool isConnected = info.at(ConnectionType::EXT_TO_IMPLANT) == ConnectionState::CONNECTED;
             std::cout << "*** Connection state from external unit to implant changed: "
                 << (isConnected ? "connected" : "disconnected") << std::endl;
-        }
-    }
 
-    // @implements cortec::implantapi::IImplantListener        
-    virtual void onConnectionStateChanged(const bool isConnected)
-    {
-        std::cout << "*** Connection state changed: " << isConnected << std::endl;
-    }
-
-    // @implements cortec::implantapi::IImplantListener
-    virtual void onData(const std::vector<CSample>* samples)
-    {
-        std::cout << "Samples (#" << samples->size() << ")";
-        if (!samples->empty())
-        {
-            // Output only the first data of the first sample, because std::out is too slow to print
-            // all data at measurement data at a sampling rate of 1000.0 Hz
-            std::cout << " - Sample(0): "
-                << " V: " << samples->at(0).getSupplyVoltage()
-                << " C: " << samples->at(0).isConnected()
-                << " S (id=" << samples->at(0).getStimulationId()
-                << "): " << samples->at(0).isStimulationActive()
-                << " Data (#" << samples->at(0).getNumberOfMeasurements() << ")";
-            if (samples->at(0).getNumberOfMeasurements() > 0)
+            if (ConnectionWriter != NULL)
             {
-                std::unique_ptr<double[]> measurements(samples->at(0).getMeasurements());
-                std::cout << ": " << measurements[0];
+                ConnectionUpdate connectionMessage;
+                connectionMessage.set_connectiontype("Inductive");
+                connectionMessage.set_isconnected(isConnected);
+                ConnectionWriter->Write(connectionMessage);
             }
         }
+    }
 
-        std::cout << std::endl;
+    virtual void onConnectionStateChanged(const bool isConnected)
+    {
+        if (ConnectionWriter != NULL)
+        {
+            ConnectionUpdate connectionMessage;
+            connectionMessage.set_connectiontype("Overall");
+            connectionMessage.set_isconnected(isConnected);
+            ConnectionWriter->Write(connectionMessage);
+        }
+    }
+
+    virtual void onData(const std::vector<CSample>* samples)
+    {
+        if (!samples->empty())
+        {
+            // Create message container for streaming, may not be used
+            for (int i = 0; i < samples->size(); i++)
+            {
+                // Check if we've lost packets, for funsies
+                if (lastNeuroCount + 1 != samples->at(i).getMeasurementCounter())
+                {
+                    if (lastNeuroCount == samples->at(i).getMeasurementCounter())
+                    {
+                        // Repeated Packet Count! 
+                        // Write error message to server console
+                        std::cout << ">>> Repeated packet counter value! <<<" << std::endl;
+                    }
+                    else
+                    {
+                        // Missed packet!
+                        uint32_t newSampleCounterValue = samples->at(i).getMeasurementCounter();
+                        double diff = newSampleCounterValue - (lastNeuroCount + 1);
+                        if (diff < 0)
+                        {
+                            // Wrap around case
+                            diff = (double)samples->at(i).getMeasurementCounter() + (UINT32_MAX - lastNeuroCount + 1);
+                        }
+                        // Update counter
+                        lastNeuroCount = samples->at(i).getMeasurementCounter();
+
+                        // Write error message to server console
+                        std::cout << "** Missed Neural Datapoints: " << diff << "! **" << std::endl;
+
+                        // If neural data buffer is not empty, flush it so we can keep buffers continuous
+                        if (NeuralWriter != NULL)
+                        {
+                            // TODO: Is performance here an issue? Maybe use pingpong buffers and write in a different thread?
+                            NeuralWriter->Write(bufferedNeuroUpdate);
+                            bufferedNeuroUpdate.Clear();
+                        }
+                    }
+                }
+                else
+                {
+                    // Update counter
+                    lastNeuroCount = samples->at(i).getMeasurementCounter();
+                }
+
+                // If we're streaming, create message
+                if (NeuralWriter != NULL)
+                {
+                    NeuralSample* newSample = bufferedNeuroUpdate.add_samples();
+                    int numMeasures = samples->at(i).getNumberOfMeasurements();
+                    newSample->set_numberofmeasurements(numMeasures);
+                    newSample->set_supplyvoltage(samples->at(i).getSupplyVoltage());
+                    newSample->set_isconnected(samples->at(i).isConnected());
+                    newSample->set_stimulationnumber(samples->at(i).getStimulationId());
+                    newSample->set_stimulationactive(samples->at(i).isStimulationActive());
+                    newSample->set_samplecounter(samples->at(i).getMeasurementCounter());
+                    for (int j = 0; j < numMeasures; j++)
+                    {
+                        newSample->add_measurements(samples->at(i).getMeasurements()[j]);
+                    }
+                }
+            }
+
+            // If streaming, send data
+            // TODO: Use wait mutex to check before nulls?
+            if (NeuralWriter != NULL && bufferedNeuroUpdate.samples().size() >= neuroDataBufferThreshold)
+            {
+                NeuralWriter->Write(bufferedNeuroUpdate);
+                bufferedNeuroUpdate.Clear();
+            }
+        }
 
         delete samples;
     }
 
-    // @implements cortec::implantapi::IImplantListener
     virtual void onImplantVoltageChanged(const double voltageMicroV)
     {
-        static size_t eventCounter = 0;
-        if (eventCounter % 1000 == 0) // during measurement callback can potentially be called once every ms
+        // TODO check units
+        if (PowerWriter != NULL)
         {
-            std::cout << "*** Voltage received: " << voltageMicroV << " microvolts." << std::endl;
+            PowerUpdate powerMessage;
+            powerMessage.set_parameter("Voltage");
+            powerMessage.set_value(voltageMicroV);
+            powerMessage.set_units("microvolts");
+            PowerWriter->Write(powerMessage);
         }
-        ++eventCounter;
     }
 
-    // @implements cortec::implantapi::IImplantListener
     virtual void onPrimaryCoilCurrentChanged(const double currentMilliA)
     {
-        std::cout << "*** Primary coil current received: " << currentMilliA << " milliamps." << std::endl;
+        if (PowerWriter != NULL)
+        {
+            PowerUpdate powerMessage;
+            powerMessage.set_parameter("CoilCurrent");
+            powerMessage.set_value(currentMilliA);
+            powerMessage.set_units("milliamperes");
+            PowerWriter->Write(powerMessage);
+        }
     }
 
-    // @implements cortec::implantapi::IImplantListener
     virtual void onImplantControlValueChanged(const double controlValue)
     {
-        std::cout << "*** Implant control value received: " << controlValue << "%." << std::endl;
+        if (PowerWriter != NULL)
+        {
+            PowerUpdate powerMessage;
+            powerMessage.set_parameter("Control");
+            powerMessage.set_value(controlValue);
+            powerMessage.set_units("%");
+            PowerWriter->Write(powerMessage);
+        }
     }
 
-    // @implements cortec::implantapi::IImplantListener
     virtual void onTemperatureChanged(const double temperature)
     {
         if (TemperatureWriter != NULL)
@@ -192,7 +276,6 @@ public:
         }
     }
 
-    // @implements cortec::implantapi::IImplantListener
     virtual void onHumidityChanged(const double humidity)
     {
         if (HumidityWriter != NULL)
@@ -204,25 +287,43 @@ public:
         }
     }
 
-    // @implements cortec::implantapi::IImplantListener
     virtual void onError(const std::exception& err)
     {
-        std::cerr << "*** Exception received: " << err.what() << std::endl;
+        if (ErrorWriter != NULL)
+        {
+            ErrorUpdate errorMessage;
+            errorMessage.set_message(err.what());
+            ErrorWriter->Write(errorMessage);
+        }
     }
 
-    // @implements cortec::implantapi::IImplantListener
     virtual void onDataProcessingTooSlow()
     {
         std::cout << "*** Warning: Data processing too slow" << std::endl;
+        if (ErrorWriter != NULL)
+        {
+            ErrorUpdate errorMessage;
+            errorMessage.set_message("Warning: Data processing too slow");
+            ErrorWriter->Write(errorMessage);
+        }
     }
 
+    // Pointers for gRPC-managed streaming interfaces. Set by the BICDeviceServiceImpl class, null when not in use.
     grpc::ServerWriter<TemperatureUpdate>* TemperatureWriter = NULL;
     grpc::ServerWriter<HumidityUpdate>* HumidityWriter = NULL;
+    grpc::ServerWriter<NeuralUpdate>* NeuralWriter = NULL;
+    grpc::ServerWriter<ConnectionUpdate>* ConnectionWriter = NULL;
+    grpc::ServerWriter<ErrorUpdate>* ErrorWriter = NULL;
+    grpc::ServerWriter<PowerUpdate>* PowerWriter = NULL;
+    uint32_t neuroDataBufferThreshold = 1;
+    NeuralUpdate bufferedNeuroUpdate;
+    
 private:
     std::mutex m_mutex;
-    
     bool m_isStimulating;
     bool m_isMeasuring;
+    uint32_t lastNeuroCount = UINT32_MAX;
+    
 };
 
 /**
@@ -289,12 +390,24 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
     // Stream States, Mutexs, and Notifiers
     bool isStreamingTemp = false;
     bool isStreamingHumid = false;
+    bool isStreamingNeural = false;
+    bool isStreamingConnection = false;
+    bool isStreamingErrors = false;
+    bool isStreamingPower = false;
 
     std::mutex tempStreamLock;
     std::mutex humidStreamLock;
+    std::mutex neuralStreamLock;
+    std::mutex connectionStreamLock;
+    std::mutex errorStreamLock;
+    std::mutex powerStreamLock;
 
     std::condition_variable tempStreamNotify;
     std::condition_variable humidStreamNotify;
+    std::condition_variable neuralStreamNotify;
+    std::condition_variable connectionStreamNotify;
+    std::condition_variable errorStreamNotify;
+    std::condition_variable powerStreamNotify;
 
     // ************************* Helper Service Function Declarations *************************
     void factoryInitializeCheck()
@@ -423,6 +536,10 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
         // Stop all streaming!
         tempStreamNotify.notify_all();
         humidStreamNotify.notify_all();
+        neuralStreamNotify.notify_all();
+        connectionStreamNotify.notify_all();
+        errorStreamNotify.notify_all();
+        powerStreamNotify.notify_all();
 
         // Dispose the things!
         theImplant->setImplantPower(false);
@@ -603,7 +720,7 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
                 {
                     referenceElectrodes.insert(referenceElectrodes.begin(), request->refchannels()[i]);
                 }
-
+                listener.neuroDataBufferThreshold = request->buffersize();
                 theImplant->startMeasurement(referenceElectrodes);
             }
             else
@@ -707,8 +824,8 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
             listener.TemperatureWriter = writer;
 
             // Create the waiting objects for notification for end of stream
-            std::unique_lock<std::mutex> tempStreamLockInst(tempStreamLock);
-            tempStreamNotify.wait(tempStreamLockInst);
+            std::unique_lock<std::mutex> StreamLockInst(tempStreamLock);
+            tempStreamNotify.wait(StreamLockInst);
 
             // Clean up the writers and busy flags
             listener.TemperatureWriter = NULL;
@@ -738,8 +855,8 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
             listener.HumidityWriter = writer;
 
             // Create the waiting objects for notification for end of stream
-            std::unique_lock<std::mutex> humidStreamLockInst(tempStreamLock);
-            humidStreamNotify.wait(humidStreamLockInst);
+            std::unique_lock<std::mutex> StreamLockInst(humidStreamLock);
+            humidStreamNotify.wait(StreamLockInst);
 
             // Clean up the writers and busy flags
             listener.HumidityWriter = NULL;
@@ -755,6 +872,132 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
         {
             // disable streaming
             humidStreamNotify.notify_one();
+        }
+
+        return Status::OK;
+    }
+
+    Status bicConnectionStream(ServerContext* context, const bicSetStreamEnable* request, ServerWriter<ConnectionUpdate>* writer) override {
+        // Check requested stream state and current streaming state (don't want to destroy a previously requested stream without it being stopped first)
+        if (!isStreamingConnection && request->enable())
+        {
+            // Not already streaming and requesting enable
+            isStreamingConnection = true;
+            listener.ConnectionWriter = writer;
+
+            // Create the waiting objects for notification for end of stream
+            std::unique_lock<std::mutex> StreamLockInst(connectionStreamLock);
+            connectionStreamNotify.wait(StreamLockInst);
+
+            // Clean up the writers and busy flags
+            listener.ConnectionWriter = NULL;
+            isStreamingConnection = false;
+        }
+        else if (isStreamingConnection && request->enable())
+        {
+            // Error State, already streaming, do nothing
+                // Would love to send an error back, but if we don't send Status::OK then the "await ResponseStream.MoveNext()" doesn't work right and gracefully exit :/
+            return Status::OK;
+        }
+        else
+        {
+            // disable streaming
+            connectionStreamNotify.notify_one();
+        }
+
+        return Status::OK;
+    }
+
+    Status bicErrorStream(ServerContext* context, const bicSetStreamEnable* request, ServerWriter<ErrorUpdate>* writer) override {
+        // Check requested stream state and current streaming state (don't want to destroy a previously requested stream without it being stopped first)
+        if (!isStreamingErrors && request->enable())
+        {
+            // Not already streaming and requesting enable
+            isStreamingErrors = true;
+            listener.ErrorWriter = writer;
+
+            // Create the waiting objects for notification for end of stream
+            std::unique_lock<std::mutex> StreamLockInst(errorStreamLock);
+            errorStreamNotify.wait(StreamLockInst);
+
+            // Clean up the writers and busy flags
+            listener.ErrorWriter = NULL;
+            isStreamingErrors = false;
+        }
+        else if (isStreamingErrors && request->enable())
+        {
+            // Error State, already streaming, do nothing
+                // Would love to send an error back, but if we don't send Status::OK then the "await ResponseStream.MoveNext()" doesn't work right and gracefully exit :/
+            return Status::OK;
+        }
+        else
+        {
+            // disable streaming
+            errorStreamNotify.notify_one();
+        }
+
+        return Status::OK;
+    }
+
+    Status bicPowerStream(ServerContext* context, const bicSetStreamEnable* request, ServerWriter<PowerUpdate>* writer) override {
+        // Check requested stream state and current streaming state (don't want to destroy a previously requested stream without it being stopped first)
+        if (!isStreamingPower && request->enable())
+        {
+            // Not already streaming and requesting enable
+            isStreamingPower = true;
+            listener.PowerWriter = writer;
+
+            // Create the waiting objects for notification for end of stream
+            std::unique_lock<std::mutex> StreamLockInst(powerStreamLock);
+            powerStreamNotify.wait(StreamLockInst);
+
+            // Clean up the writers and busy flags
+            listener.PowerWriter = NULL;
+            isStreamingPower = false;
+        }
+        else if (isStreamingPower && request->enable())
+        {
+            // Error State, already streaming, do nothing
+                // Would love to send an error back, but if we don't send Status::OK then the "await ResponseStream.MoveNext()" doesn't work right and gracefully exit :/
+            return Status::OK;
+        }
+        else
+        {
+            // disable streaming
+            powerStreamNotify.notify_one();
+        }
+
+        return Status::OK;
+    }
+
+    Status bicNeuralStream(ServerContext* context, const bicSetStreamEnable* request, ServerWriter<NeuralUpdate>* writer) override {
+        // Check requested stream state and current streaming state (don't want to destroy a previously requested stream without it being stopped first)
+        if (!isStreamingNeural && request->enable())
+        {
+            // Not already streaming and requesting enable
+            isStreamingNeural = true;
+            listener.bufferedNeuroUpdate.clear_samples();
+            listener.NeuralWriter = writer;
+
+            // Create the waiting objects for notification for end of stream
+            std::unique_lock<std::mutex> StreamLockInst(neuralStreamLock);
+            neuralStreamNotify.wait(StreamLockInst);
+
+            // Clean up the writers and busy flags
+            listener.NeuralWriter = NULL;
+            listener.bufferedNeuroUpdate.clear_samples();
+            isStreamingNeural = false;
+        }
+        else if (isStreamingNeural && request->enable())
+        {
+            // Error State, already streaming, do nothing
+                // Would love to send an error back, but if we don't send Status::OK then the "await ResponseStream.MoveNext()" doesn't work right and gracefully exit :/
+            return Status::OK;
+        }
+        else
+        {
+            // disable streaming
+            neuralStreamNotify.notify_one();
         }
 
         return Status::OK;

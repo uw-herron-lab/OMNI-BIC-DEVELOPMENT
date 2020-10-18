@@ -1,52 +1,53 @@
 ﻿  BICgRPCmicroserver.cc
-D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(337,1): warning C4267: 'argument': conversion from 'size_t' to 'google::protobuf::uint32', possible loss of data
-D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(338,1): warning C4267: 'argument': conversion from 'size_t' to 'google::protobuf::uint32', possible loss of data
-D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(341,1): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(371,1): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(468,1): warning C4267: 'argument': conversion from 'size_t' to 'google::protobuf::uint32', possible loss of data
-D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(469,1): warning C4267: 'argument': conversion from 'size_t' to 'google::protobuf::uint32', possible loss of data
-D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(472,1): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(457,42): warning C4101: 'theError': unreferenced local variable
+D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(221,78): warning C4018: '>=': signed/unsigned mismatch
+D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(452,1): warning C4267: 'argument': conversion from 'size_t' to 'google::protobuf::uint32', possible loss of data
+D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(453,1): warning C4267: 'argument': conversion from 'size_t' to 'google::protobuf::uint32', possible loss of data
+D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(456,1): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(486,1): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(587,1): warning C4267: 'argument': conversion from 'size_t' to 'google::protobuf::uint32', possible loss of data
+D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(588,1): warning C4267: 'argument': conversion from 'size_t' to 'google::protobuf::uint32', possible loss of data
+D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(591,1): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(576,42): warning C4101: 'theError': unreferenced local variable
 D:\gitbuilds\include\grpcpp/impl/codegen/proto_utils.h(52,1): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
 D:\gitbuilds\include\grpcpp/impl/codegen/proto_utils.h(107): message : see reference to function template instantiation 'grpc::Status grpc::GenericSerialize<grpc::ProtoBufferWriter,T>(const grpc::protobuf::MessageLite &,grpc::ByteBuffer *,bool *)' being compiled
           with
           [
-              T=BICgRPC::TemperatureUpdate
+              T=BICgRPC::NeuralUpdate
           ]
 D:\gitbuilds\include\grpcpp/impl/codegen/proto_utils.h(106): message : while compiling class template member function 'grpc::Status grpc::SerializationTraits<R,void>::Serialize(const grpc::protobuf::MessageLite &,grpc::ByteBuffer *,bool *)'
           with
           [
-              R=BICgRPC::TemperatureUpdate
+              R=BICgRPC::NeuralUpdate
           ]
 D:\gitbuilds\include\grpcpp/impl/codegen/call_op_set.h(388): message : see reference to function template instantiation 'grpc::Status grpc::SerializationTraits<R,void>::Serialize(const grpc::protobuf::MessageLite &,grpc::ByteBuffer *,bool *)' being compiled
           with
           [
-              R=BICgRPC::TemperatureUpdate
+              R=BICgRPC::NeuralUpdate
           ]
 D:\gitbuilds\include\grpcpp/impl/codegen/call_op_set.h(447): message : see reference to class template instantiation 'grpc::SerializationTraits<R,void>' being compiled
           with
           [
-              R=BICgRPC::TemperatureUpdate
+              R=BICgRPC::NeuralUpdate
           ]
 D:\gitbuilds\include\grpcpp/impl/codegen/call_op_set.h(442): message : while compiling class template member function 'void grpc::internal::CallOpRecvMessage<R>::FinishOp(bool *)'
           with
           [
-              R=BICgRPC::TemperatureUpdate
+              R=BICgRPC::NeuralUpdate
           ]
 D:\gitbuilds\include\grpcpp/impl/codegen/call_op_set.h(915): message : see reference to function template instantiation 'void grpc::internal::CallOpRecvMessage<R>::FinishOp(bool *)' being compiled
           with
           [
-              R=BICgRPC::TemperatureUpdate
+              R=BICgRPC::NeuralUpdate
           ]
 D:\gitbuilds\include\grpcpp/impl/codegen/call_op_set.h(859): message : see reference to class template instantiation 'grpc::internal::CallOpRecvMessage<R>' being compiled
           with
           [
-              R=BICgRPC::TemperatureUpdate
+              R=BICgRPC::NeuralUpdate
           ]
 D:\gitbuilds\include\grpcpp/impl/codegen/async_stream_impl.h(293): message : see reference to class template instantiation 'grpc::internal::CallOpSet<grpc::internal::CallOpRecvInitialMetadata,grpc::internal::CallOpRecvMessage<R>,grpc::internal::CallNoOp<3>,grpc::internal::CallNoOp<4>,grpc::internal::CallNoOp<5>,grpc::internal::CallNoOp<6>>' being compiled
           with
           [
-              R=BICgRPC::TemperatureUpdate
+              R=BICgRPC::NeuralUpdate
           ]
-D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\cmake\build\BICgRPC.grpc.pb.h(1974): message : see reference to class template instantiation 'grpc_impl::ClientAsyncReader<BICgRPC::TemperatureUpdate>' being compiled
+D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\cmake\build\BICgRPC.grpc.pb.h(2114): message : see reference to class template instantiation 'grpc_impl::ClientAsyncReader<BICgRPC::NeuralUpdate>' being compiled
   BICgRPCmicroserver.vcxproj -> D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\cmake\build\Debug\BICgRPCmicroserver.exe

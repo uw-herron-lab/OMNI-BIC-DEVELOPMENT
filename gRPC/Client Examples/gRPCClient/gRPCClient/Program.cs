@@ -156,14 +156,56 @@ namespace BICgRPC_ConsoleTest
                             deviceClient.bicHumidityStream(new bicSetStreamEnable() { Enable = false });
                         }
                         break;
+                    case ConsoleKey.E:
+                        if (errorMonitor == null || errorMonitor.IsCompleted)
+                        {
+                            // Start up the stream
+                            errorMonitor = Task.Run(errorMonitorTaskAsync);
+                        }
+                        else
+                        {
+                            // Stop the stream
+                            deviceClient.bicErrorStream(new bicSetStreamEnable() { Enable = false });
+                        }
+                        break;
+                    case ConsoleKey.C:
+                        if (connectionMonitor == null || connectionMonitor.IsCompleted)
+                        {
+                            // Start up the stream
+                            connectionMonitor = Task.Run(connectionMonitorTaskAsync);
+                        }
+                        else
+                        {
+                            // Stop the stream
+                            deviceClient.bicConnectionStream(new bicSetStreamEnable() { Enable = false });
+                        }
+                        break;
+                    case ConsoleKey.L:
+                        if (powerMonitor == null || powerMonitor.IsCompleted)
+                        {
+                            // Start up the stream
+                            powerMonitor = Task.Run(powerMonitorTaskAsync);
+                        }
+                        else
+                        {
+                            // Stop the stream
+                            deviceClient.bicPowerStream(new bicSetStreamEnable() { Enable = false });
+                        }
+                        break;
                     case ConsoleKey.S:
-                        bicSetSensingEnableRequest aSensingReq = new bicSetSensingEnableRequest() { EnableSensing = true };
+                        bicSetSensingEnableRequest aSensingReq = new bicSetSensingEnableRequest() { EnableSensing = true, BufferSize = 100 };
                         // Can define any reference channels by adding them to the list, for simplicity I'm not doping this currently, but this is why I'm declaring aSensingReq.
                         //aSensingReq.RefChannels.Add(0);
-                        Console.WriteLine("Implant Power On Command Result: " + deviceClient.bicSetSensingEnable(aSensingReq));
+                        Console.WriteLine("Implant Sensing On Command Result: " + deviceClient.bicSetSensingEnable(aSensingReq));
+                        if (neuroMonitor == null || neuroMonitor.IsCompleted)
+                        {
+                            // Start up the stream
+                            neuroMonitor = Task.Run(neuralMonitorTaskAsync);
+                        }
                         break;
                     case ConsoleKey.N:                        
                         Console.WriteLine("Implant Sensing Off Command Result: " + deviceClient.bicSetSensingEnable(new bicSetSensingEnableRequest() { EnableSensing = false })) ;
+                        deviceClient.bicNeuralStream(new bicSetStreamEnable() { Enable = false });
                         break;
                     case ConsoleKey.P:
                         Console.WriteLine("Implant Power On Command Result: " + deviceClient.bicSetImplantPower(new bicSetImplantPowerRequest() { PowerEnabled = true }));
@@ -195,22 +237,62 @@ namespace BICgRPC_ConsoleTest
 
         static async Task temperMonitorTaskAsync()
         {
-            var temperStream = deviceClient.bicTemperatureStream(new bicSetStreamEnable() { Enable = true });
-            while(await temperStream.ResponseStream.MoveNext())
+            var stream = deviceClient.bicTemperatureStream(new bicSetStreamEnable() { Enable = true });
+            while(await stream.ResponseStream.MoveNext())
             {
-                Console.WriteLine("Implant Stream Temperature: " + temperStream.ResponseStream.Current.Temperature.ToString() + temperStream.ResponseStream.Current.Units);
+                Console.WriteLine("Implant Stream Temperature: " + stream.ResponseStream.Current.Temperature.ToString() + stream.ResponseStream.Current.Units);
             }
             Console.WriteLine("(Temperature Monitor Task Exited)");
         }
 
         static async Task humidMonitorTaskAsync()
         {
-            var humidStream = deviceClient.bicHumidityStream(new bicSetStreamEnable() { Enable = true });
-            while (await humidStream.ResponseStream.MoveNext())
+            var stream = deviceClient.bicHumidityStream(new bicSetStreamEnable() { Enable = true });
+            while (await stream.ResponseStream.MoveNext())
             {
-                Console.WriteLine("Implant Stream Humidity: " + humidStream.ResponseStream.Current.Humidity.ToString() + humidStream.ResponseStream.Current.Units);
+                Console.WriteLine("Implant Stream Humidity: " + stream.ResponseStream.Current.Humidity.ToString() + stream.ResponseStream.Current.Units);
             }
             Console.WriteLine("(Humidity Monitor Task Exited)");
+        }
+
+        static async Task connectionMonitorTaskAsync()
+        {
+            var stream = deviceClient.bicConnectionStream(new bicSetStreamEnable() { Enable = true });
+            while (await stream.ResponseStream.MoveNext())
+            {
+                Console.WriteLine("Implant Stream Connectivity Event: " + stream.ResponseStream.Current.ConnectionType + " " + stream.ResponseStream.Current.IsConnected.ToString());
+            }
+            Console.WriteLine("(Connection Monitor Task Exited)");
+        }
+
+        static async Task errorMonitorTaskAsync()
+        {
+            var stream = deviceClient.bicErrorStream(new bicSetStreamEnable() { Enable = true });
+            while (await stream.ResponseStream.MoveNext())
+            {
+                Console.WriteLine("Implant Stream Error Event: " + stream.ResponseStream.Current.Message);
+            }
+            Console.WriteLine("(Error Monitor Task Exited)");
+        }
+
+        static async Task powerMonitorTaskAsync()
+        {
+            var stream = deviceClient.bicPowerStream(new bicSetStreamEnable() { Enable = true });
+            while (await stream.ResponseStream.MoveNext())
+            {
+                Console.WriteLine("Implant Stream Power Event: " + stream.ResponseStream.Current.Parameter.ToString() + ":" + stream.ResponseStream.Current.Value.ToString() + stream.ResponseStream.Current.Units);
+            }
+            Console.WriteLine("(Power Monitor Task Exited)");
+        }
+
+        static async Task neuralMonitorTaskAsync()
+        {
+            var stream = deviceClient.bicNeuralStream(new bicSetStreamEnable() { Enable = true });
+            while (await stream.ResponseStream.MoveNext())
+            {
+                Console.WriteLine("Implant Stream Neural Samples Received: " + stream.ResponseStream.Current.Samples.Count);
+            }
+            Console.WriteLine("(Neural Monitor Task Exited)");
         }
 
         static void writeCommandMenu()
@@ -219,9 +301,12 @@ namespace BICgRPC_ConsoleTest
             Console.WriteLine("\tg : Get Implant Information");
             Console.WriteLine("\ti : Get Impedance Measurement for a random electrode");
             Console.WriteLine("\tt : Get Temperature and toggle Temperature Streaming");
-            Console.WriteLine("\th : Get Humidity");
-            Console.WriteLine("\ts : Start Sense Streaming");
-            Console.WriteLine("\tn : Stop Sense Streaming");
+            Console.WriteLine("\th : Get Humidity and toggle Humidity Streaming");
+            Console.WriteLine("\te : Toggle Error Streaming");
+            Console.WriteLine("\tc : Toggle Connection Streaming");
+            Console.WriteLine("\tl : Toggle Power State Streaming");
+            Console.WriteLine("\ts : Start Neural Sense Streaming");
+            Console.WriteLine("\tn : Stop Neural Sense Streaming");
             Console.WriteLine("\tp : Enable Power to Implant (enabled by default)");
             Console.WriteLine("\to : Disable Power to Implant (enabled by default)");
             Console.WriteLine("\t1 : Start Stimulation (not implemented yet)");

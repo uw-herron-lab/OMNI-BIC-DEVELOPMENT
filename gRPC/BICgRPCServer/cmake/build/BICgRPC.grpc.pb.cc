@@ -334,8 +334,12 @@ static const char* BICDeviceService_method_names[] = {
   "/BICgRPC.BICDeviceService/bicSetImplantPower",
   "/BICgRPC.BICDeviceService/bicStartStimulation",
   "/BICgRPC.BICDeviceService/bicStopStimulation",
+  "/BICgRPC.BICDeviceService/bicNeuralStream",
   "/BICgRPC.BICDeviceService/bicTemperatureStream",
   "/BICgRPC.BICDeviceService/bicHumidityStream",
+  "/BICgRPC.BICDeviceService/bicConnectionStream",
+  "/BICgRPC.BICDeviceService/bicPowerStream",
+  "/BICgRPC.BICDeviceService/bicErrorStream",
 };
 
 std::unique_ptr< BICDeviceService::Stub> BICDeviceService::NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options) {
@@ -356,8 +360,12 @@ BICDeviceService::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& c
   , rpcmethod_bicSetImplantPower_(BICDeviceService_method_names[8], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   , rpcmethod_bicStartStimulation_(BICDeviceService_method_names[9], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   , rpcmethod_bicStopStimulation_(BICDeviceService_method_names[10], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_bicTemperatureStream_(BICDeviceService_method_names[11], ::grpc::internal::RpcMethod::SERVER_STREAMING, channel)
-  , rpcmethod_bicHumidityStream_(BICDeviceService_method_names[12], ::grpc::internal::RpcMethod::SERVER_STREAMING, channel)
+  , rpcmethod_bicNeuralStream_(BICDeviceService_method_names[11], ::grpc::internal::RpcMethod::SERVER_STREAMING, channel)
+  , rpcmethod_bicTemperatureStream_(BICDeviceService_method_names[12], ::grpc::internal::RpcMethod::SERVER_STREAMING, channel)
+  , rpcmethod_bicHumidityStream_(BICDeviceService_method_names[13], ::grpc::internal::RpcMethod::SERVER_STREAMING, channel)
+  , rpcmethod_bicConnectionStream_(BICDeviceService_method_names[14], ::grpc::internal::RpcMethod::SERVER_STREAMING, channel)
+  , rpcmethod_bicPowerStream_(BICDeviceService_method_names[15], ::grpc::internal::RpcMethod::SERVER_STREAMING, channel)
+  , rpcmethod_bicErrorStream_(BICDeviceService_method_names[16], ::grpc::internal::RpcMethod::SERVER_STREAMING, channel)
   {}
 
 ::grpc::Status BICDeviceService::Stub::ScanDevices(::grpc::ClientContext* context, const ::BICgRPC::ScanDevicesRequest& request, ::BICgRPC::ScanDevicesReply* response) {
@@ -668,6 +676,22 @@ void BICDeviceService::Stub::experimental_async::bicStopStimulation(::grpc::Clie
   return ::grpc_impl::internal::ClientAsyncResponseReaderFactory< ::BICgRPC::bicSuccessReply>::Create(channel_.get(), cq, rpcmethod_bicStopStimulation_, context, request, false);
 }
 
+::grpc::ClientReader< ::BICgRPC::NeuralUpdate>* BICDeviceService::Stub::bicNeuralStreamRaw(::grpc::ClientContext* context, const ::BICgRPC::bicSetStreamEnable& request) {
+  return ::grpc_impl::internal::ClientReaderFactory< ::BICgRPC::NeuralUpdate>::Create(channel_.get(), rpcmethod_bicNeuralStream_, context, request);
+}
+
+void BICDeviceService::Stub::experimental_async::bicNeuralStream(::grpc::ClientContext* context, ::BICgRPC::bicSetStreamEnable* request, ::grpc::experimental::ClientReadReactor< ::BICgRPC::NeuralUpdate>* reactor) {
+  ::grpc_impl::internal::ClientCallbackReaderFactory< ::BICgRPC::NeuralUpdate>::Create(stub_->channel_.get(), stub_->rpcmethod_bicNeuralStream_, context, request, reactor);
+}
+
+::grpc::ClientAsyncReader< ::BICgRPC::NeuralUpdate>* BICDeviceService::Stub::AsyncbicNeuralStreamRaw(::grpc::ClientContext* context, const ::BICgRPC::bicSetStreamEnable& request, ::grpc::CompletionQueue* cq, void* tag) {
+  return ::grpc_impl::internal::ClientAsyncReaderFactory< ::BICgRPC::NeuralUpdate>::Create(channel_.get(), cq, rpcmethod_bicNeuralStream_, context, request, true, tag);
+}
+
+::grpc::ClientAsyncReader< ::BICgRPC::NeuralUpdate>* BICDeviceService::Stub::PrepareAsyncbicNeuralStreamRaw(::grpc::ClientContext* context, const ::BICgRPC::bicSetStreamEnable& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc_impl::internal::ClientAsyncReaderFactory< ::BICgRPC::NeuralUpdate>::Create(channel_.get(), cq, rpcmethod_bicNeuralStream_, context, request, false, nullptr);
+}
+
 ::grpc::ClientReader< ::BICgRPC::TemperatureUpdate>* BICDeviceService::Stub::bicTemperatureStreamRaw(::grpc::ClientContext* context, const ::BICgRPC::bicSetStreamEnable& request) {
   return ::grpc_impl::internal::ClientReaderFactory< ::BICgRPC::TemperatureUpdate>::Create(channel_.get(), rpcmethod_bicTemperatureStream_, context, request);
 }
@@ -698,6 +722,54 @@ void BICDeviceService::Stub::experimental_async::bicHumidityStream(::grpc::Clien
 
 ::grpc::ClientAsyncReader< ::BICgRPC::HumidityUpdate>* BICDeviceService::Stub::PrepareAsyncbicHumidityStreamRaw(::grpc::ClientContext* context, const ::BICgRPC::bicSetStreamEnable& request, ::grpc::CompletionQueue* cq) {
   return ::grpc_impl::internal::ClientAsyncReaderFactory< ::BICgRPC::HumidityUpdate>::Create(channel_.get(), cq, rpcmethod_bicHumidityStream_, context, request, false, nullptr);
+}
+
+::grpc::ClientReader< ::BICgRPC::ConnectionUpdate>* BICDeviceService::Stub::bicConnectionStreamRaw(::grpc::ClientContext* context, const ::BICgRPC::bicSetStreamEnable& request) {
+  return ::grpc_impl::internal::ClientReaderFactory< ::BICgRPC::ConnectionUpdate>::Create(channel_.get(), rpcmethod_bicConnectionStream_, context, request);
+}
+
+void BICDeviceService::Stub::experimental_async::bicConnectionStream(::grpc::ClientContext* context, ::BICgRPC::bicSetStreamEnable* request, ::grpc::experimental::ClientReadReactor< ::BICgRPC::ConnectionUpdate>* reactor) {
+  ::grpc_impl::internal::ClientCallbackReaderFactory< ::BICgRPC::ConnectionUpdate>::Create(stub_->channel_.get(), stub_->rpcmethod_bicConnectionStream_, context, request, reactor);
+}
+
+::grpc::ClientAsyncReader< ::BICgRPC::ConnectionUpdate>* BICDeviceService::Stub::AsyncbicConnectionStreamRaw(::grpc::ClientContext* context, const ::BICgRPC::bicSetStreamEnable& request, ::grpc::CompletionQueue* cq, void* tag) {
+  return ::grpc_impl::internal::ClientAsyncReaderFactory< ::BICgRPC::ConnectionUpdate>::Create(channel_.get(), cq, rpcmethod_bicConnectionStream_, context, request, true, tag);
+}
+
+::grpc::ClientAsyncReader< ::BICgRPC::ConnectionUpdate>* BICDeviceService::Stub::PrepareAsyncbicConnectionStreamRaw(::grpc::ClientContext* context, const ::BICgRPC::bicSetStreamEnable& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc_impl::internal::ClientAsyncReaderFactory< ::BICgRPC::ConnectionUpdate>::Create(channel_.get(), cq, rpcmethod_bicConnectionStream_, context, request, false, nullptr);
+}
+
+::grpc::ClientReader< ::BICgRPC::PowerUpdate>* BICDeviceService::Stub::bicPowerStreamRaw(::grpc::ClientContext* context, const ::BICgRPC::bicSetStreamEnable& request) {
+  return ::grpc_impl::internal::ClientReaderFactory< ::BICgRPC::PowerUpdate>::Create(channel_.get(), rpcmethod_bicPowerStream_, context, request);
+}
+
+void BICDeviceService::Stub::experimental_async::bicPowerStream(::grpc::ClientContext* context, ::BICgRPC::bicSetStreamEnable* request, ::grpc::experimental::ClientReadReactor< ::BICgRPC::PowerUpdate>* reactor) {
+  ::grpc_impl::internal::ClientCallbackReaderFactory< ::BICgRPC::PowerUpdate>::Create(stub_->channel_.get(), stub_->rpcmethod_bicPowerStream_, context, request, reactor);
+}
+
+::grpc::ClientAsyncReader< ::BICgRPC::PowerUpdate>* BICDeviceService::Stub::AsyncbicPowerStreamRaw(::grpc::ClientContext* context, const ::BICgRPC::bicSetStreamEnable& request, ::grpc::CompletionQueue* cq, void* tag) {
+  return ::grpc_impl::internal::ClientAsyncReaderFactory< ::BICgRPC::PowerUpdate>::Create(channel_.get(), cq, rpcmethod_bicPowerStream_, context, request, true, tag);
+}
+
+::grpc::ClientAsyncReader< ::BICgRPC::PowerUpdate>* BICDeviceService::Stub::PrepareAsyncbicPowerStreamRaw(::grpc::ClientContext* context, const ::BICgRPC::bicSetStreamEnable& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc_impl::internal::ClientAsyncReaderFactory< ::BICgRPC::PowerUpdate>::Create(channel_.get(), cq, rpcmethod_bicPowerStream_, context, request, false, nullptr);
+}
+
+::grpc::ClientReader< ::BICgRPC::ErrorUpdate>* BICDeviceService::Stub::bicErrorStreamRaw(::grpc::ClientContext* context, const ::BICgRPC::bicSetStreamEnable& request) {
+  return ::grpc_impl::internal::ClientReaderFactory< ::BICgRPC::ErrorUpdate>::Create(channel_.get(), rpcmethod_bicErrorStream_, context, request);
+}
+
+void BICDeviceService::Stub::experimental_async::bicErrorStream(::grpc::ClientContext* context, ::BICgRPC::bicSetStreamEnable* request, ::grpc::experimental::ClientReadReactor< ::BICgRPC::ErrorUpdate>* reactor) {
+  ::grpc_impl::internal::ClientCallbackReaderFactory< ::BICgRPC::ErrorUpdate>::Create(stub_->channel_.get(), stub_->rpcmethod_bicErrorStream_, context, request, reactor);
+}
+
+::grpc::ClientAsyncReader< ::BICgRPC::ErrorUpdate>* BICDeviceService::Stub::AsyncbicErrorStreamRaw(::grpc::ClientContext* context, const ::BICgRPC::bicSetStreamEnable& request, ::grpc::CompletionQueue* cq, void* tag) {
+  return ::grpc_impl::internal::ClientAsyncReaderFactory< ::BICgRPC::ErrorUpdate>::Create(channel_.get(), cq, rpcmethod_bicErrorStream_, context, request, true, tag);
+}
+
+::grpc::ClientAsyncReader< ::BICgRPC::ErrorUpdate>* BICDeviceService::Stub::PrepareAsyncbicErrorStreamRaw(::grpc::ClientContext* context, const ::BICgRPC::bicSetStreamEnable& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc_impl::internal::ClientAsyncReaderFactory< ::BICgRPC::ErrorUpdate>::Create(channel_.get(), cq, rpcmethod_bicErrorStream_, context, request, false, nullptr);
 }
 
 BICDeviceService::Service::Service() {
@@ -814,6 +886,16 @@ BICDeviceService::Service::Service() {
   AddMethod(new ::grpc::internal::RpcServiceMethod(
       BICDeviceService_method_names[11],
       ::grpc::internal::RpcMethod::SERVER_STREAMING,
+      new ::grpc::internal::ServerStreamingHandler< BICDeviceService::Service, ::BICgRPC::bicSetStreamEnable, ::BICgRPC::NeuralUpdate>(
+          [](BICDeviceService::Service* service,
+             ::grpc_impl::ServerContext* ctx,
+             const ::BICgRPC::bicSetStreamEnable* req,
+             ::grpc_impl::ServerWriter<::BICgRPC::NeuralUpdate>* writer) {
+               return service->bicNeuralStream(ctx, req, writer);
+             }, this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      BICDeviceService_method_names[12],
+      ::grpc::internal::RpcMethod::SERVER_STREAMING,
       new ::grpc::internal::ServerStreamingHandler< BICDeviceService::Service, ::BICgRPC::bicSetStreamEnable, ::BICgRPC::TemperatureUpdate>(
           [](BICDeviceService::Service* service,
              ::grpc_impl::ServerContext* ctx,
@@ -822,7 +904,7 @@ BICDeviceService::Service::Service() {
                return service->bicTemperatureStream(ctx, req, writer);
              }, this)));
   AddMethod(new ::grpc::internal::RpcServiceMethod(
-      BICDeviceService_method_names[12],
+      BICDeviceService_method_names[13],
       ::grpc::internal::RpcMethod::SERVER_STREAMING,
       new ::grpc::internal::ServerStreamingHandler< BICDeviceService::Service, ::BICgRPC::bicSetStreamEnable, ::BICgRPC::HumidityUpdate>(
           [](BICDeviceService::Service* service,
@@ -830,6 +912,36 @@ BICDeviceService::Service::Service() {
              const ::BICgRPC::bicSetStreamEnable* req,
              ::grpc_impl::ServerWriter<::BICgRPC::HumidityUpdate>* writer) {
                return service->bicHumidityStream(ctx, req, writer);
+             }, this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      BICDeviceService_method_names[14],
+      ::grpc::internal::RpcMethod::SERVER_STREAMING,
+      new ::grpc::internal::ServerStreamingHandler< BICDeviceService::Service, ::BICgRPC::bicSetStreamEnable, ::BICgRPC::ConnectionUpdate>(
+          [](BICDeviceService::Service* service,
+             ::grpc_impl::ServerContext* ctx,
+             const ::BICgRPC::bicSetStreamEnable* req,
+             ::grpc_impl::ServerWriter<::BICgRPC::ConnectionUpdate>* writer) {
+               return service->bicConnectionStream(ctx, req, writer);
+             }, this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      BICDeviceService_method_names[15],
+      ::grpc::internal::RpcMethod::SERVER_STREAMING,
+      new ::grpc::internal::ServerStreamingHandler< BICDeviceService::Service, ::BICgRPC::bicSetStreamEnable, ::BICgRPC::PowerUpdate>(
+          [](BICDeviceService::Service* service,
+             ::grpc_impl::ServerContext* ctx,
+             const ::BICgRPC::bicSetStreamEnable* req,
+             ::grpc_impl::ServerWriter<::BICgRPC::PowerUpdate>* writer) {
+               return service->bicPowerStream(ctx, req, writer);
+             }, this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      BICDeviceService_method_names[16],
+      ::grpc::internal::RpcMethod::SERVER_STREAMING,
+      new ::grpc::internal::ServerStreamingHandler< BICDeviceService::Service, ::BICgRPC::bicSetStreamEnable, ::BICgRPC::ErrorUpdate>(
+          [](BICDeviceService::Service* service,
+             ::grpc_impl::ServerContext* ctx,
+             const ::BICgRPC::bicSetStreamEnable* req,
+             ::grpc_impl::ServerWriter<::BICgRPC::ErrorUpdate>* writer) {
+               return service->bicErrorStream(ctx, req, writer);
              }, this)));
 }
 
@@ -913,6 +1025,13 @@ BICDeviceService::Service::~Service() {
   return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
 }
 
+::grpc::Status BICDeviceService::Service::bicNeuralStream(::grpc::ServerContext* context, const ::BICgRPC::bicSetStreamEnable* request, ::grpc::ServerWriter< ::BICgRPC::NeuralUpdate>* writer) {
+  (void) context;
+  (void) request;
+  (void) writer;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
 ::grpc::Status BICDeviceService::Service::bicTemperatureStream(::grpc::ServerContext* context, const ::BICgRPC::bicSetStreamEnable* request, ::grpc::ServerWriter< ::BICgRPC::TemperatureUpdate>* writer) {
   (void) context;
   (void) request;
@@ -921,6 +1040,27 @@ BICDeviceService::Service::~Service() {
 }
 
 ::grpc::Status BICDeviceService::Service::bicHumidityStream(::grpc::ServerContext* context, const ::BICgRPC::bicSetStreamEnable* request, ::grpc::ServerWriter< ::BICgRPC::HumidityUpdate>* writer) {
+  (void) context;
+  (void) request;
+  (void) writer;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status BICDeviceService::Service::bicConnectionStream(::grpc::ServerContext* context, const ::BICgRPC::bicSetStreamEnable* request, ::grpc::ServerWriter< ::BICgRPC::ConnectionUpdate>* writer) {
+  (void) context;
+  (void) request;
+  (void) writer;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status BICDeviceService::Service::bicPowerStream(::grpc::ServerContext* context, const ::BICgRPC::bicSetStreamEnable* request, ::grpc::ServerWriter< ::BICgRPC::PowerUpdate>* writer) {
+  (void) context;
+  (void) request;
+  (void) writer;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status BICDeviceService::Service::bicErrorStream(::grpc::ServerContext* context, const ::BICgRPC::bicSetStreamEnable* request, ::grpc::ServerWriter< ::BICgRPC::ErrorUpdate>* writer) {
   (void) context;
   (void) request;
   (void) writer;
