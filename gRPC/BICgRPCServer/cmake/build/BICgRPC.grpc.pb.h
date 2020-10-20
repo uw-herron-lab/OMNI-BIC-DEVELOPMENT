@@ -1469,6 +1469,13 @@ class BICDeviceService final {
     std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>> PrepareAsyncbicStopStimulation(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>>(PrepareAsyncbicStopStimulationRaw(context, request, cq));
     }
+    virtual ::grpc::Status bicDefineStimulationWaveform(::grpc::ClientContext* context, const ::BICgRPC::bicStimulationFunctionDefinitionRequest& request, ::BICgRPC::bicSuccessReply* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>> AsyncbicDefineStimulationWaveform(::grpc::ClientContext* context, const ::BICgRPC::bicStimulationFunctionDefinitionRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>>(AsyncbicDefineStimulationWaveformRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>> PrepareAsyncbicDefineStimulationWaveform(::grpc::ClientContext* context, const ::BICgRPC::bicStimulationFunctionDefinitionRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>>(PrepareAsyncbicDefineStimulationWaveformRaw(context, request, cq));
+    }
     // Streaming endpoints
     std::unique_ptr< ::grpc::ClientReaderInterface< ::BICgRPC::NeuralUpdate>> bicNeuralStream(::grpc::ClientContext* context, const ::BICgRPC::bicSetStreamEnable& request) {
       return std::unique_ptr< ::grpc::ClientReaderInterface< ::BICgRPC::NeuralUpdate>>(bicNeuralStreamRaw(context, request));
@@ -1663,6 +1670,18 @@ class BICDeviceService final {
       #else
       virtual void bicStopStimulation(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
       #endif
+      virtual void bicDefineStimulationWaveform(::grpc::ClientContext* context, const ::BICgRPC::bicStimulationFunctionDefinitionRequest* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)>) = 0;
+      virtual void bicDefineStimulationWaveform(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)>) = 0;
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      virtual void bicDefineStimulationWaveform(::grpc::ClientContext* context, const ::BICgRPC::bicStimulationFunctionDefinitionRequest* request, ::BICgRPC::bicSuccessReply* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      #else
+      virtual void bicDefineStimulationWaveform(::grpc::ClientContext* context, const ::BICgRPC::bicStimulationFunctionDefinitionRequest* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
+      #endif
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      virtual void bicDefineStimulationWaveform(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      #else
+      virtual void bicDefineStimulationWaveform(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
+      #endif
       // Streaming endpoints
       #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
       virtual void bicNeuralStream(::grpc::ClientContext* context, ::BICgRPC::bicSetStreamEnable* request, ::grpc::ClientReadReactor< ::BICgRPC::NeuralUpdate>* reactor) = 0;
@@ -1725,6 +1744,8 @@ class BICDeviceService final {
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>* PrepareAsyncbicStartStimulationRaw(::grpc::ClientContext* context, const ::BICgRPC::bicStartStimulationRequest& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>* AsyncbicStopStimulationRaw(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>* PrepareAsyncbicStopStimulationRaw(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>* AsyncbicDefineStimulationWaveformRaw(::grpc::ClientContext* context, const ::BICgRPC::bicStimulationFunctionDefinitionRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>* PrepareAsyncbicDefineStimulationWaveformRaw(::grpc::ClientContext* context, const ::BICgRPC::bicStimulationFunctionDefinitionRequest& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientReaderInterface< ::BICgRPC::NeuralUpdate>* bicNeuralStreamRaw(::grpc::ClientContext* context, const ::BICgRPC::bicSetStreamEnable& request) = 0;
     virtual ::grpc::ClientAsyncReaderInterface< ::BICgRPC::NeuralUpdate>* AsyncbicNeuralStreamRaw(::grpc::ClientContext* context, const ::BICgRPC::bicSetStreamEnable& request, ::grpc::CompletionQueue* cq, void* tag) = 0;
     virtual ::grpc::ClientAsyncReaderInterface< ::BICgRPC::NeuralUpdate>* PrepareAsyncbicNeuralStreamRaw(::grpc::ClientContext* context, const ::BICgRPC::bicSetStreamEnable& request, ::grpc::CompletionQueue* cq) = 0;
@@ -1823,6 +1844,13 @@ class BICDeviceService final {
     }
     std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>> PrepareAsyncbicStopStimulation(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>>(PrepareAsyncbicStopStimulationRaw(context, request, cq));
+    }
+    ::grpc::Status bicDefineStimulationWaveform(::grpc::ClientContext* context, const ::BICgRPC::bicStimulationFunctionDefinitionRequest& request, ::BICgRPC::bicSuccessReply* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>> AsyncbicDefineStimulationWaveform(::grpc::ClientContext* context, const ::BICgRPC::bicStimulationFunctionDefinitionRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>>(AsyncbicDefineStimulationWaveformRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>> PrepareAsyncbicDefineStimulationWaveform(::grpc::ClientContext* context, const ::BICgRPC::bicStimulationFunctionDefinitionRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>>(PrepareAsyncbicDefineStimulationWaveformRaw(context, request, cq));
     }
     std::unique_ptr< ::grpc::ClientReader< ::BICgRPC::NeuralUpdate>> bicNeuralStream(::grpc::ClientContext* context, const ::BICgRPC::bicSetStreamEnable& request) {
       return std::unique_ptr< ::grpc::ClientReader< ::BICgRPC::NeuralUpdate>>(bicNeuralStreamRaw(context, request));
@@ -2013,6 +2041,18 @@ class BICDeviceService final {
       #else
       void bicStopStimulation(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
       #endif
+      void bicDefineStimulationWaveform(::grpc::ClientContext* context, const ::BICgRPC::bicStimulationFunctionDefinitionRequest* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)>) override;
+      void bicDefineStimulationWaveform(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)>) override;
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      void bicDefineStimulationWaveform(::grpc::ClientContext* context, const ::BICgRPC::bicStimulationFunctionDefinitionRequest* request, ::BICgRPC::bicSuccessReply* response, ::grpc::ClientUnaryReactor* reactor) override;
+      #else
+      void bicDefineStimulationWaveform(::grpc::ClientContext* context, const ::BICgRPC::bicStimulationFunctionDefinitionRequest* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
+      #endif
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      void bicDefineStimulationWaveform(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, ::grpc::ClientUnaryReactor* reactor) override;
+      #else
+      void bicDefineStimulationWaveform(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
+      #endif
       #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
       void bicNeuralStream(::grpc::ClientContext* context, ::BICgRPC::bicSetStreamEnable* request, ::grpc::ClientReadReactor< ::BICgRPC::NeuralUpdate>* reactor) override;
       #else
@@ -2076,6 +2116,8 @@ class BICDeviceService final {
     ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* PrepareAsyncbicStartStimulationRaw(::grpc::ClientContext* context, const ::BICgRPC::bicStartStimulationRequest& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* AsyncbicStopStimulationRaw(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* PrepareAsyncbicStopStimulationRaw(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* AsyncbicDefineStimulationWaveformRaw(::grpc::ClientContext* context, const ::BICgRPC::bicStimulationFunctionDefinitionRequest& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* PrepareAsyncbicDefineStimulationWaveformRaw(::grpc::ClientContext* context, const ::BICgRPC::bicStimulationFunctionDefinitionRequest& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientReader< ::BICgRPC::NeuralUpdate>* bicNeuralStreamRaw(::grpc::ClientContext* context, const ::BICgRPC::bicSetStreamEnable& request) override;
     ::grpc::ClientAsyncReader< ::BICgRPC::NeuralUpdate>* AsyncbicNeuralStreamRaw(::grpc::ClientContext* context, const ::BICgRPC::bicSetStreamEnable& request, ::grpc::CompletionQueue* cq, void* tag) override;
     ::grpc::ClientAsyncReader< ::BICgRPC::NeuralUpdate>* PrepareAsyncbicNeuralStreamRaw(::grpc::ClientContext* context, const ::BICgRPC::bicSetStreamEnable& request, ::grpc::CompletionQueue* cq) override;
@@ -2105,6 +2147,7 @@ class BICDeviceService final {
     const ::grpc::internal::RpcMethod rpcmethod_bicSetImplantPower_;
     const ::grpc::internal::RpcMethod rpcmethod_bicStartStimulation_;
     const ::grpc::internal::RpcMethod rpcmethod_bicStopStimulation_;
+    const ::grpc::internal::RpcMethod rpcmethod_bicDefineStimulationWaveform_;
     const ::grpc::internal::RpcMethod rpcmethod_bicNeuralStream_;
     const ::grpc::internal::RpcMethod rpcmethod_bicTemperatureStream_;
     const ::grpc::internal::RpcMethod rpcmethod_bicHumidityStream_;
@@ -2133,6 +2176,7 @@ class BICDeviceService final {
     // Stim Functions
     virtual ::grpc::Status bicStartStimulation(::grpc::ServerContext* context, const ::BICgRPC::bicStartStimulationRequest* request, ::BICgRPC::bicSuccessReply* response);
     virtual ::grpc::Status bicStopStimulation(::grpc::ServerContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicSuccessReply* response);
+    virtual ::grpc::Status bicDefineStimulationWaveform(::grpc::ServerContext* context, const ::BICgRPC::bicStimulationFunctionDefinitionRequest* request, ::BICgRPC::bicSuccessReply* response);
     // Streaming endpoints
     virtual ::grpc::Status bicNeuralStream(::grpc::ServerContext* context, const ::BICgRPC::bicSetStreamEnable* request, ::grpc::ServerWriter< ::BICgRPC::NeuralUpdate>* writer);
     virtual ::grpc::Status bicTemperatureStream(::grpc::ServerContext* context, const ::BICgRPC::bicSetStreamEnable* request, ::grpc::ServerWriter< ::BICgRPC::TemperatureUpdate>* writer);
@@ -2362,12 +2406,32 @@ class BICDeviceService final {
     }
   };
   template <class BaseClass>
+  class WithAsyncMethod_bicDefineStimulationWaveform : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithAsyncMethod_bicDefineStimulationWaveform() {
+      ::grpc::Service::MarkMethodAsync(11);
+    }
+    ~WithAsyncMethod_bicDefineStimulationWaveform() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status bicDefineStimulationWaveform(::grpc::ServerContext* /*context*/, const ::BICgRPC::bicStimulationFunctionDefinitionRequest* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestbicDefineStimulationWaveform(::grpc::ServerContext* context, ::BICgRPC::bicStimulationFunctionDefinitionRequest* request, ::grpc::ServerAsyncResponseWriter< ::BICgRPC::bicSuccessReply>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(11, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
   class WithAsyncMethod_bicNeuralStream : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithAsyncMethod_bicNeuralStream() {
-      ::grpc::Service::MarkMethodAsync(11);
+      ::grpc::Service::MarkMethodAsync(12);
     }
     ~WithAsyncMethod_bicNeuralStream() override {
       BaseClassMustBeDerivedFromService(this);
@@ -2378,7 +2442,7 @@ class BICDeviceService final {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     void RequestbicNeuralStream(::grpc::ServerContext* context, ::BICgRPC::bicSetStreamEnable* request, ::grpc::ServerAsyncWriter< ::BICgRPC::NeuralUpdate>* writer, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncServerStreaming(11, context, request, writer, new_call_cq, notification_cq, tag);
+      ::grpc::Service::RequestAsyncServerStreaming(12, context, request, writer, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -2387,7 +2451,7 @@ class BICDeviceService final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithAsyncMethod_bicTemperatureStream() {
-      ::grpc::Service::MarkMethodAsync(12);
+      ::grpc::Service::MarkMethodAsync(13);
     }
     ~WithAsyncMethod_bicTemperatureStream() override {
       BaseClassMustBeDerivedFromService(this);
@@ -2398,7 +2462,7 @@ class BICDeviceService final {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     void RequestbicTemperatureStream(::grpc::ServerContext* context, ::BICgRPC::bicSetStreamEnable* request, ::grpc::ServerAsyncWriter< ::BICgRPC::TemperatureUpdate>* writer, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncServerStreaming(12, context, request, writer, new_call_cq, notification_cq, tag);
+      ::grpc::Service::RequestAsyncServerStreaming(13, context, request, writer, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -2407,7 +2471,7 @@ class BICDeviceService final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithAsyncMethod_bicHumidityStream() {
-      ::grpc::Service::MarkMethodAsync(13);
+      ::grpc::Service::MarkMethodAsync(14);
     }
     ~WithAsyncMethod_bicHumidityStream() override {
       BaseClassMustBeDerivedFromService(this);
@@ -2418,7 +2482,7 @@ class BICDeviceService final {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     void RequestbicHumidityStream(::grpc::ServerContext* context, ::BICgRPC::bicSetStreamEnable* request, ::grpc::ServerAsyncWriter< ::BICgRPC::HumidityUpdate>* writer, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncServerStreaming(13, context, request, writer, new_call_cq, notification_cq, tag);
+      ::grpc::Service::RequestAsyncServerStreaming(14, context, request, writer, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -2427,7 +2491,7 @@ class BICDeviceService final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithAsyncMethod_bicConnectionStream() {
-      ::grpc::Service::MarkMethodAsync(14);
+      ::grpc::Service::MarkMethodAsync(15);
     }
     ~WithAsyncMethod_bicConnectionStream() override {
       BaseClassMustBeDerivedFromService(this);
@@ -2438,7 +2502,7 @@ class BICDeviceService final {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     void RequestbicConnectionStream(::grpc::ServerContext* context, ::BICgRPC::bicSetStreamEnable* request, ::grpc::ServerAsyncWriter< ::BICgRPC::ConnectionUpdate>* writer, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncServerStreaming(14, context, request, writer, new_call_cq, notification_cq, tag);
+      ::grpc::Service::RequestAsyncServerStreaming(15, context, request, writer, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -2447,7 +2511,7 @@ class BICDeviceService final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithAsyncMethod_bicPowerStream() {
-      ::grpc::Service::MarkMethodAsync(15);
+      ::grpc::Service::MarkMethodAsync(16);
     }
     ~WithAsyncMethod_bicPowerStream() override {
       BaseClassMustBeDerivedFromService(this);
@@ -2458,7 +2522,7 @@ class BICDeviceService final {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     void RequestbicPowerStream(::grpc::ServerContext* context, ::BICgRPC::bicSetStreamEnable* request, ::grpc::ServerAsyncWriter< ::BICgRPC::PowerUpdate>* writer, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncServerStreaming(15, context, request, writer, new_call_cq, notification_cq, tag);
+      ::grpc::Service::RequestAsyncServerStreaming(16, context, request, writer, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -2467,7 +2531,7 @@ class BICDeviceService final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithAsyncMethod_bicErrorStream() {
-      ::grpc::Service::MarkMethodAsync(16);
+      ::grpc::Service::MarkMethodAsync(17);
     }
     ~WithAsyncMethod_bicErrorStream() override {
       BaseClassMustBeDerivedFromService(this);
@@ -2478,10 +2542,10 @@ class BICDeviceService final {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     void RequestbicErrorStream(::grpc::ServerContext* context, ::BICgRPC::bicSetStreamEnable* request, ::grpc::ServerAsyncWriter< ::BICgRPC::ErrorUpdate>* writer, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncServerStreaming(16, context, request, writer, new_call_cq, notification_cq, tag);
+      ::grpc::Service::RequestAsyncServerStreaming(17, context, request, writer, new_call_cq, notification_cq, tag);
     }
   };
-  typedef WithAsyncMethod_ScanDevices<WithAsyncMethod_ConnectDevice<WithAsyncMethod_bicDispose<WithAsyncMethod_bicGetImplantInfo<WithAsyncMethod_bicGetImpedance<WithAsyncMethod_bicGetTemperature<WithAsyncMethod_bicGetHumidity<WithAsyncMethod_bicSetSensingEnable<WithAsyncMethod_bicSetImplantPower<WithAsyncMethod_bicStartStimulation<WithAsyncMethod_bicStopStimulation<WithAsyncMethod_bicNeuralStream<WithAsyncMethod_bicTemperatureStream<WithAsyncMethod_bicHumidityStream<WithAsyncMethod_bicConnectionStream<WithAsyncMethod_bicPowerStream<WithAsyncMethod_bicErrorStream<Service > > > > > > > > > > > > > > > > > AsyncService;
+  typedef WithAsyncMethod_ScanDevices<WithAsyncMethod_ConnectDevice<WithAsyncMethod_bicDispose<WithAsyncMethod_bicGetImplantInfo<WithAsyncMethod_bicGetImpedance<WithAsyncMethod_bicGetTemperature<WithAsyncMethod_bicGetHumidity<WithAsyncMethod_bicSetSensingEnable<WithAsyncMethod_bicSetImplantPower<WithAsyncMethod_bicStartStimulation<WithAsyncMethod_bicStopStimulation<WithAsyncMethod_bicDefineStimulationWaveform<WithAsyncMethod_bicNeuralStream<WithAsyncMethod_bicTemperatureStream<WithAsyncMethod_bicHumidityStream<WithAsyncMethod_bicConnectionStream<WithAsyncMethod_bicPowerStream<WithAsyncMethod_bicErrorStream<Service > > > > > > > > > > > > > > > > > > AsyncService;
   template <class BaseClass>
   class ExperimentalWithCallbackMethod_ScanDevices : public BaseClass {
    private:
@@ -3000,6 +3064,53 @@ class BICDeviceService final {
       { return nullptr; }
   };
   template <class BaseClass>
+  class ExperimentalWithCallbackMethod_bicDefineStimulationWaveform : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    ExperimentalWithCallbackMethod_bicDefineStimulationWaveform() {
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      ::grpc::Service::
+    #else
+      ::grpc::Service::experimental().
+    #endif
+        MarkMethodCallback(11,
+          new ::grpc_impl::internal::CallbackUnaryHandler< ::BICgRPC::bicStimulationFunctionDefinitionRequest, ::BICgRPC::bicSuccessReply>(
+            [this](
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+                   ::grpc::CallbackServerContext*
+    #else
+                   ::grpc::experimental::CallbackServerContext*
+    #endif
+                     context, const ::BICgRPC::bicStimulationFunctionDefinitionRequest* request, ::BICgRPC::bicSuccessReply* response) { return this->bicDefineStimulationWaveform(context, request, response); }));}
+    void SetMessageAllocatorFor_bicDefineStimulationWaveform(
+        ::grpc::experimental::MessageAllocator< ::BICgRPC::bicStimulationFunctionDefinitionRequest, ::BICgRPC::bicSuccessReply>* allocator) {
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(11);
+    #else
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::experimental().GetHandler(11);
+    #endif
+      static_cast<::grpc_impl::internal::CallbackUnaryHandler< ::BICgRPC::bicStimulationFunctionDefinitionRequest, ::BICgRPC::bicSuccessReply>*>(handler)
+              ->SetMessageAllocator(allocator);
+    }
+    ~ExperimentalWithCallbackMethod_bicDefineStimulationWaveform() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status bicDefineStimulationWaveform(::grpc::ServerContext* /*context*/, const ::BICgRPC::bicStimulationFunctionDefinitionRequest* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+    virtual ::grpc::ServerUnaryReactor* bicDefineStimulationWaveform(
+      ::grpc::CallbackServerContext* /*context*/, const ::BICgRPC::bicStimulationFunctionDefinitionRequest* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/)
+    #else
+    virtual ::grpc::experimental::ServerUnaryReactor* bicDefineStimulationWaveform(
+      ::grpc::experimental::CallbackServerContext* /*context*/, const ::BICgRPC::bicStimulationFunctionDefinitionRequest* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/)
+    #endif
+      { return nullptr; }
+  };
+  template <class BaseClass>
   class ExperimentalWithCallbackMethod_bicNeuralStream : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
@@ -3010,7 +3121,7 @@ class BICDeviceService final {
     #else
       ::grpc::Service::experimental().
     #endif
-        MarkMethodCallback(11,
+        MarkMethodCallback(12,
           new ::grpc_impl::internal::CallbackServerStreamingHandler< ::BICgRPC::bicSetStreamEnable, ::BICgRPC::NeuralUpdate>(
             [this](
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
@@ -3048,7 +3159,7 @@ class BICDeviceService final {
     #else
       ::grpc::Service::experimental().
     #endif
-        MarkMethodCallback(12,
+        MarkMethodCallback(13,
           new ::grpc_impl::internal::CallbackServerStreamingHandler< ::BICgRPC::bicSetStreamEnable, ::BICgRPC::TemperatureUpdate>(
             [this](
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
@@ -3086,7 +3197,7 @@ class BICDeviceService final {
     #else
       ::grpc::Service::experimental().
     #endif
-        MarkMethodCallback(13,
+        MarkMethodCallback(14,
           new ::grpc_impl::internal::CallbackServerStreamingHandler< ::BICgRPC::bicSetStreamEnable, ::BICgRPC::HumidityUpdate>(
             [this](
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
@@ -3124,7 +3235,7 @@ class BICDeviceService final {
     #else
       ::grpc::Service::experimental().
     #endif
-        MarkMethodCallback(14,
+        MarkMethodCallback(15,
           new ::grpc_impl::internal::CallbackServerStreamingHandler< ::BICgRPC::bicSetStreamEnable, ::BICgRPC::ConnectionUpdate>(
             [this](
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
@@ -3162,7 +3273,7 @@ class BICDeviceService final {
     #else
       ::grpc::Service::experimental().
     #endif
-        MarkMethodCallback(15,
+        MarkMethodCallback(16,
           new ::grpc_impl::internal::CallbackServerStreamingHandler< ::BICgRPC::bicSetStreamEnable, ::BICgRPC::PowerUpdate>(
             [this](
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
@@ -3200,7 +3311,7 @@ class BICDeviceService final {
     #else
       ::grpc::Service::experimental().
     #endif
-        MarkMethodCallback(16,
+        MarkMethodCallback(17,
           new ::grpc_impl::internal::CallbackServerStreamingHandler< ::BICgRPC::bicSetStreamEnable, ::BICgRPC::ErrorUpdate>(
             [this](
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
@@ -3228,10 +3339,10 @@ class BICDeviceService final {
       { return nullptr; }
   };
   #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-  typedef ExperimentalWithCallbackMethod_ScanDevices<ExperimentalWithCallbackMethod_ConnectDevice<ExperimentalWithCallbackMethod_bicDispose<ExperimentalWithCallbackMethod_bicGetImplantInfo<ExperimentalWithCallbackMethod_bicGetImpedance<ExperimentalWithCallbackMethod_bicGetTemperature<ExperimentalWithCallbackMethod_bicGetHumidity<ExperimentalWithCallbackMethod_bicSetSensingEnable<ExperimentalWithCallbackMethod_bicSetImplantPower<ExperimentalWithCallbackMethod_bicStartStimulation<ExperimentalWithCallbackMethod_bicStopStimulation<ExperimentalWithCallbackMethod_bicNeuralStream<ExperimentalWithCallbackMethod_bicTemperatureStream<ExperimentalWithCallbackMethod_bicHumidityStream<ExperimentalWithCallbackMethod_bicConnectionStream<ExperimentalWithCallbackMethod_bicPowerStream<ExperimentalWithCallbackMethod_bicErrorStream<Service > > > > > > > > > > > > > > > > > CallbackService;
+  typedef ExperimentalWithCallbackMethod_ScanDevices<ExperimentalWithCallbackMethod_ConnectDevice<ExperimentalWithCallbackMethod_bicDispose<ExperimentalWithCallbackMethod_bicGetImplantInfo<ExperimentalWithCallbackMethod_bicGetImpedance<ExperimentalWithCallbackMethod_bicGetTemperature<ExperimentalWithCallbackMethod_bicGetHumidity<ExperimentalWithCallbackMethod_bicSetSensingEnable<ExperimentalWithCallbackMethod_bicSetImplantPower<ExperimentalWithCallbackMethod_bicStartStimulation<ExperimentalWithCallbackMethod_bicStopStimulation<ExperimentalWithCallbackMethod_bicDefineStimulationWaveform<ExperimentalWithCallbackMethod_bicNeuralStream<ExperimentalWithCallbackMethod_bicTemperatureStream<ExperimentalWithCallbackMethod_bicHumidityStream<ExperimentalWithCallbackMethod_bicConnectionStream<ExperimentalWithCallbackMethod_bicPowerStream<ExperimentalWithCallbackMethod_bicErrorStream<Service > > > > > > > > > > > > > > > > > > CallbackService;
   #endif
 
-  typedef ExperimentalWithCallbackMethod_ScanDevices<ExperimentalWithCallbackMethod_ConnectDevice<ExperimentalWithCallbackMethod_bicDispose<ExperimentalWithCallbackMethod_bicGetImplantInfo<ExperimentalWithCallbackMethod_bicGetImpedance<ExperimentalWithCallbackMethod_bicGetTemperature<ExperimentalWithCallbackMethod_bicGetHumidity<ExperimentalWithCallbackMethod_bicSetSensingEnable<ExperimentalWithCallbackMethod_bicSetImplantPower<ExperimentalWithCallbackMethod_bicStartStimulation<ExperimentalWithCallbackMethod_bicStopStimulation<ExperimentalWithCallbackMethod_bicNeuralStream<ExperimentalWithCallbackMethod_bicTemperatureStream<ExperimentalWithCallbackMethod_bicHumidityStream<ExperimentalWithCallbackMethod_bicConnectionStream<ExperimentalWithCallbackMethod_bicPowerStream<ExperimentalWithCallbackMethod_bicErrorStream<Service > > > > > > > > > > > > > > > > > ExperimentalCallbackService;
+  typedef ExperimentalWithCallbackMethod_ScanDevices<ExperimentalWithCallbackMethod_ConnectDevice<ExperimentalWithCallbackMethod_bicDispose<ExperimentalWithCallbackMethod_bicGetImplantInfo<ExperimentalWithCallbackMethod_bicGetImpedance<ExperimentalWithCallbackMethod_bicGetTemperature<ExperimentalWithCallbackMethod_bicGetHumidity<ExperimentalWithCallbackMethod_bicSetSensingEnable<ExperimentalWithCallbackMethod_bicSetImplantPower<ExperimentalWithCallbackMethod_bicStartStimulation<ExperimentalWithCallbackMethod_bicStopStimulation<ExperimentalWithCallbackMethod_bicDefineStimulationWaveform<ExperimentalWithCallbackMethod_bicNeuralStream<ExperimentalWithCallbackMethod_bicTemperatureStream<ExperimentalWithCallbackMethod_bicHumidityStream<ExperimentalWithCallbackMethod_bicConnectionStream<ExperimentalWithCallbackMethod_bicPowerStream<ExperimentalWithCallbackMethod_bicErrorStream<Service > > > > > > > > > > > > > > > > > > ExperimentalCallbackService;
   template <class BaseClass>
   class WithGenericMethod_ScanDevices : public BaseClass {
    private:
@@ -3420,12 +3531,29 @@ class BICDeviceService final {
     }
   };
   template <class BaseClass>
+  class WithGenericMethod_bicDefineStimulationWaveform : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithGenericMethod_bicDefineStimulationWaveform() {
+      ::grpc::Service::MarkMethodGeneric(11);
+    }
+    ~WithGenericMethod_bicDefineStimulationWaveform() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status bicDefineStimulationWaveform(::grpc::ServerContext* /*context*/, const ::BICgRPC::bicStimulationFunctionDefinitionRequest* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+  };
+  template <class BaseClass>
   class WithGenericMethod_bicNeuralStream : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithGenericMethod_bicNeuralStream() {
-      ::grpc::Service::MarkMethodGeneric(11);
+      ::grpc::Service::MarkMethodGeneric(12);
     }
     ~WithGenericMethod_bicNeuralStream() override {
       BaseClassMustBeDerivedFromService(this);
@@ -3442,7 +3570,7 @@ class BICDeviceService final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithGenericMethod_bicTemperatureStream() {
-      ::grpc::Service::MarkMethodGeneric(12);
+      ::grpc::Service::MarkMethodGeneric(13);
     }
     ~WithGenericMethod_bicTemperatureStream() override {
       BaseClassMustBeDerivedFromService(this);
@@ -3459,7 +3587,7 @@ class BICDeviceService final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithGenericMethod_bicHumidityStream() {
-      ::grpc::Service::MarkMethodGeneric(13);
+      ::grpc::Service::MarkMethodGeneric(14);
     }
     ~WithGenericMethod_bicHumidityStream() override {
       BaseClassMustBeDerivedFromService(this);
@@ -3476,7 +3604,7 @@ class BICDeviceService final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithGenericMethod_bicConnectionStream() {
-      ::grpc::Service::MarkMethodGeneric(14);
+      ::grpc::Service::MarkMethodGeneric(15);
     }
     ~WithGenericMethod_bicConnectionStream() override {
       BaseClassMustBeDerivedFromService(this);
@@ -3493,7 +3621,7 @@ class BICDeviceService final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithGenericMethod_bicPowerStream() {
-      ::grpc::Service::MarkMethodGeneric(15);
+      ::grpc::Service::MarkMethodGeneric(16);
     }
     ~WithGenericMethod_bicPowerStream() override {
       BaseClassMustBeDerivedFromService(this);
@@ -3510,7 +3638,7 @@ class BICDeviceService final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithGenericMethod_bicErrorStream() {
-      ::grpc::Service::MarkMethodGeneric(16);
+      ::grpc::Service::MarkMethodGeneric(17);
     }
     ~WithGenericMethod_bicErrorStream() override {
       BaseClassMustBeDerivedFromService(this);
@@ -3742,12 +3870,32 @@ class BICDeviceService final {
     }
   };
   template <class BaseClass>
+  class WithRawMethod_bicDefineStimulationWaveform : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawMethod_bicDefineStimulationWaveform() {
+      ::grpc::Service::MarkMethodRaw(11);
+    }
+    ~WithRawMethod_bicDefineStimulationWaveform() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status bicDefineStimulationWaveform(::grpc::ServerContext* /*context*/, const ::BICgRPC::bicStimulationFunctionDefinitionRequest* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestbicDefineStimulationWaveform(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(11, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
   class WithRawMethod_bicNeuralStream : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithRawMethod_bicNeuralStream() {
-      ::grpc::Service::MarkMethodRaw(11);
+      ::grpc::Service::MarkMethodRaw(12);
     }
     ~WithRawMethod_bicNeuralStream() override {
       BaseClassMustBeDerivedFromService(this);
@@ -3758,7 +3906,7 @@ class BICDeviceService final {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     void RequestbicNeuralStream(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncWriter< ::grpc::ByteBuffer>* writer, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncServerStreaming(11, context, request, writer, new_call_cq, notification_cq, tag);
+      ::grpc::Service::RequestAsyncServerStreaming(12, context, request, writer, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -3767,7 +3915,7 @@ class BICDeviceService final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithRawMethod_bicTemperatureStream() {
-      ::grpc::Service::MarkMethodRaw(12);
+      ::grpc::Service::MarkMethodRaw(13);
     }
     ~WithRawMethod_bicTemperatureStream() override {
       BaseClassMustBeDerivedFromService(this);
@@ -3778,7 +3926,7 @@ class BICDeviceService final {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     void RequestbicTemperatureStream(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncWriter< ::grpc::ByteBuffer>* writer, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncServerStreaming(12, context, request, writer, new_call_cq, notification_cq, tag);
+      ::grpc::Service::RequestAsyncServerStreaming(13, context, request, writer, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -3787,7 +3935,7 @@ class BICDeviceService final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithRawMethod_bicHumidityStream() {
-      ::grpc::Service::MarkMethodRaw(13);
+      ::grpc::Service::MarkMethodRaw(14);
     }
     ~WithRawMethod_bicHumidityStream() override {
       BaseClassMustBeDerivedFromService(this);
@@ -3798,7 +3946,7 @@ class BICDeviceService final {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     void RequestbicHumidityStream(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncWriter< ::grpc::ByteBuffer>* writer, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncServerStreaming(13, context, request, writer, new_call_cq, notification_cq, tag);
+      ::grpc::Service::RequestAsyncServerStreaming(14, context, request, writer, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -3807,7 +3955,7 @@ class BICDeviceService final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithRawMethod_bicConnectionStream() {
-      ::grpc::Service::MarkMethodRaw(14);
+      ::grpc::Service::MarkMethodRaw(15);
     }
     ~WithRawMethod_bicConnectionStream() override {
       BaseClassMustBeDerivedFromService(this);
@@ -3818,7 +3966,7 @@ class BICDeviceService final {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     void RequestbicConnectionStream(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncWriter< ::grpc::ByteBuffer>* writer, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncServerStreaming(14, context, request, writer, new_call_cq, notification_cq, tag);
+      ::grpc::Service::RequestAsyncServerStreaming(15, context, request, writer, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -3827,7 +3975,7 @@ class BICDeviceService final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithRawMethod_bicPowerStream() {
-      ::grpc::Service::MarkMethodRaw(15);
+      ::grpc::Service::MarkMethodRaw(16);
     }
     ~WithRawMethod_bicPowerStream() override {
       BaseClassMustBeDerivedFromService(this);
@@ -3838,7 +3986,7 @@ class BICDeviceService final {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     void RequestbicPowerStream(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncWriter< ::grpc::ByteBuffer>* writer, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncServerStreaming(15, context, request, writer, new_call_cq, notification_cq, tag);
+      ::grpc::Service::RequestAsyncServerStreaming(16, context, request, writer, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -3847,7 +3995,7 @@ class BICDeviceService final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithRawMethod_bicErrorStream() {
-      ::grpc::Service::MarkMethodRaw(16);
+      ::grpc::Service::MarkMethodRaw(17);
     }
     ~WithRawMethod_bicErrorStream() override {
       BaseClassMustBeDerivedFromService(this);
@@ -3858,7 +4006,7 @@ class BICDeviceService final {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     void RequestbicErrorStream(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncWriter< ::grpc::ByteBuffer>* writer, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncServerStreaming(16, context, request, writer, new_call_cq, notification_cq, tag);
+      ::grpc::Service::RequestAsyncServerStreaming(17, context, request, writer, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -4280,6 +4428,44 @@ class BICDeviceService final {
       { return nullptr; }
   };
   template <class BaseClass>
+  class ExperimentalWithRawCallbackMethod_bicDefineStimulationWaveform : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    ExperimentalWithRawCallbackMethod_bicDefineStimulationWaveform() {
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      ::grpc::Service::
+    #else
+      ::grpc::Service::experimental().
+    #endif
+        MarkMethodRawCallback(11,
+          new ::grpc_impl::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
+            [this](
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+                   ::grpc::CallbackServerContext*
+    #else
+                   ::grpc::experimental::CallbackServerContext*
+    #endif
+                     context, const ::grpc::ByteBuffer* request, ::grpc::ByteBuffer* response) { return this->bicDefineStimulationWaveform(context, request, response); }));
+    }
+    ~ExperimentalWithRawCallbackMethod_bicDefineStimulationWaveform() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status bicDefineStimulationWaveform(::grpc::ServerContext* /*context*/, const ::BICgRPC::bicStimulationFunctionDefinitionRequest* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+    virtual ::grpc::ServerUnaryReactor* bicDefineStimulationWaveform(
+      ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)
+    #else
+    virtual ::grpc::experimental::ServerUnaryReactor* bicDefineStimulationWaveform(
+      ::grpc::experimental::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)
+    #endif
+      { return nullptr; }
+  };
+  template <class BaseClass>
   class ExperimentalWithRawCallbackMethod_bicNeuralStream : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
@@ -4290,7 +4476,7 @@ class BICDeviceService final {
     #else
       ::grpc::Service::experimental().
     #endif
-        MarkMethodRawCallback(11,
+        MarkMethodRawCallback(12,
           new ::grpc_impl::internal::CallbackServerStreamingHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
             [this](
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
@@ -4328,7 +4514,7 @@ class BICDeviceService final {
     #else
       ::grpc::Service::experimental().
     #endif
-        MarkMethodRawCallback(12,
+        MarkMethodRawCallback(13,
           new ::grpc_impl::internal::CallbackServerStreamingHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
             [this](
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
@@ -4366,7 +4552,7 @@ class BICDeviceService final {
     #else
       ::grpc::Service::experimental().
     #endif
-        MarkMethodRawCallback(13,
+        MarkMethodRawCallback(14,
           new ::grpc_impl::internal::CallbackServerStreamingHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
             [this](
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
@@ -4404,7 +4590,7 @@ class BICDeviceService final {
     #else
       ::grpc::Service::experimental().
     #endif
-        MarkMethodRawCallback(14,
+        MarkMethodRawCallback(15,
           new ::grpc_impl::internal::CallbackServerStreamingHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
             [this](
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
@@ -4442,7 +4628,7 @@ class BICDeviceService final {
     #else
       ::grpc::Service::experimental().
     #endif
-        MarkMethodRawCallback(15,
+        MarkMethodRawCallback(16,
           new ::grpc_impl::internal::CallbackServerStreamingHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
             [this](
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
@@ -4480,7 +4666,7 @@ class BICDeviceService final {
     #else
       ::grpc::Service::experimental().
     #endif
-        MarkMethodRawCallback(16,
+        MarkMethodRawCallback(17,
           new ::grpc_impl::internal::CallbackServerStreamingHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
             [this](
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
@@ -4804,14 +4990,41 @@ class BICDeviceService final {
     // replace default version of method with streamed unary
     virtual ::grpc::Status StreamedbicStopStimulation(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::google::protobuf::Empty,::BICgRPC::bicSuccessReply>* server_unary_streamer) = 0;
   };
-  typedef WithStreamedUnaryMethod_ScanDevices<WithStreamedUnaryMethod_ConnectDevice<WithStreamedUnaryMethod_bicDispose<WithStreamedUnaryMethod_bicGetImplantInfo<WithStreamedUnaryMethod_bicGetImpedance<WithStreamedUnaryMethod_bicGetTemperature<WithStreamedUnaryMethod_bicGetHumidity<WithStreamedUnaryMethod_bicSetSensingEnable<WithStreamedUnaryMethod_bicSetImplantPower<WithStreamedUnaryMethod_bicStartStimulation<WithStreamedUnaryMethod_bicStopStimulation<Service > > > > > > > > > > > StreamedUnaryService;
+  template <class BaseClass>
+  class WithStreamedUnaryMethod_bicDefineStimulationWaveform : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithStreamedUnaryMethod_bicDefineStimulationWaveform() {
+      ::grpc::Service::MarkMethodStreamed(11,
+        new ::grpc::internal::StreamedUnaryHandler<
+          ::BICgRPC::bicStimulationFunctionDefinitionRequest, ::BICgRPC::bicSuccessReply>(
+            [this](::grpc_impl::ServerContext* context,
+                   ::grpc_impl::ServerUnaryStreamer<
+                     ::BICgRPC::bicStimulationFunctionDefinitionRequest, ::BICgRPC::bicSuccessReply>* streamer) {
+                       return this->StreamedbicDefineStimulationWaveform(context,
+                         streamer);
+                  }));
+    }
+    ~WithStreamedUnaryMethod_bicDefineStimulationWaveform() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable regular version of this method
+    ::grpc::Status bicDefineStimulationWaveform(::grpc::ServerContext* /*context*/, const ::BICgRPC::bicStimulationFunctionDefinitionRequest* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    // replace default version of method with streamed unary
+    virtual ::grpc::Status StreamedbicDefineStimulationWaveform(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::BICgRPC::bicStimulationFunctionDefinitionRequest,::BICgRPC::bicSuccessReply>* server_unary_streamer) = 0;
+  };
+  typedef WithStreamedUnaryMethod_ScanDevices<WithStreamedUnaryMethod_ConnectDevice<WithStreamedUnaryMethod_bicDispose<WithStreamedUnaryMethod_bicGetImplantInfo<WithStreamedUnaryMethod_bicGetImpedance<WithStreamedUnaryMethod_bicGetTemperature<WithStreamedUnaryMethod_bicGetHumidity<WithStreamedUnaryMethod_bicSetSensingEnable<WithStreamedUnaryMethod_bicSetImplantPower<WithStreamedUnaryMethod_bicStartStimulation<WithStreamedUnaryMethod_bicStopStimulation<WithStreamedUnaryMethod_bicDefineStimulationWaveform<Service > > > > > > > > > > > > StreamedUnaryService;
   template <class BaseClass>
   class WithSplitStreamingMethod_bicNeuralStream : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithSplitStreamingMethod_bicNeuralStream() {
-      ::grpc::Service::MarkMethodStreamed(11,
+      ::grpc::Service::MarkMethodStreamed(12,
         new ::grpc::internal::SplitServerStreamingHandler<
           ::BICgRPC::bicSetStreamEnable, ::BICgRPC::NeuralUpdate>(
             [this](::grpc_impl::ServerContext* context,
@@ -4838,7 +5051,7 @@ class BICDeviceService final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithSplitStreamingMethod_bicTemperatureStream() {
-      ::grpc::Service::MarkMethodStreamed(12,
+      ::grpc::Service::MarkMethodStreamed(13,
         new ::grpc::internal::SplitServerStreamingHandler<
           ::BICgRPC::bicSetStreamEnable, ::BICgRPC::TemperatureUpdate>(
             [this](::grpc_impl::ServerContext* context,
@@ -4865,7 +5078,7 @@ class BICDeviceService final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithSplitStreamingMethod_bicHumidityStream() {
-      ::grpc::Service::MarkMethodStreamed(13,
+      ::grpc::Service::MarkMethodStreamed(14,
         new ::grpc::internal::SplitServerStreamingHandler<
           ::BICgRPC::bicSetStreamEnable, ::BICgRPC::HumidityUpdate>(
             [this](::grpc_impl::ServerContext* context,
@@ -4892,7 +5105,7 @@ class BICDeviceService final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithSplitStreamingMethod_bicConnectionStream() {
-      ::grpc::Service::MarkMethodStreamed(14,
+      ::grpc::Service::MarkMethodStreamed(15,
         new ::grpc::internal::SplitServerStreamingHandler<
           ::BICgRPC::bicSetStreamEnable, ::BICgRPC::ConnectionUpdate>(
             [this](::grpc_impl::ServerContext* context,
@@ -4919,7 +5132,7 @@ class BICDeviceService final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithSplitStreamingMethod_bicPowerStream() {
-      ::grpc::Service::MarkMethodStreamed(15,
+      ::grpc::Service::MarkMethodStreamed(16,
         new ::grpc::internal::SplitServerStreamingHandler<
           ::BICgRPC::bicSetStreamEnable, ::BICgRPC::PowerUpdate>(
             [this](::grpc_impl::ServerContext* context,
@@ -4946,7 +5159,7 @@ class BICDeviceService final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithSplitStreamingMethod_bicErrorStream() {
-      ::grpc::Service::MarkMethodStreamed(16,
+      ::grpc::Service::MarkMethodStreamed(17,
         new ::grpc::internal::SplitServerStreamingHandler<
           ::BICgRPC::bicSetStreamEnable, ::BICgRPC::ErrorUpdate>(
             [this](::grpc_impl::ServerContext* context,
@@ -4968,7 +5181,7 @@ class BICDeviceService final {
     virtual ::grpc::Status StreamedbicErrorStream(::grpc::ServerContext* context, ::grpc::ServerSplitStreamer< ::BICgRPC::bicSetStreamEnable,::BICgRPC::ErrorUpdate>* server_split_streamer) = 0;
   };
   typedef WithSplitStreamingMethod_bicNeuralStream<WithSplitStreamingMethod_bicTemperatureStream<WithSplitStreamingMethod_bicHumidityStream<WithSplitStreamingMethod_bicConnectionStream<WithSplitStreamingMethod_bicPowerStream<WithSplitStreamingMethod_bicErrorStream<Service > > > > > > SplitStreamedService;
-  typedef WithStreamedUnaryMethod_ScanDevices<WithStreamedUnaryMethod_ConnectDevice<WithStreamedUnaryMethod_bicDispose<WithStreamedUnaryMethod_bicGetImplantInfo<WithStreamedUnaryMethod_bicGetImpedance<WithStreamedUnaryMethod_bicGetTemperature<WithStreamedUnaryMethod_bicGetHumidity<WithStreamedUnaryMethod_bicSetSensingEnable<WithStreamedUnaryMethod_bicSetImplantPower<WithStreamedUnaryMethod_bicStartStimulation<WithStreamedUnaryMethod_bicStopStimulation<WithSplitStreamingMethod_bicNeuralStream<WithSplitStreamingMethod_bicTemperatureStream<WithSplitStreamingMethod_bicHumidityStream<WithSplitStreamingMethod_bicConnectionStream<WithSplitStreamingMethod_bicPowerStream<WithSplitStreamingMethod_bicErrorStream<Service > > > > > > > > > > > > > > > > > StreamedService;
+  typedef WithStreamedUnaryMethod_ScanDevices<WithStreamedUnaryMethod_ConnectDevice<WithStreamedUnaryMethod_bicDispose<WithStreamedUnaryMethod_bicGetImplantInfo<WithStreamedUnaryMethod_bicGetImpedance<WithStreamedUnaryMethod_bicGetTemperature<WithStreamedUnaryMethod_bicGetHumidity<WithStreamedUnaryMethod_bicSetSensingEnable<WithStreamedUnaryMethod_bicSetImplantPower<WithStreamedUnaryMethod_bicStartStimulation<WithStreamedUnaryMethod_bicStopStimulation<WithStreamedUnaryMethod_bicDefineStimulationWaveform<WithSplitStreamingMethod_bicNeuralStream<WithSplitStreamingMethod_bicTemperatureStream<WithSplitStreamingMethod_bicHumidityStream<WithSplitStreamingMethod_bicConnectionStream<WithSplitStreamingMethod_bicPowerStream<WithSplitStreamingMethod_bicErrorStream<Service > > > > > > > > > > > > > > > > > > StreamedService;
 };
 
 }  // namespace BICgRPC

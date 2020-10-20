@@ -50,6 +50,9 @@ using BICgRPC::bicGetHumidityReply;
 using BICgRPC::bicSetSensingEnableRequest;
 using BICgRPC::bicSetImplantPowerRequest;
 using BICgRPC::bicStartStimulationRequest;
+using BICgRPC::bicStimulationFunctionDefinitionRequest;
+using BICgRPC::StimulationFunctionDefinition;
+using BICgRPC::AtomType;
 using BICgRPC::TemperatureUpdate;
 using BICgRPC::HumidityUpdate;
 using BICgRPC::NeuralUpdate;
@@ -71,10 +74,10 @@ using BICgRPC::ConnectBridgeResponse;
 using BICgRPC::bicSetStreamEnable;
 using BICgRPC::DisconnectBridgeRequest;
 
-class CImplantToStdOutListener : public IImplantListener
+class CImplantToGRPCListener : public IImplantListener
 {
 public:
-    virtual ~CImplantToStdOutListener() {}
+    virtual ~CImplantToGRPCListener() {}
 
     virtual void onStimulationStateChanged(const bool isStimulating)
     {
@@ -175,7 +178,7 @@ public:
                         if (diff < 0)
                         {
                             // Wrap around case
-                            diff = (double)samples->at(i).getMeasurementCounter() + (UINT32_MAX - lastNeuroCount + 1);
+                            diff = (double)samples->at(i).getMeasurementCounter() + ((double)UINT32_MAX - lastNeuroCount + 1);
                         }
                         // Update counter
                         lastNeuroCount = samples->at(i).getMeasurementCounter();
@@ -184,7 +187,7 @@ public:
                         std::cout << "** Missed Neural Datapoints: " << diff << "! **" << std::endl;
 
                         // If neural data buffer is not empty, flush it so we can keep buffers continuous
-                        if (NeuralWriter != NULL)
+                        if (NeuralWriter != NULL && bufferedNeuroUpdate.samples().size() > 0)
                         {
                             // TODO: Is performance here an issue? Maybe use pingpong buffers and write in a different thread?
                             NeuralWriter->Write(bufferedNeuroUpdate);
@@ -326,64 +329,19 @@ private:
     
 };
 
-/**
-* @return example stimulation command, which must either be passed to startStimulation() or be deleted in order to
-*         prevent memory leaks
-*/
-IStimulationCommand* createStimulationCommand()
-{
-    std::unique_ptr<IStimulationCommandFactory> factory(createStimulationCommandFactory());
-
-    IStimulationCommand* cmd = factory->createStimulationCommand();
-    IStimulationFunction* function = factory->createStimulationFunction();
-
-    // apply signal to stimulation channel 
-    std::set<uint32_t> sourceChannels;
-    sourceChannels.insert(16u + 7u); // 16 measurement channel, stimulation channels in [0..7] 
-    std::set<uint32_t> destinationChannels;
-    destinationChannels.insert(BIC3232Constants::c_groundElectrode);
-
-    function->setRepetitions(10);
-    function->append(factory->createRectStimulationAtom(5.0, 20000));
-    function->append(factory->createRectStimulationAtom(0, 30000));
-    function->append(factory->createRectStimulationAtom(10.0, 20000));
-    function->append(factory->createRectStimulationAtom(0, 30000));
-
-    function->setVirtualStimulationElectrodes(sourceChannels, destinationChannels);
-    cmd->append(function);
-
-    function = factory->createStimulationFunction();
-    function->setRepetitions(5);
-    function->append(factory->createRectStimulationAtom(7.5, 10000));
-    function->append(factory->createRectStimulationAtom(10.0, 10000));
-    function->append(factory->createRectStimulationAtom(5.0, 10000));
-    function->append(factory->createRectStimulationAtom(2.5, 10000));
-
-    function->setVirtualStimulationElectrodes(sourceChannels, destinationChannels);
-    cmd->append(function);
-
-    function = factory->createStimulationFunction();
-    function->setRepetitions(3);
-    function->append(factory->createRectStimulationAtom(2.5, 1000));
-    function->append(factory->createRectStimulationAtom(1.0, 5000));
-    function->append(factory->createRectStimulationAtom(9.0, 2000));
-    function->append(factory->createRectStimulationAtom(0, 17000));
-
-    function->setVirtualStimulationElectrodes(sourceChannels, destinationChannels);
-    cmd->append(function);
-
-    return cmd;
-}
-
 // Logic and data behind the server's behavior.
 class BICDeviceServiceImpl final : public BICDeviceService::Service {
     // ************************* Cross-Function Service Variable Declarations *************************
-    // Currently only supports one BIC at a time, need to turn these into lists of implants and cached implant info
-    std::unique_ptr <IImplant> theImplant;
+    // BIC Initialization Objects - service wide
     std::unique_ptr <IImplantFactory> theImplantFactory;
-    std::unique_ptr <CImplantInfo> theImplantInfo;          // Cached Implant Info
-    CImplantToStdOutListener listener;
     bool factoryInitialized = false;
+
+    // BIC Device-specific Objects
+    // TODO: Currently only supports one BIC at a time, need to turn these into lists of implants and cached implant info
+    std::unique_ptr <IImplant> theImplant;
+    std::unique_ptr <CImplantInfo> theImplantInfo;                  // Cached Implant Info
+    //IStimulationCommand* theStimulationCommand;
+    CImplantToGRPCListener listener;
     bool implantInitialized = false;
     std::mutex rpcLock;
     
@@ -409,7 +367,7 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
     std::condition_variable errorStreamNotify;
     std::condition_variable powerStreamNotify;
 
-    // ************************* Helper Service Function Declarations *************************
+    // ************************* Non-GRPC Helper Service Function Declarations *************************
     void factoryInitializeCheck()
     {
         // Check if already initialized
@@ -421,7 +379,7 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
         }
     }
 
-    // ************************* General Service Function Declarations *************************
+    // ************************* Construction, Initialization, and Destruction Function Declarations *************************
     Status ScanDevices(ServerContext* context, const ScanDevicesRequest* request, ScanDevicesReply* reply) override {
 
         // Pull the mutex for guarding against inappropriate multi-threaded access
@@ -553,7 +511,7 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
         return Status::OK;
     }
 
-    // ************************* Implant Function Declarations *************************
+    // ************************* Implant State Get and Set Function Declarations *************************
     Status bicGetImplantInfo(ServerContext* context, const bicGetImplantInfoRequest* request, bicGetImplantInfoReply* reply) override {
 
         // Pull the mutex for guarding against inappropriate multi-threaded access
@@ -764,57 +722,7 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
         return Status::OK;
     }
 
-    Status bicStartStimulation(ServerContext* context, const bicStartStimulationRequest* request, bicSuccessReply* reply) override {
-        // Pull the mutex for guarding against inappropriate multi-threaded access
-        const std::lock_guard<std::mutex> lock(rpcLock);
-
-        // Check if already initialized
-        if (!implantInitialized)
-        {
-            return Status(grpc::StatusCode::FAILED_PRECONDITION, "Not Initialized");
-        }
-
-        // Perform the operation
-        try
-        {
-
-        }
-        catch (const std::exception&)
-        {
-            // TODO Exception Handling
-            return Status::OK;
-        }
-
-        // Respond to client
-        return Status::OK;
-    }
-
-    Status bicStopStimulation(ServerContext* context, const google::protobuf::Empty* request, bicSuccessReply* reply) override {
-        // Pull the mutex for guarding against inappropriate multi-threaded access
-        const std::lock_guard<std::mutex> lock(rpcLock);
-
-        // Check if already initialized
-        if (!implantInitialized)
-        {
-            return Status(grpc::StatusCode::FAILED_PRECONDITION, "Not Initialized");
-        }
-
-        // Perform the operation
-        try
-        {
-            theImplant->stopStimulation();
-        }
-        catch (const std::exception&)
-        {
-            // TODO Exception Handling
-            return Status::OK;
-        }
-
-        // Respond to client
-        return Status::OK;
-    }
-
-    // ************************* Streaming Declarations *************************
+    // ************************* Streaming Control Function Declarations *************************
     Status bicTemperatureStream(ServerContext* context, const bicSetStreamEnable* request, ServerWriter<TemperatureUpdate>* writer) override {
         // Check requested stream state and current streaming state (don't want to destroy a previously requested stream without it being stopped first)
          if (!isStreamingTemp && request->enable())
@@ -1000,6 +908,157 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
             neuralStreamNotify.notify_one();
         }
 
+        return Status::OK;
+    }
+
+    // ************************* Stimulation Control Function Declarations *************************
+
+    Status bicStartStimulation(ServerContext* context, const bicStartStimulationRequest* request, bicSuccessReply* reply) override {
+        // Pull the mutex for guarding against inappropriate multi-threaded access
+        const std::lock_guard<std::mutex> lock(rpcLock);
+
+        // Check if already initialized
+        if (!implantInitialized)
+        {
+            return Status(grpc::StatusCode::FAILED_PRECONDITION, "Not Initialized");
+        }
+
+        // Perform the operation
+        try
+        {
+            std::unique_ptr<IStimulationCommandFactory> theFactory(createStimulationCommandFactory());
+            IStimulationCommand* theStimulationCommand = theFactory->createStimulationCommand();
+
+            // Iterate through provided functions and add them to the command 
+            IStimulationFunction* theStimFunction = theFactory->createStimulationFunction();
+            theStimFunction->setName("stimPulse");
+            theStimFunction->setRepetitions(10);
+            theStimFunction->setVirtualStimulationElectrodes(std::set<uint32_t>{0}, std::set<uint32_t>{BIC3232Constants::c_groundElectrode});
+            theStimFunction->append(theFactory->createRectStimulationAtom(10, 20000));
+            theStimFunction->append(theFactory->createRectStimulationAtom(0, 30000));
+            theStimFunction->append(theFactory->createRectStimulationAtom(-2.5, 20000));
+            theStimFunction->append(theFactory->createRectStimulationAtom(0, 30000));
+            theStimFunction->append(theFactory->createRectStimulationAtom(0, 30000));
+            
+            IStimulationFunction* thePauseFunction = theFactory->createStimulationFunction();
+            thePauseFunction->setName("pausePulse");
+            thePauseFunction->append(theFactory->createStimulationPauseAtom(30000));
+
+            theStimulationCommand->append(theStimFunction);
+            theStimulationCommand->append(thePauseFunction);
+
+            theImplant->startStimulation(theStimulationCommand);
+        }
+        catch (const std::exception&)
+        {
+            // TODO Exception Handling
+            return Status::OK;
+        }
+
+        // Respond to client
+        return Status::OK;
+    }
+
+    Status bicStopStimulation(ServerContext* context, const google::protobuf::Empty* request, bicSuccessReply* reply) override {
+        // Pull the mutex for guarding against inappropriate multi-threaded access
+        const std::lock_guard<std::mutex> lock(rpcLock);
+
+        // Check if already initialized
+        if (!implantInitialized)
+        {
+            return Status(grpc::StatusCode::FAILED_PRECONDITION, "Not Initialized");
+        }
+
+        // Perform the operation
+        try
+        {
+            theImplant->stopStimulation();
+        }
+        catch (const std::exception&)
+        {
+            // TODO Exception Handling
+            return Status::OK;
+        }
+
+        // Respond to client
+        return Status::OK;
+    }
+
+    Status bicDefineStimulationWaveform(ServerContext* context, const bicStimulationFunctionDefinitionRequest* request, bicSuccessReply* reply) override
+    {
+        // Create objects required for 
+        std::unique_ptr<IStimulationCommandFactory> theFactory(createStimulationCommandFactory());
+        IStimulationCommand* theStimulationCommand = theFactory->createStimulationCommand();
+
+        // Iterate through provided functions and add them to the command 
+        IStimulationFunction* theFunction;
+        for (int i = 0; i < request->functions_size(); i++)
+        {
+            theFunction = theFactory->createStimulationFunction();
+            theFunction->setName(request->functions().at(i).functionname());
+            if (request->functions().at(i).atoms().at(0).type() != AtomType::PAUSE)
+            {
+                theFunction->setRepetitions(request->functions().at(i).repetitions());
+
+                // Pull out the electrodes
+                std::set<uint32_t> sources;
+                std::set<uint32_t> sinks;
+                for (int j = 0; j < request->functions().at(i).sourceelectrodes().size(); j++)
+                {
+                    sources.insert(request->functions().at(i).sourceelectrodes()[j]);
+                }
+                for (int j = 0; j < request->functions().at(i).sinkelectrodes().size(); j++)
+                {
+                    sinks.insert(request->functions().at(i).sinkelectrodes()[j]);
+                }
+                theFunction->setVirtualStimulationElectrodes(sources, sinks);
+            }
+
+            // Pull out the stimulation atoms
+            IStimulationAtom* newAtom;
+            for (int j = 0; j < request->functions().at(i).atoms_size(); j++)
+            {
+                switch (request->functions().at(i).atoms().at(j).type())
+                {
+                    case AtomType::PAUSE:
+                        // Create a new pause atom and append to the function
+                        newAtom = theFactory->createStimulationPauseAtom(request->functions().at(i).atoms().at(j).duration());
+                        theFunction->append(newAtom);
+                        break;
+                    case AtomType::RECTANGULAR:
+                        // Check if at least one amplitude has been provided
+                        if (request->functions().at(i).atoms().at(j).amplitude_size() >= 1)
+                        {
+                            // Create a new rectangular atom and append to the function
+                            newAtom = theFactory->createRectStimulationAtom(
+                                request->functions().at(i).atoms().at(j).amplitude()[0],
+                                request->functions().at(i).atoms().at(j).duration());
+                            theFunction->append(newAtom);
+                        }
+                        break;
+                    case AtomType::RECTANGULAR_4AMPS:
+                        // Check if at least four amplitudes have been provided
+                        if (request->functions().at(i).atoms().at(j).amplitude_size() >= 4)
+                        {
+                            // Create a new rectangular atom and append to the function
+                            newAtom = theFactory->createRect4AmplitudeStimulationAtom(
+                                request->functions().at(i).atoms().at(j).amplitude()[0],
+                                request->functions().at(i).atoms().at(j).amplitude()[1],
+                                request->functions().at(i).atoms().at(j).amplitude()[2],
+                                request->functions().at(i).atoms().at(j).amplitude()[3],
+                                request->functions().at(i).atoms().at(j).duration());
+                            theFunction->append(newAtom);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            // Add the function to the command
+            theStimulationCommand->append(theFunction);
+        }
+        theImplant->startStimulation(theStimulationCommand);
         return Status::OK;
     }
 };

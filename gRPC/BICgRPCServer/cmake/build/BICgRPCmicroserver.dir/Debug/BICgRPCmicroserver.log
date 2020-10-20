@@ -1,13 +1,16 @@
 ﻿  BICgRPCmicroserver.cc
-D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(221,78): warning C4018: '>=': signed/unsigned mismatch
-D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(452,1): warning C4267: 'argument': conversion from 'size_t' to 'google::protobuf::uint32', possible loss of data
-D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(453,1): warning C4267: 'argument': conversion from 'size_t' to 'google::protobuf::uint32', possible loss of data
-D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(456,1): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(486,1): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(587,1): warning C4267: 'argument': conversion from 'size_t' to 'google::protobuf::uint32', possible loss of data
-D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(588,1): warning C4267: 'argument': conversion from 'size_t' to 'google::protobuf::uint32', possible loss of data
-D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(591,1): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(576,42): warning C4101: 'theError': unreferenced local variable
+D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(224,78): warning C4018: '>=': signed/unsigned mismatch
+D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(410,1): warning C4267: 'argument': conversion from 'size_t' to 'google::protobuf::uint32', possible loss of data
+D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(411,1): warning C4267: 'argument': conversion from 'size_t' to 'google::protobuf::uint32', possible loss of data
+D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(414,1): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(444,1): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(545,1): warning C4267: 'argument': conversion from 'size_t' to 'google::protobuf::uint32', possible loss of data
+D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(546,1): warning C4267: 'argument': conversion from 'size_t' to 'google::protobuf::uint32', possible loss of data
+D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(549,1): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(534,42): warning C4101: 'theError': unreferenced local variable
+D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(1025,123): warning C4244: 'argument': conversion from 'double' to 'const uint64_t', possible loss of data
+D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(1035,82): warning C4244: 'argument': conversion from 'double' to 'const uint64_t', possible loss of data
+D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(1049,82): warning C4244: 'argument': conversion from 'double' to 'const uint64_t', possible loss of data
 D:\gitbuilds\include\grpcpp/impl/codegen/proto_utils.h(52,1): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
 D:\gitbuilds\include\grpcpp/impl/codegen/proto_utils.h(107): message : see reference to function template instantiation 'grpc::Status grpc::GenericSerialize<grpc::ProtoBufferWriter,T>(const grpc::protobuf::MessageLite &,grpc::ByteBuffer *,bool *)' being compiled
           with
@@ -49,5 +52,5 @@ D:\gitbuilds\include\grpcpp/impl/codegen/async_stream_impl.h(293): message : see
           [
               R=BICgRPC::NeuralUpdate
           ]
-D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\cmake\build\BICgRPC.grpc.pb.h(2114): message : see reference to class template instantiation 'grpc_impl::ClientAsyncReader<BICgRPC::NeuralUpdate>' being compiled
+D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\cmake\build\BICgRPC.grpc.pb.h(2157): message : see reference to class template instantiation 'grpc_impl::ClientAsyncReader<BICgRPC::NeuralUpdate>' being compiled
   BICgRPCmicroserver.vcxproj -> D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\cmake\build\Debug\BICgRPCmicroserver.exe
