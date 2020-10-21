@@ -177,23 +177,26 @@ message bicStimulationFunctionDefinitionRequest{
 
 message StimulationFunctionDefinition{
 	string functionName = 1;
-	uint32 repetitions = 2;
-	repeated uint32 sourceElectrodes = 3;
-	repeated uint32 sinkElectrodes = 4;
-	repeated StimulationAtom atoms = 5;
+	
+	oneof functionDefinition{
+		stimPulseFunction stimPulse = 2;
+		pauseFunction pause = 3;
+	}
+
 }
 
-message StimulationAtom{
+message stimPulseFunction{
 	repeated double amplitude = 1;
-	double duration = 2;
-	AtomType type = 3;
+	double pulseWidth = 2;
+	double dZ0duration = 3;
+	double dZ1duration = 4;
+	uint32 repetitions = 5;
+	repeated uint32 sourceElectrodes = 6;
+	repeated uint32 sinkElectrodes = 7;
 }
 
-enum AtomType{
-	NONE = 0;
-	RECTANGULAR = 1;
-	RECTANGULAR_4AMPS = 2;
-	PAUSE = 3;
+message pauseFunction{
+	double duration = 1;
 }
 
 // *************************** Device Streaming Service Messages ***************************

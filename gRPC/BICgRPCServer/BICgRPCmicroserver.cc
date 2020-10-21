@@ -52,7 +52,6 @@ using BICgRPC::bicSetImplantPowerRequest;
 using BICgRPC::bicStartStimulationRequest;
 using BICgRPC::bicStimulationFunctionDefinitionRequest;
 using BICgRPC::StimulationFunctionDefinition;
-using BICgRPC::AtomType;
 using BICgRPC::TemperatureUpdate;
 using BICgRPC::HumidityUpdate;
 using BICgRPC::NeuralUpdate;
@@ -340,7 +339,7 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
     // TODO: Currently only supports one BIC at a time, need to turn these into lists of implants and cached implant info
     std::unique_ptr <IImplant> theImplant;
     std::unique_ptr <CImplantInfo> theImplantInfo;                  // Cached Implant Info
-    //IStimulationCommand* theStimulationCommand;
+    IStimulationCommand* theStimulationCommand;
     CImplantToGRPCListener listener;
     bool implantInitialized = false;
     std::mutex rpcLock;
@@ -912,7 +911,6 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
     }
 
     // ************************* Stimulation Control Function Declarations *************************
-
     Status bicStartStimulation(ServerContext* context, const bicStartStimulationRequest* request, bicSuccessReply* reply) override {
         // Pull the mutex for guarding against inappropriate multi-threaded access
         const std::lock_guard<std::mutex> lock(rpcLock);
@@ -926,32 +924,35 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
         // Perform the operation
         try
         {
-            std::unique_ptr<IStimulationCommandFactory> theFactory(createStimulationCommandFactory());
-            IStimulationCommand* theStimulationCommand = theFactory->createStimulationCommand();
+            /*std::unique_ptr<IStimulationCommandFactory> theFactory(createStimulationCommandFactory());
+            IStimulationCommand* theStimulationCommand2 = theFactory->createStimulationCommand();
 
             // Iterate through provided functions and add them to the command 
             IStimulationFunction* theStimFunction = theFactory->createStimulationFunction();
             theStimFunction->setName("stimPulse");
             theStimFunction->setRepetitions(10);
-            theStimFunction->setVirtualStimulationElectrodes(std::set<uint32_t>{0}, std::set<uint32_t>{BIC3232Constants::c_groundElectrode});
-            theStimFunction->append(theFactory->createRectStimulationAtom(10, 20000));
-            theStimFunction->append(theFactory->createRectStimulationAtom(0, 30000));
-            theStimFunction->append(theFactory->createRectStimulationAtom(-2.5, 20000));
-            theStimFunction->append(theFactory->createRectStimulationAtom(0, 30000));
-            theStimFunction->append(theFactory->createRectStimulationAtom(0, 30000));
+            std::set<uint32_t> sourceContacts = { 0 };
+            std::set<uint32_t> sinkContacts = { 1 };
+            theStimFunction->setVirtualStimulationElectrodes(sourceContacts,sinkContacts);
+            theStimFunction->append(theFactory->createRect4AmplitudeStimulationAtom(1000, 0, 0, 0, 400));
+            theStimFunction->append(theFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, 10));
+            theStimFunction->append(theFactory->createRect4AmplitudeStimulationAtom(-250, 0, 0, 0, 1600));
+            theStimFunction->append(theFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, 10));
+            theStimFunction->append(theFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, 2550));
             
             IStimulationFunction* thePauseFunction = theFactory->createStimulationFunction();
             thePauseFunction->setName("pausePulse");
             thePauseFunction->append(theFactory->createStimulationPauseAtom(30000));
 
-            theStimulationCommand->append(theStimFunction);
-            theStimulationCommand->append(thePauseFunction);
+            theStimulationCommand2->append(theStimFunction);
+            theStimulationCommand2->append(thePauseFunction);*/
 
             theImplant->startStimulation(theStimulationCommand);
         }
-        catch (const std::exception&)
+        catch (const std::exception theExeption)
         {
             // TODO Exception Handling
+            std::cout << "Start Stimulation Exception: " << theExeption.what() << std::endl;
             return Status::OK;
         }
 
@@ -988,77 +989,94 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
     {
         // Create objects required for 
         std::unique_ptr<IStimulationCommandFactory> theFactory(createStimulationCommandFactory());
-        IStimulationCommand* theStimulationCommand = theFactory->createStimulationCommand();
+        theStimulationCommand = theFactory->createStimulationCommand();
 
         // Iterate through provided functions and add them to the command 
-        IStimulationFunction* theFunction;
-        for (int i = 0; i < request->functions_size(); i++)
+        try
         {
-            theFunction = theFactory->createStimulationFunction();
-            theFunction->setName(request->functions().at(i).functionname());
-            if (request->functions().at(i).atoms().at(0).type() != AtomType::PAUSE)
+            for (int i = 0; i < request->functions_size(); i++)
             {
-                theFunction->setRepetitions(request->functions().at(i).repetitions());
+                // Set general function parameters
+                IStimulationFunction* theFunction = theFactory->createStimulationFunction();
+                theFunction->setName(request->functions().at(i).functionname());
 
-                // Pull out the electrodes
-                std::set<uint32_t> sources;
-                std::set<uint32_t> sinks;
-                for (int j = 0; j < request->functions().at(i).sourceelectrodes().size(); j++)
+                // Check which requested type of function requested
+                if (request->functions().at(i).has_stimpulse())
                 {
-                    sources.insert(request->functions().at(i).sourceelectrodes()[j]);
-                }
-                for (int j = 0; j < request->functions().at(i).sinkelectrodes().size(); j++)
-                {
-                    sinks.insert(request->functions().at(i).sinkelectrodes()[j]);
-                }
-                theFunction->setVirtualStimulationElectrodes(sources, sinks);
-            }
+                    // Set repetition field
+                    theFunction->setRepetitions(request->functions().at(i).stimpulse().repetitions());
 
-            // Pull out the stimulation atoms
-            IStimulationAtom* newAtom;
-            for (int j = 0; j < request->functions().at(i).atoms_size(); j++)
-            {
-                switch (request->functions().at(i).atoms().at(j).type())
-                {
-                    case AtomType::PAUSE:
-                        // Create a new pause atom and append to the function
-                        newAtom = theFactory->createStimulationPauseAtom(request->functions().at(i).atoms().at(j).duration());
-                        theFunction->append(newAtom);
-                        break;
-                    case AtomType::RECTANGULAR:
-                        // Check if at least one amplitude has been provided
-                        if (request->functions().at(i).atoms().at(j).amplitude_size() >= 1)
+                    // Pull out the electrodes and set the electrode fields
+                    std::set<uint32_t> sources;
+                    std::set<uint32_t> sinks;
+                    for (int j = 0; j < request->functions().at(i).stimpulse().sourceelectrodes().size(); j++)
+                    {
+                        sources.insert(request->functions().at(i).stimpulse().sourceelectrodes()[j]);
+                    }
+                    for (int j = 0; j < request->functions().at(i).stimpulse().sinkelectrodes().size(); j++)
+                    {
+                        if (request->functions().at(i).stimpulse().sinkelectrodes()[j] >= 32)
                         {
-                            // Create a new rectangular atom and append to the function
-                            newAtom = theFactory->createRectStimulationAtom(
-                                request->functions().at(i).atoms().at(j).amplitude()[0],
-                                request->functions().at(i).atoms().at(j).duration());
-                            theFunction->append(newAtom);
+                            sinks.insert(BIC3232Constants::c_groundElectrode);
                         }
-                        break;
-                    case AtomType::RECTANGULAR_4AMPS:
-                        // Check if at least four amplitudes have been provided
-                        if (request->functions().at(i).atoms().at(j).amplitude_size() >= 4)
+                        else
                         {
-                            // Create a new rectangular atom and append to the function
-                            newAtom = theFactory->createRect4AmplitudeStimulationAtom(
-                                request->functions().at(i).atoms().at(j).amplitude()[0],
-                                request->functions().at(i).atoms().at(j).amplitude()[1],
-                                request->functions().at(i).atoms().at(j).amplitude()[2],
-                                request->functions().at(i).atoms().at(j).amplitude()[3],
-                                request->functions().at(i).atoms().at(j).duration());
-                            theFunction->append(newAtom);
+                            sinks.insert(request->functions().at(i).stimpulse().sinkelectrodes()[j]);
                         }
-                        break;
-                    default:
-                        break;
+
+                    }
+                    theFunction->setVirtualStimulationElectrodes(sources, sinks);
+
+                    // Generate the stimulation pulse by assembling atoms and appending them to the function
+                    // Generate Atoms -- positive  pulse
+                    theFunction->append(theFactory->createRect4AmplitudeStimulationAtom(
+                        request->functions().at(i).stimpulse().amplitude()[0],
+                        request->functions().at(i).stimpulse().amplitude()[1],
+                        request->functions().at(i).stimpulse().amplitude()[2],
+                        request->functions().at(i).stimpulse().amplitude()[3],
+                        request->functions().at(i).stimpulse().pulsewidth()));
+
+                    // Generate atoms -- DZ0
+                    theFunction->append(theFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, request->functions().at(i).stimpulse().dz0duration()));
+
+                    // Genmerate atoms -- charge balance ( 1/4 amplitude, 4 x pulsewidth of main pulse)
+                    theFunction->append(theFactory->createRect4AmplitudeStimulationAtom(
+                        request->functions().at(i).stimpulse().amplitude()[0] / -4,
+                        request->functions().at(i).stimpulse().amplitude()[1] / -4,
+                        request->functions().at(i).stimpulse().amplitude()[2] / -4,
+                        request->functions().at(i).stimpulse().amplitude()[3] / -4,
+                        request->functions().at(i).stimpulse().pulsewidth() * 4));
+
+                    // Generate atoms -- DZ0
+                    theFunction->append(theFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, request->functions().at(i).stimpulse().dz0duration()));
+
+                    // Generate atoms -- DZ1
+                    theFunction->append(theFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, request->functions().at(i).stimpulse().dz1duration()));
+
+                    // Add the function to the command
+                    theStimulationCommand->append(theFunction);
+                }
+                else if (request->functions().at(i).has_pause())
+                {
+                    // Create the pulse function
+                    theFunction->append(theFactory->createStimulationPauseAtom(request->functions().at(i).pause().duration()));
+
+                    // Add the function to the command
+                    theStimulationCommand->append(theFunction);
+                }
+                else
+                {
+                    // No atoms?
                 }
             }
-
-            // Add the function to the command
-            theStimulationCommand->append(theFunction);
         }
-        theImplant->startStimulation(theStimulationCommand);
+        catch (const std::exception theExeption)
+        {
+            // TODO Exception Handling
+            std::cout << "Define Stimulation Waveform Exception: " << theExeption.what() << std::endl;
+            return Status::OK;
+        }
+        
         return Status::OK;
     }
 };

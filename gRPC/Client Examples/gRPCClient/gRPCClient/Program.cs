@@ -214,21 +214,19 @@ namespace BICgRPC_ConsoleTest
                         Console.WriteLine("Implant Power Off Command Result: " + deviceClient.bicSetImplantPower(new bicSetImplantPowerRequest() { PowerEnabled = false }));
                         break;
                     case ConsoleKey.D1:
+                        // Create a waveform defintion request 
                         bicStimulationFunctionDefinitionRequest aNewWaveform = new bicStimulationFunctionDefinitionRequest();
                         // Create a pulse function
-                        /*StimulationFunctionDefinition pulseFunction = new StimulationFunctionDefinition() { FunctionName = "pulseFunction", Repetitions = 10, SourceElectrodes = {0}, SinkElectrodes = {1} };
-                        pulseFunction.Atoms.Add(new StimulationAtom() { Amplitude = { 1000.0 }, Duration = 400, Type = AtomType.Rectangular });
-                        pulseFunction.Atoms.Add(new StimulationAtom() { Amplitude = { 0 }, Duration = 2550, Type = AtomType.Rectangular });
-                        pulseFunction.Atoms.Add(new StimulationAtom() { Amplitude = { -250.0 }, Duration = 1600, Type = AtomType.Rectangular });
-                        pulseFunction.Atoms.Add(new StimulationAtom() { Amplitude = { 0 }, Duration = 2550, Type = AtomType.Rectangular });
-                        pulseFunction.Atoms.Add(new StimulationAtom() { Amplitude = { 0 }, Duration = 2550, Type = AtomType.Rectangular });
+                        StimulationFunctionDefinition pulseFunction = new StimulationFunctionDefinition() { FunctionName = "pulseFunction", 
+                            StimPulse = new stimPulseFunction() { Amplitude = { 1000, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 2550, PulseWidth = 400, Repetitions = (uint)randomNumGen.Next(1,10), SourceElectrodes = { 0 }, SinkElectrodes = { 1 } } };
                         // Create a pause function
-                        StimulationFunctionDefinition pauseFunction = new StimulationFunctionDefinition() { FunctionName = "pauseFunction", Repetitions = 0, SourceElectrodes = { }, SinkElectrodes = { } };
-                        pauseFunction.Atoms.Add(new StimulationAtom() { Type = AtomType.Pause, Duration = 30000 });
+                        StimulationFunctionDefinition pauseFunction = new StimulationFunctionDefinition() { FunctionName = "pauseFunction",
+                            Pause = new pauseFunction() { Duration = 30000 } };
+                            
                         // Load functions into waveform, then into command
                         aNewWaveform.Functions.Add(pulseFunction);
                         aNewWaveform.Functions.Add(pauseFunction);
-                        deviceClient.bicDefineStimulationWaveform(aNewWaveform);*/
+                        deviceClient.bicDefineStimulationWaveform(aNewWaveform);
                         deviceClient.bicStartStimulation(new bicStartStimulationRequest() { FunctionName = "aWaveForm" });
                         break;
                     case ConsoleKey.D0:
@@ -324,7 +322,7 @@ namespace BICgRPC_ConsoleTest
             Console.WriteLine("\tn : Stop Neural Sense Streaming");
             Console.WriteLine("\tp : Enable Power to Implant (enabled by default)");
             Console.WriteLine("\to : Disable Power to Implant (enabled by default)");
-            Console.WriteLine("\t1 : Start Stimulation (not implemented yet)");
+            Console.WriteLine("\t1 : Start Stimulation");
             Console.WriteLine("\t0 : Stop Stimulation (not implemented yet)");
             Console.WriteLine("\tq : Quit Program");
         }
