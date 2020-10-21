@@ -322,7 +322,7 @@ namespace BICgRPC_ConsoleTest
             Console.WriteLine("\tn : Stop Neural Sense Streaming");
             Console.WriteLine("\tp : Enable Power to Implant (enabled by default)");
             Console.WriteLine("\to : Disable Power to Implant (enabled by default)");
-            Console.WriteLine("\t1 : Start Stimulation");
+            Console.WriteLine("\t1 : Start Stimulation - random number (1-9) 1mA pulses");
             Console.WriteLine("\t0 : Stop Stimulation (not implemented yet)");
             Console.WriteLine("\tq : Quit Program");
         }
