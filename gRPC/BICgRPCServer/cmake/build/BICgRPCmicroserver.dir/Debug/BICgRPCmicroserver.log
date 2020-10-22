@@ -8,12 +8,12 @@ D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmi
 D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(545,1): warning C4267: 'argument': conversion from 'size_t' to 'google::protobuf::uint32', possible loss of data
 D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(548,1): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
 D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(533,42): warning C4101: 'theError': unreferenced local variable
-D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(1037,74): warning C4244: 'argument': conversion from 'double' to 'const uint64_t', possible loss of data
-D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(1040,151): warning C4244: 'argument': conversion from 'double' to 'const uint64_t', possible loss of data
-D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(1048,77): warning C4244: 'argument': conversion from 'double' to 'const uint64_t', possible loss of data
-D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(1051,151): warning C4244: 'argument': conversion from 'double' to 'const uint64_t', possible loss of data
-D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(1054,151): warning C4244: 'argument': conversion from 'double' to 'const uint64_t', possible loss of data
-D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(1062,123): warning C4244: 'argument': conversion from 'double' to 'const uint64_t', possible loss of data
+D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(1014,74): warning C4244: 'argument': conversion from 'double' to 'const uint64_t', possible loss of data
+D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(1017,151): warning C4244: 'argument': conversion from 'double' to 'const uint64_t', possible loss of data
+D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(1025,77): warning C4244: 'argument': conversion from 'double' to 'const uint64_t', possible loss of data
+D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(1028,151): warning C4244: 'argument': conversion from 'double' to 'const uint64_t', possible loss of data
+D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(1031,151): warning C4244: 'argument': conversion from 'double' to 'const uint64_t', possible loss of data
+D:\Source Repositories\BrainInterchange-Development\gRPC\BICgRPCServer\BICgRPCmicroserver.cc(1039,123): warning C4244: 'argument': conversion from 'double' to 'const uint64_t', possible loss of data
 D:\gitbuilds\include\grpcpp/impl/codegen/proto_utils.h(52,1): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
 D:\gitbuilds\include\grpcpp/impl/codegen/proto_utils.h(107): message : see reference to function template instantiation 'grpc::Status grpc::GenericSerialize<grpc::ProtoBufferWriter,T>(const grpc::protobuf::MessageLite &,grpc::ByteBuffer *,bool *)' being compiled
           with

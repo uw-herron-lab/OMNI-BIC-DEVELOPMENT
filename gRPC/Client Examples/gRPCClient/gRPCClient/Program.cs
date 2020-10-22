@@ -218,7 +218,7 @@ namespace BICgRPC_ConsoleTest
                         bicStimulationFunctionDefinitionRequest aNewWaveform = new bicStimulationFunctionDefinitionRequest();
                         // Create a pulse function
                         StimulationFunctionDefinition pulseFunction = new StimulationFunctionDefinition() { FunctionName = "pulseFunction", 
-                            StimPulse = new stimPulseFunction() { Amplitude = { 1000, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 2550, PulseWidth = 400, Repetitions = (uint)randomNumGen.Next(1,10), SourceElectrodes = { 0 }, SinkElectrodes = { 1 } } };
+                            StimPulse = new stimPulseFunction() { Amplitude = { 1000, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 2550, PulseWidth = 400, Repetitions = (uint)randomNumGen.Next(1,10), SourceElectrodes = { 0 }, SinkElectrodes = { 32 } } };
                         // Create a pause function
                         StimulationFunctionDefinition pauseFunction = new StimulationFunctionDefinition() { FunctionName = "pauseFunction",
                             Pause = new pauseFunction() { Duration = 30000 } };

@@ -924,29 +924,6 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
         // Perform the operation
         try
         {
-            /*std::unique_ptr<IStimulationCommandFactory> theFactory(createStimulationCommandFactory());
-            IStimulationCommand* theStimulationCommand2 = theFactory->createStimulationCommand();
-
-            // Iterate through provided functions and add them to the command 
-            IStimulationFunction* theStimFunction = theFactory->createStimulationFunction();
-            theStimFunction->setName("stimPulse");
-            theStimFunction->setRepetitions(10);
-            std::set<uint32_t> sourceContacts = { 0 };
-            std::set<uint32_t> sinkContacts = { 1 };
-            theStimFunction->setVirtualStimulationElectrodes(sourceContacts,sinkContacts);
-            theStimFunction->append(theFactory->createRect4AmplitudeStimulationAtom(1000, 0, 0, 0, 400));
-            theStimFunction->append(theFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, 10));
-            theStimFunction->append(theFactory->createRect4AmplitudeStimulationAtom(-250, 0, 0, 0, 1600));
-            theStimFunction->append(theFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, 10));
-            theStimFunction->append(theFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, 2550));
-            
-            IStimulationFunction* thePauseFunction = theFactory->createStimulationFunction();
-            thePauseFunction->setName("pausePulse");
-            thePauseFunction->append(theFactory->createStimulationPauseAtom(30000));
-
-            theStimulationCommand2->append(theStimFunction);
-            theStimulationCommand2->append(thePauseFunction);*/
-
             theImplant->startStimulation(theStimulationCommand);
         }
         catch (const std::exception theExeption)
@@ -1017,7 +994,7 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
                     {
                         if (request->functions().at(i).stimpulse().sinkelectrodes()[j] >= 32)
                         {
-                            sinks.insert(BIC3232Constants::c_groundElectrode);
+                            sinks.insert(0x0002FFFF);
                         }
                         else
                         {
