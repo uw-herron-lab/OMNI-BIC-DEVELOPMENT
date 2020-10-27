@@ -1403,11 +1403,11 @@ class BICDeviceService final {
     std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>> PrepareAsyncConnectDevice(::grpc::ClientContext* context, const ::BICgRPC::ConnectDeviceRequest& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>>(PrepareAsyncConnectDeviceRaw(context, request, cq));
     }
-    virtual ::grpc::Status bicDispose(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::BICgRPC::bicSuccessReply* response) = 0;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>> AsyncbicDispose(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) {
+    virtual ::grpc::Status bicDispose(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress& request, ::BICgRPC::bicSuccessReply* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>> AsyncbicDispose(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>>(AsyncbicDisposeRaw(context, request, cq));
     }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>> PrepareAsyncbicDispose(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) {
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>> PrepareAsyncbicDispose(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>>(PrepareAsyncbicDisposeRaw(context, request, cq));
     }
     // Get Functions
@@ -1425,18 +1425,18 @@ class BICDeviceService final {
     std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetImpedanceReply>> PrepareAsyncbicGetImpedance(::grpc::ClientContext* context, const ::BICgRPC::bicGetImpedanceRequest& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetImpedanceReply>>(PrepareAsyncbicGetImpedanceRaw(context, request, cq));
     }
-    virtual ::grpc::Status bicGetTemperature(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::BICgRPC::bicGetTemperatureReply* response) = 0;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetTemperatureReply>> AsyncbicGetTemperature(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) {
+    virtual ::grpc::Status bicGetTemperature(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress& request, ::BICgRPC::bicGetTemperatureReply* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetTemperatureReply>> AsyncbicGetTemperature(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetTemperatureReply>>(AsyncbicGetTemperatureRaw(context, request, cq));
     }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetTemperatureReply>> PrepareAsyncbicGetTemperature(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) {
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetTemperatureReply>> PrepareAsyncbicGetTemperature(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetTemperatureReply>>(PrepareAsyncbicGetTemperatureRaw(context, request, cq));
     }
-    virtual ::grpc::Status bicGetHumidity(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::BICgRPC::bicGetHumidityReply* response) = 0;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetHumidityReply>> AsyncbicGetHumidity(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) {
+    virtual ::grpc::Status bicGetHumidity(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress& request, ::BICgRPC::bicGetHumidityReply* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetHumidityReply>> AsyncbicGetHumidity(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetHumidityReply>>(AsyncbicGetHumidityRaw(context, request, cq));
     }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetHumidityReply>> PrepareAsyncbicGetHumidity(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) {
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetHumidityReply>> PrepareAsyncbicGetHumidity(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetHumidityReply>>(PrepareAsyncbicGetHumidityRaw(context, request, cq));
     }
     // Set Functions
@@ -1462,11 +1462,11 @@ class BICDeviceService final {
     std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>> PrepareAsyncbicStartStimulation(::grpc::ClientContext* context, const ::BICgRPC::bicStartStimulationRequest& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>>(PrepareAsyncbicStartStimulationRaw(context, request, cq));
     }
-    virtual ::grpc::Status bicStopStimulation(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::BICgRPC::bicSuccessReply* response) = 0;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>> AsyncbicStopStimulation(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) {
+    virtual ::grpc::Status bicStopStimulation(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress& request, ::BICgRPC::bicSuccessReply* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>> AsyncbicStopStimulation(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>>(AsyncbicStopStimulationRaw(context, request, cq));
     }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>> PrepareAsyncbicStopStimulation(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) {
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>> PrepareAsyncbicStopStimulation(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>>(PrepareAsyncbicStopStimulationRaw(context, request, cq));
     }
     virtual ::grpc::Status bicDefineStimulationWaveform(::grpc::ClientContext* context, const ::BICgRPC::bicStimulationFunctionDefinitionRequest& request, ::BICgRPC::bicSuccessReply* response) = 0;
@@ -1559,12 +1559,12 @@ class BICDeviceService final {
       #else
       virtual void ConnectDevice(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
       #endif
-      virtual void bicDispose(::grpc::ClientContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)>) = 0;
+      virtual void bicDispose(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)>) = 0;
       virtual void bicDispose(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)>) = 0;
       #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-      virtual void bicDispose(::grpc::ClientContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicSuccessReply* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      virtual void bicDispose(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress* request, ::BICgRPC::bicSuccessReply* response, ::grpc::ClientUnaryReactor* reactor) = 0;
       #else
-      virtual void bicDispose(::grpc::ClientContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
+      virtual void bicDispose(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
       #endif
       #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
       virtual void bicDispose(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, ::grpc::ClientUnaryReactor* reactor) = 0;
@@ -1596,24 +1596,24 @@ class BICDeviceService final {
       #else
       virtual void bicGetImpedance(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicGetImpedanceReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
       #endif
-      virtual void bicGetTemperature(::grpc::ClientContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicGetTemperatureReply* response, std::function<void(::grpc::Status)>) = 0;
+      virtual void bicGetTemperature(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress* request, ::BICgRPC::bicGetTemperatureReply* response, std::function<void(::grpc::Status)>) = 0;
       virtual void bicGetTemperature(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicGetTemperatureReply* response, std::function<void(::grpc::Status)>) = 0;
       #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-      virtual void bicGetTemperature(::grpc::ClientContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicGetTemperatureReply* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      virtual void bicGetTemperature(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress* request, ::BICgRPC::bicGetTemperatureReply* response, ::grpc::ClientUnaryReactor* reactor) = 0;
       #else
-      virtual void bicGetTemperature(::grpc::ClientContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicGetTemperatureReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
+      virtual void bicGetTemperature(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress* request, ::BICgRPC::bicGetTemperatureReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
       #endif
       #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
       virtual void bicGetTemperature(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicGetTemperatureReply* response, ::grpc::ClientUnaryReactor* reactor) = 0;
       #else
       virtual void bicGetTemperature(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicGetTemperatureReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
       #endif
-      virtual void bicGetHumidity(::grpc::ClientContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicGetHumidityReply* response, std::function<void(::grpc::Status)>) = 0;
+      virtual void bicGetHumidity(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress* request, ::BICgRPC::bicGetHumidityReply* response, std::function<void(::grpc::Status)>) = 0;
       virtual void bicGetHumidity(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicGetHumidityReply* response, std::function<void(::grpc::Status)>) = 0;
       #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-      virtual void bicGetHumidity(::grpc::ClientContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicGetHumidityReply* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      virtual void bicGetHumidity(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress* request, ::BICgRPC::bicGetHumidityReply* response, ::grpc::ClientUnaryReactor* reactor) = 0;
       #else
-      virtual void bicGetHumidity(::grpc::ClientContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicGetHumidityReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
+      virtual void bicGetHumidity(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress* request, ::BICgRPC::bicGetHumidityReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
       #endif
       #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
       virtual void bicGetHumidity(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicGetHumidityReply* response, ::grpc::ClientUnaryReactor* reactor) = 0;
@@ -1658,12 +1658,12 @@ class BICDeviceService final {
       #else
       virtual void bicStartStimulation(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
       #endif
-      virtual void bicStopStimulation(::grpc::ClientContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)>) = 0;
+      virtual void bicStopStimulation(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)>) = 0;
       virtual void bicStopStimulation(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)>) = 0;
       #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-      virtual void bicStopStimulation(::grpc::ClientContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicSuccessReply* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      virtual void bicStopStimulation(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress* request, ::BICgRPC::bicSuccessReply* response, ::grpc::ClientUnaryReactor* reactor) = 0;
       #else
-      virtual void bicStopStimulation(::grpc::ClientContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
+      virtual void bicStopStimulation(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
       #endif
       #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
       virtual void bicStopStimulation(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, ::grpc::ClientUnaryReactor* reactor) = 0;
@@ -1726,24 +1726,24 @@ class BICDeviceService final {
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::ScanDevicesReply>* PrepareAsyncScanDevicesRaw(::grpc::ClientContext* context, const ::BICgRPC::ScanDevicesRequest& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>* AsyncConnectDeviceRaw(::grpc::ClientContext* context, const ::BICgRPC::ConnectDeviceRequest& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>* PrepareAsyncConnectDeviceRaw(::grpc::ClientContext* context, const ::BICgRPC::ConnectDeviceRequest& request, ::grpc::CompletionQueue* cq) = 0;
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>* AsyncbicDisposeRaw(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) = 0;
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>* PrepareAsyncbicDisposeRaw(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>* AsyncbicDisposeRaw(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>* PrepareAsyncbicDisposeRaw(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetImplantInfoReply>* AsyncbicGetImplantInfoRaw(::grpc::ClientContext* context, const ::BICgRPC::bicGetImplantInfoRequest& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetImplantInfoReply>* PrepareAsyncbicGetImplantInfoRaw(::grpc::ClientContext* context, const ::BICgRPC::bicGetImplantInfoRequest& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetImpedanceReply>* AsyncbicGetImpedanceRaw(::grpc::ClientContext* context, const ::BICgRPC::bicGetImpedanceRequest& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetImpedanceReply>* PrepareAsyncbicGetImpedanceRaw(::grpc::ClientContext* context, const ::BICgRPC::bicGetImpedanceRequest& request, ::grpc::CompletionQueue* cq) = 0;
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetTemperatureReply>* AsyncbicGetTemperatureRaw(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) = 0;
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetTemperatureReply>* PrepareAsyncbicGetTemperatureRaw(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) = 0;
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetHumidityReply>* AsyncbicGetHumidityRaw(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) = 0;
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetHumidityReply>* PrepareAsyncbicGetHumidityRaw(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetTemperatureReply>* AsyncbicGetTemperatureRaw(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetTemperatureReply>* PrepareAsyncbicGetTemperatureRaw(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetHumidityReply>* AsyncbicGetHumidityRaw(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicGetHumidityReply>* PrepareAsyncbicGetHumidityRaw(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>* AsyncbicSetSensingEnableRaw(::grpc::ClientContext* context, const ::BICgRPC::bicSetSensingEnableRequest& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>* PrepareAsyncbicSetSensingEnableRaw(::grpc::ClientContext* context, const ::BICgRPC::bicSetSensingEnableRequest& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>* AsyncbicSetImplantPowerRaw(::grpc::ClientContext* context, const ::BICgRPC::bicSetImplantPowerRequest& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>* PrepareAsyncbicSetImplantPowerRaw(::grpc::ClientContext* context, const ::BICgRPC::bicSetImplantPowerRequest& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>* AsyncbicStartStimulationRaw(::grpc::ClientContext* context, const ::BICgRPC::bicStartStimulationRequest& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>* PrepareAsyncbicStartStimulationRaw(::grpc::ClientContext* context, const ::BICgRPC::bicStartStimulationRequest& request, ::grpc::CompletionQueue* cq) = 0;
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>* AsyncbicStopStimulationRaw(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) = 0;
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>* PrepareAsyncbicStopStimulationRaw(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>* AsyncbicStopStimulationRaw(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>* PrepareAsyncbicStopStimulationRaw(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>* AsyncbicDefineStimulationWaveformRaw(::grpc::ClientContext* context, const ::BICgRPC::bicStimulationFunctionDefinitionRequest& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::BICgRPC::bicSuccessReply>* PrepareAsyncbicDefineStimulationWaveformRaw(::grpc::ClientContext* context, const ::BICgRPC::bicStimulationFunctionDefinitionRequest& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientReaderInterface< ::BICgRPC::NeuralUpdate>* bicNeuralStreamRaw(::grpc::ClientContext* context, const ::BICgRPC::bicSetStreamEnable& request) = 0;
@@ -1782,11 +1782,11 @@ class BICDeviceService final {
     std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>> PrepareAsyncConnectDevice(::grpc::ClientContext* context, const ::BICgRPC::ConnectDeviceRequest& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>>(PrepareAsyncConnectDeviceRaw(context, request, cq));
     }
-    ::grpc::Status bicDispose(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::BICgRPC::bicSuccessReply* response) override;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>> AsyncbicDispose(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) {
+    ::grpc::Status bicDispose(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress& request, ::BICgRPC::bicSuccessReply* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>> AsyncbicDispose(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>>(AsyncbicDisposeRaw(context, request, cq));
     }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>> PrepareAsyncbicDispose(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) {
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>> PrepareAsyncbicDispose(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>>(PrepareAsyncbicDisposeRaw(context, request, cq));
     }
     ::grpc::Status bicGetImplantInfo(::grpc::ClientContext* context, const ::BICgRPC::bicGetImplantInfoRequest& request, ::BICgRPC::bicGetImplantInfoReply* response) override;
@@ -1803,18 +1803,18 @@ class BICDeviceService final {
     std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetImpedanceReply>> PrepareAsyncbicGetImpedance(::grpc::ClientContext* context, const ::BICgRPC::bicGetImpedanceRequest& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetImpedanceReply>>(PrepareAsyncbicGetImpedanceRaw(context, request, cq));
     }
-    ::grpc::Status bicGetTemperature(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::BICgRPC::bicGetTemperatureReply* response) override;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetTemperatureReply>> AsyncbicGetTemperature(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) {
+    ::grpc::Status bicGetTemperature(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress& request, ::BICgRPC::bicGetTemperatureReply* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetTemperatureReply>> AsyncbicGetTemperature(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetTemperatureReply>>(AsyncbicGetTemperatureRaw(context, request, cq));
     }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetTemperatureReply>> PrepareAsyncbicGetTemperature(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) {
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetTemperatureReply>> PrepareAsyncbicGetTemperature(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetTemperatureReply>>(PrepareAsyncbicGetTemperatureRaw(context, request, cq));
     }
-    ::grpc::Status bicGetHumidity(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::BICgRPC::bicGetHumidityReply* response) override;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetHumidityReply>> AsyncbicGetHumidity(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) {
+    ::grpc::Status bicGetHumidity(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress& request, ::BICgRPC::bicGetHumidityReply* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetHumidityReply>> AsyncbicGetHumidity(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetHumidityReply>>(AsyncbicGetHumidityRaw(context, request, cq));
     }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetHumidityReply>> PrepareAsyncbicGetHumidity(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) {
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetHumidityReply>> PrepareAsyncbicGetHumidity(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetHumidityReply>>(PrepareAsyncbicGetHumidityRaw(context, request, cq));
     }
     ::grpc::Status bicSetSensingEnable(::grpc::ClientContext* context, const ::BICgRPC::bicSetSensingEnableRequest& request, ::BICgRPC::bicSuccessReply* response) override;
@@ -1838,11 +1838,11 @@ class BICDeviceService final {
     std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>> PrepareAsyncbicStartStimulation(::grpc::ClientContext* context, const ::BICgRPC::bicStartStimulationRequest& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>>(PrepareAsyncbicStartStimulationRaw(context, request, cq));
     }
-    ::grpc::Status bicStopStimulation(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::BICgRPC::bicSuccessReply* response) override;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>> AsyncbicStopStimulation(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) {
+    ::grpc::Status bicStopStimulation(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress& request, ::BICgRPC::bicSuccessReply* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>> AsyncbicStopStimulation(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>>(AsyncbicStopStimulationRaw(context, request, cq));
     }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>> PrepareAsyncbicStopStimulation(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) {
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>> PrepareAsyncbicStopStimulation(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>>(PrepareAsyncbicStopStimulationRaw(context, request, cq));
     }
     ::grpc::Status bicDefineStimulationWaveform(::grpc::ClientContext* context, const ::BICgRPC::bicStimulationFunctionDefinitionRequest& request, ::BICgRPC::bicSuccessReply* response) override;
@@ -1933,12 +1933,12 @@ class BICDeviceService final {
       #else
       void ConnectDevice(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
       #endif
-      void bicDispose(::grpc::ClientContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)>) override;
+      void bicDispose(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)>) override;
       void bicDispose(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)>) override;
       #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-      void bicDispose(::grpc::ClientContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicSuccessReply* response, ::grpc::ClientUnaryReactor* reactor) override;
+      void bicDispose(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress* request, ::BICgRPC::bicSuccessReply* response, ::grpc::ClientUnaryReactor* reactor) override;
       #else
-      void bicDispose(::grpc::ClientContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
+      void bicDispose(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
       #endif
       #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
       void bicDispose(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, ::grpc::ClientUnaryReactor* reactor) override;
@@ -1969,24 +1969,24 @@ class BICDeviceService final {
       #else
       void bicGetImpedance(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicGetImpedanceReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
       #endif
-      void bicGetTemperature(::grpc::ClientContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicGetTemperatureReply* response, std::function<void(::grpc::Status)>) override;
+      void bicGetTemperature(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress* request, ::BICgRPC::bicGetTemperatureReply* response, std::function<void(::grpc::Status)>) override;
       void bicGetTemperature(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicGetTemperatureReply* response, std::function<void(::grpc::Status)>) override;
       #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-      void bicGetTemperature(::grpc::ClientContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicGetTemperatureReply* response, ::grpc::ClientUnaryReactor* reactor) override;
+      void bicGetTemperature(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress* request, ::BICgRPC::bicGetTemperatureReply* response, ::grpc::ClientUnaryReactor* reactor) override;
       #else
-      void bicGetTemperature(::grpc::ClientContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicGetTemperatureReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
+      void bicGetTemperature(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress* request, ::BICgRPC::bicGetTemperatureReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
       #endif
       #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
       void bicGetTemperature(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicGetTemperatureReply* response, ::grpc::ClientUnaryReactor* reactor) override;
       #else
       void bicGetTemperature(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicGetTemperatureReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
       #endif
-      void bicGetHumidity(::grpc::ClientContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicGetHumidityReply* response, std::function<void(::grpc::Status)>) override;
+      void bicGetHumidity(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress* request, ::BICgRPC::bicGetHumidityReply* response, std::function<void(::grpc::Status)>) override;
       void bicGetHumidity(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicGetHumidityReply* response, std::function<void(::grpc::Status)>) override;
       #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-      void bicGetHumidity(::grpc::ClientContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicGetHumidityReply* response, ::grpc::ClientUnaryReactor* reactor) override;
+      void bicGetHumidity(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress* request, ::BICgRPC::bicGetHumidityReply* response, ::grpc::ClientUnaryReactor* reactor) override;
       #else
-      void bicGetHumidity(::grpc::ClientContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicGetHumidityReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
+      void bicGetHumidity(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress* request, ::BICgRPC::bicGetHumidityReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
       #endif
       #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
       void bicGetHumidity(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicGetHumidityReply* response, ::grpc::ClientUnaryReactor* reactor) override;
@@ -2029,12 +2029,12 @@ class BICDeviceService final {
       #else
       void bicStartStimulation(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
       #endif
-      void bicStopStimulation(::grpc::ClientContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)>) override;
+      void bicStopStimulation(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)>) override;
       void bicStopStimulation(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, std::function<void(::grpc::Status)>) override;
       #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-      void bicStopStimulation(::grpc::ClientContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicSuccessReply* response, ::grpc::ClientUnaryReactor* reactor) override;
+      void bicStopStimulation(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress* request, ::BICgRPC::bicSuccessReply* response, ::grpc::ClientUnaryReactor* reactor) override;
       #else
-      void bicStopStimulation(::grpc::ClientContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
+      void bicStopStimulation(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress* request, ::BICgRPC::bicSuccessReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
       #endif
       #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
       void bicStopStimulation(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::BICgRPC::bicSuccessReply* response, ::grpc::ClientUnaryReactor* reactor) override;
@@ -2098,24 +2098,24 @@ class BICDeviceService final {
     ::grpc::ClientAsyncResponseReader< ::BICgRPC::ScanDevicesReply>* PrepareAsyncScanDevicesRaw(::grpc::ClientContext* context, const ::BICgRPC::ScanDevicesRequest& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* AsyncConnectDeviceRaw(::grpc::ClientContext* context, const ::BICgRPC::ConnectDeviceRequest& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* PrepareAsyncConnectDeviceRaw(::grpc::ClientContext* context, const ::BICgRPC::ConnectDeviceRequest& request, ::grpc::CompletionQueue* cq) override;
-    ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* AsyncbicDisposeRaw(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) override;
-    ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* PrepareAsyncbicDisposeRaw(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* AsyncbicDisposeRaw(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* PrepareAsyncbicDisposeRaw(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetImplantInfoReply>* AsyncbicGetImplantInfoRaw(::grpc::ClientContext* context, const ::BICgRPC::bicGetImplantInfoRequest& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetImplantInfoReply>* PrepareAsyncbicGetImplantInfoRaw(::grpc::ClientContext* context, const ::BICgRPC::bicGetImplantInfoRequest& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetImpedanceReply>* AsyncbicGetImpedanceRaw(::grpc::ClientContext* context, const ::BICgRPC::bicGetImpedanceRequest& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetImpedanceReply>* PrepareAsyncbicGetImpedanceRaw(::grpc::ClientContext* context, const ::BICgRPC::bicGetImpedanceRequest& request, ::grpc::CompletionQueue* cq) override;
-    ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetTemperatureReply>* AsyncbicGetTemperatureRaw(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) override;
-    ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetTemperatureReply>* PrepareAsyncbicGetTemperatureRaw(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) override;
-    ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetHumidityReply>* AsyncbicGetHumidityRaw(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) override;
-    ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetHumidityReply>* PrepareAsyncbicGetHumidityRaw(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetTemperatureReply>* AsyncbicGetTemperatureRaw(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetTemperatureReply>* PrepareAsyncbicGetTemperatureRaw(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetHumidityReply>* AsyncbicGetHumidityRaw(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicGetHumidityReply>* PrepareAsyncbicGetHumidityRaw(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* AsyncbicSetSensingEnableRaw(::grpc::ClientContext* context, const ::BICgRPC::bicSetSensingEnableRequest& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* PrepareAsyncbicSetSensingEnableRaw(::grpc::ClientContext* context, const ::BICgRPC::bicSetSensingEnableRequest& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* AsyncbicSetImplantPowerRaw(::grpc::ClientContext* context, const ::BICgRPC::bicSetImplantPowerRequest& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* PrepareAsyncbicSetImplantPowerRaw(::grpc::ClientContext* context, const ::BICgRPC::bicSetImplantPowerRequest& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* AsyncbicStartStimulationRaw(::grpc::ClientContext* context, const ::BICgRPC::bicStartStimulationRequest& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* PrepareAsyncbicStartStimulationRaw(::grpc::ClientContext* context, const ::BICgRPC::bicStartStimulationRequest& request, ::grpc::CompletionQueue* cq) override;
-    ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* AsyncbicStopStimulationRaw(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) override;
-    ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* PrepareAsyncbicStopStimulationRaw(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* AsyncbicStopStimulationRaw(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* PrepareAsyncbicStopStimulationRaw(::grpc::ClientContext* context, const ::BICgRPC::RequestDeviceAddress& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* AsyncbicDefineStimulationWaveformRaw(::grpc::ClientContext* context, const ::BICgRPC::bicStimulationFunctionDefinitionRequest& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::BICgRPC::bicSuccessReply>* PrepareAsyncbicDefineStimulationWaveformRaw(::grpc::ClientContext* context, const ::BICgRPC::bicStimulationFunctionDefinitionRequest& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientReader< ::BICgRPC::NeuralUpdate>* bicNeuralStreamRaw(::grpc::ClientContext* context, const ::BICgRPC::bicSetStreamEnable& request) override;
@@ -2164,18 +2164,18 @@ class BICDeviceService final {
     // Initialization/Destruction
     virtual ::grpc::Status ScanDevices(::grpc::ServerContext* context, const ::BICgRPC::ScanDevicesRequest* request, ::BICgRPC::ScanDevicesReply* response);
     virtual ::grpc::Status ConnectDevice(::grpc::ServerContext* context, const ::BICgRPC::ConnectDeviceRequest* request, ::BICgRPC::bicSuccessReply* response);
-    virtual ::grpc::Status bicDispose(::grpc::ServerContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicSuccessReply* response);
+    virtual ::grpc::Status bicDispose(::grpc::ServerContext* context, const ::BICgRPC::RequestDeviceAddress* request, ::BICgRPC::bicSuccessReply* response);
     // Get Functions
     virtual ::grpc::Status bicGetImplantInfo(::grpc::ServerContext* context, const ::BICgRPC::bicGetImplantInfoRequest* request, ::BICgRPC::bicGetImplantInfoReply* response);
     virtual ::grpc::Status bicGetImpedance(::grpc::ServerContext* context, const ::BICgRPC::bicGetImpedanceRequest* request, ::BICgRPC::bicGetImpedanceReply* response);
-    virtual ::grpc::Status bicGetTemperature(::grpc::ServerContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicGetTemperatureReply* response);
-    virtual ::grpc::Status bicGetHumidity(::grpc::ServerContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicGetHumidityReply* response);
+    virtual ::grpc::Status bicGetTemperature(::grpc::ServerContext* context, const ::BICgRPC::RequestDeviceAddress* request, ::BICgRPC::bicGetTemperatureReply* response);
+    virtual ::grpc::Status bicGetHumidity(::grpc::ServerContext* context, const ::BICgRPC::RequestDeviceAddress* request, ::BICgRPC::bicGetHumidityReply* response);
     // Set Functions
     virtual ::grpc::Status bicSetSensingEnable(::grpc::ServerContext* context, const ::BICgRPC::bicSetSensingEnableRequest* request, ::BICgRPC::bicSuccessReply* response);
     virtual ::grpc::Status bicSetImplantPower(::grpc::ServerContext* context, const ::BICgRPC::bicSetImplantPowerRequest* request, ::BICgRPC::bicSuccessReply* response);
     // Stim Functions
     virtual ::grpc::Status bicStartStimulation(::grpc::ServerContext* context, const ::BICgRPC::bicStartStimulationRequest* request, ::BICgRPC::bicSuccessReply* response);
-    virtual ::grpc::Status bicStopStimulation(::grpc::ServerContext* context, const ::google::protobuf::Empty* request, ::BICgRPC::bicSuccessReply* response);
+    virtual ::grpc::Status bicStopStimulation(::grpc::ServerContext* context, const ::BICgRPC::RequestDeviceAddress* request, ::BICgRPC::bicSuccessReply* response);
     virtual ::grpc::Status bicDefineStimulationWaveform(::grpc::ServerContext* context, const ::BICgRPC::bicStimulationFunctionDefinitionRequest* request, ::BICgRPC::bicSuccessReply* response);
     // Streaming endpoints
     virtual ::grpc::Status bicNeuralStream(::grpc::ServerContext* context, const ::BICgRPC::bicSetStreamEnable* request, ::grpc::ServerWriter< ::BICgRPC::NeuralUpdate>* writer);
@@ -2237,11 +2237,11 @@ class BICDeviceService final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status bicDispose(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
+    ::grpc::Status bicDispose(::grpc::ServerContext* /*context*/, const ::BICgRPC::RequestDeviceAddress* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
-    void RequestbicDispose(::grpc::ServerContext* context, ::google::protobuf::Empty* request, ::grpc::ServerAsyncResponseWriter< ::BICgRPC::bicSuccessReply>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+    void RequestbicDispose(::grpc::ServerContext* context, ::BICgRPC::RequestDeviceAddress* request, ::grpc::ServerAsyncResponseWriter< ::BICgRPC::bicSuccessReply>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
       ::grpc::Service::RequestAsyncUnary(2, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
@@ -2297,11 +2297,11 @@ class BICDeviceService final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status bicGetTemperature(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicGetTemperatureReply* /*response*/) override {
+    ::grpc::Status bicGetTemperature(::grpc::ServerContext* /*context*/, const ::BICgRPC::RequestDeviceAddress* /*request*/, ::BICgRPC::bicGetTemperatureReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
-    void RequestbicGetTemperature(::grpc::ServerContext* context, ::google::protobuf::Empty* request, ::grpc::ServerAsyncResponseWriter< ::BICgRPC::bicGetTemperatureReply>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+    void RequestbicGetTemperature(::grpc::ServerContext* context, ::BICgRPC::RequestDeviceAddress* request, ::grpc::ServerAsyncResponseWriter< ::BICgRPC::bicGetTemperatureReply>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
       ::grpc::Service::RequestAsyncUnary(5, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
@@ -2317,11 +2317,11 @@ class BICDeviceService final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status bicGetHumidity(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicGetHumidityReply* /*response*/) override {
+    ::grpc::Status bicGetHumidity(::grpc::ServerContext* /*context*/, const ::BICgRPC::RequestDeviceAddress* /*request*/, ::BICgRPC::bicGetHumidityReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
-    void RequestbicGetHumidity(::grpc::ServerContext* context, ::google::protobuf::Empty* request, ::grpc::ServerAsyncResponseWriter< ::BICgRPC::bicGetHumidityReply>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+    void RequestbicGetHumidity(::grpc::ServerContext* context, ::BICgRPC::RequestDeviceAddress* request, ::grpc::ServerAsyncResponseWriter< ::BICgRPC::bicGetHumidityReply>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
       ::grpc::Service::RequestAsyncUnary(6, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
@@ -2397,11 +2397,11 @@ class BICDeviceService final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status bicStopStimulation(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
+    ::grpc::Status bicStopStimulation(::grpc::ServerContext* /*context*/, const ::BICgRPC::RequestDeviceAddress* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
-    void RequestbicStopStimulation(::grpc::ServerContext* context, ::google::protobuf::Empty* request, ::grpc::ServerAsyncResponseWriter< ::BICgRPC::bicSuccessReply>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+    void RequestbicStopStimulation(::grpc::ServerContext* context, ::BICgRPC::RequestDeviceAddress* request, ::grpc::ServerAsyncResponseWriter< ::BICgRPC::bicSuccessReply>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
       ::grpc::Service::RequestAsyncUnary(10, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
@@ -2652,38 +2652,38 @@ class BICDeviceService final {
       ::grpc::Service::experimental().
     #endif
         MarkMethodCallback(2,
-          new ::grpc_impl::internal::CallbackUnaryHandler< ::google::protobuf::Empty, ::BICgRPC::bicSuccessReply>(
+          new ::grpc_impl::internal::CallbackUnaryHandler< ::BICgRPC::RequestDeviceAddress, ::BICgRPC::bicSuccessReply>(
             [this](
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
                    ::grpc::CallbackServerContext*
     #else
                    ::grpc::experimental::CallbackServerContext*
     #endif
-                     context, const ::google::protobuf::Empty* request, ::BICgRPC::bicSuccessReply* response) { return this->bicDispose(context, request, response); }));}
+                     context, const ::BICgRPC::RequestDeviceAddress* request, ::BICgRPC::bicSuccessReply* response) { return this->bicDispose(context, request, response); }));}
     void SetMessageAllocatorFor_bicDispose(
-        ::grpc::experimental::MessageAllocator< ::google::protobuf::Empty, ::BICgRPC::bicSuccessReply>* allocator) {
+        ::grpc::experimental::MessageAllocator< ::BICgRPC::RequestDeviceAddress, ::BICgRPC::bicSuccessReply>* allocator) {
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
       ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(2);
     #else
       ::grpc::internal::MethodHandler* const handler = ::grpc::Service::experimental().GetHandler(2);
     #endif
-      static_cast<::grpc_impl::internal::CallbackUnaryHandler< ::google::protobuf::Empty, ::BICgRPC::bicSuccessReply>*>(handler)
+      static_cast<::grpc_impl::internal::CallbackUnaryHandler< ::BICgRPC::RequestDeviceAddress, ::BICgRPC::bicSuccessReply>*>(handler)
               ->SetMessageAllocator(allocator);
     }
     ~ExperimentalWithCallbackMethod_bicDispose() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status bicDispose(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
+    ::grpc::Status bicDispose(::grpc::ServerContext* /*context*/, const ::BICgRPC::RequestDeviceAddress* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
     virtual ::grpc::ServerUnaryReactor* bicDispose(
-      ::grpc::CallbackServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/)
+      ::grpc::CallbackServerContext* /*context*/, const ::BICgRPC::RequestDeviceAddress* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/)
     #else
     virtual ::grpc::experimental::ServerUnaryReactor* bicDispose(
-      ::grpc::experimental::CallbackServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/)
+      ::grpc::experimental::CallbackServerContext* /*context*/, const ::BICgRPC::RequestDeviceAddress* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/)
     #endif
       { return nullptr; }
   };
@@ -2793,38 +2793,38 @@ class BICDeviceService final {
       ::grpc::Service::experimental().
     #endif
         MarkMethodCallback(5,
-          new ::grpc_impl::internal::CallbackUnaryHandler< ::google::protobuf::Empty, ::BICgRPC::bicGetTemperatureReply>(
+          new ::grpc_impl::internal::CallbackUnaryHandler< ::BICgRPC::RequestDeviceAddress, ::BICgRPC::bicGetTemperatureReply>(
             [this](
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
                    ::grpc::CallbackServerContext*
     #else
                    ::grpc::experimental::CallbackServerContext*
     #endif
-                     context, const ::google::protobuf::Empty* request, ::BICgRPC::bicGetTemperatureReply* response) { return this->bicGetTemperature(context, request, response); }));}
+                     context, const ::BICgRPC::RequestDeviceAddress* request, ::BICgRPC::bicGetTemperatureReply* response) { return this->bicGetTemperature(context, request, response); }));}
     void SetMessageAllocatorFor_bicGetTemperature(
-        ::grpc::experimental::MessageAllocator< ::google::protobuf::Empty, ::BICgRPC::bicGetTemperatureReply>* allocator) {
+        ::grpc::experimental::MessageAllocator< ::BICgRPC::RequestDeviceAddress, ::BICgRPC::bicGetTemperatureReply>* allocator) {
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
       ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(5);
     #else
       ::grpc::internal::MethodHandler* const handler = ::grpc::Service::experimental().GetHandler(5);
     #endif
-      static_cast<::grpc_impl::internal::CallbackUnaryHandler< ::google::protobuf::Empty, ::BICgRPC::bicGetTemperatureReply>*>(handler)
+      static_cast<::grpc_impl::internal::CallbackUnaryHandler< ::BICgRPC::RequestDeviceAddress, ::BICgRPC::bicGetTemperatureReply>*>(handler)
               ->SetMessageAllocator(allocator);
     }
     ~ExperimentalWithCallbackMethod_bicGetTemperature() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status bicGetTemperature(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicGetTemperatureReply* /*response*/) override {
+    ::grpc::Status bicGetTemperature(::grpc::ServerContext* /*context*/, const ::BICgRPC::RequestDeviceAddress* /*request*/, ::BICgRPC::bicGetTemperatureReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
     virtual ::grpc::ServerUnaryReactor* bicGetTemperature(
-      ::grpc::CallbackServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicGetTemperatureReply* /*response*/)
+      ::grpc::CallbackServerContext* /*context*/, const ::BICgRPC::RequestDeviceAddress* /*request*/, ::BICgRPC::bicGetTemperatureReply* /*response*/)
     #else
     virtual ::grpc::experimental::ServerUnaryReactor* bicGetTemperature(
-      ::grpc::experimental::CallbackServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicGetTemperatureReply* /*response*/)
+      ::grpc::experimental::CallbackServerContext* /*context*/, const ::BICgRPC::RequestDeviceAddress* /*request*/, ::BICgRPC::bicGetTemperatureReply* /*response*/)
     #endif
       { return nullptr; }
   };
@@ -2840,38 +2840,38 @@ class BICDeviceService final {
       ::grpc::Service::experimental().
     #endif
         MarkMethodCallback(6,
-          new ::grpc_impl::internal::CallbackUnaryHandler< ::google::protobuf::Empty, ::BICgRPC::bicGetHumidityReply>(
+          new ::grpc_impl::internal::CallbackUnaryHandler< ::BICgRPC::RequestDeviceAddress, ::BICgRPC::bicGetHumidityReply>(
             [this](
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
                    ::grpc::CallbackServerContext*
     #else
                    ::grpc::experimental::CallbackServerContext*
     #endif
-                     context, const ::google::protobuf::Empty* request, ::BICgRPC::bicGetHumidityReply* response) { return this->bicGetHumidity(context, request, response); }));}
+                     context, const ::BICgRPC::RequestDeviceAddress* request, ::BICgRPC::bicGetHumidityReply* response) { return this->bicGetHumidity(context, request, response); }));}
     void SetMessageAllocatorFor_bicGetHumidity(
-        ::grpc::experimental::MessageAllocator< ::google::protobuf::Empty, ::BICgRPC::bicGetHumidityReply>* allocator) {
+        ::grpc::experimental::MessageAllocator< ::BICgRPC::RequestDeviceAddress, ::BICgRPC::bicGetHumidityReply>* allocator) {
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
       ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(6);
     #else
       ::grpc::internal::MethodHandler* const handler = ::grpc::Service::experimental().GetHandler(6);
     #endif
-      static_cast<::grpc_impl::internal::CallbackUnaryHandler< ::google::protobuf::Empty, ::BICgRPC::bicGetHumidityReply>*>(handler)
+      static_cast<::grpc_impl::internal::CallbackUnaryHandler< ::BICgRPC::RequestDeviceAddress, ::BICgRPC::bicGetHumidityReply>*>(handler)
               ->SetMessageAllocator(allocator);
     }
     ~ExperimentalWithCallbackMethod_bicGetHumidity() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status bicGetHumidity(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicGetHumidityReply* /*response*/) override {
+    ::grpc::Status bicGetHumidity(::grpc::ServerContext* /*context*/, const ::BICgRPC::RequestDeviceAddress* /*request*/, ::BICgRPC::bicGetHumidityReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
     virtual ::grpc::ServerUnaryReactor* bicGetHumidity(
-      ::grpc::CallbackServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicGetHumidityReply* /*response*/)
+      ::grpc::CallbackServerContext* /*context*/, const ::BICgRPC::RequestDeviceAddress* /*request*/, ::BICgRPC::bicGetHumidityReply* /*response*/)
     #else
     virtual ::grpc::experimental::ServerUnaryReactor* bicGetHumidity(
-      ::grpc::experimental::CallbackServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicGetHumidityReply* /*response*/)
+      ::grpc::experimental::CallbackServerContext* /*context*/, const ::BICgRPC::RequestDeviceAddress* /*request*/, ::BICgRPC::bicGetHumidityReply* /*response*/)
     #endif
       { return nullptr; }
   };
@@ -3028,38 +3028,38 @@ class BICDeviceService final {
       ::grpc::Service::experimental().
     #endif
         MarkMethodCallback(10,
-          new ::grpc_impl::internal::CallbackUnaryHandler< ::google::protobuf::Empty, ::BICgRPC::bicSuccessReply>(
+          new ::grpc_impl::internal::CallbackUnaryHandler< ::BICgRPC::RequestDeviceAddress, ::BICgRPC::bicSuccessReply>(
             [this](
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
                    ::grpc::CallbackServerContext*
     #else
                    ::grpc::experimental::CallbackServerContext*
     #endif
-                     context, const ::google::protobuf::Empty* request, ::BICgRPC::bicSuccessReply* response) { return this->bicStopStimulation(context, request, response); }));}
+                     context, const ::BICgRPC::RequestDeviceAddress* request, ::BICgRPC::bicSuccessReply* response) { return this->bicStopStimulation(context, request, response); }));}
     void SetMessageAllocatorFor_bicStopStimulation(
-        ::grpc::experimental::MessageAllocator< ::google::protobuf::Empty, ::BICgRPC::bicSuccessReply>* allocator) {
+        ::grpc::experimental::MessageAllocator< ::BICgRPC::RequestDeviceAddress, ::BICgRPC::bicSuccessReply>* allocator) {
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
       ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(10);
     #else
       ::grpc::internal::MethodHandler* const handler = ::grpc::Service::experimental().GetHandler(10);
     #endif
-      static_cast<::grpc_impl::internal::CallbackUnaryHandler< ::google::protobuf::Empty, ::BICgRPC::bicSuccessReply>*>(handler)
+      static_cast<::grpc_impl::internal::CallbackUnaryHandler< ::BICgRPC::RequestDeviceAddress, ::BICgRPC::bicSuccessReply>*>(handler)
               ->SetMessageAllocator(allocator);
     }
     ~ExperimentalWithCallbackMethod_bicStopStimulation() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status bicStopStimulation(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
+    ::grpc::Status bicStopStimulation(::grpc::ServerContext* /*context*/, const ::BICgRPC::RequestDeviceAddress* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
     virtual ::grpc::ServerUnaryReactor* bicStopStimulation(
-      ::grpc::CallbackServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/)
+      ::grpc::CallbackServerContext* /*context*/, const ::BICgRPC::RequestDeviceAddress* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/)
     #else
     virtual ::grpc::experimental::ServerUnaryReactor* bicStopStimulation(
-      ::grpc::experimental::CallbackServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/)
+      ::grpc::experimental::CallbackServerContext* /*context*/, const ::BICgRPC::RequestDeviceAddress* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/)
     #endif
       { return nullptr; }
   };
@@ -3389,7 +3389,7 @@ class BICDeviceService final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status bicDispose(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
+    ::grpc::Status bicDispose(::grpc::ServerContext* /*context*/, const ::BICgRPC::RequestDeviceAddress* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -3440,7 +3440,7 @@ class BICDeviceService final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status bicGetTemperature(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicGetTemperatureReply* /*response*/) override {
+    ::grpc::Status bicGetTemperature(::grpc::ServerContext* /*context*/, const ::BICgRPC::RequestDeviceAddress* /*request*/, ::BICgRPC::bicGetTemperatureReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -3457,7 +3457,7 @@ class BICDeviceService final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status bicGetHumidity(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicGetHumidityReply* /*response*/) override {
+    ::grpc::Status bicGetHumidity(::grpc::ServerContext* /*context*/, const ::BICgRPC::RequestDeviceAddress* /*request*/, ::BICgRPC::bicGetHumidityReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -3525,7 +3525,7 @@ class BICDeviceService final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status bicStopStimulation(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
+    ::grpc::Status bicStopStimulation(::grpc::ServerContext* /*context*/, const ::BICgRPC::RequestDeviceAddress* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -3701,7 +3701,7 @@ class BICDeviceService final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status bicDispose(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
+    ::grpc::Status bicDispose(::grpc::ServerContext* /*context*/, const ::BICgRPC::RequestDeviceAddress* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -3761,7 +3761,7 @@ class BICDeviceService final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status bicGetTemperature(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicGetTemperatureReply* /*response*/) override {
+    ::grpc::Status bicGetTemperature(::grpc::ServerContext* /*context*/, const ::BICgRPC::RequestDeviceAddress* /*request*/, ::BICgRPC::bicGetTemperatureReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -3781,7 +3781,7 @@ class BICDeviceService final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status bicGetHumidity(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicGetHumidityReply* /*response*/) override {
+    ::grpc::Status bicGetHumidity(::grpc::ServerContext* /*context*/, const ::BICgRPC::RequestDeviceAddress* /*request*/, ::BICgRPC::bicGetHumidityReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -3861,7 +3861,7 @@ class BICDeviceService final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status bicStopStimulation(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
+    ::grpc::Status bicStopStimulation(::grpc::ServerContext* /*context*/, const ::BICgRPC::RequestDeviceAddress* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -4110,7 +4110,7 @@ class BICDeviceService final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status bicDispose(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
+    ::grpc::Status bicDispose(::grpc::ServerContext* /*context*/, const ::BICgRPC::RequestDeviceAddress* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -4224,7 +4224,7 @@ class BICDeviceService final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status bicGetTemperature(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicGetTemperatureReply* /*response*/) override {
+    ::grpc::Status bicGetTemperature(::grpc::ServerContext* /*context*/, const ::BICgRPC::RequestDeviceAddress* /*request*/, ::BICgRPC::bicGetTemperatureReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -4262,7 +4262,7 @@ class BICDeviceService final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status bicGetHumidity(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicGetHumidityReply* /*response*/) override {
+    ::grpc::Status bicGetHumidity(::grpc::ServerContext* /*context*/, const ::BICgRPC::RequestDeviceAddress* /*request*/, ::BICgRPC::bicGetHumidityReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -4414,7 +4414,7 @@ class BICDeviceService final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status bicStopStimulation(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
+    ::grpc::Status bicStopStimulation(::grpc::ServerContext* /*context*/, const ::BICgRPC::RequestDeviceAddress* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -4755,10 +4755,10 @@ class BICDeviceService final {
     WithStreamedUnaryMethod_bicDispose() {
       ::grpc::Service::MarkMethodStreamed(2,
         new ::grpc::internal::StreamedUnaryHandler<
-          ::google::protobuf::Empty, ::BICgRPC::bicSuccessReply>(
+          ::BICgRPC::RequestDeviceAddress, ::BICgRPC::bicSuccessReply>(
             [this](::grpc_impl::ServerContext* context,
                    ::grpc_impl::ServerUnaryStreamer<
-                     ::google::protobuf::Empty, ::BICgRPC::bicSuccessReply>* streamer) {
+                     ::BICgRPC::RequestDeviceAddress, ::BICgRPC::bicSuccessReply>* streamer) {
                        return this->StreamedbicDispose(context,
                          streamer);
                   }));
@@ -4767,12 +4767,12 @@ class BICDeviceService final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable regular version of this method
-    ::grpc::Status bicDispose(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
+    ::grpc::Status bicDispose(::grpc::ServerContext* /*context*/, const ::BICgRPC::RequestDeviceAddress* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     // replace default version of method with streamed unary
-    virtual ::grpc::Status StreamedbicDispose(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::google::protobuf::Empty,::BICgRPC::bicSuccessReply>* server_unary_streamer) = 0;
+    virtual ::grpc::Status StreamedbicDispose(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::BICgRPC::RequestDeviceAddress,::BICgRPC::bicSuccessReply>* server_unary_streamer) = 0;
   };
   template <class BaseClass>
   class WithStreamedUnaryMethod_bicGetImplantInfo : public BaseClass {
@@ -4836,10 +4836,10 @@ class BICDeviceService final {
     WithStreamedUnaryMethod_bicGetTemperature() {
       ::grpc::Service::MarkMethodStreamed(5,
         new ::grpc::internal::StreamedUnaryHandler<
-          ::google::protobuf::Empty, ::BICgRPC::bicGetTemperatureReply>(
+          ::BICgRPC::RequestDeviceAddress, ::BICgRPC::bicGetTemperatureReply>(
             [this](::grpc_impl::ServerContext* context,
                    ::grpc_impl::ServerUnaryStreamer<
-                     ::google::protobuf::Empty, ::BICgRPC::bicGetTemperatureReply>* streamer) {
+                     ::BICgRPC::RequestDeviceAddress, ::BICgRPC::bicGetTemperatureReply>* streamer) {
                        return this->StreamedbicGetTemperature(context,
                          streamer);
                   }));
@@ -4848,12 +4848,12 @@ class BICDeviceService final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable regular version of this method
-    ::grpc::Status bicGetTemperature(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicGetTemperatureReply* /*response*/) override {
+    ::grpc::Status bicGetTemperature(::grpc::ServerContext* /*context*/, const ::BICgRPC::RequestDeviceAddress* /*request*/, ::BICgRPC::bicGetTemperatureReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     // replace default version of method with streamed unary
-    virtual ::grpc::Status StreamedbicGetTemperature(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::google::protobuf::Empty,::BICgRPC::bicGetTemperatureReply>* server_unary_streamer) = 0;
+    virtual ::grpc::Status StreamedbicGetTemperature(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::BICgRPC::RequestDeviceAddress,::BICgRPC::bicGetTemperatureReply>* server_unary_streamer) = 0;
   };
   template <class BaseClass>
   class WithStreamedUnaryMethod_bicGetHumidity : public BaseClass {
@@ -4863,10 +4863,10 @@ class BICDeviceService final {
     WithStreamedUnaryMethod_bicGetHumidity() {
       ::grpc::Service::MarkMethodStreamed(6,
         new ::grpc::internal::StreamedUnaryHandler<
-          ::google::protobuf::Empty, ::BICgRPC::bicGetHumidityReply>(
+          ::BICgRPC::RequestDeviceAddress, ::BICgRPC::bicGetHumidityReply>(
             [this](::grpc_impl::ServerContext* context,
                    ::grpc_impl::ServerUnaryStreamer<
-                     ::google::protobuf::Empty, ::BICgRPC::bicGetHumidityReply>* streamer) {
+                     ::BICgRPC::RequestDeviceAddress, ::BICgRPC::bicGetHumidityReply>* streamer) {
                        return this->StreamedbicGetHumidity(context,
                          streamer);
                   }));
@@ -4875,12 +4875,12 @@ class BICDeviceService final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable regular version of this method
-    ::grpc::Status bicGetHumidity(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicGetHumidityReply* /*response*/) override {
+    ::grpc::Status bicGetHumidity(::grpc::ServerContext* /*context*/, const ::BICgRPC::RequestDeviceAddress* /*request*/, ::BICgRPC::bicGetHumidityReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     // replace default version of method with streamed unary
-    virtual ::grpc::Status StreamedbicGetHumidity(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::google::protobuf::Empty,::BICgRPC::bicGetHumidityReply>* server_unary_streamer) = 0;
+    virtual ::grpc::Status StreamedbicGetHumidity(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::BICgRPC::RequestDeviceAddress,::BICgRPC::bicGetHumidityReply>* server_unary_streamer) = 0;
   };
   template <class BaseClass>
   class WithStreamedUnaryMethod_bicSetSensingEnable : public BaseClass {
@@ -4971,10 +4971,10 @@ class BICDeviceService final {
     WithStreamedUnaryMethod_bicStopStimulation() {
       ::grpc::Service::MarkMethodStreamed(10,
         new ::grpc::internal::StreamedUnaryHandler<
-          ::google::protobuf::Empty, ::BICgRPC::bicSuccessReply>(
+          ::BICgRPC::RequestDeviceAddress, ::BICgRPC::bicSuccessReply>(
             [this](::grpc_impl::ServerContext* context,
                    ::grpc_impl::ServerUnaryStreamer<
-                     ::google::protobuf::Empty, ::BICgRPC::bicSuccessReply>* streamer) {
+                     ::BICgRPC::RequestDeviceAddress, ::BICgRPC::bicSuccessReply>* streamer) {
                        return this->StreamedbicStopStimulation(context,
                          streamer);
                   }));
@@ -4983,12 +4983,12 @@ class BICDeviceService final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable regular version of this method
-    ::grpc::Status bicStopStimulation(::grpc::ServerContext* /*context*/, const ::google::protobuf::Empty* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
+    ::grpc::Status bicStopStimulation(::grpc::ServerContext* /*context*/, const ::BICgRPC::RequestDeviceAddress* /*request*/, ::BICgRPC::bicSuccessReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     // replace default version of method with streamed unary
-    virtual ::grpc::Status StreamedbicStopStimulation(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::google::protobuf::Empty,::BICgRPC::bicSuccessReply>* server_unary_streamer) = 0;
+    virtual ::grpc::Status StreamedbicStopStimulation(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::BICgRPC::RequestDeviceAddress,::BICgRPC::bicSuccessReply>* server_unary_streamer) = 0;
   };
   template <class BaseClass>
   class WithStreamedUnaryMethod_bicDefineStimulationWaveform : public BaseClass {

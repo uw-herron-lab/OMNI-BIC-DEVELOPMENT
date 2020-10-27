@@ -40,13 +40,13 @@ service BICDeviceService{
 	// Initialization/Destruction
 	rpc ScanDevices (ScanDevicesRequest) returns (ScanDevicesReply) {}
 	rpc ConnectDevice (ConnectDeviceRequest) returns (bicSuccessReply) {}
-	rpc bicDispose (google.protobuf.Empty) returns (bicSuccessReply) {}
+	rpc bicDispose (RequestDeviceAddress) returns (bicSuccessReply) {}
 
 	// Get Functions
 	rpc bicGetImplantInfo (bicGetImplantInfoRequest) returns (bicGetImplantInfoReply) {}
 	rpc bicGetImpedance (bicGetImpedanceRequest) returns (bicGetImpedanceReply) {}
-	rpc bicGetTemperature (google.protobuf.Empty) returns (bicGetTemperatureReply) {}
-	rpc bicGetHumidity (google.protobuf.Empty) returns (bicGetHumidityReply) {}
+	rpc bicGetTemperature (RequestDeviceAddress) returns (bicGetTemperatureReply) {}
+	rpc bicGetHumidity (RequestDeviceAddress) returns (bicGetHumidityReply) {}
 	//rpc bicIsStimulating (google.protobuf.Empty) returns 
 	//rpc bicIsMeasuring (google.protobuf.Empty) returns 
 
@@ -56,7 +56,7 @@ service BICDeviceService{
 
 	// Stim Functions
 	rpc bicStartStimulation (bicStartStimulationRequest) returns (bicSuccessReply) {}
-	rpc bicStopStimulation (google.protobuf.Empty) returns (bicSuccessReply) {}
+	rpc bicStopStimulation (RequestDeviceAddress) returns (bicSuccessReply) {}
 	rpc bicDefineStimulationWaveform (bicStimulationFunctionDefinitionRequest) returns (bicSuccessReply) {}
 	
 	// Streaming endpoints
@@ -90,7 +90,8 @@ message ConnectDeviceRequest{
 
 // bicGetImplantInfo Messages
 message bicGetImplantInfoRequest{
-	bool updateCachedInfo = 1;
+	string deviceAddress = 1;
+	bool updateCachedInfo = 2;
 }
 
 // bicGetImplantInfo Messages
@@ -124,13 +125,19 @@ message bicGetImplantInfoReply {
 }
 
 message bicSetStreamEnable{
-	bool enable = 1;
+	string deviceAddress = 1;
+	bool enable = 2;
+}
+
+message RequestDeviceAddress{
+	string deviceAddress = 1;
 }
 
 // *************************** Device Get/Set Service Messages ***************************
 // bicGetImpedance Messages
 message bicGetImpedanceRequest {
-	uint32 channel = 1;
+	string deviceAddress = 1;
+	uint32 channel = 2;
 }
 
 message bicGetImpedanceReply {
@@ -154,25 +161,30 @@ message bicGetHumidityReply{
 }
 
 // bicSetSensingEnable Messages
+// TODO: MERGE INTO bicSetStreamEnable?
 message bicSetSensingEnableRequest{
-	bool enableSensing = 1;
-	repeated uint32 refChannels = 2;
-	uint32 bufferSize = 3;
+	string deviceAddress = 1;
+	bool enableSensing = 2;
+	repeated uint32 refChannels = 3;
+	uint32 bufferSize = 4;
 }
 
 // bicSetImplantPower Messages
 message bicSetImplantPowerRequest{
-	bool powerEnabled = 1;
+	string deviceAddress = 1;
+	bool powerEnabled = 2;
 }
 
 // *************************** Device Stimulation Service Messages ***************************
 // bicStartStimulation Messages
 message bicStartStimulationRequest{
-	string functionName = 1;
+	string deviceAddress = 1;
+	string functionName = 2;
 }
 
 message bicStimulationFunctionDefinitionRequest{
-	repeated StimulationFunctionDefinition functions = 1;
+	string deviceAddress = 1;
+	repeated StimulationFunctionDefinition functions = 2;
 }
 
 message StimulationFunctionDefinition{
@@ -182,7 +194,6 @@ message StimulationFunctionDefinition{
 		stimPulseFunction stimPulse = 2;
 		pauseFunction pause = 3;
 	}
-
 }
 
 message stimPulseFunction{

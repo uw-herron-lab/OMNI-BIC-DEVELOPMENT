@@ -36,6 +36,7 @@ using grpc::ServerWriter;
 using grpc::Status;
 
 // BIC Device Service Usings
+using BICgRPC::RequestDeviceAddress;
 using BICgRPC::BICDeviceService;
 using BICgRPC::bicSuccessReply;
 using BICgRPC::ScanDevicesRequest;
@@ -376,7 +377,6 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
     std::vector<std::unique_ptr<BICDeviceInfoStruct>> theImplants;
     std::unordered_map<std::string, BICDeviceInfoStruct*> deviceDirectory;
     std::mutex rpcServiceLock;
-    std::string tempDeviceIdBuffer;
 
     // ************************* Non-GRPC Helper Service Function Declarations *************************
     public:void passFactory(IImplantFactory* serverFactory)
@@ -498,19 +498,18 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
 
             deviceDirectory.insert(newKeyPair);
 
-            tempDeviceIdBuffer = request->deviceaddress();
             // Everything went ok
             return Status::OK;
         }
     }
 
-    Status bicDispose(ServerContext* context, const google::protobuf::Empty* request, bicSuccessReply* reply) override {
+    Status bicDispose(ServerContext* context, const RequestDeviceAddress* request, bicSuccessReply* reply) override {
       
         // Pull the mutex for guarding against inappropriate multi-threaded access
         const std::lock_guard<std::mutex> lock(rpcServiceLock);
         
         // Check if the requested device exists
-        if (deviceDirectory.find(tempDeviceIdBuffer) == deviceDirectory.end())
+        if (deviceDirectory.find(request->deviceaddress()) == deviceDirectory.end())
         {
             // Not found!
             return Status(grpc::StatusCode::FAILED_PRECONDITION, "Not Initialized");
@@ -518,17 +517,17 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
         }
 
         // Stop all streaming!
-        deviceDirectory[tempDeviceIdBuffer]->tempStreamNotify.notify_all();
-        deviceDirectory[tempDeviceIdBuffer]->humidStreamNotify.notify_all();
-        deviceDirectory[tempDeviceIdBuffer]->neuralStreamNotify.notify_all();
-        deviceDirectory[tempDeviceIdBuffer]->connectionStreamNotify.notify_all();
-        deviceDirectory[tempDeviceIdBuffer]->errorStreamNotify.notify_all();
-        deviceDirectory[tempDeviceIdBuffer]->powerStreamNotify.notify_all();
+        deviceDirectory[request->deviceaddress()]->tempStreamNotify.notify_all();
+        deviceDirectory[request->deviceaddress()]->humidStreamNotify.notify_all();
+        deviceDirectory[request->deviceaddress()]->neuralStreamNotify.notify_all();
+        deviceDirectory[request->deviceaddress()]->connectionStreamNotify.notify_all();
+        deviceDirectory[request->deviceaddress()]->errorStreamNotify.notify_all();
+        deviceDirectory[request->deviceaddress()]->powerStreamNotify.notify_all();
 
         // Dispose the things!
-        deviceDirectory[tempDeviceIdBuffer]->theImplant->setImplantPower(false);
-        deviceDirectory[tempDeviceIdBuffer]->theImplant->~IImplant();
-        deviceDirectory.erase(tempDeviceIdBuffer);
+        deviceDirectory[request->deviceaddress()]->theImplant->setImplantPower(false);
+        deviceDirectory[request->deviceaddress()]->theImplant->~IImplant();
+        deviceDirectory.erase(request->deviceaddress());
 
         // Respond to client
         return Status::OK;
@@ -537,7 +536,7 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
     // ************************* Implant State Get and Set Function Declarations *************************
     Status bicGetImplantInfo(ServerContext* context, const bicGetImplantInfoRequest* request, bicGetImplantInfoReply* reply) override {
         // Check if already initialized
-        if (deviceDirectory.find(tempDeviceIdBuffer) == deviceDirectory.end())
+        if (deviceDirectory.find(request->deviceaddress()) == deviceDirectory.end())
         {
             // Not found!
             reply->set_success("error: not initialized");
@@ -549,7 +548,7 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
         {
             try
             {
-                deviceDirectory[tempDeviceIdBuffer]->theImplantInfo.reset(deviceDirectory[tempDeviceIdBuffer]->theImplant->getImplantInfo());
+                deviceDirectory[request->deviceaddress()]->theImplantInfo.reset(deviceDirectory[request->deviceaddress()]->theImplant->getImplantInfo());
             }
             catch (const std::exception& theError)
             {
@@ -559,19 +558,19 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
         }
 
         // Set the fields of the response with the Implant Information
-        reply->set_firmwareversion(deviceDirectory[tempDeviceIdBuffer]->theImplantInfo->getFirmwareVersion());
-        reply->set_devicetype(deviceDirectory[tempDeviceIdBuffer]->theImplantInfo->getDeviceType());
-        reply->set_deviceid(deviceDirectory[tempDeviceIdBuffer]->theImplantInfo->getDeviceId());
-        reply->set_measurementchannelcount(deviceDirectory[tempDeviceIdBuffer]->theImplantInfo->getMeasurementChannelCount());
-        reply->set_stimulationchannelcount(deviceDirectory[tempDeviceIdBuffer]->theImplantInfo->getStimulationChannelCount());
-        reply->set_samplingrate(deviceDirectory[tempDeviceIdBuffer]->theImplantInfo->getSamplingRate());
+        reply->set_firmwareversion(deviceDirectory[request->deviceaddress()]->theImplantInfo->getFirmwareVersion());
+        reply->set_devicetype(deviceDirectory[request->deviceaddress()]->theImplantInfo->getDeviceType());
+        reply->set_deviceid(deviceDirectory[request->deviceaddress()]->theImplantInfo->getDeviceId());
+        reply->set_measurementchannelcount(deviceDirectory[request->deviceaddress()]->theImplantInfo->getMeasurementChannelCount());
+        reply->set_stimulationchannelcount(deviceDirectory[request->deviceaddress()]->theImplantInfo->getStimulationChannelCount());
+        reply->set_samplingrate(deviceDirectory[request->deviceaddress()]->theImplantInfo->getSamplingRate());
 
-        int numChannels = deviceDirectory[tempDeviceIdBuffer]->theImplantInfo->getChannelCount();
+        int numChannels = deviceDirectory[request->deviceaddress()]->theImplantInfo->getChannelCount();
         reply->set_channelcount(numChannels);
 
         for (int i = 0; i < numChannels; i++)
         {
-            CChannelInfo* sourceChannel = deviceDirectory[tempDeviceIdBuffer]->theImplantInfo->getChannelInfo()[i];
+            CChannelInfo* sourceChannel = deviceDirectory[request->deviceaddress()]->theImplantInfo->getChannelInfo()[i];
             bicGetImplantInfoReply_bicChannelInfo* addChannel = reply->add_channelinfolist();
 
             addChannel->set_canmeasure(sourceChannel->canMeasure());
@@ -590,7 +589,7 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
 
     Status bicGetImpedance(ServerContext* context, const bicGetImpedanceRequest* request, bicGetImpedanceReply* reply) override {
         // Check if already initialized
-        if (deviceDirectory.find(tempDeviceIdBuffer) == deviceDirectory.end())
+        if (deviceDirectory.find(request->deviceaddress()) == deviceDirectory.end())
         {
             // Not found!
             reply->set_success("error: not initialized");
@@ -601,7 +600,7 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
         double impedanceValue;
         try
         {
-            impedanceValue = deviceDirectory[tempDeviceIdBuffer]->theImplant->getImpedance(request->channel());
+            impedanceValue = deviceDirectory[request->deviceaddress()]->theImplant->getImpedance(request->channel());
         }
         catch (const std::exception&)
         {
@@ -616,9 +615,9 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
         return Status::OK;
     }
 
-    Status bicGetTemperature(ServerContext* context, const google::protobuf::Empty* request, bicGetTemperatureReply* reply) override {
+    Status bicGetTemperature(ServerContext* context, const RequestDeviceAddress* request, bicGetTemperatureReply* reply) override {
         // Check if already initialized
-        if (deviceDirectory.find(tempDeviceIdBuffer) == deviceDirectory.end())
+        if (deviceDirectory.find(request->deviceaddress()) == deviceDirectory.end())
         {
             // Not found!
             reply->set_success("error: not initialized");
@@ -629,7 +628,7 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
         double temperatureValue;
         try
         {
-            temperatureValue = deviceDirectory[tempDeviceIdBuffer]->theImplant->getTemperature();
+            temperatureValue = deviceDirectory[request->deviceaddress()]->theImplant->getTemperature();
         }
         catch (const std::exception&)
         {
@@ -644,9 +643,9 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
         return Status::OK;
     }
 
-    Status bicGetHumidity(ServerContext* context, const google::protobuf::Empty* request, bicGetHumidityReply* reply) override {
+    Status bicGetHumidity(ServerContext* context, const RequestDeviceAddress* request, bicGetHumidityReply* reply) override {
         // Check if already initialized
-        if (deviceDirectory.find(tempDeviceIdBuffer) == deviceDirectory.end())
+        if (deviceDirectory.find(request->deviceaddress()) == deviceDirectory.end())
         {
             // Not found!
             reply->set_success("error: not initialized");
@@ -657,7 +656,7 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
         double humidityValue;
         try
         {
-            humidityValue = deviceDirectory[tempDeviceIdBuffer]->theImplant->getHumidity();
+            humidityValue = deviceDirectory[request->deviceaddress()]->theImplant->getHumidity();
         }
         catch (const std::exception&)
         {
@@ -674,7 +673,7 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
 
     Status bicSetSensingEnable(ServerContext* context, const bicSetSensingEnableRequest* request, bicSuccessReply* reply) override {
         // Check if already initialized
-        if (deviceDirectory.find(tempDeviceIdBuffer) == deviceDirectory.end())
+        if (deviceDirectory.find(request->deviceaddress()) == deviceDirectory.end())
         {
             return Status(grpc::StatusCode::FAILED_PRECONDITION, "Not Initialized");
         }
@@ -689,12 +688,12 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
                 {
                     referenceElectrodes.insert(referenceElectrodes.begin(), request->refchannels()[i]);
                 }
-                deviceDirectory[tempDeviceIdBuffer]->listener->neuroDataBufferThreshold = request->buffersize();
-                deviceDirectory[tempDeviceIdBuffer]->theImplant->startMeasurement(referenceElectrodes);
+                deviceDirectory[request->deviceaddress()]->listener->neuroDataBufferThreshold = request->buffersize();
+                deviceDirectory[request->deviceaddress()]->theImplant->startMeasurement(referenceElectrodes);
             }
             else
             {
-                deviceDirectory[tempDeviceIdBuffer]->theImplant->stopMeasurement();
+                deviceDirectory[request->deviceaddress()]->theImplant->stopMeasurement();
             }
         }
         catch (const std::exception&)
@@ -709,7 +708,7 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
 
     Status bicSetImplantPower(ServerContext* context, const bicSetImplantPowerRequest* request, bicSuccessReply* reply) override {
         // Check if already initialized
-        if (deviceDirectory.find(tempDeviceIdBuffer) == deviceDirectory.end())
+        if (deviceDirectory.find(request->deviceaddress()) == deviceDirectory.end())
         {
             return Status(grpc::StatusCode::FAILED_PRECONDITION, "Not Initialized");
         }
@@ -717,7 +716,7 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
         // Perform the operation
         try
         {
-            deviceDirectory[tempDeviceIdBuffer]->theImplant->setImplantPower(request->powerenabled());
+            deviceDirectory[request->deviceaddress()]->theImplant->setImplantPower(request->powerenabled());
         }
         catch (const std::exception&)
         {
@@ -732,21 +731,21 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
     // ************************* Streaming Control Function Declarations *************************
     Status bicTemperatureStream(ServerContext* context, const bicSetStreamEnable* request, ServerWriter<TemperatureUpdate>* writer) override {
         // Check requested stream state and current streaming state (don't want to destroy a previously requested stream without it being stopped first)
-         if (!deviceDirectory[tempDeviceIdBuffer]->isStreamingTemp && request->enable())
+         if (!deviceDirectory[request->deviceaddress()]->isStreamingTemp && request->enable())
         {
             // Not already streaming and requesting enable
-            deviceDirectory[tempDeviceIdBuffer]->isStreamingTemp = true;
-            deviceDirectory[tempDeviceIdBuffer]->listener->TemperatureWriter = writer;
+            deviceDirectory[request->deviceaddress()]->isStreamingTemp = true;
+            deviceDirectory[request->deviceaddress()]->listener->TemperatureWriter = writer;
 
             // Create the waiting objects for notification for end of stream
-            std::unique_lock<std::mutex> StreamLockInst(deviceDirectory[tempDeviceIdBuffer]->tempStreamLock);
-            deviceDirectory[tempDeviceIdBuffer]->tempStreamNotify.wait(StreamLockInst);
+            std::unique_lock<std::mutex> StreamLockInst(deviceDirectory[request->deviceaddress()]->tempStreamLock);
+            deviceDirectory[request->deviceaddress()]->tempStreamNotify.wait(StreamLockInst);
 
             // Clean up the writers and busy flags
-            deviceDirectory[tempDeviceIdBuffer]->listener->TemperatureWriter = NULL;
-            deviceDirectory[tempDeviceIdBuffer]->isStreamingTemp = false;
+            deviceDirectory[request->deviceaddress()]->listener->TemperatureWriter = NULL;
+            deviceDirectory[request->deviceaddress()]->isStreamingTemp = false;
         }
-        else if (deviceDirectory[tempDeviceIdBuffer]->isStreamingTemp && request->enable())
+        else if (deviceDirectory[request->deviceaddress()]->isStreamingTemp && request->enable())
         {
             // Error State, already streaming, do nothing
                 // Would love to send an error back, but if we don't send Status::OK then the "await ResponseStream.MoveNext()" doesn't work right and gracefully exit :/
@@ -755,7 +754,7 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
         else
         {
             // disable streaming
-             deviceDirectory[tempDeviceIdBuffer]->tempStreamNotify.notify_one();
+             deviceDirectory[request->deviceaddress()]->tempStreamNotify.notify_one();
         }
 
         return Status::OK;
@@ -763,21 +762,21 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
 
     Status bicHumidityStream(ServerContext* context, const bicSetStreamEnable* request, ServerWriter<HumidityUpdate>* writer) override {
         // Check requested stream state and current streaming state (don't want to destroy a previously requested stream without it being stopped first)
-        if (!deviceDirectory[tempDeviceIdBuffer]->isStreamingHumid && request->enable())
+        if (!deviceDirectory[request->deviceaddress()]->isStreamingHumid && request->enable())
         {
             // Not already streaming and requesting enable
-            deviceDirectory[tempDeviceIdBuffer]->isStreamingHumid = true;
-            deviceDirectory[tempDeviceIdBuffer]->listener->HumidityWriter = writer;
+            deviceDirectory[request->deviceaddress()]->isStreamingHumid = true;
+            deviceDirectory[request->deviceaddress()]->listener->HumidityWriter = writer;
 
             // Create the waiting objects for notification for end of stream
-            std::unique_lock<std::mutex> StreamLockInst(deviceDirectory[tempDeviceIdBuffer]->humidStreamLock);
-            deviceDirectory[tempDeviceIdBuffer]->humidStreamNotify.wait(StreamLockInst);
+            std::unique_lock<std::mutex> StreamLockInst(deviceDirectory[request->deviceaddress()]->humidStreamLock);
+            deviceDirectory[request->deviceaddress()]->humidStreamNotify.wait(StreamLockInst);
 
             // Clean up the writers and busy flags
-            deviceDirectory[tempDeviceIdBuffer]->listener->HumidityWriter = NULL;
-            deviceDirectory[tempDeviceIdBuffer]->isStreamingHumid = false;
+            deviceDirectory[request->deviceaddress()]->listener->HumidityWriter = NULL;
+            deviceDirectory[request->deviceaddress()]->isStreamingHumid = false;
         }
-        else if (deviceDirectory[tempDeviceIdBuffer]->isStreamingHumid && request->enable())
+        else if (deviceDirectory[request->deviceaddress()]->isStreamingHumid && request->enable())
         {
             // Error State, already streaming, do nothing
                 // Would love to send an error back, but if we don't send Status::OK then the "await ResponseStream.MoveNext()" doesn't work right and gracefully exit :/
@@ -786,7 +785,7 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
         else
         {
             // disable streaming
-            deviceDirectory[tempDeviceIdBuffer]->humidStreamNotify.notify_one();
+            deviceDirectory[request->deviceaddress()]->humidStreamNotify.notify_one();
         }
 
         return Status::OK;
@@ -794,21 +793,21 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
 
     Status bicConnectionStream(ServerContext* context, const bicSetStreamEnable* request, ServerWriter<ConnectionUpdate>* writer) override {
         // Check requested stream state and current streaming state (don't want to destroy a previously requested stream without it being stopped first)
-        if (!deviceDirectory[tempDeviceIdBuffer]->isStreamingConnection && request->enable())
+        if (!deviceDirectory[request->deviceaddress()]->isStreamingConnection && request->enable())
         {
             // Not already streaming and requesting enable
-            deviceDirectory[tempDeviceIdBuffer]->isStreamingConnection = true;
-            deviceDirectory[tempDeviceIdBuffer]->listener->ConnectionWriter = writer;
+            deviceDirectory[request->deviceaddress()]->isStreamingConnection = true;
+            deviceDirectory[request->deviceaddress()]->listener->ConnectionWriter = writer;
 
             // Create the waiting objects for notification for end of stream
-            std::unique_lock<std::mutex> StreamLockInst(deviceDirectory[tempDeviceIdBuffer]->connectionStreamLock);
-            deviceDirectory[tempDeviceIdBuffer]->connectionStreamNotify.wait(StreamLockInst);
+            std::unique_lock<std::mutex> StreamLockInst(deviceDirectory[request->deviceaddress()]->connectionStreamLock);
+            deviceDirectory[request->deviceaddress()]->connectionStreamNotify.wait(StreamLockInst);
 
             // Clean up the writers and busy flags
-            deviceDirectory[tempDeviceIdBuffer]->listener->ConnectionWriter = NULL;
-            deviceDirectory[tempDeviceIdBuffer]->isStreamingConnection = false;
+            deviceDirectory[request->deviceaddress()]->listener->ConnectionWriter = NULL;
+            deviceDirectory[request->deviceaddress()]->isStreamingConnection = false;
         }
-        else if (deviceDirectory[tempDeviceIdBuffer]->isStreamingConnection && request->enable())
+        else if (deviceDirectory[request->deviceaddress()]->isStreamingConnection && request->enable())
         {
             // Error State, already streaming, do nothing
                 // Would love to send an error back, but if we don't send Status::OK then the "await ResponseStream.MoveNext()" doesn't work right and gracefully exit :/
@@ -817,7 +816,7 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
         else
         {
             // disable streaming
-            deviceDirectory[tempDeviceIdBuffer]->connectionStreamNotify.notify_one();
+            deviceDirectory[request->deviceaddress()]->connectionStreamNotify.notify_one();
         }
 
         return Status::OK;
@@ -825,21 +824,21 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
 
     Status bicErrorStream(ServerContext* context, const bicSetStreamEnable* request, ServerWriter<ErrorUpdate>* writer) override {
         // Check requested stream state and current streaming state (don't want to destroy a previously requested stream without it being stopped first)
-        if (!deviceDirectory[tempDeviceIdBuffer]->isStreamingErrors && request->enable())
+        if (!deviceDirectory[request->deviceaddress()]->isStreamingErrors && request->enable())
         {
             // Not already streaming and requesting enable
-            deviceDirectory[tempDeviceIdBuffer]->isStreamingErrors = true;
-            deviceDirectory[tempDeviceIdBuffer]->listener->ErrorWriter = writer;
+            deviceDirectory[request->deviceaddress()]->isStreamingErrors = true;
+            deviceDirectory[request->deviceaddress()]->listener->ErrorWriter = writer;
 
             // Create the waiting objects for notification for end of stream
-            std::unique_lock<std::mutex> StreamLockInst(deviceDirectory[tempDeviceIdBuffer]->errorStreamLock);
-            deviceDirectory[tempDeviceIdBuffer]->errorStreamNotify.wait(StreamLockInst);
+            std::unique_lock<std::mutex> StreamLockInst(deviceDirectory[request->deviceaddress()]->errorStreamLock);
+            deviceDirectory[request->deviceaddress()]->errorStreamNotify.wait(StreamLockInst);
 
             // Clean up the writers and busy flags
-            deviceDirectory[tempDeviceIdBuffer]->listener->ErrorWriter = NULL;
-            deviceDirectory[tempDeviceIdBuffer]->isStreamingErrors = false;
+            deviceDirectory[request->deviceaddress()]->listener->ErrorWriter = NULL;
+            deviceDirectory[request->deviceaddress()]->isStreamingErrors = false;
         }
-        else if (deviceDirectory[tempDeviceIdBuffer]->isStreamingErrors && request->enable())
+        else if (deviceDirectory[request->deviceaddress()]->isStreamingErrors && request->enable())
         {
             // Error State, already streaming, do nothing
                 // Would love to send an error back, but if we don't send Status::OK then the "await ResponseStream.MoveNext()" doesn't work right and gracefully exit :/
@@ -848,7 +847,7 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
         else
         {
             // disable streaming
-            deviceDirectory[tempDeviceIdBuffer]->errorStreamNotify.notify_one();
+            deviceDirectory[request->deviceaddress()]->errorStreamNotify.notify_one();
         }
 
         return Status::OK;
@@ -856,21 +855,21 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
 
     Status bicPowerStream(ServerContext* context, const bicSetStreamEnable* request, ServerWriter<PowerUpdate>* writer) override {
         // Check requested stream state and current streaming state (don't want to destroy a previously requested stream without it being stopped first)
-        if (!deviceDirectory[tempDeviceIdBuffer]->isStreamingPower && request->enable())
+        if (!deviceDirectory[request->deviceaddress()]->isStreamingPower && request->enable())
         {
             // Not already streaming and requesting enable
-            deviceDirectory[tempDeviceIdBuffer]->isStreamingPower = true;
-            deviceDirectory[tempDeviceIdBuffer]->listener->PowerWriter = writer;
+            deviceDirectory[request->deviceaddress()]->isStreamingPower = true;
+            deviceDirectory[request->deviceaddress()]->listener->PowerWriter = writer;
 
             // Create the waiting objects for notification for end of stream
-            std::unique_lock<std::mutex> StreamLockInst(deviceDirectory[tempDeviceIdBuffer]->powerStreamLock);
-            deviceDirectory[tempDeviceIdBuffer]->powerStreamNotify.wait(StreamLockInst);
+            std::unique_lock<std::mutex> StreamLockInst(deviceDirectory[request->deviceaddress()]->powerStreamLock);
+            deviceDirectory[request->deviceaddress()]->powerStreamNotify.wait(StreamLockInst);
 
             // Clean up the writers and busy flags
-            deviceDirectory[tempDeviceIdBuffer]->listener->PowerWriter = NULL;
-            deviceDirectory[tempDeviceIdBuffer]->isStreamingPower = false;
+            deviceDirectory[request->deviceaddress()]->listener->PowerWriter = NULL;
+            deviceDirectory[request->deviceaddress()]->isStreamingPower = false;
         }
-        else if (deviceDirectory[tempDeviceIdBuffer]->isStreamingPower && request->enable())
+        else if (deviceDirectory[request->deviceaddress()]->isStreamingPower && request->enable())
         {
             // Error State, already streaming, do nothing
                 // Would love to send an error back, but if we don't send Status::OK then the "await ResponseStream.MoveNext()" doesn't work right and gracefully exit :/
@@ -879,7 +878,7 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
         else
         {
             // disable streaming
-            deviceDirectory[tempDeviceIdBuffer]->powerStreamNotify.notify_one();
+            deviceDirectory[request->deviceaddress()]->powerStreamNotify.notify_one();
         }
 
         return Status::OK;
@@ -887,23 +886,23 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
 
     Status bicNeuralStream(ServerContext* context, const bicSetStreamEnable* request, ServerWriter<NeuralUpdate>* writer) override {
         // Check requested stream state and current streaming state (don't want to destroy a previously requested stream without it being stopped first)
-        if (!deviceDirectory[tempDeviceIdBuffer]->isStreamingNeural && request->enable())
+        if (!deviceDirectory[request->deviceaddress()]->isStreamingNeural && request->enable())
         {
             // Not already streaming and requesting enable
-            deviceDirectory[tempDeviceIdBuffer]->isStreamingNeural = true;
-            deviceDirectory[tempDeviceIdBuffer]->listener->bufferedNeuroUpdate.clear_samples();
-            deviceDirectory[tempDeviceIdBuffer]->listener->NeuralWriter = writer;
+            deviceDirectory[request->deviceaddress()]->isStreamingNeural = true;
+            deviceDirectory[request->deviceaddress()]->listener->bufferedNeuroUpdate.clear_samples();
+            deviceDirectory[request->deviceaddress()]->listener->NeuralWriter = writer;
 
             // Create the waiting objects for notification for end of stream
-            std::unique_lock<std::mutex> StreamLockInst(deviceDirectory[tempDeviceIdBuffer]->neuralStreamLock);
-            deviceDirectory[tempDeviceIdBuffer]->neuralStreamNotify.wait(StreamLockInst);
+            std::unique_lock<std::mutex> StreamLockInst(deviceDirectory[request->deviceaddress()]->neuralStreamLock);
+            deviceDirectory[request->deviceaddress()]->neuralStreamNotify.wait(StreamLockInst);
 
             // Clean up the writers and busy flags
-            deviceDirectory[tempDeviceIdBuffer]->listener->NeuralWriter = NULL;
-            deviceDirectory[tempDeviceIdBuffer]->listener->bufferedNeuroUpdate.clear_samples();
-            deviceDirectory[tempDeviceIdBuffer]->isStreamingNeural = false;
+            deviceDirectory[request->deviceaddress()]->listener->NeuralWriter = NULL;
+            deviceDirectory[request->deviceaddress()]->listener->bufferedNeuroUpdate.clear_samples();
+            deviceDirectory[request->deviceaddress()]->isStreamingNeural = false;
         }
-        else if (deviceDirectory[tempDeviceIdBuffer]->isStreamingNeural && request->enable())
+        else if (deviceDirectory[request->deviceaddress()]->isStreamingNeural && request->enable())
         {
             // Error State, already streaming, do nothing
                 // Would love to send an error back, but if we don't send Status::OK then the "await ResponseStream.MoveNext()" doesn't work right and gracefully exit :/
@@ -912,7 +911,7 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
         else
         {
             // disable streaming
-            deviceDirectory[tempDeviceIdBuffer]->neuralStreamNotify.notify_one();
+            deviceDirectory[request->deviceaddress()]->neuralStreamNotify.notify_one();
         }
 
         return Status::OK;
@@ -921,7 +920,7 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
     // ************************* Stimulation Control Function Declarations *************************
     Status bicStartStimulation(ServerContext* context, const bicStartStimulationRequest* request, bicSuccessReply* reply) override {
         // Check if already initialized
-        if (deviceDirectory.find(tempDeviceIdBuffer) == deviceDirectory.end())
+        if (deviceDirectory.find(request->deviceaddress()) == deviceDirectory.end())
         {
             return Status(grpc::StatusCode::FAILED_PRECONDITION, "Not Initialized");
         }
@@ -929,7 +928,7 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
         // Perform the operation
         try
         {
-            deviceDirectory[tempDeviceIdBuffer]->theImplant->startStimulation(deviceDirectory[tempDeviceIdBuffer]->theStimulationCommand);
+            deviceDirectory[request->deviceaddress()]->theImplant->startStimulation(deviceDirectory[request->deviceaddress()]->theStimulationCommand);
         }
         catch (const std::exception theExeption)
         {
@@ -942,9 +941,9 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
         return Status::OK;
     }
 
-    Status bicStopStimulation(ServerContext* context, const google::protobuf::Empty* request, bicSuccessReply* reply) override {
+    Status bicStopStimulation(ServerContext* context, const RequestDeviceAddress* request, bicSuccessReply* reply) override {
         // Check if already initialized
-        if (deviceDirectory.find(tempDeviceIdBuffer) == deviceDirectory.end())
+        if (deviceDirectory.find(request->deviceaddress()) == deviceDirectory.end())
         {
             return Status(grpc::StatusCode::FAILED_PRECONDITION, "Not Initialized");
         }
@@ -952,7 +951,7 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
         // Perform the operation
         try
         {
-            deviceDirectory[tempDeviceIdBuffer]->theImplant->stopStimulation();
+            deviceDirectory[request->deviceaddress()]->theImplant->stopStimulation();
         }
         catch (const std::exception&)
         {
@@ -967,14 +966,14 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
     Status bicDefineStimulationWaveform(ServerContext* context, const bicStimulationFunctionDefinitionRequest* request, bicSuccessReply* reply) override
     {
         // Check if already initialized
-        if (deviceDirectory.find(tempDeviceIdBuffer) == deviceDirectory.end())
+        if (deviceDirectory.find(request->deviceaddress()) == deviceDirectory.end())
         {
             return Status(grpc::StatusCode::FAILED_PRECONDITION, "Not Initialized");
         }
 
         // Create objects required for 
         std::unique_ptr<IStimulationCommandFactory> theFactory(createStimulationCommandFactory());
-        deviceDirectory[tempDeviceIdBuffer]->theStimulationCommand = theFactory->createStimulationCommand();
+        deviceDirectory[request->deviceaddress()]->theStimulationCommand = theFactory->createStimulationCommand();
 
         // Iterate through provided functions and add them to the command 
         try
@@ -1039,7 +1038,7 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
                     theFunction->append(theFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, request->functions().at(i).stimpulse().dz1duration()));
 
                     // Add the function to the command
-                    deviceDirectory[tempDeviceIdBuffer]->theStimulationCommand->append(theFunction);
+                    deviceDirectory[request->deviceaddress()]->theStimulationCommand->append(theFunction);
                 }
                 else if (request->functions().at(i).has_pause())
                 {
@@ -1047,7 +1046,7 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
                     theFunction->append(theFactory->createStimulationPauseAtom(request->functions().at(i).pause().duration()));
 
                     // Add the function to the command
-                    deviceDirectory[tempDeviceIdBuffer]->theStimulationCommand->append(theFunction);
+                    deviceDirectory[request->deviceaddress()]->theStimulationCommand->append(theFunction);
                 }
                 else
                 {
@@ -1071,7 +1070,7 @@ class BICBridgeServiceImpl final : public BICBridgeService::Service {
     IImplantFactory* theImplantFactory;
     std::mutex rpcLock;
 
-    // Initialize
+    // Initialize Service with a Factory
     public:void passFactory(IImplantFactory* serverFactory)
     {
         theImplantFactory = serverFactory;

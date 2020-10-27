@@ -50,7 +50,7 @@ struct TableStruct_BICgRPC_2eproto {
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::AuxiliaryParseTableField aux[]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
-  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[34]
+  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[35]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::FieldMetadata field_metadata[];
   static const ::PROTOBUF_NAMESPACE_ID::internal::SerializationTable serialization_table[];
@@ -103,6 +103,9 @@ extern QueryBridgesRequestDefaultTypeInternal _QueryBridgesRequest_default_insta
 class QueryBridgesResponse;
 class QueryBridgesResponseDefaultTypeInternal;
 extern QueryBridgesResponseDefaultTypeInternal _QueryBridgesResponse_default_instance_;
+class RequestDeviceAddress;
+class RequestDeviceAddressDefaultTypeInternal;
+extern RequestDeviceAddressDefaultTypeInternal _RequestDeviceAddress_default_instance_;
 class ScanDevicesReply;
 class ScanDevicesReplyDefaultTypeInternal;
 extern ScanDevicesReplyDefaultTypeInternal _ScanDevicesReply_default_instance_;
@@ -177,6 +180,7 @@ template<> ::BICgRPC::NeuralUpdate* Arena::CreateMaybeMessage<::BICgRPC::NeuralU
 template<> ::BICgRPC::PowerUpdate* Arena::CreateMaybeMessage<::BICgRPC::PowerUpdate>(Arena*);
 template<> ::BICgRPC::QueryBridgesRequest* Arena::CreateMaybeMessage<::BICgRPC::QueryBridgesRequest>(Arena*);
 template<> ::BICgRPC::QueryBridgesResponse* Arena::CreateMaybeMessage<::BICgRPC::QueryBridgesResponse>(Arena*);
+template<> ::BICgRPC::RequestDeviceAddress* Arena::CreateMaybeMessage<::BICgRPC::RequestDeviceAddress>(Arena*);
 template<> ::BICgRPC::ScanDevicesReply* Arena::CreateMaybeMessage<::BICgRPC::ScanDevicesReply>(Arena*);
 template<> ::BICgRPC::ScanDevicesRequest* Arena::CreateMaybeMessage<::BICgRPC::ScanDevicesRequest>(Arena*);
 template<> ::BICgRPC::StimulationFunctionDefinition* Arena::CreateMaybeMessage<::BICgRPC::StimulationFunctionDefinition>(Arena*);
@@ -961,9 +965,26 @@ class bicGetImplantInfoRequest PROTOBUF_FINAL :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kUpdateCachedInfoFieldNumber = 1,
+    kDeviceAddressFieldNumber = 1,
+    kUpdateCachedInfoFieldNumber = 2,
   };
-  // bool updateCachedInfo = 1;
+  // string deviceAddress = 1;
+  void clear_deviceaddress();
+  const std::string& deviceaddress() const;
+  void set_deviceaddress(const std::string& value);
+  void set_deviceaddress(std::string&& value);
+  void set_deviceaddress(const char* value);
+  void set_deviceaddress(const char* value, size_t size);
+  std::string* mutable_deviceaddress();
+  std::string* release_deviceaddress();
+  void set_allocated_deviceaddress(std::string* deviceaddress);
+  private:
+  const std::string& _internal_deviceaddress() const;
+  void _internal_set_deviceaddress(const std::string& value);
+  std::string* _internal_mutable_deviceaddress();
+  public:
+
+  // bool updateCachedInfo = 2;
   void clear_updatecachedinfo();
   bool updatecachedinfo() const;
   void set_updatecachedinfo(bool value);
@@ -979,6 +1000,7 @@ class bicGetImplantInfoRequest PROTOBUF_FINAL :
   template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr deviceaddress_;
   bool updatecachedinfo_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_BICgRPC_2eproto;
@@ -1610,9 +1632,26 @@ class bicSetStreamEnable PROTOBUF_FINAL :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kEnableFieldNumber = 1,
+    kDeviceAddressFieldNumber = 1,
+    kEnableFieldNumber = 2,
   };
-  // bool enable = 1;
+  // string deviceAddress = 1;
+  void clear_deviceaddress();
+  const std::string& deviceaddress() const;
+  void set_deviceaddress(const std::string& value);
+  void set_deviceaddress(std::string&& value);
+  void set_deviceaddress(const char* value);
+  void set_deviceaddress(const char* value, size_t size);
+  std::string* mutable_deviceaddress();
+  std::string* release_deviceaddress();
+  void set_allocated_deviceaddress(std::string* deviceaddress);
+  private:
+  const std::string& _internal_deviceaddress() const;
+  void _internal_set_deviceaddress(const std::string& value);
+  std::string* _internal_mutable_deviceaddress();
+  public:
+
+  // bool enable = 2;
   void clear_enable();
   bool enable() const;
   void set_enable(bool value);
@@ -1628,7 +1667,152 @@ class bicSetStreamEnable PROTOBUF_FINAL :
   template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr deviceaddress_;
   bool enable_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_BICgRPC_2eproto;
+};
+// -------------------------------------------------------------------
+
+class RequestDeviceAddress PROTOBUF_FINAL :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:BICgRPC.RequestDeviceAddress) */ {
+ public:
+  inline RequestDeviceAddress() : RequestDeviceAddress(nullptr) {}
+  virtual ~RequestDeviceAddress();
+
+  RequestDeviceAddress(const RequestDeviceAddress& from);
+  RequestDeviceAddress(RequestDeviceAddress&& from) noexcept
+    : RequestDeviceAddress() {
+    *this = ::std::move(from);
+  }
+
+  inline RequestDeviceAddress& operator=(const RequestDeviceAddress& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline RequestDeviceAddress& operator=(RequestDeviceAddress&& from) noexcept {
+    if (GetArena() == from.GetArena()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return GetMetadataStatic().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return GetMetadataStatic().reflection;
+  }
+  static const RequestDeviceAddress& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const RequestDeviceAddress* internal_default_instance() {
+    return reinterpret_cast<const RequestDeviceAddress*>(
+               &_RequestDeviceAddress_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    8;
+
+  friend void swap(RequestDeviceAddress& a, RequestDeviceAddress& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(RequestDeviceAddress* other) {
+    if (other == this) return;
+    if (GetArena() == other->GetArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(RequestDeviceAddress* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline RequestDeviceAddress* New() const final {
+    return CreateMaybeMessage<RequestDeviceAddress>(nullptr);
+  }
+
+  RequestDeviceAddress* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<RequestDeviceAddress>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const RequestDeviceAddress& from);
+  void MergeFrom(const RequestDeviceAddress& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  inline void SharedCtor();
+  inline void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(RequestDeviceAddress* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "BICgRPC.RequestDeviceAddress";
+  }
+  protected:
+  explicit RequestDeviceAddress(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  private:
+  static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
+    ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&::descriptor_table_BICgRPC_2eproto);
+    return ::descriptor_table_BICgRPC_2eproto.file_level_metadata[kIndexInFileMessages];
+  }
+
+  public:
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kDeviceAddressFieldNumber = 1,
+  };
+  // string deviceAddress = 1;
+  void clear_deviceaddress();
+  const std::string& deviceaddress() const;
+  void set_deviceaddress(const std::string& value);
+  void set_deviceaddress(std::string&& value);
+  void set_deviceaddress(const char* value);
+  void set_deviceaddress(const char* value, size_t size);
+  std::string* mutable_deviceaddress();
+  std::string* release_deviceaddress();
+  void set_allocated_deviceaddress(std::string* deviceaddress);
+  private:
+  const std::string& _internal_deviceaddress() const;
+  void _internal_set_deviceaddress(const std::string& value);
+  std::string* _internal_mutable_deviceaddress();
+  public:
+
+  // @@protoc_insertion_point(class_scope:BICgRPC.RequestDeviceAddress)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr deviceaddress_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_BICgRPC_2eproto;
 };
@@ -1676,7 +1860,7 @@ class bicGetImpedanceRequest PROTOBUF_FINAL :
                &_bicGetImpedanceRequest_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    8;
+    9;
 
   friend void swap(bicGetImpedanceRequest& a, bicGetImpedanceRequest& b) {
     a.Swap(&b);
@@ -1747,9 +1931,26 @@ class bicGetImpedanceRequest PROTOBUF_FINAL :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kChannelFieldNumber = 1,
+    kDeviceAddressFieldNumber = 1,
+    kChannelFieldNumber = 2,
   };
-  // uint32 channel = 1;
+  // string deviceAddress = 1;
+  void clear_deviceaddress();
+  const std::string& deviceaddress() const;
+  void set_deviceaddress(const std::string& value);
+  void set_deviceaddress(std::string&& value);
+  void set_deviceaddress(const char* value);
+  void set_deviceaddress(const char* value, size_t size);
+  std::string* mutable_deviceaddress();
+  std::string* release_deviceaddress();
+  void set_allocated_deviceaddress(std::string* deviceaddress);
+  private:
+  const std::string& _internal_deviceaddress() const;
+  void _internal_set_deviceaddress(const std::string& value);
+  std::string* _internal_mutable_deviceaddress();
+  public:
+
+  // uint32 channel = 2;
   void clear_channel();
   ::PROTOBUF_NAMESPACE_ID::uint32 channel() const;
   void set_channel(::PROTOBUF_NAMESPACE_ID::uint32 value);
@@ -1765,6 +1966,7 @@ class bicGetImpedanceRequest PROTOBUF_FINAL :
   template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr deviceaddress_;
   ::PROTOBUF_NAMESPACE_ID::uint32 channel_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_BICgRPC_2eproto;
@@ -1813,7 +2015,7 @@ class bicGetImpedanceReply PROTOBUF_FINAL :
                &_bicGetImpedanceReply_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    9;
+    10;
 
   friend void swap(bicGetImpedanceReply& a, bicGetImpedanceReply& b) {
     a.Swap(&b);
@@ -1986,7 +2188,7 @@ class bicGetTemperatureReply PROTOBUF_FINAL :
                &_bicGetTemperatureReply_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    10;
+    11;
 
   friend void swap(bicGetTemperatureReply& a, bicGetTemperatureReply& b) {
     a.Swap(&b);
@@ -2159,7 +2361,7 @@ class bicGetHumidityReply PROTOBUF_FINAL :
                &_bicGetHumidityReply_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    11;
+    12;
 
   friend void swap(bicGetHumidityReply& a, bicGetHumidityReply& b) {
     a.Swap(&b);
@@ -2332,7 +2534,7 @@ class bicSetSensingEnableRequest PROTOBUF_FINAL :
                &_bicSetSensingEnableRequest_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    12;
+    13;
 
   friend void swap(bicSetSensingEnableRequest& a, bicSetSensingEnableRequest& b) {
     a.Swap(&b);
@@ -2403,11 +2605,12 @@ class bicSetSensingEnableRequest PROTOBUF_FINAL :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kRefChannelsFieldNumber = 2,
-    kEnableSensingFieldNumber = 1,
-    kBufferSizeFieldNumber = 3,
+    kRefChannelsFieldNumber = 3,
+    kDeviceAddressFieldNumber = 1,
+    kEnableSensingFieldNumber = 2,
+    kBufferSizeFieldNumber = 4,
   };
-  // repeated uint32 refChannels = 2;
+  // repeated uint32 refChannels = 3;
   int refchannels_size() const;
   private:
   int _internal_refchannels_size() const;
@@ -2429,7 +2632,23 @@ class bicSetSensingEnableRequest PROTOBUF_FINAL :
   ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::uint32 >*
       mutable_refchannels();
 
-  // bool enableSensing = 1;
+  // string deviceAddress = 1;
+  void clear_deviceaddress();
+  const std::string& deviceaddress() const;
+  void set_deviceaddress(const std::string& value);
+  void set_deviceaddress(std::string&& value);
+  void set_deviceaddress(const char* value);
+  void set_deviceaddress(const char* value, size_t size);
+  std::string* mutable_deviceaddress();
+  std::string* release_deviceaddress();
+  void set_allocated_deviceaddress(std::string* deviceaddress);
+  private:
+  const std::string& _internal_deviceaddress() const;
+  void _internal_set_deviceaddress(const std::string& value);
+  std::string* _internal_mutable_deviceaddress();
+  public:
+
+  // bool enableSensing = 2;
   void clear_enablesensing();
   bool enablesensing() const;
   void set_enablesensing(bool value);
@@ -2438,7 +2657,7 @@ class bicSetSensingEnableRequest PROTOBUF_FINAL :
   void _internal_set_enablesensing(bool value);
   public:
 
-  // uint32 bufferSize = 3;
+  // uint32 bufferSize = 4;
   void clear_buffersize();
   ::PROTOBUF_NAMESPACE_ID::uint32 buffersize() const;
   void set_buffersize(::PROTOBUF_NAMESPACE_ID::uint32 value);
@@ -2456,6 +2675,7 @@ class bicSetSensingEnableRequest PROTOBUF_FINAL :
   typedef void DestructorSkippable_;
   ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::uint32 > refchannels_;
   mutable std::atomic<int> _refchannels_cached_byte_size_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr deviceaddress_;
   bool enablesensing_;
   ::PROTOBUF_NAMESPACE_ID::uint32 buffersize_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
@@ -2505,7 +2725,7 @@ class bicSetImplantPowerRequest PROTOBUF_FINAL :
                &_bicSetImplantPowerRequest_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    13;
+    14;
 
   friend void swap(bicSetImplantPowerRequest& a, bicSetImplantPowerRequest& b) {
     a.Swap(&b);
@@ -2576,9 +2796,26 @@ class bicSetImplantPowerRequest PROTOBUF_FINAL :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kPowerEnabledFieldNumber = 1,
+    kDeviceAddressFieldNumber = 1,
+    kPowerEnabledFieldNumber = 2,
   };
-  // bool powerEnabled = 1;
+  // string deviceAddress = 1;
+  void clear_deviceaddress();
+  const std::string& deviceaddress() const;
+  void set_deviceaddress(const std::string& value);
+  void set_deviceaddress(std::string&& value);
+  void set_deviceaddress(const char* value);
+  void set_deviceaddress(const char* value, size_t size);
+  std::string* mutable_deviceaddress();
+  std::string* release_deviceaddress();
+  void set_allocated_deviceaddress(std::string* deviceaddress);
+  private:
+  const std::string& _internal_deviceaddress() const;
+  void _internal_set_deviceaddress(const std::string& value);
+  std::string* _internal_mutable_deviceaddress();
+  public:
+
+  // bool powerEnabled = 2;
   void clear_powerenabled();
   bool powerenabled() const;
   void set_powerenabled(bool value);
@@ -2594,6 +2831,7 @@ class bicSetImplantPowerRequest PROTOBUF_FINAL :
   template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr deviceaddress_;
   bool powerenabled_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_BICgRPC_2eproto;
@@ -2642,7 +2880,7 @@ class bicStartStimulationRequest PROTOBUF_FINAL :
                &_bicStartStimulationRequest_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    14;
+    15;
 
   friend void swap(bicStartStimulationRequest& a, bicStartStimulationRequest& b) {
     a.Swap(&b);
@@ -2713,9 +2951,26 @@ class bicStartStimulationRequest PROTOBUF_FINAL :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kFunctionNameFieldNumber = 1,
+    kDeviceAddressFieldNumber = 1,
+    kFunctionNameFieldNumber = 2,
   };
-  // string functionName = 1;
+  // string deviceAddress = 1;
+  void clear_deviceaddress();
+  const std::string& deviceaddress() const;
+  void set_deviceaddress(const std::string& value);
+  void set_deviceaddress(std::string&& value);
+  void set_deviceaddress(const char* value);
+  void set_deviceaddress(const char* value, size_t size);
+  std::string* mutable_deviceaddress();
+  std::string* release_deviceaddress();
+  void set_allocated_deviceaddress(std::string* deviceaddress);
+  private:
+  const std::string& _internal_deviceaddress() const;
+  void _internal_set_deviceaddress(const std::string& value);
+  std::string* _internal_mutable_deviceaddress();
+  public:
+
+  // string functionName = 2;
   void clear_functionname();
   const std::string& functionname() const;
   void set_functionname(const std::string& value);
@@ -2738,6 +2993,7 @@ class bicStartStimulationRequest PROTOBUF_FINAL :
   template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr deviceaddress_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr functionname_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_BICgRPC_2eproto;
@@ -2786,7 +3042,7 @@ class bicStimulationFunctionDefinitionRequest PROTOBUF_FINAL :
                &_bicStimulationFunctionDefinitionRequest_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    15;
+    16;
 
   friend void swap(bicStimulationFunctionDefinitionRequest& a, bicStimulationFunctionDefinitionRequest& b) {
     a.Swap(&b);
@@ -2857,9 +3113,10 @@ class bicStimulationFunctionDefinitionRequest PROTOBUF_FINAL :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kFunctionsFieldNumber = 1,
+    kFunctionsFieldNumber = 2,
+    kDeviceAddressFieldNumber = 1,
   };
-  // repeated .BICgRPC.StimulationFunctionDefinition functions = 1;
+  // repeated .BICgRPC.StimulationFunctionDefinition functions = 2;
   int functions_size() const;
   private:
   int _internal_functions_size() const;
@@ -2877,6 +3134,22 @@ class bicStimulationFunctionDefinitionRequest PROTOBUF_FINAL :
   const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::BICgRPC::StimulationFunctionDefinition >&
       functions() const;
 
+  // string deviceAddress = 1;
+  void clear_deviceaddress();
+  const std::string& deviceaddress() const;
+  void set_deviceaddress(const std::string& value);
+  void set_deviceaddress(std::string&& value);
+  void set_deviceaddress(const char* value);
+  void set_deviceaddress(const char* value, size_t size);
+  std::string* mutable_deviceaddress();
+  std::string* release_deviceaddress();
+  void set_allocated_deviceaddress(std::string* deviceaddress);
+  private:
+  const std::string& _internal_deviceaddress() const;
+  void _internal_set_deviceaddress(const std::string& value);
+  std::string* _internal_mutable_deviceaddress();
+  public:
+
   // @@protoc_insertion_point(class_scope:BICgRPC.bicStimulationFunctionDefinitionRequest)
  private:
   class _Internal;
@@ -2885,6 +3158,7 @@ class bicStimulationFunctionDefinitionRequest PROTOBUF_FINAL :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::BICgRPC::StimulationFunctionDefinition > functions_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr deviceaddress_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_BICgRPC_2eproto;
 };
@@ -2938,7 +3212,7 @@ class StimulationFunctionDefinition PROTOBUF_FINAL :
                &_StimulationFunctionDefinition_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    16;
+    17;
 
   friend void swap(StimulationFunctionDefinition& a, StimulationFunctionDefinition& b) {
     a.Swap(&b);
@@ -3134,7 +3408,7 @@ class stimPulseFunction PROTOBUF_FINAL :
                &_stimPulseFunction_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    17;
+    18;
 
   friend void swap(stimPulseFunction& a, stimPulseFunction& b) {
     a.Swap(&b);
@@ -3379,7 +3653,7 @@ class pauseFunction PROTOBUF_FINAL :
                &_pauseFunction_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    18;
+    19;
 
   friend void swap(pauseFunction& a, pauseFunction& b) {
     a.Swap(&b);
@@ -3516,7 +3790,7 @@ class TemperatureUpdate PROTOBUF_FINAL :
                &_TemperatureUpdate_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    19;
+    20;
 
   friend void swap(TemperatureUpdate& a, TemperatureUpdate& b) {
     a.Swap(&b);
@@ -3671,7 +3945,7 @@ class HumidityUpdate PROTOBUF_FINAL :
                &_HumidityUpdate_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    20;
+    21;
 
   friend void swap(HumidityUpdate& a, HumidityUpdate& b) {
     a.Swap(&b);
@@ -3826,7 +4100,7 @@ class NeuralUpdate PROTOBUF_FINAL :
                &_NeuralUpdate_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    21;
+    22;
 
   friend void swap(NeuralUpdate& a, NeuralUpdate& b) {
     a.Swap(&b);
@@ -3972,7 +4246,7 @@ class NeuralSample PROTOBUF_FINAL :
                &_NeuralSample_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    22;
+    23;
 
   friend void swap(NeuralSample& a, NeuralSample& b) {
     a.Swap(&b);
@@ -4189,7 +4463,7 @@ class ConnectionUpdate PROTOBUF_FINAL :
                &_ConnectionUpdate_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    23;
+    24;
 
   friend void swap(ConnectionUpdate& a, ConnectionUpdate& b) {
     a.Swap(&b);
@@ -4344,7 +4618,7 @@ class PowerUpdate PROTOBUF_FINAL :
                &_PowerUpdate_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    24;
+    25;
 
   friend void swap(PowerUpdate& a, PowerUpdate& b) {
     a.Swap(&b);
@@ -4517,7 +4791,7 @@ class ErrorUpdate PROTOBUF_FINAL :
                &_ErrorUpdate_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    25;
+    26;
 
   friend void swap(ErrorUpdate& a, ErrorUpdate& b) {
     a.Swap(&b);
@@ -4661,7 +4935,7 @@ class Bridge PROTOBUF_FINAL :
                &_Bridge_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    26;
+    27;
 
   friend void swap(Bridge& a, Bridge& b) {
     a.Swap(&b);
@@ -4859,7 +5133,7 @@ class QueryBridgesRequest PROTOBUF_FINAL :
                &_QueryBridgesRequest_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    27;
+    28;
 
   friend void swap(QueryBridgesRequest& a, QueryBridgesRequest& b) {
     a.Swap(&b);
@@ -5003,7 +5277,7 @@ class QueryBridgesResponse PROTOBUF_FINAL :
                &_QueryBridgesResponse_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    28;
+    29;
 
   friend void swap(QueryBridgesResponse& a, QueryBridgesResponse& b) {
     a.Swap(&b);
@@ -5149,7 +5423,7 @@ class ConnectBridgeRequest PROTOBUF_FINAL :
                &_ConnectBridgeRequest_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    29;
+    30;
 
   friend void swap(ConnectBridgeRequest& a, ConnectBridgeRequest& b) {
     a.Swap(&b);
@@ -5313,7 +5587,7 @@ class ConnectBridgeResponse PROTOBUF_FINAL :
                &_ConnectBridgeResponse_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    30;
+    31;
 
   friend void swap(ConnectBridgeResponse& a, ConnectBridgeResponse& b) {
     a.Swap(&b);
@@ -5488,7 +5762,7 @@ class DescribeBridgeRequest PROTOBUF_FINAL :
                &_DescribeBridgeRequest_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    31;
+    32;
 
   friend void swap(DescribeBridgeRequest& a, DescribeBridgeRequest& b) {
     a.Swap(&b);
@@ -5632,7 +5906,7 @@ class DescribeBridgeResponse PROTOBUF_FINAL :
                &_DescribeBridgeResponse_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    32;
+    33;
 
   friend void swap(DescribeBridgeResponse& a, DescribeBridgeResponse& b) {
     a.Swap(&b);
@@ -5816,7 +6090,7 @@ class DisconnectBridgeRequest PROTOBUF_FINAL :
                &_DisconnectBridgeRequest_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    33;
+    34;
 
   friend void swap(DisconnectBridgeRequest& a, DisconnectBridgeRequest& b) {
     a.Swap(&b);
@@ -6274,7 +6548,69 @@ inline void ConnectDeviceRequest::set_allocated_logfilename(std::string* logfile
 
 // bicGetImplantInfoRequest
 
-// bool updateCachedInfo = 1;
+// string deviceAddress = 1;
+inline void bicGetImplantInfoRequest::clear_deviceaddress() {
+  deviceaddress_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline const std::string& bicGetImplantInfoRequest::deviceaddress() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.bicGetImplantInfoRequest.deviceAddress)
+  return _internal_deviceaddress();
+}
+inline void bicGetImplantInfoRequest::set_deviceaddress(const std::string& value) {
+  _internal_set_deviceaddress(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.bicGetImplantInfoRequest.deviceAddress)
+}
+inline std::string* bicGetImplantInfoRequest::mutable_deviceaddress() {
+  // @@protoc_insertion_point(field_mutable:BICgRPC.bicGetImplantInfoRequest.deviceAddress)
+  return _internal_mutable_deviceaddress();
+}
+inline const std::string& bicGetImplantInfoRequest::_internal_deviceaddress() const {
+  return deviceaddress_.Get();
+}
+inline void bicGetImplantInfoRequest::_internal_set_deviceaddress(const std::string& value) {
+  
+  deviceaddress_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value, GetArena());
+}
+inline void bicGetImplantInfoRequest::set_deviceaddress(std::string&& value) {
+  
+  deviceaddress_.Set(
+    &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::move(value), GetArena());
+  // @@protoc_insertion_point(field_set_rvalue:BICgRPC.bicGetImplantInfoRequest.deviceAddress)
+}
+inline void bicGetImplantInfoRequest::set_deviceaddress(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  
+  deviceaddress_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(value),
+              GetArena());
+  // @@protoc_insertion_point(field_set_char:BICgRPC.bicGetImplantInfoRequest.deviceAddress)
+}
+inline void bicGetImplantInfoRequest::set_deviceaddress(const char* value,
+    size_t size) {
+  
+  deviceaddress_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(
+      reinterpret_cast<const char*>(value), size), GetArena());
+  // @@protoc_insertion_point(field_set_pointer:BICgRPC.bicGetImplantInfoRequest.deviceAddress)
+}
+inline std::string* bicGetImplantInfoRequest::_internal_mutable_deviceaddress() {
+  
+  return deviceaddress_.Mutable(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline std::string* bicGetImplantInfoRequest::release_deviceaddress() {
+  // @@protoc_insertion_point(field_release:BICgRPC.bicGetImplantInfoRequest.deviceAddress)
+  return deviceaddress_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline void bicGetImplantInfoRequest::set_allocated_deviceaddress(std::string* deviceaddress) {
+  if (deviceaddress != nullptr) {
+    
+  } else {
+    
+  }
+  deviceaddress_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), deviceaddress,
+      GetArena());
+  // @@protoc_insertion_point(field_set_allocated:BICgRPC.bicGetImplantInfoRequest.deviceAddress)
+}
+
+// bool updateCachedInfo = 2;
 inline void bicGetImplantInfoRequest::clear_updatecachedinfo() {
   updatecachedinfo_ = false;
 }
@@ -6833,7 +7169,69 @@ inline void bicGetImplantInfoReply::set_allocated_success(std::string* success) 
 
 // bicSetStreamEnable
 
-// bool enable = 1;
+// string deviceAddress = 1;
+inline void bicSetStreamEnable::clear_deviceaddress() {
+  deviceaddress_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline const std::string& bicSetStreamEnable::deviceaddress() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.bicSetStreamEnable.deviceAddress)
+  return _internal_deviceaddress();
+}
+inline void bicSetStreamEnable::set_deviceaddress(const std::string& value) {
+  _internal_set_deviceaddress(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.bicSetStreamEnable.deviceAddress)
+}
+inline std::string* bicSetStreamEnable::mutable_deviceaddress() {
+  // @@protoc_insertion_point(field_mutable:BICgRPC.bicSetStreamEnable.deviceAddress)
+  return _internal_mutable_deviceaddress();
+}
+inline const std::string& bicSetStreamEnable::_internal_deviceaddress() const {
+  return deviceaddress_.Get();
+}
+inline void bicSetStreamEnable::_internal_set_deviceaddress(const std::string& value) {
+  
+  deviceaddress_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value, GetArena());
+}
+inline void bicSetStreamEnable::set_deviceaddress(std::string&& value) {
+  
+  deviceaddress_.Set(
+    &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::move(value), GetArena());
+  // @@protoc_insertion_point(field_set_rvalue:BICgRPC.bicSetStreamEnable.deviceAddress)
+}
+inline void bicSetStreamEnable::set_deviceaddress(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  
+  deviceaddress_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(value),
+              GetArena());
+  // @@protoc_insertion_point(field_set_char:BICgRPC.bicSetStreamEnable.deviceAddress)
+}
+inline void bicSetStreamEnable::set_deviceaddress(const char* value,
+    size_t size) {
+  
+  deviceaddress_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(
+      reinterpret_cast<const char*>(value), size), GetArena());
+  // @@protoc_insertion_point(field_set_pointer:BICgRPC.bicSetStreamEnable.deviceAddress)
+}
+inline std::string* bicSetStreamEnable::_internal_mutable_deviceaddress() {
+  
+  return deviceaddress_.Mutable(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline std::string* bicSetStreamEnable::release_deviceaddress() {
+  // @@protoc_insertion_point(field_release:BICgRPC.bicSetStreamEnable.deviceAddress)
+  return deviceaddress_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline void bicSetStreamEnable::set_allocated_deviceaddress(std::string* deviceaddress) {
+  if (deviceaddress != nullptr) {
+    
+  } else {
+    
+  }
+  deviceaddress_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), deviceaddress,
+      GetArena());
+  // @@protoc_insertion_point(field_set_allocated:BICgRPC.bicSetStreamEnable.deviceAddress)
+}
+
+// bool enable = 2;
 inline void bicSetStreamEnable::clear_enable() {
   enable_ = false;
 }
@@ -6855,9 +7253,137 @@ inline void bicSetStreamEnable::set_enable(bool value) {
 
 // -------------------------------------------------------------------
 
+// RequestDeviceAddress
+
+// string deviceAddress = 1;
+inline void RequestDeviceAddress::clear_deviceaddress() {
+  deviceaddress_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline const std::string& RequestDeviceAddress::deviceaddress() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.RequestDeviceAddress.deviceAddress)
+  return _internal_deviceaddress();
+}
+inline void RequestDeviceAddress::set_deviceaddress(const std::string& value) {
+  _internal_set_deviceaddress(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.RequestDeviceAddress.deviceAddress)
+}
+inline std::string* RequestDeviceAddress::mutable_deviceaddress() {
+  // @@protoc_insertion_point(field_mutable:BICgRPC.RequestDeviceAddress.deviceAddress)
+  return _internal_mutable_deviceaddress();
+}
+inline const std::string& RequestDeviceAddress::_internal_deviceaddress() const {
+  return deviceaddress_.Get();
+}
+inline void RequestDeviceAddress::_internal_set_deviceaddress(const std::string& value) {
+  
+  deviceaddress_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value, GetArena());
+}
+inline void RequestDeviceAddress::set_deviceaddress(std::string&& value) {
+  
+  deviceaddress_.Set(
+    &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::move(value), GetArena());
+  // @@protoc_insertion_point(field_set_rvalue:BICgRPC.RequestDeviceAddress.deviceAddress)
+}
+inline void RequestDeviceAddress::set_deviceaddress(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  
+  deviceaddress_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(value),
+              GetArena());
+  // @@protoc_insertion_point(field_set_char:BICgRPC.RequestDeviceAddress.deviceAddress)
+}
+inline void RequestDeviceAddress::set_deviceaddress(const char* value,
+    size_t size) {
+  
+  deviceaddress_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(
+      reinterpret_cast<const char*>(value), size), GetArena());
+  // @@protoc_insertion_point(field_set_pointer:BICgRPC.RequestDeviceAddress.deviceAddress)
+}
+inline std::string* RequestDeviceAddress::_internal_mutable_deviceaddress() {
+  
+  return deviceaddress_.Mutable(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline std::string* RequestDeviceAddress::release_deviceaddress() {
+  // @@protoc_insertion_point(field_release:BICgRPC.RequestDeviceAddress.deviceAddress)
+  return deviceaddress_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline void RequestDeviceAddress::set_allocated_deviceaddress(std::string* deviceaddress) {
+  if (deviceaddress != nullptr) {
+    
+  } else {
+    
+  }
+  deviceaddress_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), deviceaddress,
+      GetArena());
+  // @@protoc_insertion_point(field_set_allocated:BICgRPC.RequestDeviceAddress.deviceAddress)
+}
+
+// -------------------------------------------------------------------
+
 // bicGetImpedanceRequest
 
-// uint32 channel = 1;
+// string deviceAddress = 1;
+inline void bicGetImpedanceRequest::clear_deviceaddress() {
+  deviceaddress_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline const std::string& bicGetImpedanceRequest::deviceaddress() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.bicGetImpedanceRequest.deviceAddress)
+  return _internal_deviceaddress();
+}
+inline void bicGetImpedanceRequest::set_deviceaddress(const std::string& value) {
+  _internal_set_deviceaddress(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.bicGetImpedanceRequest.deviceAddress)
+}
+inline std::string* bicGetImpedanceRequest::mutable_deviceaddress() {
+  // @@protoc_insertion_point(field_mutable:BICgRPC.bicGetImpedanceRequest.deviceAddress)
+  return _internal_mutable_deviceaddress();
+}
+inline const std::string& bicGetImpedanceRequest::_internal_deviceaddress() const {
+  return deviceaddress_.Get();
+}
+inline void bicGetImpedanceRequest::_internal_set_deviceaddress(const std::string& value) {
+  
+  deviceaddress_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value, GetArena());
+}
+inline void bicGetImpedanceRequest::set_deviceaddress(std::string&& value) {
+  
+  deviceaddress_.Set(
+    &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::move(value), GetArena());
+  // @@protoc_insertion_point(field_set_rvalue:BICgRPC.bicGetImpedanceRequest.deviceAddress)
+}
+inline void bicGetImpedanceRequest::set_deviceaddress(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  
+  deviceaddress_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(value),
+              GetArena());
+  // @@protoc_insertion_point(field_set_char:BICgRPC.bicGetImpedanceRequest.deviceAddress)
+}
+inline void bicGetImpedanceRequest::set_deviceaddress(const char* value,
+    size_t size) {
+  
+  deviceaddress_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(
+      reinterpret_cast<const char*>(value), size), GetArena());
+  // @@protoc_insertion_point(field_set_pointer:BICgRPC.bicGetImpedanceRequest.deviceAddress)
+}
+inline std::string* bicGetImpedanceRequest::_internal_mutable_deviceaddress() {
+  
+  return deviceaddress_.Mutable(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline std::string* bicGetImpedanceRequest::release_deviceaddress() {
+  // @@protoc_insertion_point(field_release:BICgRPC.bicGetImpedanceRequest.deviceAddress)
+  return deviceaddress_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline void bicGetImpedanceRequest::set_allocated_deviceaddress(std::string* deviceaddress) {
+  if (deviceaddress != nullptr) {
+    
+  } else {
+    
+  }
+  deviceaddress_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), deviceaddress,
+      GetArena());
+  // @@protoc_insertion_point(field_set_allocated:BICgRPC.bicGetImpedanceRequest.deviceAddress)
+}
+
+// uint32 channel = 2;
 inline void bicGetImpedanceRequest::clear_channel() {
   channel_ = 0u;
 }
@@ -7325,7 +7851,69 @@ inline void bicGetHumidityReply::set_allocated_success(std::string* success) {
 
 // bicSetSensingEnableRequest
 
-// bool enableSensing = 1;
+// string deviceAddress = 1;
+inline void bicSetSensingEnableRequest::clear_deviceaddress() {
+  deviceaddress_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline const std::string& bicSetSensingEnableRequest::deviceaddress() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.bicSetSensingEnableRequest.deviceAddress)
+  return _internal_deviceaddress();
+}
+inline void bicSetSensingEnableRequest::set_deviceaddress(const std::string& value) {
+  _internal_set_deviceaddress(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.bicSetSensingEnableRequest.deviceAddress)
+}
+inline std::string* bicSetSensingEnableRequest::mutable_deviceaddress() {
+  // @@protoc_insertion_point(field_mutable:BICgRPC.bicSetSensingEnableRequest.deviceAddress)
+  return _internal_mutable_deviceaddress();
+}
+inline const std::string& bicSetSensingEnableRequest::_internal_deviceaddress() const {
+  return deviceaddress_.Get();
+}
+inline void bicSetSensingEnableRequest::_internal_set_deviceaddress(const std::string& value) {
+  
+  deviceaddress_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value, GetArena());
+}
+inline void bicSetSensingEnableRequest::set_deviceaddress(std::string&& value) {
+  
+  deviceaddress_.Set(
+    &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::move(value), GetArena());
+  // @@protoc_insertion_point(field_set_rvalue:BICgRPC.bicSetSensingEnableRequest.deviceAddress)
+}
+inline void bicSetSensingEnableRequest::set_deviceaddress(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  
+  deviceaddress_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(value),
+              GetArena());
+  // @@protoc_insertion_point(field_set_char:BICgRPC.bicSetSensingEnableRequest.deviceAddress)
+}
+inline void bicSetSensingEnableRequest::set_deviceaddress(const char* value,
+    size_t size) {
+  
+  deviceaddress_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(
+      reinterpret_cast<const char*>(value), size), GetArena());
+  // @@protoc_insertion_point(field_set_pointer:BICgRPC.bicSetSensingEnableRequest.deviceAddress)
+}
+inline std::string* bicSetSensingEnableRequest::_internal_mutable_deviceaddress() {
+  
+  return deviceaddress_.Mutable(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline std::string* bicSetSensingEnableRequest::release_deviceaddress() {
+  // @@protoc_insertion_point(field_release:BICgRPC.bicSetSensingEnableRequest.deviceAddress)
+  return deviceaddress_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline void bicSetSensingEnableRequest::set_allocated_deviceaddress(std::string* deviceaddress) {
+  if (deviceaddress != nullptr) {
+    
+  } else {
+    
+  }
+  deviceaddress_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), deviceaddress,
+      GetArena());
+  // @@protoc_insertion_point(field_set_allocated:BICgRPC.bicSetSensingEnableRequest.deviceAddress)
+}
+
+// bool enableSensing = 2;
 inline void bicSetSensingEnableRequest::clear_enablesensing() {
   enablesensing_ = false;
 }
@@ -7345,7 +7933,7 @@ inline void bicSetSensingEnableRequest::set_enablesensing(bool value) {
   // @@protoc_insertion_point(field_set:BICgRPC.bicSetSensingEnableRequest.enableSensing)
 }
 
-// repeated uint32 refChannels = 2;
+// repeated uint32 refChannels = 3;
 inline int bicSetSensingEnableRequest::_internal_refchannels_size() const {
   return refchannels_.size();
 }
@@ -7392,7 +7980,7 @@ bicSetSensingEnableRequest::mutable_refchannels() {
   return _internal_mutable_refchannels();
 }
 
-// uint32 bufferSize = 3;
+// uint32 bufferSize = 4;
 inline void bicSetSensingEnableRequest::clear_buffersize() {
   buffersize_ = 0u;
 }
@@ -7416,7 +8004,69 @@ inline void bicSetSensingEnableRequest::set_buffersize(::PROTOBUF_NAMESPACE_ID::
 
 // bicSetImplantPowerRequest
 
-// bool powerEnabled = 1;
+// string deviceAddress = 1;
+inline void bicSetImplantPowerRequest::clear_deviceaddress() {
+  deviceaddress_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline const std::string& bicSetImplantPowerRequest::deviceaddress() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.bicSetImplantPowerRequest.deviceAddress)
+  return _internal_deviceaddress();
+}
+inline void bicSetImplantPowerRequest::set_deviceaddress(const std::string& value) {
+  _internal_set_deviceaddress(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.bicSetImplantPowerRequest.deviceAddress)
+}
+inline std::string* bicSetImplantPowerRequest::mutable_deviceaddress() {
+  // @@protoc_insertion_point(field_mutable:BICgRPC.bicSetImplantPowerRequest.deviceAddress)
+  return _internal_mutable_deviceaddress();
+}
+inline const std::string& bicSetImplantPowerRequest::_internal_deviceaddress() const {
+  return deviceaddress_.Get();
+}
+inline void bicSetImplantPowerRequest::_internal_set_deviceaddress(const std::string& value) {
+  
+  deviceaddress_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value, GetArena());
+}
+inline void bicSetImplantPowerRequest::set_deviceaddress(std::string&& value) {
+  
+  deviceaddress_.Set(
+    &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::move(value), GetArena());
+  // @@protoc_insertion_point(field_set_rvalue:BICgRPC.bicSetImplantPowerRequest.deviceAddress)
+}
+inline void bicSetImplantPowerRequest::set_deviceaddress(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  
+  deviceaddress_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(value),
+              GetArena());
+  // @@protoc_insertion_point(field_set_char:BICgRPC.bicSetImplantPowerRequest.deviceAddress)
+}
+inline void bicSetImplantPowerRequest::set_deviceaddress(const char* value,
+    size_t size) {
+  
+  deviceaddress_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(
+      reinterpret_cast<const char*>(value), size), GetArena());
+  // @@protoc_insertion_point(field_set_pointer:BICgRPC.bicSetImplantPowerRequest.deviceAddress)
+}
+inline std::string* bicSetImplantPowerRequest::_internal_mutable_deviceaddress() {
+  
+  return deviceaddress_.Mutable(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline std::string* bicSetImplantPowerRequest::release_deviceaddress() {
+  // @@protoc_insertion_point(field_release:BICgRPC.bicSetImplantPowerRequest.deviceAddress)
+  return deviceaddress_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline void bicSetImplantPowerRequest::set_allocated_deviceaddress(std::string* deviceaddress) {
+  if (deviceaddress != nullptr) {
+    
+  } else {
+    
+  }
+  deviceaddress_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), deviceaddress,
+      GetArena());
+  // @@protoc_insertion_point(field_set_allocated:BICgRPC.bicSetImplantPowerRequest.deviceAddress)
+}
+
+// bool powerEnabled = 2;
 inline void bicSetImplantPowerRequest::clear_powerenabled() {
   powerenabled_ = false;
 }
@@ -7440,7 +8090,69 @@ inline void bicSetImplantPowerRequest::set_powerenabled(bool value) {
 
 // bicStartStimulationRequest
 
-// string functionName = 1;
+// string deviceAddress = 1;
+inline void bicStartStimulationRequest::clear_deviceaddress() {
+  deviceaddress_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline const std::string& bicStartStimulationRequest::deviceaddress() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.bicStartStimulationRequest.deviceAddress)
+  return _internal_deviceaddress();
+}
+inline void bicStartStimulationRequest::set_deviceaddress(const std::string& value) {
+  _internal_set_deviceaddress(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.bicStartStimulationRequest.deviceAddress)
+}
+inline std::string* bicStartStimulationRequest::mutable_deviceaddress() {
+  // @@protoc_insertion_point(field_mutable:BICgRPC.bicStartStimulationRequest.deviceAddress)
+  return _internal_mutable_deviceaddress();
+}
+inline const std::string& bicStartStimulationRequest::_internal_deviceaddress() const {
+  return deviceaddress_.Get();
+}
+inline void bicStartStimulationRequest::_internal_set_deviceaddress(const std::string& value) {
+  
+  deviceaddress_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value, GetArena());
+}
+inline void bicStartStimulationRequest::set_deviceaddress(std::string&& value) {
+  
+  deviceaddress_.Set(
+    &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::move(value), GetArena());
+  // @@protoc_insertion_point(field_set_rvalue:BICgRPC.bicStartStimulationRequest.deviceAddress)
+}
+inline void bicStartStimulationRequest::set_deviceaddress(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  
+  deviceaddress_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(value),
+              GetArena());
+  // @@protoc_insertion_point(field_set_char:BICgRPC.bicStartStimulationRequest.deviceAddress)
+}
+inline void bicStartStimulationRequest::set_deviceaddress(const char* value,
+    size_t size) {
+  
+  deviceaddress_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(
+      reinterpret_cast<const char*>(value), size), GetArena());
+  // @@protoc_insertion_point(field_set_pointer:BICgRPC.bicStartStimulationRequest.deviceAddress)
+}
+inline std::string* bicStartStimulationRequest::_internal_mutable_deviceaddress() {
+  
+  return deviceaddress_.Mutable(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline std::string* bicStartStimulationRequest::release_deviceaddress() {
+  // @@protoc_insertion_point(field_release:BICgRPC.bicStartStimulationRequest.deviceAddress)
+  return deviceaddress_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline void bicStartStimulationRequest::set_allocated_deviceaddress(std::string* deviceaddress) {
+  if (deviceaddress != nullptr) {
+    
+  } else {
+    
+  }
+  deviceaddress_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), deviceaddress,
+      GetArena());
+  // @@protoc_insertion_point(field_set_allocated:BICgRPC.bicStartStimulationRequest.deviceAddress)
+}
+
+// string functionName = 2;
 inline void bicStartStimulationRequest::clear_functionname() {
   functionname_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
 }
@@ -7506,7 +8218,69 @@ inline void bicStartStimulationRequest::set_allocated_functionname(std::string* 
 
 // bicStimulationFunctionDefinitionRequest
 
-// repeated .BICgRPC.StimulationFunctionDefinition functions = 1;
+// string deviceAddress = 1;
+inline void bicStimulationFunctionDefinitionRequest::clear_deviceaddress() {
+  deviceaddress_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline const std::string& bicStimulationFunctionDefinitionRequest::deviceaddress() const {
+  // @@protoc_insertion_point(field_get:BICgRPC.bicStimulationFunctionDefinitionRequest.deviceAddress)
+  return _internal_deviceaddress();
+}
+inline void bicStimulationFunctionDefinitionRequest::set_deviceaddress(const std::string& value) {
+  _internal_set_deviceaddress(value);
+  // @@protoc_insertion_point(field_set:BICgRPC.bicStimulationFunctionDefinitionRequest.deviceAddress)
+}
+inline std::string* bicStimulationFunctionDefinitionRequest::mutable_deviceaddress() {
+  // @@protoc_insertion_point(field_mutable:BICgRPC.bicStimulationFunctionDefinitionRequest.deviceAddress)
+  return _internal_mutable_deviceaddress();
+}
+inline const std::string& bicStimulationFunctionDefinitionRequest::_internal_deviceaddress() const {
+  return deviceaddress_.Get();
+}
+inline void bicStimulationFunctionDefinitionRequest::_internal_set_deviceaddress(const std::string& value) {
+  
+  deviceaddress_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value, GetArena());
+}
+inline void bicStimulationFunctionDefinitionRequest::set_deviceaddress(std::string&& value) {
+  
+  deviceaddress_.Set(
+    &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::move(value), GetArena());
+  // @@protoc_insertion_point(field_set_rvalue:BICgRPC.bicStimulationFunctionDefinitionRequest.deviceAddress)
+}
+inline void bicStimulationFunctionDefinitionRequest::set_deviceaddress(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  
+  deviceaddress_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(value),
+              GetArena());
+  // @@protoc_insertion_point(field_set_char:BICgRPC.bicStimulationFunctionDefinitionRequest.deviceAddress)
+}
+inline void bicStimulationFunctionDefinitionRequest::set_deviceaddress(const char* value,
+    size_t size) {
+  
+  deviceaddress_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(
+      reinterpret_cast<const char*>(value), size), GetArena());
+  // @@protoc_insertion_point(field_set_pointer:BICgRPC.bicStimulationFunctionDefinitionRequest.deviceAddress)
+}
+inline std::string* bicStimulationFunctionDefinitionRequest::_internal_mutable_deviceaddress() {
+  
+  return deviceaddress_.Mutable(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline std::string* bicStimulationFunctionDefinitionRequest::release_deviceaddress() {
+  // @@protoc_insertion_point(field_release:BICgRPC.bicStimulationFunctionDefinitionRequest.deviceAddress)
+  return deviceaddress_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline void bicStimulationFunctionDefinitionRequest::set_allocated_deviceaddress(std::string* deviceaddress) {
+  if (deviceaddress != nullptr) {
+    
+  } else {
+    
+  }
+  deviceaddress_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), deviceaddress,
+      GetArena());
+  // @@protoc_insertion_point(field_set_allocated:BICgRPC.bicStimulationFunctionDefinitionRequest.deviceAddress)
+}
+
+// repeated .BICgRPC.StimulationFunctionDefinition functions = 2;
 inline int bicStimulationFunctionDefinitionRequest::_internal_functions_size() const {
   return functions_.size();
 }
@@ -9729,6 +10503,8 @@ inline void DisconnectBridgeRequest::set_allocated_name(std::string* name) {
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------
