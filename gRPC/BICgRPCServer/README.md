@@ -13,3 +13,4 @@ Build Instructions:
 6) add BIC Libs to Linker General Additional Libary Directories
 	b) C:\Program Files\Cortec\Bicapi\cppapi\lib64
 7) add "bicapid.lib;" to Additional Dependencies on Linker Input Properties
+8) copy cortec provided DLLs into build/debug
