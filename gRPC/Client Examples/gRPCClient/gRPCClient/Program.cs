@@ -2,7 +2,6 @@
 using Grpc.Core;
 using BICgRPC;
 using System.Threading.Tasks;
-using Google.Protobuf.WellKnownTypes;
 
 namespace BICgRPC_ConsoleTest
 {
@@ -206,7 +205,6 @@ namespace BICgRPC_ConsoleTest
                         break;
                     case ConsoleKey.N:                        
                         Console.WriteLine("Implant Sensing Off Command Result: " + deviceClient.bicSetSensingEnable(new bicSetSensingEnableRequest() { DeviceAddress = DeviceName, EnableSensing = false })) ;
-                        deviceClient.bicNeuralStream(new bicSetStreamEnable() { DeviceAddress = DeviceName, Enable = false });
                         break;
                     case ConsoleKey.P:
                         Console.WriteLine("Implant Power On Command Result: " + deviceClient.bicSetImplantPower(new bicSetImplantPowerRequest() { DeviceAddress = DeviceName, PowerEnabled = true }));
