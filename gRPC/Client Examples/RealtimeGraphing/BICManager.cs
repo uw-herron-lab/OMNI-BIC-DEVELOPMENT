@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 using Grpc.Core;
 using BICgRPC;
@@ -15,15 +16,28 @@ namespace RealtimeGraphing
         private BICBridgeService.BICBridgeServiceClient bridgeClient;
         private BICDeviceService.BICDeviceServiceClient deviceClient;
         private string DeviceName;
-        private List<double> dataBuffer;
+        private List<double>[] dataBuffer;
+        private const int numSensingChannelsDef = 32;
+        public int DataBufferMaxSampleNumber { get; set; }
+        private object dataBufferLock = new object();
+
 
         // Task pointers for streaming methods
         private Task neuroMonitor = null;
 
         // Constructor
-        public BICManager() 
+        public BICManager(int definedDataBufferLength) 
         {
+            // Open up the GRPC Channel to the BIC microservice
             aGRPChannel = new Channel("127.0.0.1:50051", ChannelCredentials.Insecure);
+
+            // Set up variables for visualization: instantiate data buffers and length variables.
+            DataBufferMaxSampleNumber = definedDataBufferLength;
+            dataBuffer = new List<double>[numSensingChannelsDef];
+            for(int i = 0; i < numSensingChannelsDef; i++)
+            {
+                dataBuffer[i] = new List<double>();
+            }
         }
 
         public bool BICConnect()
@@ -87,7 +101,6 @@ namespace RealtimeGraphing
             var connectDeviceReply = deviceClient.ConnectDevice(new ConnectDeviceRequest() { DeviceAddress = DeviceName, LogFileName = "./deviceLog.txt" });
 
             // Start up the neural stream
-            deviceClient.bicSetSensingEnable(new bicSetSensingEnableRequest() { DeviceAddress = DeviceName, EnableSensing = true, BufferSize = 100 });
             neuroMonitor = Task.Run(neuralMonitorTaskAsync);
 
             // Success, return true
@@ -97,18 +110,73 @@ namespace RealtimeGraphing
         public void Dispose()
         {
             // Tell BIC that we want to close!
-            deviceClient.bicNeuralStream(new bicSetStreamEnable() { DeviceAddress = DeviceName, Enable = false });
+            deviceClient.bicNeuralStream(new bicNeuralSetStreamingEnable() { DeviceAddress = DeviceName, Enable = false });
             var disposeReply = deviceClient.bicDispose(new RequestDeviceAddress() { DeviceAddress = DeviceName });
             Console.WriteLine("Dispose BIC Response: " + disposeReply.ToString());
             aGRPChannel.ShutdownAsync().Wait();
         }
 
+        public List<double>[] getData()
+        {
+            List<double>[] outputBuffer = new List<double>[dataBuffer.Length];
+
+            lock(dataBufferLock)
+            {
+                for(int i = 0; i < dataBuffer.Length; i++)
+                {
+                    outputBuffer[i] = new List<double>(dataBuffer[i]);
+                }
+            }
+
+            return outputBuffer;
+        }
+
         async Task neuralMonitorTaskAsync()
         {
-            var stream = deviceClient.bicNeuralStream(new bicSetStreamEnable() { DeviceAddress = DeviceName, Enable = true });
+            var stream = deviceClient.bicNeuralStream(new bicNeuralSetStreamingEnable() { DeviceAddress = DeviceName, Enable = true, BufferSize = 100 });
+            Stopwatch aStopwatch = new Stopwatch();
+            
             while (await stream.ResponseStream.MoveNext())
             {
-                Console.WriteLine("Implant Stream Neural Samples Received: " + stream.ResponseStream.Current.Samples.Count);
+                // Packet interpolation
+                    // TODO
+
+                // Status update to console
+                aStopwatch.Restart();
+
+                // Create local copy buffers and loop variables
+                int numSamples = stream.ResponseStream.Current.Samples.Count;
+                double[] copyBuffer = new double[numSamples];
+
+                // Lock dataBuffer access to ensure no mid-update copy.
+                lock (dataBufferLock)
+                {
+                    // Update the data buffers
+                    for (int channelNum = 0; channelNum < dataBuffer.Length; channelNum++)
+                    {
+                        // Assemble the array of new data for an individual channel
+                        for (int sampleNum = 0; sampleNum < numSamples; sampleNum++)
+                        {
+                            copyBuffer[sampleNum] = stream.ResponseStream.Current.Samples[sampleNum].Measurements[channelNum];
+                        }
+
+                        // Add the new data to the channel data buffer
+                        dataBuffer[channelNum].InsertRange(0, copyBuffer);
+
+                        // Check if the channel data buffer is now too long
+                        int diffLength = dataBuffer[channelNum].Count - DataBufferMaxSampleNumber;
+                        if (diffLength > 0)
+                        {
+                            // Too long, remove the difference
+                            dataBuffer[channelNum].RemoveRange(DataBufferMaxSampleNumber, diffLength);
+                        }
+                    }
+                }
+
+                // Output status
+                aStopwatch.Stop();
+                double elapsedTime = (double)aStopwatch.ElapsedTicks / (double)Stopwatch.Frequency;
+                Console.WriteLine("Implant Stream Neural Samples Received: " + stream.ResponseStream.Current.Samples.Count + "copyTime: " + elapsedTime.ToString());
             }
             Console.WriteLine("(Neural Monitor Task Exited)");
         }

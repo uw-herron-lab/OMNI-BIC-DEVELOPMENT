@@ -49,7 +49,7 @@ using BICgRPC::bicGetImpedanceRequest;
 using BICgRPC::bicGetImpedanceReply;
 using BICgRPC::bicGetTemperatureReply;
 using BICgRPC::bicGetHumidityReply;
-using BICgRPC::bicSetSensingEnableRequest;
+using BICgRPC::bicNeuralSetStreamingEnable;
 using BICgRPC::bicSetImplantPowerRequest;
 using BICgRPC::bicStartStimulationRequest;
 using BICgRPC::bicStimulationFunctionDefinitionRequest;
@@ -671,41 +671,6 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
         return Status::OK;
     }
 
-    Status bicSetSensingEnable(ServerContext* context, const bicSetSensingEnableRequest* request, bicSuccessReply* reply) override {
-        // Check if already initialized
-        if (deviceDirectory.find(request->deviceaddress()) == deviceDirectory.end())
-        {
-            return Status(grpc::StatusCode::FAILED_PRECONDITION, "Not Initialized");
-        }
-
-        // Perform the operation
-        try
-        {
-            if (request->enablesensing())
-            {
-                std::set<uint32_t> referenceElectrodes;
-                for (int i = 0; i < request->refchannels_size(); i++)
-                {
-                    referenceElectrodes.insert(referenceElectrodes.begin(), request->refchannels()[i]);
-                }
-                deviceDirectory[request->deviceaddress()]->listener->neuroDataBufferThreshold = request->buffersize();
-                deviceDirectory[request->deviceaddress()]->theImplant->startMeasurement(referenceElectrodes);
-            }
-            else
-            {
-                deviceDirectory[request->deviceaddress()]->theImplant->stopMeasurement();
-            }
-        }
-        catch (const std::exception&)
-        {
-            // TODO add exception handling
-            return Status::OK;
-        }
-
-        // Respond to client
-        return Status::OK;
-    }
-
     Status bicSetImplantPower(ServerContext* context, const bicSetImplantPowerRequest* request, bicSuccessReply* reply) override {
         // Check if already initialized
         if (deviceDirectory.find(request->deviceaddress()) == deviceDirectory.end())
@@ -884,23 +849,34 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
         return Status::OK;
     }
 
-    Status bicNeuralStream(ServerContext* context, const bicSetStreamEnable* request, ServerWriter<NeuralUpdate>* writer) override {
+    Status bicNeuralStream(ServerContext* context, const bicNeuralSetStreamingEnable* request, ServerWriter<NeuralUpdate>* writer) override {
         // Check requested stream state and current streaming state (don't want to destroy a previously requested stream without it being stopped first)
         if (!deviceDirectory[request->deviceaddress()]->isStreamingNeural && request->enable())
         {
             // Not already streaming and requesting enable
-            deviceDirectory[request->deviceaddress()]->isStreamingNeural = true;
+            // Configure reference electrodes
+            std::set<uint32_t> referenceElectrodes;
+            for (int i = 0; i < request->refchannels_size(); i++)
+            {
+                referenceElectrodes.insert(referenceElectrodes.begin(), request->refchannels()[i]);
+            }
+            deviceDirectory[request->deviceaddress()]->theImplant->startMeasurement(referenceElectrodes);
+
+            // Configure buffers
+            deviceDirectory[request->deviceaddress()]->listener->neuroDataBufferThreshold = request->buffersize();
             deviceDirectory[request->deviceaddress()]->listener->bufferedNeuroUpdate.clear_samples();
+            deviceDirectory[request->deviceaddress()]->isStreamingNeural = true;
             deviceDirectory[request->deviceaddress()]->listener->NeuralWriter = writer;
 
             // Create the waiting objects for notification for end of stream
             std::unique_lock<std::mutex> StreamLockInst(deviceDirectory[request->deviceaddress()]->neuralStreamLock);
             deviceDirectory[request->deviceaddress()]->neuralStreamNotify.wait(StreamLockInst);
 
-            // Clean up the writers and busy flags
+            // Clean up the writers and busy flags, and stop LFP measurement
             deviceDirectory[request->deviceaddress()]->listener->NeuralWriter = NULL;
             deviceDirectory[request->deviceaddress()]->listener->bufferedNeuroUpdate.clear_samples();
             deviceDirectory[request->deviceaddress()]->isStreamingNeural = false;
+            deviceDirectory[request->deviceaddress()]->theImplant->stopMeasurement();
         }
         else if (deviceDirectory[request->deviceaddress()]->isStreamingNeural && request->enable())
         {

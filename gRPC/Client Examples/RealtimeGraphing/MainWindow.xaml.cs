@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Forms.DataVisualization;
+using System.Timers;
 
 namespace RealtimeGraphing
 {
@@ -22,6 +23,7 @@ namespace RealtimeGraphing
     public partial class MainWindow : Window
     {
         private BICManager aBICManager;
+        private Timer graphUpdateTimer;
 
         public MainWindow()
         {
@@ -30,12 +32,33 @@ namespace RealtimeGraphing
 
         public void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            aBICManager = new BICManager();
+            aBICManager = new BICManager(neuroDataChart.Width);
             aBICManager.BICConnect();
+
+            // Update the chart controls
+            neuroDataChart.Series.Add(
+                new System.Windows.Forms.DataVisualization.Charting.Series
+                {
+                    Name = "Channel 1"
+                });
+
+            // Start the update timer
+            graphUpdateTimer = new Timer(500);
+            graphUpdateTimer.Elapsed += graphUpdateTimer_Elapsed;
+            graphUpdateTimer.Start();
+        }
+
+        private void graphUpdateTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            List<double>[] theData = aBICManager.getData();
+
+            // Clear the chart to prep it for updating
+            neuroDataChart.Invoke(new System.Windows.Forms.MethodInvoker(delegate { neuroDataChart.Series[0].Points.DataBindY(theData[2]); }));
         }
 
         private void MainWindow_Closed(object sender, EventArgs e)
         {
+            graphUpdateTimer.Dispose();
             aBICManager.Dispose();
         }
     }

@@ -51,7 +51,7 @@ service BICDeviceService{
 	//rpc bicIsMeasuring (google.protobuf.Empty) returns 
 
 	// Set Functions
-	rpc bicSetSensingEnable (bicSetSensingEnableRequest) returns (bicSuccessReply) {}
+	//rpc bicSetSensingEnable (bicSetSensingEnableRequest) returns (bicSuccessReply) {} // Depreciated
 	rpc bicSetImplantPower (bicSetImplantPowerRequest) returns (bicSuccessReply) {}
 
 	// Stim Functions
@@ -60,7 +60,7 @@ service BICDeviceService{
 	rpc bicDefineStimulationWaveform (bicStimulationFunctionDefinitionRequest) returns (bicSuccessReply) {}
 	
 	// Streaming endpoints
-	rpc bicNeuralStream (bicSetStreamEnable) returns (stream NeuralUpdate) {}
+	rpc bicNeuralStream (bicNeuralSetStreamingEnable) returns (stream NeuralUpdate) {}
 	rpc bicTemperatureStream (bicSetStreamEnable) returns (stream TemperatureUpdate) {}
 	rpc bicHumidityStream (bicSetStreamEnable) returns (stream HumidityUpdate) {}
 	rpc bicConnectionStream (bicSetStreamEnable) returns (stream ConnectionUpdate) {}
@@ -160,11 +160,10 @@ message bicGetHumidityReply{
 	string success = 3;
 }
 
-// bicSetSensingEnable Messages
-// TODO: MERGE INTO bicSetStreamEnable?
-message bicSetSensingEnableRequest{
+// bicNeuralSensingEnableRequest Messages
+message bicNeuralSetStreamingEnable{
 	string deviceAddress = 1;
-	bool enableSensing = 2;
+	bool enable = 2;
 	repeated uint32 refChannels = 3;
 	uint32 bufferSize = 4;
 }

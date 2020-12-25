@@ -193,18 +193,15 @@ namespace BICgRPC_ConsoleTest
                         }
                         break;
                     case ConsoleKey.S:
-                        bicSetSensingEnableRequest aSensingReq = new bicSetSensingEnableRequest() { DeviceAddress = DeviceName, EnableSensing = true, BufferSize = 100 };
-                        // Can define any reference channels by adding them to the list, for simplicity I'm not doping this currently, but this is why I'm declaring aSensingReq.
-                        //aSensingReq.RefChannels.Add(0);
-                        Console.WriteLine("Implant Sensing On Command Result: " + deviceClient.bicSetSensingEnable(aSensingReq));
                         if (neuroMonitor == null || neuroMonitor.IsCompleted)
                         {
                             // Start up the stream
                             neuroMonitor = Task.Run(neuralMonitorTaskAsync);
                         }
-                        break;
-                    case ConsoleKey.N:                        
-                        Console.WriteLine("Implant Sensing Off Command Result: " + deviceClient.bicSetSensingEnable(new bicSetSensingEnableRequest() { DeviceAddress = DeviceName, EnableSensing = false })) ;
+                        else
+                        {
+                            deviceClient.bicNeuralStream(new bicNeuralSetStreamingEnable() { DeviceAddress = DeviceName, Enable = false });
+                        }
                         break;
                     case ConsoleKey.P:
                         Console.WriteLine("Implant Power On Command Result: " + deviceClient.bicSetImplantPower(new bicSetImplantPowerRequest() { DeviceAddress = DeviceName, PowerEnabled = true }));
@@ -299,7 +296,7 @@ namespace BICgRPC_ConsoleTest
 
         static async Task neuralMonitorTaskAsync()
         {
-            var stream = deviceClient.bicNeuralStream(new bicSetStreamEnable() { DeviceAddress = DeviceName, Enable = true });
+            var stream = deviceClient.bicNeuralStream(new bicNeuralSetStreamingEnable() { DeviceAddress = DeviceName, Enable = true, BufferSize = 100 });
             while (await stream.ResponseStream.MoveNext())
             {
                 Console.WriteLine("Implant Stream Neural Samples Received: " + stream.ResponseStream.Current.Samples.Count);
@@ -317,8 +314,7 @@ namespace BICgRPC_ConsoleTest
             Console.WriteLine("\te : Toggle Error Streaming");
             Console.WriteLine("\tc : Toggle Connection Streaming");
             Console.WriteLine("\tl : Toggle Power State Streaming");
-            Console.WriteLine("\ts : Start Neural Sense Streaming");
-            Console.WriteLine("\tn : Stop Neural Sense Streaming");
+            Console.WriteLine("\ts : Toggle Neural Sense Streaming");
             Console.WriteLine("\tp : Enable Power to Implant (enabled by default)");
             Console.WriteLine("\to : Disable Power to Implant (enabled by default)");
             Console.WriteLine("\t1 : Start Stimulation - random number (1-9) 1mA pulses");
