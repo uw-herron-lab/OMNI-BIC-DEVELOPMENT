@@ -11,7 +11,7 @@
         Closed="MainWindow_Closed"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <WindowsFormsHost x:Name="formHost" HorizontalAlignment="Left" Height="399" Margin="10,10,0,0" VerticalAlignment="Top" Width="772">
+        <WindowsFormsHost x:Name="formHost" Margin="10">
             <wfdv:Chart x:Name="neuroDataChart" Dock="Fill">
                 <wfdv:Chart.Series>
                     <wfdv:Series Name="series" ChartType="Line"/>

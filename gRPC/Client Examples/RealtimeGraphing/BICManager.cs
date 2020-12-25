@@ -116,6 +116,10 @@ namespace RealtimeGraphing
             aGRPChannel.ShutdownAsync().Wait();
         }
 
+        /// <summary>
+        /// Provide a copy of the current data buffers
+        /// </summary>
+        /// <returns>A list of double-arrays, each array is composed of the latest time domain data from each BIC channel. index 0 is the oldest data. </returns>
         public List<double>[] getData()
         {
             List<double>[] outputBuffer = new List<double>[dataBuffer.Length];
@@ -131,15 +135,51 @@ namespace RealtimeGraphing
             return outputBuffer;
         }
 
+        /// <summary>
+        /// Monitor the neural stream for new data
+        /// </summary>
+        /// <returns>Task completion information</returns>
         async Task neuralMonitorTaskAsync()
         {
             var stream = deviceClient.bicNeuralStream(new bicNeuralSetStreamingEnable() { DeviceAddress = DeviceName, Enable = true, BufferSize = 100 });
+            
+            // Create performance-tracking interpacket variables
             Stopwatch aStopwatch = new Stopwatch();
+            uint latestPacketNum = 0;
             
             while (await stream.ResponseStream.MoveNext())
             {
-                // Packet interpolation
-                    // TODO
+                // Missing packet handling
+                if (stream.ResponseStream.Current.Samples[0].SampleCounter != (latestPacketNum + 1) )
+                {
+                    // Determine the number of packets missing
+                    long diffPackets = stream.ResponseStream.Current.Samples[0].SampleCounter - (latestPacketNum + 1);
+                    
+                    // Account for uint wrap around (RARE)
+                    if(diffPackets < 0)
+                    {
+                        diffPackets = uint.MaxValue - (latestPacketNum + 1) + stream.ResponseStream.Current.Samples[0].SampleCounter;
+                    }
+
+                    // Create a NAN buffer to append into the dataBuffer
+                    double[] nanBuffer = new double[diffPackets];
+
+                    // Fill the buffer with NANs
+                    for (int i = 0; i < diffPackets; i++)
+                    {
+                        nanBuffer[i] = double.NaN;
+                    }
+                    
+                    // Lock dataBuffer access to ensure no mid-update copy.
+                    lock (dataBufferLock)
+                    {
+                        // Update the data buffers with NAN points
+                        for (int channelNum = 0; channelNum < dataBuffer.Length; channelNum++)
+                        {
+                            dataBuffer[channelNum].AddRange(nanBuffer);
+                        }
+                    }
+                }
 
                 // Status update to console
                 aStopwatch.Restart();
@@ -161,17 +201,20 @@ namespace RealtimeGraphing
                         }
 
                         // Add the new data to the channel data buffer
-                        dataBuffer[channelNum].InsertRange(0, copyBuffer);
+                        dataBuffer[channelNum].AddRange(copyBuffer);
 
                         // Check if the channel data buffer is now too long
                         int diffLength = dataBuffer[channelNum].Count - DataBufferMaxSampleNumber;
                         if (diffLength > 0)
                         {
                             // Too long, remove the difference
-                            dataBuffer[channelNum].RemoveRange(DataBufferMaxSampleNumber, diffLength);
+                            dataBuffer[channelNum].RemoveRange(0, diffLength);
                         }
                     }
                 }
+
+                // Update packet tracking number
+                latestPacketNum = stream.ResponseStream.Current.Samples[numSamples - 1].SampleCounter;
 
                 // Output status
                 aStopwatch.Stop();

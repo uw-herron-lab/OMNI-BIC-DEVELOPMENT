@@ -36,14 +36,31 @@ namespace RealtimeGraphing
             aBICManager.BICConnect();
 
             // Update the chart controls
+            neuroDataChart.Series.Clear();
             neuroDataChart.Series.Add(
                 new System.Windows.Forms.DataVisualization.Charting.Series
                 {
-                    Name = "Channel 1"
+                    Name = "Channel 1",
+                    Color = System.Drawing.Color.Blue,
+                    ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastLine
+                });
+            neuroDataChart.Series.Add(
+                new System.Windows.Forms.DataVisualization.Charting.Series
+                {
+                    Name = "Channel 2",
+                    Color = System.Drawing.Color.Red,
+                    ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastLine
+                });
+            neuroDataChart.Series.Add(
+                new System.Windows.Forms.DataVisualization.Charting.Series
+                {
+                    Name = "Channel 3",
+                    Color = System.Drawing.Color.Green,
+                    ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line
                 });
 
             // Start the update timer
-            graphUpdateTimer = new Timer(500);
+            graphUpdateTimer = new Timer(200);
             graphUpdateTimer.Elapsed += graphUpdateTimer_Elapsed;
             graphUpdateTimer.Start();
         }
@@ -53,7 +70,12 @@ namespace RealtimeGraphing
             List<double>[] theData = aBICManager.getData();
 
             // Clear the chart to prep it for updating
-            neuroDataChart.Invoke(new System.Windows.Forms.MethodInvoker(delegate { neuroDataChart.Series[0].Points.DataBindY(theData[2]); }));
+            neuroDataChart.Invoke(new System.Windows.Forms.MethodInvoker(
+                delegate { 
+                    neuroDataChart.Series[0].Points.DataBindY(theData[0]);
+                    neuroDataChart.Series[1].Points.DataBindY(theData[1]);
+                    neuroDataChart.Series[2].Points.DataBindY(theData[2]);
+                }));
         }
 
         private void MainWindow_Closed(object sender, EventArgs e)
