@@ -1,6 +1,0 @@
-﻿  pch.cpp
-  bicDevice.cpp
-  dllmain.cpp
-  Generating Code...
-     Creating library bin\x64\Debug\BICCPPWrapper.lib and object bin\x64\Debug\BICCPPWrapper.exp
-  BICCPPWrapper.vcxproj -> D:\Source Repositories\BrainInterchange-Development\BICSharpNetFramework\BICCPPWrapper\bin\x64\Debug\BICCPPWrapper.dll

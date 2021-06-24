@@ -8,20 +8,20 @@
 #include <cppapi/IImplant.h>
 #include <cppapi/Sample.h>
 #include <cppapi/IStimulationCommandFactory.h>
-#include <mutex>
-#include <condition_variable>
-
-#include <iostream>
-#include <memory>
-#include <string>
-#include <unordered_map>
-#include <cppapi/bic3232constants.h>
 
 #include <grpcpp/grpcpp.h>
 #include <grpcpp/health_check_service_interface.h>
 #include <grpcpp/ext/proto_server_reflection_plugin.h>
 #include <google/protobuf/any.pb.h>
 #include <google/protobuf/empty.pb.h>
+
+#include <mutex>
+#include <condition_variable>
+#include <iostream>
+#include <memory>
+#include <string>
+#include <unordered_map>
+#include <cppapi/bic3232constants.h>
 
 #include "BICgRPC.grpc.pb.h"
 
