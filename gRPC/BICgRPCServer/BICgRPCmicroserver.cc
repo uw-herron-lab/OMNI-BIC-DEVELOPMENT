@@ -384,6 +384,24 @@ class BICDeviceServiceImpl final : public BICDeviceService::Service {
         theImplantFactory = serverFactory;
     }
 
+    public:void controlDispose()   
+    {   
+        for (auto it=deviceDirectory.begin(); it!=deviceDirectory.end(); it++)
+        {
+            // Stop all streaming!
+            it->second->tempStreamNotify.notify_all();
+            it->second->humidStreamNotify.notify_all();
+            it->second->neuralStreamNotify.notify_all();
+            it->second->connectionStreamNotify.notify_all();
+            it->second->errorStreamNotify.notify_all();
+            it->second->powerStreamNotify.notify_all();
+
+            // Dispose the things!
+            it->second->theImplant->setImplantPower(false);
+            it->second->theImplant->~IImplant();
+        }
+    }
+
     // ************************* Construction, Initialization, and Destruction Function Declarations *************************
     Status ScanDevices(ServerContext* context, const ScanDevicesRequest* request, ScanDevicesReply* reply) override {
 
@@ -1142,6 +1160,55 @@ class BICBridgeServiceImpl final : public BICBridgeService::Service {
     }
 };
 
+// Server Objects
+std::unique_ptr<Server> gRPCServer;
+BICDeviceServiceImpl deviceService;
+BICBridgeServiceImpl bridgeService;
+
+// Server Control Handler
+BOOL WINAPI CtrlHandler(DWORD fdwCtrlType)
+{
+    switch (fdwCtrlType)
+    {
+        // Handle the CTRL-C signal.
+    case CTRL_C_EVENT:
+        printf("Ctrl-C event\n\n");
+        deviceService.controlDispose();
+        gRPCServer->Shutdown();
+        return TRUE;
+
+        // CTRL-CLOSE: confirm that the user wants to exit.
+    case CTRL_CLOSE_EVENT:
+        printf("Ctrl-Close event\n\n");
+        deviceService.controlDispose();
+        gRPCServer->Shutdown();
+        return TRUE;
+
+        // Pass other signals to the next handler.
+    case CTRL_BREAK_EVENT:
+        printf("Ctrl-Break event\n\n");
+        deviceService.controlDispose();
+        gRPCServer->Shutdown();
+        return TRUE;
+
+    case CTRL_LOGOFF_EVENT:
+        printf("Ctrl-Logoff event\n\n");
+        deviceService.controlDispose();
+        gRPCServer->Shutdown();
+        return TRUE;
+
+    case CTRL_SHUTDOWN_EVENT:
+        printf("Ctrl-Shutdown event\n\n");
+        deviceService.controlDispose();
+        gRPCServer->Shutdown();
+        return TRUE;
+
+    default:
+        return TRUE;
+    }
+}
+
+// Server Instance
 void RunServer() {
     // ******************* Build up GRPC Interface *******************
     // Define the server address
@@ -1154,9 +1221,6 @@ void RunServer() {
     builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());
 
     // ******************* Build up BIC Services *******************
-    // Instantiate services
-    BICDeviceServiceImpl deviceService;
-    BICBridgeServiceImpl bridgeService;
     // Create implant factory for cross-service usage
     std::unique_ptr <IImplantFactory> theImplantFactory;
     theImplantFactory.reset(createImplantFactory(false, ""));
@@ -1168,11 +1232,14 @@ void RunServer() {
     builder.RegisterService(&deviceService);
     builder.RegisterService(&bridgeService);
     // Finally assemble the server.
-    std::unique_ptr<Server> server(builder.BuildAndStart());
+    gRPCServer = builder.BuildAndStart();
     std::cout << "Server listening on " << server_address << std::endl;
 
+    // ******************* Subscribe to Windows Control Event Handler *******************
+    SetConsoleCtrlHandler(CtrlHandler, TRUE);
+
     // ******************* Wait for Shutdown *******************
-    server->Wait();
+    gRPCServer->Wait();
 
     // ******************* Cleanup *******************
     theImplantFactory->~IImplantFactory();
