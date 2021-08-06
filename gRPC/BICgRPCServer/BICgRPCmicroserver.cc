@@ -24,9 +24,9 @@
 #include <cppapi/bic3232constants.h>
 
 #include "BICgRPC.grpc.pb.h"
-#include "BICListener.h"
-#include "BICDeviceGRPCService.h"
-#include "BICBridgeGRPCService.h"
+#include "ClassesSource/BICListener.h"
+#include "ClassesSource/BICDeviceGRPCService.h"
+#include "ClassesSource/BICBridgeGRPCService.h"
 
 
 // BIC Usings
