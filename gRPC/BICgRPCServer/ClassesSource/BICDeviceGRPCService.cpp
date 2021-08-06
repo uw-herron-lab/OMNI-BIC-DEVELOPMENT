@@ -538,23 +538,26 @@ namespace BICGRPCHelperNamespace
             {
                 referenceElectrodes.insert(referenceElectrodes.begin(), request->refchannels()[i]);
             }
-            deviceDirectory[request->deviceaddress()]->theImplant->startMeasurement(referenceElectrodes);
 
-            // Configure buffers
-            deviceDirectory[request->deviceaddress()]->listener->neuroDataBufferThreshold = request->buffersize();
-            deviceDirectory[request->deviceaddress()]->listener->bufferedNeuroUpdate.clear_samples();
+            // Configure buffers and state variables for streaming start
             deviceDirectory[request->deviceaddress()]->isStreamingNeural = true;
+            deviceDirectory[request->deviceaddress()]->listener->neuroDataBufferThreshold = request->buffersize();
+            deviceDirectory[request->deviceaddress()]->listener->arena.Reset();
+            deviceDirectory[request->deviceaddress()]->listener->bufferedNeuroUpdate = google::protobuf::Arena::CreateMessage<BICgRPC::NeuralUpdate>(&deviceDirectory[request->deviceaddress()]->listener->arena);
             deviceDirectory[request->deviceaddress()]->listener->NeuralWriter = writer;
 
             // Create the waiting objects for notification for end of stream
             std::unique_lock<std::mutex> StreamLockInst(deviceDirectory[request->deviceaddress()]->neuralStreamLock);
-            deviceDirectory[request->deviceaddress()]->neuralStreamNotify.wait(StreamLockInst);
 
-            // Clean up the writers and busy flags, and stop LFP measurement
-            deviceDirectory[request->deviceaddress()]->listener->NeuralWriter = NULL;
-            deviceDirectory[request->deviceaddress()]->listener->bufferedNeuroUpdate.clear_samples();
-            deviceDirectory[request->deviceaddress()]->isStreamingNeural = false;
+            // Start measurement until lock is called
+            deviceDirectory[request->deviceaddress()]->theImplant->startMeasurement(referenceElectrodes);
+            deviceDirectory[request->deviceaddress()]->neuralStreamNotify.wait(StreamLockInst);
             deviceDirectory[request->deviceaddress()]->theImplant->stopMeasurement();
+
+            // Clean up the writers and busy flags
+            deviceDirectory[request->deviceaddress()]->listener->NeuralWriter = NULL;
+            deviceDirectory[request->deviceaddress()]->listener->arena.Reset();
+            deviceDirectory[request->deviceaddress()]->isStreamingNeural = false;
         }
         else if (deviceDirectory[request->deviceaddress()]->isStreamingNeural && request->enable())
         {

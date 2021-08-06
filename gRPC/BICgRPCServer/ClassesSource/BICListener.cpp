@@ -122,11 +122,12 @@ namespace BICGRPCHelperNamespace
                         std::cout << "** Missed Neural Datapoints: " << diff << "! **" << std::endl;
 
                         // If neural data buffer is not empty, flush it so we can keep buffers continuous
-                        if (NeuralWriter != NULL && bufferedNeuroUpdate.samples().size() > 0)
+                        if (NeuralWriter != NULL && bufferedNeuroUpdate->samples().size() > 0)
                         {
                             // TODO: Is performance here an issue? Maybe use pingpong buffers and write in a different thread?
-                            NeuralWriter->Write(bufferedNeuroUpdate);
-                            bufferedNeuroUpdate.Clear();
+                            NeuralWriter->Write(*bufferedNeuroUpdate);
+                            arena.Reset();
+                            bufferedNeuroUpdate = google::protobuf::Arena::CreateMessage<BICgRPC::NeuralUpdate>(&arena);
                         }
                     }
                 }
@@ -139,26 +140,34 @@ namespace BICGRPCHelperNamespace
                 // If we're streaming, create message
                 if (NeuralWriter != NULL)
                 {
-                    NeuralSample* newSample = bufferedNeuroUpdate.add_samples();
+                    NeuralSample* newSample = google::protobuf::Arena::CreateMessage<NeuralSample>(&arena);
+
                     newSample->set_numberofmeasurements(samples->at(i).getNumberOfMeasurements());
                     newSample->set_supplyvoltage(samples->at(i).getSupplyVoltage());
                     newSample->set_isconnected(samples->at(i).isConnected());
                     newSample->set_stimulationnumber(samples->at(i).getStimulationId());
                     newSample->set_stimulationactive(samples->at(i).isStimulationActive());
                     newSample->set_samplecounter(samples->at(i).getMeasurementCounter());
+
+                    // Copy in the time domain data
+                    double* theData = samples->at(i).getMeasurements();
                     for (int j = 0; j < samples->at(i).getNumberOfMeasurements(); j++)
                     {
-                        newSample->add_measurements(samples->at(i).getMeasurements()[j]);
+                        newSample->add_measurements(theData[j]);
                     }
+                    delete theData;
+
+                    bufferedNeuroUpdate->mutable_samples()->AddAllocated(newSample);
                 }
             }
 
             // If streaming, send data
             // TODO: Use wait mutex to check before nulls?
-            if (NeuralWriter != NULL && bufferedNeuroUpdate.samples().size() >= neuroDataBufferThreshold)
+            if (NeuralWriter != NULL && bufferedNeuroUpdate->samples().size() >= neuroDataBufferThreshold)
             {
-                NeuralWriter->Write(bufferedNeuroUpdate);
-                bufferedNeuroUpdate.Clear();
+                NeuralWriter->Write(*bufferedNeuroUpdate);
+                arena.Reset();
+                bufferedNeuroUpdate = google::protobuf::Arena::CreateMessage<BICgRPC::NeuralUpdate>(&arena);
             }
         }
 

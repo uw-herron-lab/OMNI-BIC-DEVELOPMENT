@@ -41,7 +41,8 @@ namespace BICGRPCHelperNamespace
 
         // ************************* Public Streaming Parameter Objects *************************
         uint32_t neuroDataBufferThreshold = 1;
-        BICgRPC::NeuralUpdate bufferedNeuroUpdate;
+        google::protobuf::Arena arena;
+        BICgRPC::NeuralUpdate* bufferedNeuroUpdate;
 
     private:
         // ************************* Private Stream Management Objects *************************
