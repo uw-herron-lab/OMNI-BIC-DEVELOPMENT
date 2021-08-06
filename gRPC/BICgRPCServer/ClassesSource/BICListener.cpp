@@ -140,14 +140,13 @@ namespace BICGRPCHelperNamespace
                 if (NeuralWriter != NULL)
                 {
                     NeuralSample* newSample = bufferedNeuroUpdate.add_samples();
-                    int numMeasures = samples->at(i).getNumberOfMeasurements();
-                    newSample->set_numberofmeasurements(numMeasures);
+                    newSample->set_numberofmeasurements(samples->at(i).getNumberOfMeasurements());
                     newSample->set_supplyvoltage(samples->at(i).getSupplyVoltage());
                     newSample->set_isconnected(samples->at(i).isConnected());
                     newSample->set_stimulationnumber(samples->at(i).getStimulationId());
                     newSample->set_stimulationactive(samples->at(i).isStimulationActive());
                     newSample->set_samplecounter(samples->at(i).getMeasurementCounter());
-                    for (int j = 0; j < numMeasures; j++)
+                    for (int j = 0; j < samples->at(i).getNumberOfMeasurements(); j++)
                     {
                         newSample->add_measurements(samples->at(i).getMeasurements()[j]);
                     }
