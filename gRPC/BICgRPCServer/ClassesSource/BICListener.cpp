@@ -121,10 +121,11 @@ namespace BICGRPCHelperNamespace
                         // Write error message to server console
                         std::cout << "** Missed Neural Datapoints: " << diff << "! **" << std::endl;
 
+                        // TODO: instead of flushing, interpolate (mark data as interpolated in NeuralSample message
                         // If neural data buffer is not empty, flush it so we can keep buffers continuous
                         if (NeuralWriter != NULL && bufferedNeuroUpdate->samples().size() > 0)
                         {
-                            // TODO: Is performance here an issue? Maybe use pingpong buffers and write in a different thread?
+                            // TODO: not multi-thread safe, irrelevant when interpolation is implemented
                             NeuralWriter->Write(*bufferedNeuroUpdate);
                             arena.Reset();
                             bufferedNeuroUpdate = google::protobuf::Arena::CreateMessage<BICgRPC::NeuralUpdate>(&arena);
@@ -140,8 +141,10 @@ namespace BICGRPCHelperNamespace
                 // If we're streaming, create message
                 if (NeuralWriter != NULL)
                 {
+                    // Create a new sample data buffer in the arena
                     NeuralSample* newSample = google::protobuf::Arena::CreateMessage<NeuralSample>(&arena);
 
+                    // Add in the fields from the latest BIC packet
                     newSample->set_numberofmeasurements(samples->at(i).getNumberOfMeasurements());
                     newSample->set_supplyvoltage(samples->at(i).getSupplyVoltage());
                     newSample->set_isconnected(samples->at(i).isConnected());
@@ -149,7 +152,7 @@ namespace BICGRPCHelperNamespace
                     newSample->set_stimulationactive(samples->at(i).isStimulationActive());
                     newSample->set_samplecounter(samples->at(i).getMeasurementCounter());
 
-                    // Copy in the time domain data
+                    // Copy in the time domain data in
                     double* theData = samples->at(i).getMeasurements();
                     for (int j = 0; j < samples->at(i).getNumberOfMeasurements(); j++)
                     {

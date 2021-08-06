@@ -529,6 +529,7 @@ namespace BICGRPCHelperNamespace
 
     grpc::Status BICDeviceGRPCService::bicNeuralStream(grpc::ServerContext* context, const BICgRPC::bicNeuralSetStreamingEnable* request, grpc::ServerWriter<BICgRPC::NeuralUpdate>* writer)  {
         // Check requested stream state and current streaming state (don't want to destroy a previously requested stream without it being stopped first)
+        // TODO: should separate neural streaming out from gRPC streaming on a per-functionality (logging, processing, streaming) basis
         if (!deviceDirectory[request->deviceaddress()]->isStreamingNeural && request->enable())
         {
             // Not already streaming and requesting enable
