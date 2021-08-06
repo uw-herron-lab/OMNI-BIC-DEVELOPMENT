@@ -1,9 +1,8 @@
-﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29911.84
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gRPCClient", "gRPCClient\gRPCClient.csproj", "{AA72DD57-AE89-464C-9B05-4A6CABF9A408}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gRPCClient_ConsoleTest", "gRPCClient\gRPCClient_ConsoleTest.csproj", "{AA72DD57-AE89-464C-9B05-4A6CABF9A408}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
