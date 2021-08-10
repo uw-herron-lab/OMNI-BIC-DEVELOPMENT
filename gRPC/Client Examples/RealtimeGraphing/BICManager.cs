@@ -141,8 +141,8 @@ namespace RealtimeGraphing
         /// <returns>Task completion information</returns>
         async Task neuralMonitorTaskAsync()
         {
-            var stream = deviceClient.bicNeuralStream(new bicNeuralSetStreamingEnable() { DeviceAddress = DeviceName, Enable = true, BufferSize = 100 });
-            
+            var stream = deviceClient.bicNeuralStream(new bicNeuralSetStreamingEnable() { DeviceAddress = DeviceName, Enable = true, BufferSize = 100, MaxInterpolationPoints = 10 });
+        
             // Create performance-tracking interpacket variables
             Stopwatch aStopwatch = new Stopwatch();
             uint latestPacketNum = 0;
@@ -159,6 +159,12 @@ namespace RealtimeGraphing
                     if(diffPackets < 0)
                     {
                         diffPackets = uint.MaxValue - (latestPacketNum + 1) + stream.ResponseStream.Current.Samples[0].SampleCounter;
+                    }
+
+                    // Insert a maximum of 10 NANs
+                    if(diffPackets > 10)
+                    {
+                        diffPackets = 10;
                     }
 
                     // Create a NAN buffer to append into the dataBuffer

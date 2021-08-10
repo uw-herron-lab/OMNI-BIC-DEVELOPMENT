@@ -41,6 +41,7 @@ namespace BICGRPCHelperNamespace
 
         // ************************* Public Streaming Parameter Objects *************************
         uint32_t neuroDataBufferThreshold = 1;
+        uint32_t interplationThreshold = 10;
         google::protobuf::Arena arena;
         BICgRPC::NeuralUpdate* bufferedNeuroUpdate;
 
@@ -49,6 +50,7 @@ namespace BICGRPCHelperNamespace
         std::mutex m_mutex;
         bool m_isStimulating;
         bool m_isMeasuring;
-        uint32_t lastNeuroCount = UINT32_MAX;
+        uint32_t lastNeuroCount = 0;
+        double latestData[32] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
     };
 }

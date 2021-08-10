@@ -543,6 +543,7 @@ namespace BICGRPCHelperNamespace
             // Configure buffers and state variables for streaming start
             deviceDirectory[request->deviceaddress()]->isStreamingNeural = true;
             deviceDirectory[request->deviceaddress()]->listener->neuroDataBufferThreshold = request->buffersize();
+            deviceDirectory[request->deviceaddress()]->listener->interplationThreshold = request->maxinterpolationpoints();
             deviceDirectory[request->deviceaddress()]->listener->arena.Reset();
             deviceDirectory[request->deviceaddress()]->listener->bufferedNeuroUpdate = google::protobuf::Arena::CreateMessage<BICgRPC::NeuralUpdate>(&deviceDirectory[request->deviceaddress()]->listener->arena);
             deviceDirectory[request->deviceaddress()]->listener->NeuralWriter = writer;

@@ -167,6 +167,7 @@ message bicNeuralSetStreamingEnable{
 	bool enable = 2;
 	repeated uint32 refChannels = 3;
 	uint32 bufferSize = 4;
+	uint32 maxInterpolationPoints = 5;
 }
 
 // bicSetImplantPower Messages
@@ -233,6 +234,7 @@ message NeuralSample{
 	uint32 stimulationNumber = 5;
 	bool stimulationActive = 6;
 	uint32 sampleCounter = 7;
+	bool isInterpolated = 8;
 }
 
 message ConnectionUpdate{
