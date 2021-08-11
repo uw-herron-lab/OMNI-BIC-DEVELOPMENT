@@ -170,6 +170,8 @@ namespace BICGRPCHelperNamespace
                             {
                                 // Attempt to write the packet to the gRPC stream writer
                                 try {
+                                    // TODO - THIS WILL BLOCK IF NEURALWRITER BUFFER IS FULL DUE TO SLOW READING BY CLIENT
+                                    // NEED TO DISSOCIATE CORTEC READS FROM GRPC STREAMING
                                     NeuralWriter->Write(*bufferedNeuroUpdate);
                                 }
                                 catch (std::exception& anyException)
@@ -221,6 +223,8 @@ namespace BICGRPCHelperNamespace
             {
                 // Attempt to write the packet to the gRPC stream writer
                 try {
+                    // TODO - THIS WILL BLOCK IF NEURALWRITER BUFFER IS FULL DUE TO SLOW READING BY CLIENT
+                    // NEED TO DISSOCIATE CORTEC READS FROM GRPC STREAMING
                     NeuralWriter->Write(*bufferedNeuroUpdate);
                 }
                 catch (std::exception& anyException)
