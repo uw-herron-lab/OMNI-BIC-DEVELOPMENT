@@ -14,46 +14,81 @@ using BICgRPC::NeuralSample;
 
 namespace BICGRPCHelperNamespace
 {
+    /// <summary>
+    /// Event Handler for Brain Interchange stimulation state change events
+    /// </summary>
+    /// <param name="isStimulating">Boolean indicates if stimulation is active or not</param>
     void BICListener::onStimulationStateChanged(const bool isStimulating)
     {
-        // TODO - anything? bug report? Should only trigger when there is a change right?
+        // Write Event Information to Console
         std::cout << "\tDEBUG: Stimulation state changed: " << isStimulating << std::endl;
 
+        // Grab a local-scoped lock before updating multi-threaded accessable state variables
         std::lock_guard<std::mutex> lock(m_mutex);
+
+        // Update the value, local-scoped locked is released at end of function
         m_isStimulating = isStimulating;
     }
 
+    /// <summary>
+    /// Accessor for latest stimulation state value received from onStimulationStateHChanged event handler
+    /// </summary>
+    /// <returns>Boolean stimulation state</returns>
     bool BICListener::isStimulating()
     {
-        // TODO - anything?
+        // Grab a local-scoped lock before updating multi-threaded accessable state variables
         std::lock_guard<std::mutex> lock(m_mutex);
+
+        // Return the value, local-scoped locked is released at end of function
         return m_isStimulating;
     }
 
+    /// <summary>
+    /// Event Handler for Brain Interchange measurement/sensing state change events
+    /// </summary>
+    /// <param name="isMeasuring">Boolean indicates if measurement/sensing is active or not</param>
     void BICListener::onMeasurementStateChanged(const bool isMeasuring)
     {
-        // TODO - anything? bug report? Should only trigger when there is a change right?
+        // Write Event Information to Console
         std::cout << "\tDEBUG: Measurement state changed: " << isMeasuring << std::endl;
 
+        // Grab a local-scoped lock before updating multi-threaded accessable state variables
         std::lock_guard<std::mutex> lock(m_mutex);
+
+        // Update the value, local-scoped locked is released at end of function
         m_isMeasuring = isMeasuring;
     }
 
+    /// <summary>
+    /// Accessor for latest measurement/sensing state value received from onMeasurementStateChanged event handler
+    /// </summary>
+    /// <returns>Boolean measurement/sensing state</returns>
     bool BICListener::isMeasuring()
     {
-        // TODO - anything?
+        // Grab a local-scoped lock before updating multi-threaded accessable state variables
         std::lock_guard<std::mutex> lock(m_mutex);
+
+        // Return the value, local-scoped locked is released at end of functione
         return m_isMeasuring;
     }
 
+    /// <summary>
+    /// Event handler for Brain Interchange connection state change events that include connection update information 
+    /// </summary>
+    /// <param name="info">Connection update information</param>
     void BICListener::onConnectionStateChanged(const connection_info_t& info)
     {
+        // First, determine if connection update is between PC to external or if it is to external to INS.
         if (info.count(ConnectionType::PC_TO_EXT) > 0)
         {
+            // Event refers to PC/External USB connection
             const bool isConnected = info.at(ConnectionType::PC_TO_EXT) == ConnectionState::CONNECTED;
+
+            // Write out new state to the console
             std::cout << "*** Connection state from PC to external unit changed: "
                 << (isConnected ? "connected" : "disconnected") << std::endl;
 
+            // If gRPC connection streaming is enabled, write out the update
             if (ConnectionWriter != NULL)
             {
                 ConnectionUpdate connectionMessage;
@@ -64,10 +99,14 @@ namespace BICGRPCHelperNamespace
         }
         if (info.count(ConnectionType::EXT_TO_IMPLANT) > 0)
         {
+            // Event refers to External/INS inductive connection
             const bool isConnected = info.at(ConnectionType::EXT_TO_IMPLANT) == ConnectionState::CONNECTED;
+
+            // Write out new state to the console
             std::cout << "*** Connection state from external unit to implant changed: "
                 << (isConnected ? "connected" : "disconnected") << std::endl;
 
+            // If gRPC connection streaming is enabled, write out the update
             if (ConnectionWriter != NULL)
             {
                 ConnectionUpdate connectionMessage;
@@ -78,8 +117,13 @@ namespace BICGRPCHelperNamespace
         }
     }
 
+    /// <summary>
+    /// Event handler for Brain Interchange connection state change events that only include boolean connection update 
+    /// </summary>
+    /// <param name="isConnected">Boolean indicating if it is connected or not</param>
     void BICListener::onConnectionStateChanged(const bool isConnected)
     {
+        // If gRPC connection streaming is enabled, write out the update
         if (ConnectionWriter != NULL)
         {
             ConnectionUpdate connectionMessage;
@@ -89,8 +133,13 @@ namespace BICGRPCHelperNamespace
         }
     }
 
+    /// <summary>
+    /// Event handler for Brain Interchange neural data received
+    /// </summary>
+    /// <param name="samples">BIC sensed LFP samples</param>
     void BICListener::onData(const std::vector<CSample>* samples)
     {
+        // Ensure samples is not empty before working with it.
         if (!samples->empty())
         {
             // Create message container for streaming, may not be used
@@ -241,9 +290,15 @@ namespace BICGRPCHelperNamespace
         delete samples;
     }
 
+    /// <summary>
+    /// Event handler for Brain Interchange implant received voltage update
+    /// </summary>
+    /// <param name="voltageMicroV">New implant voltage level</param>
     void BICListener::onImplantVoltageChanged(const double voltageMicroV)
     {
         // TODO check units
+
+        // If gRPC power streaming is enabled, write out the update
         if (PowerWriter != NULL)
         {
             PowerUpdate powerMessage;
@@ -254,8 +309,13 @@ namespace BICGRPCHelperNamespace
         }
     }
 
+    /// <summary>
+    /// Event handler for Brain Interchange external unit's coil current update
+    /// </summary>
+    /// <param name="currentMilliA">New coil current in milliamps</param>
     void BICListener::onPrimaryCoilCurrentChanged(const double currentMilliA)
     {
+        // If gRPC power streaming is enabled, write out the update
         if (PowerWriter != NULL)
         {
             PowerUpdate powerMessage;
@@ -266,8 +326,13 @@ namespace BICGRPCHelperNamespace
         }
     }
 
+    /// <summary>
+    /// Brain Interchange event handler for power control value events
+    /// </summary>
+    /// <param name="controlValue">New power system control percentage</param>
     void BICListener::onImplantControlValueChanged(const double controlValue)
     {
+        // If gRPC power streaming is enabled, write out the update
         if (PowerWriter != NULL)
         {
             PowerUpdate powerMessage;
@@ -278,8 +343,13 @@ namespace BICGRPCHelperNamespace
         }
     }
 
+    /// <summary>
+    /// Brain Interchange event handler for implanted temperature events
+    /// </summary>
+    /// <param name="temperature">New implanted device's temperature</param>
     void BICListener::onTemperatureChanged(const double temperature)
     {
+        // If gRPC temperature streaming is enabled, write out the update
         if (TemperatureWriter != NULL)
         {
             TemperatureUpdate tempMessage;
@@ -289,8 +359,13 @@ namespace BICGRPCHelperNamespace
         }
     }
 
+    /// <summary>
+    /// Brain Interchange event handler for implanted humidity events
+    /// </summary>
+    /// <param name="humidity">New implanted device's humidity level</param>
     void BICListener::onHumidityChanged(const double humidity)
     {
+        // If gRPC humidity streaming is enabled, write out the update
         if (HumidityWriter != NULL)
         {
             HumidityUpdate humidMessage;
@@ -300,8 +375,13 @@ namespace BICGRPCHelperNamespace
         }
     }
 
+    /// <summary>
+    /// Brain Interchange event handler for DLL error events
+    /// </summary>
+    /// <param name="err">Error information from BIC DLL</param>
     void BICListener::onError(const std::exception& err)
     {
+        // If gRPC error streaming is enabled, write out the update
         if (ErrorWriter != NULL)
         {
             ErrorUpdate errorMessage;
@@ -310,9 +390,15 @@ namespace BICGRPCHelperNamespace
         }
     }
 
+    /// <summary>
+    /// Brain Interchange event handler for processing rate errors. This event is called if the neural data is not being consumed quickly enough by the gRPC microservice.
+    /// </summary>
     void BICListener::onDataProcessingTooSlow()
     {
+        // Important event, write it out to the console
         std::cout << "*** Warning: Data processing too slow" << std::endl;
+        
+        // If gRPC error streaming is enabled, write out the update
         if (ErrorWriter != NULL)
         {
             ErrorUpdate errorMessage;
