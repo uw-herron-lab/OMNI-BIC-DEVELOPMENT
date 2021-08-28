@@ -77,7 +77,6 @@ namespace BICGRPCHelperNamespace
         }
 
         // Find specified exeternal unit
-            // ### TODO Need to simplify ways to find known bridge/device combinations other than iterating through each time
         for (int i = 0; i < exInfos.size(); i++)
         {
             if ("//bic/bridge/" + exInfos[i]->getDeviceId() == request->bridgename())
@@ -530,6 +529,7 @@ namespace BICGRPCHelperNamespace
     grpc::Status BICDeviceGRPCService::bicNeuralStream(grpc::ServerContext* context, const BICgRPC::bicNeuralSetStreamingEnable* request, grpc::ServerWriter<BICgRPC::NeuralUpdate>* writer)  {
         // Check requested stream state and current streaming state (don't want to destroy a previously requested stream without it being stopped first)
         // TODO: should separate neural streaming out from gRPC streaming on a per-functionality (logging, processing, streaming) basis
+        // TODO: MUTEX TO STOP MULTI-THREADS FROM ACCESSING THIS? HERE OR IN BICLISTNER?
         if (!deviceDirectory[request->deviceaddress()]->isStreamingNeural && request->enable())
         {
             // Not already streaming and requesting enable
@@ -542,11 +542,7 @@ namespace BICGRPCHelperNamespace
 
             // Configure buffers and state variables for streaming start
             deviceDirectory[request->deviceaddress()]->isStreamingNeural = true;
-            deviceDirectory[request->deviceaddress()]->listener->neuroDataBufferThreshold = request->buffersize();
-            deviceDirectory[request->deviceaddress()]->listener->interplationThreshold = request->maxinterpolationpoints();
-            deviceDirectory[request->deviceaddress()]->listener->arena.Reset();
-            deviceDirectory[request->deviceaddress()]->listener->bufferedNeuroUpdate = google::protobuf::Arena::CreateMessage<BICgRPC::NeuralUpdate>(&deviceDirectory[request->deviceaddress()]->listener->arena);
-            deviceDirectory[request->deviceaddress()]->listener->NeuralWriter = writer;
+            deviceDirectory[request->deviceaddress()]->listener->enableNeuralSensing(true, request->buffersize(), request->maxinterpolationpoints(), writer);
 
             // Create the waiting objects for notification for end of stream
             std::unique_lock<std::mutex> StreamLockInst(deviceDirectory[request->deviceaddress()]->neuralStreamLock);
@@ -557,8 +553,7 @@ namespace BICGRPCHelperNamespace
             deviceDirectory[request->deviceaddress()]->theImplant->stopMeasurement();
 
             // Clean up the writers and busy flags
-            deviceDirectory[request->deviceaddress()]->listener->NeuralWriter = NULL;
-            deviceDirectory[request->deviceaddress()]->listener->arena.Reset();
+            deviceDirectory[request->deviceaddress()]->listener->enableNeuralSensing(false, 0, 0, NULL);
             deviceDirectory[request->deviceaddress()]->isStreamingNeural = false;
         }
         else if (deviceDirectory[request->deviceaddress()]->isStreamingNeural && request->enable())

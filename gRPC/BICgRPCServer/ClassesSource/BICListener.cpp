@@ -1,7 +1,9 @@
 #include "BICListener.h"
+#include <thread>
 
 // BIC Usings
 using namespace cortec::implantapi;
+
 
 // GRPC Usings
 using BICgRPC::TemperatureUpdate;
@@ -133,6 +135,94 @@ namespace BICGRPCHelperNamespace
         }
     }
 
+    void BICListener::enableNeuralSensing(bool enableSensing, uint32_t dataBufferSize, uint32_t interplationThreshold, grpc::ServerWriter<BICgRPC::NeuralUpdate>* aWriter)
+    {
+        // TODO: MUTEX TO STOP MULTI-THREADS FROM ACCESSING THIS? HERE OR IN GRPC LAYER?
+        // Save the current sensing state
+        if (enableSensing)
+        {
+            neuralStreamingState = true;
+            neuroDataBufferThreshold = dataBufferSize;
+            neuroInterplationThreshold = interplationThreshold;
+            neuralWriter = aWriter;
+            neuroDataNotify = new std::condition_variable();
+            neuralProcessingThread = new std::thread (&BICListener::grpcNeuralStreamThread, this);
+        }
+        else
+        {
+            // Notify and wait for streaming handling thread to stop.
+            neuralStreamingState = false;
+            neuroDataNotify->notify_all();
+            neuralProcessingThread->join();
+
+            // Delete Resources
+            neuralProcessingThread->~thread();
+            delete neuralProcessingThread;
+            neuralProcessingThread = NULL;
+
+            neuroDataNotify->~condition_variable();
+            delete neuroDataNotify;
+            neuroDataNotify = NULL;
+        }
+    }
+
+    void BICListener::grpcNeuralStreamThread()
+    {
+        // Create buffer objects for gRPC straming and interpolation
+        BICgRPC::NeuralUpdate* bufferedNeuroUpdate = google::protobuf::Arena::CreateMessage<BICgRPC::NeuralUpdate>(&neuroArena);
+        std::mutex neuralDataLock;
+        std::unique_lock<std::mutex> neuroDataWait(neuralDataLock);
+
+        // Loop while streaming is active
+        while (neuralStreamingState)
+        {
+            if (neuralSampleQueue.empty())
+            {
+                neuroDataNotify->wait(neuroDataWait);
+            }
+            else
+            {
+                try {
+                    // Add the front item to the queue for the current packet
+                    bufferedNeuroUpdate->mutable_samples()->AddAllocated(neuralSampleQueue.front());
+                    
+                    // Clean up the current sample from the list
+                    neuralSampleQueue.pop();
+                }
+                catch (std::exception& anyException)
+                {
+                    std::cout << "GRPC Read Buffer Failed. Reason: " << anyException.what() << std::endl;
+                }
+                catch (...)
+                {
+                    std::cout << "GRPC Read Buffer Failed. No reason." << std::endl;
+                }
+
+                // If enough data has been queued, send data
+                if (bufferedNeuroUpdate->samples().size() >= neuroDataBufferThreshold)
+                {
+                    // Attempt to write the packet to the gRPC stream writer
+                    try {
+                        // WARNING - THIS WILL BLOCK IF NEURALWRITER BUFFER IS FULL DUE TO SLOW READING BY CLIENT
+                        neuralWriter->Write(*bufferedNeuroUpdate);
+                    }
+                    catch (std::exception& anyException)
+                    {
+                        std::cout << "GRPC Write Failed. Reason: " << anyException.what() << std::endl;
+                    }
+                    catch (...)
+                    {
+                        std::cout << "GRPC Write Buffer Failed. No reason." << std::endl;
+                    }
+
+                    // Reset the gRPC memory management arena system
+                    bufferedNeuroUpdate->Clear();
+                    //bufferedNeuroUpdate = google::protobuf::Arena::CreateMessage<BICgRPC::NeuralUpdate>(&neuroConsumeArena);
+                }
+            }
+        }
+    }
+
     /// <summary>
     /// Event handler for Brain Interchange neural data received
     /// </summary>
@@ -142,7 +232,7 @@ namespace BICGRPCHelperNamespace
         // Ensure samples is not empty before working with it.
         if (!samples->empty())
         {
-            // Create message container for streaming, may not be used
+            // Loop through retrieved samples
             for (int i = 0; i < samples->size(); i++)
             {
                 // Copy in the time domain data in
@@ -173,7 +263,7 @@ namespace BICGRPCHelperNamespace
                         std::cout << "** Missed Neural Datapoints: " << diff << "! **";
 
                         // Ensure interpolation is a reasonable amount
-                        if (diff <= interplationThreshold)
+                        if (diff <= neuroInterplationThreshold)
                         {
                             // Continue the error
                             std::cout << "Interpolating " << diff << " points..." << std::endl;
@@ -184,7 +274,7 @@ namespace BICGRPCHelperNamespace
                             for (int interpolatedPointNum = 0; interpolatedPointNum < diff; interpolatedPointNum++)
                             {
                                 // Create a new sample data buffer in the arena
-                                NeuralSample* newInterpolatedSample = google::protobuf::Arena::CreateMessage<NeuralSample>(&arena);
+                                NeuralSample* newInterpolatedSample = google::protobuf::Arena::CreateMessage<NeuralSample>(&neuroArena);
 
                                 // Add in the fields from the latest BIC packet
                                 newInterpolatedSample->set_numberofmeasurements(sampleCounter);
@@ -202,91 +292,66 @@ namespace BICGRPCHelperNamespace
                                     newInterpolatedSample->add_measurements(interpolatedSample);
                                 }
 
-                                // If we're streaming, create message
-                                if (NeuralWriter != NULL)
+                                // Add it to the buffer if there is room
+                                if (neuralSampleQueue.size() < 1000)
                                 {
-                                    bufferedNeuroUpdate->mutable_samples()->AddAllocated(newInterpolatedSample);
+                                    neuralSampleQueue.push(newInterpolatedSample);
+                                    neuroDataNotify->notify_all();
+                                }
+                                else
+                                {
+                                    newInterpolatedSample->Clear();
+                                    std::cout << "GRPC Queue Size Overflow, streaming data skipped" << std::endl;
                                 }
                             }
                         }
                         else
                         {
                             // Continue the error
-                            std::cout << "Exceeded Interpolation limit." << std::endl;
-
-                            // Exceeded interpolation threshold, irregular loss. Send the past buffered dataset out so it's continuous
-                            if (NeuralWriter != NULL && bufferedNeuroUpdate->samples().size() > 0)
-                            {
-                                // Attempt to write the packet to the gRPC stream writer
-                                try {
-                                    // TODO - THIS WILL BLOCK IF NEURALWRITER BUFFER IS FULL DUE TO SLOW READING BY CLIENT
-                                    // NEED TO DISSOCIATE CORTEC READS FROM GRPC STREAMING
-                                    NeuralWriter->Write(*bufferedNeuroUpdate);
-                                }
-                                catch (std::exception& anyException)
-                                {
-                                    std::cout << "GRPC Write Failed. Reason: " << anyException.what() << std::endl;
-                                }
-
-                                // Reset the gRPC memory management arena system
-                                arena.Reset();
-                                bufferedNeuroUpdate = google::protobuf::Arena::CreateMessage<BICgRPC::NeuralUpdate>(&arena);
-                            }
+                            std::cout << "Exceeded Interpolation limit. Data loss indicated by dropout in sample count" << std::endl;
                         }
                     }
                 }
 
                 // If we're streaming, create message
-                if (NeuralWriter != NULL)
+                // Create a new sample data buffer in the arena
+                NeuralSample* newSample = google::protobuf::Arena::CreateMessage<NeuralSample>(&neuroArena);
+
+                // Add in the fields from the latest BIC packet
+                newSample->set_numberofmeasurements(sampleNum);
+                newSample->set_supplyvoltage(samples->at(i).getSupplyVoltage());
+                newSample->set_isconnected(samples->at(i).isConnected());
+                newSample->set_stimulationnumber(samples->at(i).getStimulationId());
+                newSample->set_stimulationactive(samples->at(i).isStimulationActive());
+                newSample->set_samplecounter(sampleCounter);
+                newSample->set_isinterpolated(false);
+
+                // Copy in the data to both the newSample and the latest data buffer (for interpolation). Delete it when done
+                for (int j = 0; j < sampleNum; j++)
                 {
-                    // Create a new sample data buffer in the arena
-                    NeuralSample* newSample = google::protobuf::Arena::CreateMessage<NeuralSample>(&arena);
+                    newSample->add_measurements(theData[j]);
+                    latestData[j] = theData[j];
+                }
+                delete theData;
 
-                    // Add in the fields from the latest BIC packet
-                    newSample->set_numberofmeasurements(sampleNum);
-                    newSample->set_supplyvoltage(samples->at(i).getSupplyVoltage());
-                    newSample->set_isconnected(samples->at(i).isConnected());
-                    newSample->set_stimulationnumber(samples->at(i).getStimulationId());
-                    newSample->set_stimulationactive(samples->at(i).isStimulationActive());
-                    newSample->set_samplecounter(sampleCounter);
-                    newSample->set_isinterpolated(false);
-
-                    // Copy in the data
-                    for (int j = 0; j < sampleNum; j++)
-                    {
-                        newSample->add_measurements(theData[j]);
-                        latestData[j] = theData[j];
-                    }
-
-                    // Add it to the buffer
-                    bufferedNeuroUpdate->mutable_samples()->AddAllocated(newSample);
+                // Add it to the buffer if there is room
+                if (neuralSampleQueue.size() < 1000)
+                {
+                    neuralSampleQueue.push(newSample);
+                    neuroDataNotify->notify_all();
+                }
+                else
+                {
+                    newSample->Clear();
+                    std::cout << "GRPC Queue Size Overflow, streaming data skipped" << std::endl;
                 }
 
                 // Update counter
-                delete theData;
                 lastNeuroCount = sampleCounter;
-            }
-
-            // If streaming, send data
-            if (NeuralWriter != NULL && bufferedNeuroUpdate->samples().size() >= neuroDataBufferThreshold)
-            {
-                // Attempt to write the packet to the gRPC stream writer
-                try {
-                    // TODO - THIS WILL BLOCK IF NEURALWRITER BUFFER IS FULL DUE TO SLOW READING BY CLIENT
-                    // NEED TO DISSOCIATE CORTEC READS FROM GRPC STREAMING
-                    NeuralWriter->Write(*bufferedNeuroUpdate);
-                }
-                catch (std::exception& anyException)
-                {
-                    std::cout << "GRPC Write Failed. Reason: " << anyException.what() << std::endl;
-                }
-
-                // Reset the gRPC memory management arena system
-                arena.Reset();
-                bufferedNeuroUpdate = google::protobuf::Arena::CreateMessage<BICgRPC::NeuralUpdate>(&arena);
             }
         }
 
+        // No matter what, delete samples
         delete samples;
     }
 
