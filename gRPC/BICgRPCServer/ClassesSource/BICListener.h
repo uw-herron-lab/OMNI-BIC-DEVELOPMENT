@@ -47,7 +47,6 @@ namespace BICGRPCHelperNamespace
     private:
         // ************************* Private Stream State Objects *************************
         void grpcNeuralStreamThread(void);
-        google::protobuf::Arena neuroArena;
 
         // ************************* Private Stream State Objects *************************
         std::mutex m_mutex;
@@ -62,7 +61,6 @@ namespace BICGRPCHelperNamespace
         std::thread* neuralProcessingThread;
         std::condition_variable* neuroDataNotify;
         bool neuralStreamingState = false;
-
         uint32_t lastNeuroCount = 0;
         double latestData[32] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
     };

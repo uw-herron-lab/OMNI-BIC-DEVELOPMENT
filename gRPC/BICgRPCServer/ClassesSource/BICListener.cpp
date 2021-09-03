@@ -169,7 +169,7 @@ namespace BICGRPCHelperNamespace
     void BICListener::grpcNeuralStreamThread()
     {
         // Create buffer objects for gRPC straming and interpolation
-        BICgRPC::NeuralUpdate* bufferedNeuroUpdate = google::protobuf::Arena::CreateMessage<BICgRPC::NeuralUpdate>(&neuroArena);
+        BICgRPC::NeuralUpdate* bufferedNeuroUpdate = new BICgRPC::NeuralUpdate();
         std::mutex neuralDataLock;
         std::unique_lock<std::mutex> neuroDataWait(neuralDataLock);
 
@@ -215,9 +215,8 @@ namespace BICGRPCHelperNamespace
                         std::cout << "GRPC Write Buffer Failed. No reason." << std::endl;
                     }
 
-                    // Reset the gRPC memory management arena system
-                    bufferedNeuroUpdate->Clear();
-                    //bufferedNeuroUpdate = google::protobuf::Arena::CreateMessage<BICgRPC::NeuralUpdate>(&neuroConsumeArena);
+                    // Delete all elements in the buffer after trasmission, freeing up memory.
+                    bufferedNeuroUpdate->mutable_samples()->DeleteSubrange(0, bufferedNeuroUpdate->samples().size());
                 }
             }
         }
@@ -273,8 +272,8 @@ namespace BICGRPCHelperNamespace
 
                             for (int interpolatedPointNum = 0; interpolatedPointNum < diff; interpolatedPointNum++)
                             {
-                                // Create a new sample data buffer in the arena
-                                NeuralSample* newInterpolatedSample = google::protobuf::Arena::CreateMessage<NeuralSample>(&neuroArena);
+                                // Create a new sample data buffer
+                                NeuralSample* newInterpolatedSample = new NeuralSample();
 
                                 // Add in the fields from the latest BIC packet
                                 newInterpolatedSample->set_numberofmeasurements(sampleCounter);
@@ -314,8 +313,8 @@ namespace BICGRPCHelperNamespace
                 }
 
                 // If we're streaming, create message
-                // Create a new sample data buffer in the arena
-                NeuralSample* newSample = google::protobuf::Arena::CreateMessage<NeuralSample>(&neuroArena);
+                // Create a new sample data buffer
+                NeuralSample* newSample = new NeuralSample();
 
                 // Add in the fields from the latest BIC packet
                 newSample->set_numberofmeasurements(sampleNum);
