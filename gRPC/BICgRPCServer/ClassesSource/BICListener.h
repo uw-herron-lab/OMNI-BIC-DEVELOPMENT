@@ -13,7 +13,12 @@ namespace BICGRPCHelperNamespace
     {
     public:
         // ************************* Sensing Management **********************
-        void enableNeuralSensing(bool enableSensing, uint32_t dataBufferSize, uint32_t interplationThreshold, grpc::ServerWriter<BICgRPC::NeuralUpdate>* aWriter);
+        void enableNeuralStreaming(bool enableSensing, uint32_t dataBufferSize, uint32_t interplationThreshold, grpc::ServerWriter<BICgRPC::NeuralUpdate>* aWriter);
+        void enableTemperatureStreaming(bool enableSensing, grpc::ServerWriter<BICgRPC::TemperatureUpdate>* aWriter);
+        void enableHumidityeStreaming(bool enableSensing, grpc::ServerWriter<BICgRPC::HumidityUpdate>* aWriter);
+        void enableConnectionStreaming(bool enableSensing, grpc::ServerWriter<BICgRPC::ConnectionUpdate>* aWriter);
+        void enableErrorStreaming(bool enableSensing, grpc::ServerWriter<BICgRPC::ErrorUpdate>* aWriter);
+        void enablePowerStreaming(bool enableSensing, grpc::ServerWriter<BICgRPC::PowerUpdate>* aWriter);
 
         // ************************* Public Event Handlers *************************
         void onStimulationStateChanged(const bool isStimulating);
@@ -32,36 +37,67 @@ namespace BICGRPCHelperNamespace
         // ************************* Public Boolean State Accessors *************************
         bool isStimulating();
         bool isMeasuring();
-        
-        // ************************* Public Streaming Objects *******************************
-        // Pointers for gRPC-managed streaming interfaces. Set by the BICDeviceServiceImpl class, null when not in use.
-        grpc::ServerWriter<BICgRPC::TemperatureUpdate>* TemperatureWriter = NULL;
-        grpc::ServerWriter<BICgRPC::HumidityUpdate>* HumidityWriter = NULL;
-        grpc::ServerWriter<BICgRPC::ConnectionUpdate>* ConnectionWriter = NULL;
-        grpc::ServerWriter<BICgRPC::ErrorUpdate>* ErrorWriter = NULL;
-        grpc::ServerWriter<BICgRPC::PowerUpdate>* PowerWriter = NULL;
-
-        // ************************* Public Streaming Parameter Objects *************************
-       
-
-    private:
-        // ************************* Private Stream State Objects *************************
-        void grpcNeuralStreamThread(void);
-
-        // ************************* Private Stream State Objects *************************
-        std::mutex m_mutex;
-        bool m_isStimulating;
-        bool m_isMeasuring;
-        uint32_t neuroDataBufferThreshold;
-        uint32_t neuroInterplationThreshold;
-
-        // ************************* Private Streaming Queues ***********************************
-        grpc::ServerWriter<BICgRPC::NeuralUpdate>* neuralWriter;
-        std::queue<BICgRPC::NeuralSample*> neuralSampleQueue;
-        std::thread* neuralProcessingThread;
-        std::condition_variable* neuroDataNotify;
         bool neuralStreamingState = false;
-        uint32_t lastNeuroCount = 0;
+        bool temperatureStreamingState = false;
+        bool humidityStreamingState = false;
+        bool connectionStreamingState = false;
+        bool errorStreamingState = false;
+        bool powerStreamingState = false;
+       
+    private:
+        // ************************* Private Stream Functions *************************
+        void grpcNeuralStreamThread(void);
+        void grpcTemperatureStreamThread(void);
+        void grpcHumidityStreamThread(void);
+        void grpcConnectionStreamThread(void);
+        void grpcPowerStreamThread(void);
+        void grpcErrorStreamThread(void);
+
+        // ************************* Private State Objects *************************
+        // Generic state variables.
+        std::mutex m_mutex;                     // General purpose mutex used for protecting against multi-threaded state access.
+        bool m_isStimulating;                   // State variable indicating latest stimulation state received from device.
+        bool m_isMeasuring;                     // State variable indicating latest measurement state received from device.
+
+        // ************************* Private Neural Streaming Objects *************************
+        // Neural streaming requires additional state variables because of data buffering and interpolation functionality.
+        // Other streams do not have data buffering and interpolation functionality.
+        uint32_t neuroDataBufferThreshold;      // Neural data tranmission buffer size, provided to Listener using enableNeuralSensing()
+        uint32_t neuroInterplationThreshold;    // Neural interpolation length limit, provided to Listener using enableNeuralSensing()
+        uint32_t lastNeuroCount = 0;            // Used to determine the number of samples required for interpolation
         double latestData[32] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
+
+        // ************************* Private Stream Coordination Objects *************************
+        // Pointers for gRPC-managed streaming interfaces. Set by the BICDeviceServiceImpl class, null when not in use.
+        grpc::ServerWriter<BICgRPC::NeuralUpdate>* neuralWriter;
+        grpc::ServerWriter<BICgRPC::TemperatureUpdate>* temperatureWriter = NULL;
+        grpc::ServerWriter<BICgRPC::HumidityUpdate>* humidityWriter = NULL;
+        grpc::ServerWriter<BICgRPC::ConnectionUpdate>* connectionWriter = NULL;
+        grpc::ServerWriter<BICgRPC::ErrorUpdate>* errorWriter = NULL;
+        grpc::ServerWriter<BICgRPC::PowerUpdate>* powerWriter = NULL;
+
+        //  Streaming Data Queues 
+        std::queue<BICgRPC::NeuralSample*> neuralSampleQueue;
+        std::queue<BICgRPC::TemperatureUpdate*> temperatureSampleQueue;
+        std::queue<BICgRPC::HumidityUpdate*> humiditySampleQueue;
+        std::queue<BICgRPC::ConnectionUpdate*> connectionSampleQueue;
+        std::queue<BICgRPC::ErrorUpdate*> errorSampleQueue;
+        std::queue<BICgRPC::PowerUpdate*> powerSampleQueue;
+
+        // Stream processing threads
+        std::thread* neuralProcessingThread;
+        std::thread* temperatureProcessingThread;
+        std::thread* humidityProcessingThread;
+        std::thread* connectionProcessingThread;
+        std::thread* errorProcessingThread;
+        std::thread* powerProcessingThread;
+
+        // Stream data ready signals
+        std::condition_variable* neuralDataNotify;
+        std::condition_variable* temperatureDataNotify;
+        std::condition_variable* humidityDataNotify;
+        std::condition_variable* connectionDataNotify;
+        std::condition_variable* errorDataNotify;
+        std::condition_variable* powerDataNotify;
     };
 }

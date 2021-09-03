@@ -373,21 +373,19 @@ namespace BICGRPCHelperNamespace
     // ************************* Streaming Control Function Declarations *************************
     grpc::Status BICDeviceGRPCService::bicTemperatureStream(grpc::ServerContext* context, const BICgRPC::bicSetStreamEnable* request, grpc::ServerWriter<BICgRPC::TemperatureUpdate>* writer)  {
         // Check requested stream state and current streaming state (don't want to destroy a previously requested stream without it being stopped first)
-        if (!deviceDirectory[request->deviceaddress()]->isStreamingTemp && request->enable())
+        if (!deviceDirectory[request->deviceaddress()]->listener->temperatureStreamingState && request->enable())
         {
             // Not already streaming and requesting enable
-            deviceDirectory[request->deviceaddress()]->isStreamingTemp = true;
-            deviceDirectory[request->deviceaddress()]->listener->TemperatureWriter = writer;
+            deviceDirectory[request->deviceaddress()]->listener->enableTemperatureStreaming(true, writer);
 
             // Create the waiting objects for notification for end of stream
             std::unique_lock<std::mutex> StreamLockInst(deviceDirectory[request->deviceaddress()]->tempStreamLock);
             deviceDirectory[request->deviceaddress()]->tempStreamNotify.wait(StreamLockInst);
 
             // Clean up the writers and busy flags
-            deviceDirectory[request->deviceaddress()]->listener->TemperatureWriter = NULL;
-            deviceDirectory[request->deviceaddress()]->isStreamingTemp = false;
+            deviceDirectory[request->deviceaddress()]->listener->enableTemperatureStreaming(false, NULL);
         }
-        else if (deviceDirectory[request->deviceaddress()]->isStreamingTemp && request->enable())
+        else if (deviceDirectory[request->deviceaddress()]->listener->temperatureStreamingState && request->enable())
         {
             // Error State, already streaming, do nothing
                 // Would love to send an error back, but if we don't send grpc::Status::OK then the "await ResponseStream.MoveNext()" doesn't work right and gracefully exit :/
@@ -404,21 +402,19 @@ namespace BICGRPCHelperNamespace
 
     grpc::Status BICDeviceGRPCService::bicHumidityStream(grpc::ServerContext* context, const BICgRPC::bicSetStreamEnable* request, grpc::ServerWriter<BICgRPC::HumidityUpdate>* writer)  {
         // Check requested stream state and current streaming state (don't want to destroy a previously requested stream without it being stopped first)
-        if (!deviceDirectory[request->deviceaddress()]->isStreamingHumid && request->enable())
+        if (!deviceDirectory[request->deviceaddress()]->listener->humidityStreamingState && request->enable())
         {
             // Not already streaming and requesting enable
-            deviceDirectory[request->deviceaddress()]->isStreamingHumid = true;
-            deviceDirectory[request->deviceaddress()]->listener->HumidityWriter = writer;
+            deviceDirectory[request->deviceaddress()]->listener->enableHumidityeStreaming(true, writer);
 
             // Create the waiting objects for notification for end of stream
             std::unique_lock<std::mutex> StreamLockInst(deviceDirectory[request->deviceaddress()]->humidStreamLock);
             deviceDirectory[request->deviceaddress()]->humidStreamNotify.wait(StreamLockInst);
 
             // Clean up the writers and busy flags
-            deviceDirectory[request->deviceaddress()]->listener->HumidityWriter = NULL;
-            deviceDirectory[request->deviceaddress()]->isStreamingHumid = false;
+            deviceDirectory[request->deviceaddress()]->listener->enableHumidityeStreaming(false, NULL);
         }
-        else if (deviceDirectory[request->deviceaddress()]->isStreamingHumid && request->enable())
+        else if (deviceDirectory[request->deviceaddress()]->listener->humidityStreamingState && request->enable())
         {
             // Error State, already streaming, do nothing
                 // Would love to send an error back, but if we don't send grpc::Status::OK then the "await ResponseStream.MoveNext()" doesn't work right and gracefully exit :/
@@ -435,21 +431,19 @@ namespace BICGRPCHelperNamespace
 
     grpc::Status BICDeviceGRPCService::bicConnectionStream(grpc::ServerContext* context, const BICgRPC::bicSetStreamEnable* request, grpc::ServerWriter<BICgRPC::ConnectionUpdate>* writer)  {
         // Check requested stream state and current streaming state (don't want to destroy a previously requested stream without it being stopped first)
-        if (!deviceDirectory[request->deviceaddress()]->isStreamingConnection && request->enable())
+        if (!deviceDirectory[request->deviceaddress()]->listener->connectionStreamingState && request->enable())
         {
             // Not already streaming and requesting enable
-            deviceDirectory[request->deviceaddress()]->isStreamingConnection = true;
-            deviceDirectory[request->deviceaddress()]->listener->ConnectionWriter = writer;
+            deviceDirectory[request->deviceaddress()]->listener->enableConnectionStreaming(true, writer);
 
             // Create the waiting objects for notification for end of stream
             std::unique_lock<std::mutex> StreamLockInst(deviceDirectory[request->deviceaddress()]->connectionStreamLock);
             deviceDirectory[request->deviceaddress()]->connectionStreamNotify.wait(StreamLockInst);
 
             // Clean up the writers and busy flags
-            deviceDirectory[request->deviceaddress()]->listener->ConnectionWriter = NULL;
-            deviceDirectory[request->deviceaddress()]->isStreamingConnection = false;
+            deviceDirectory[request->deviceaddress()]->listener->enableConnectionStreaming(false, NULL);
         }
-        else if (deviceDirectory[request->deviceaddress()]->isStreamingConnection && request->enable())
+        else if (deviceDirectory[request->deviceaddress()]->listener->connectionStreamingState && request->enable())
         {
             // Error State, already streaming, do nothing
                 // Would love to send an error back, but if we don't send grpc::Status::OK then the "await ResponseStream.MoveNext()" doesn't work right and gracefully exit :/
@@ -466,21 +460,19 @@ namespace BICGRPCHelperNamespace
 
     grpc::Status BICDeviceGRPCService::bicErrorStream(grpc::ServerContext* context, const BICgRPC::bicSetStreamEnable* request, grpc::ServerWriter<BICgRPC::ErrorUpdate>* writer)  {
         // Check requested stream state and current streaming state (don't want to destroy a previously requested stream without it being stopped first)
-        if (!deviceDirectory[request->deviceaddress()]->isStreamingErrors && request->enable())
+        if (!deviceDirectory[request->deviceaddress()]->listener->errorStreamingState && request->enable())
         {
             // Not already streaming and requesting enable
-            deviceDirectory[request->deviceaddress()]->isStreamingErrors = true;
-            deviceDirectory[request->deviceaddress()]->listener->ErrorWriter = writer;
+            deviceDirectory[request->deviceaddress()]->listener->enableErrorStreaming(true, writer);
 
             // Create the waiting objects for notification for end of stream
             std::unique_lock<std::mutex> StreamLockInst(deviceDirectory[request->deviceaddress()]->errorStreamLock);
             deviceDirectory[request->deviceaddress()]->errorStreamNotify.wait(StreamLockInst);
 
             // Clean up the writers and busy flags
-            deviceDirectory[request->deviceaddress()]->listener->ErrorWriter = NULL;
-            deviceDirectory[request->deviceaddress()]->isStreamingErrors = false;
+            deviceDirectory[request->deviceaddress()]->listener->enableErrorStreaming(false, NULL);
         }
-        else if (deviceDirectory[request->deviceaddress()]->isStreamingErrors && request->enable())
+        else if (deviceDirectory[request->deviceaddress()]->listener->errorStreamingState && request->enable())
         {
             // Error State, already streaming, do nothing
                 // Would love to send an error back, but if we don't send grpc::Status::OK then the "await ResponseStream.MoveNext()" doesn't work right and gracefully exit :/
@@ -497,21 +489,19 @@ namespace BICGRPCHelperNamespace
 
     grpc::Status BICDeviceGRPCService::bicPowerStream(grpc::ServerContext* context, const BICgRPC::bicSetStreamEnable* request, grpc::ServerWriter<BICgRPC::PowerUpdate>* writer)  {
         // Check requested stream state and current streaming state (don't want to destroy a previously requested stream without it being stopped first)
-        if (!deviceDirectory[request->deviceaddress()]->isStreamingPower && request->enable())
+        if (!deviceDirectory[request->deviceaddress()]->listener->powerStreamingState && request->enable())
         {
             // Not already streaming and requesting enable
-            deviceDirectory[request->deviceaddress()]->isStreamingPower = true;
-            deviceDirectory[request->deviceaddress()]->listener->PowerWriter = writer;
+            deviceDirectory[request->deviceaddress()]->listener->enablePowerStreaming(true, writer);
 
             // Create the waiting objects for notification for end of stream
             std::unique_lock<std::mutex> StreamLockInst(deviceDirectory[request->deviceaddress()]->powerStreamLock);
             deviceDirectory[request->deviceaddress()]->powerStreamNotify.wait(StreamLockInst);
 
             // Clean up the writers and busy flags
-            deviceDirectory[request->deviceaddress()]->listener->PowerWriter = NULL;
-            deviceDirectory[request->deviceaddress()]->isStreamingPower = false;
+            deviceDirectory[request->deviceaddress()]->listener->enablePowerStreaming(false, NULL);
         }
-        else if (deviceDirectory[request->deviceaddress()]->isStreamingPower && request->enable())
+        else if (deviceDirectory[request->deviceaddress()]->listener->powerStreamingState && request->enable())
         {
             // Error State, already streaming, do nothing
                 // Would love to send an error back, but if we don't send grpc::Status::OK then the "await ResponseStream.MoveNext()" doesn't work right and gracefully exit :/
@@ -528,9 +518,7 @@ namespace BICGRPCHelperNamespace
 
     grpc::Status BICDeviceGRPCService::bicNeuralStream(grpc::ServerContext* context, const BICgRPC::bicNeuralSetStreamingEnable* request, grpc::ServerWriter<BICgRPC::NeuralUpdate>* writer)  {
         // Check requested stream state and current streaming state (don't want to destroy a previously requested stream without it being stopped first)
-        // TODO: should separate neural streaming out from gRPC streaming on a per-functionality (logging, processing, streaming) basis
-        // TODO: MUTEX TO STOP MULTI-THREADS FROM ACCESSING THIS? HERE OR IN BICLISTNER?
-        if (!deviceDirectory[request->deviceaddress()]->isStreamingNeural && request->enable())
+        if (!deviceDirectory[request->deviceaddress()]->listener->neuralStreamingState && request->enable())
         {
             // Not already streaming and requesting enable
             // Configure reference electrodes
@@ -541,8 +529,7 @@ namespace BICGRPCHelperNamespace
             }
 
             // Configure buffers and state variables for streaming start
-            deviceDirectory[request->deviceaddress()]->isStreamingNeural = true;
-            deviceDirectory[request->deviceaddress()]->listener->enableNeuralSensing(true, request->buffersize(), request->maxinterpolationpoints(), writer);
+            deviceDirectory[request->deviceaddress()]->listener->enableNeuralStreaming(true, request->buffersize(), request->maxinterpolationpoints(), writer);
 
             // Create the waiting objects for notification for end of stream
             std::unique_lock<std::mutex> StreamLockInst(deviceDirectory[request->deviceaddress()]->neuralStreamLock);
@@ -553,10 +540,9 @@ namespace BICGRPCHelperNamespace
             deviceDirectory[request->deviceaddress()]->theImplant->stopMeasurement();
 
             // Clean up the writers and busy flags
-            deviceDirectory[request->deviceaddress()]->listener->enableNeuralSensing(false, 0, 0, NULL);
-            deviceDirectory[request->deviceaddress()]->isStreamingNeural = false;
+            deviceDirectory[request->deviceaddress()]->listener->enableNeuralStreaming(false, 0, 0, NULL);
         }
-        else if (deviceDirectory[request->deviceaddress()]->isStreamingNeural && request->enable())
+        else if (deviceDirectory[request->deviceaddress()]->listener->neuralStreamingState && request->enable())
         {
             // Error State, already streaming, do nothing
                 // Would love to send an error back, but if we don't send grpc::Status::OK then the "await ResponseStream.MoveNext()" doesn't work right and gracefully exit :/
