@@ -311,7 +311,7 @@ namespace BICGRPCHelperNamespace
             {
                 try {
                     // Add the front item to the queue for the current packet
-                    bufferedNeuroUpdate->mutable_samples()->AddAllocated(neuralSampleQueue.front());
+                    bufferedNeuroUpdate->add_samples()->UnsafeArenaSwap(neuralSampleQueue.front());
                     
                     // Clean up the current sample from the list
                     neuralSampleQueue.pop();
@@ -347,6 +347,9 @@ namespace BICGRPCHelperNamespace
                 }
             }
         }
+
+        // Clean up the buffer
+        delete bufferedNeuroUpdate;
     }
 
     /// <summary>
