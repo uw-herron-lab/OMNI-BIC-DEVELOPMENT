@@ -76,10 +76,12 @@ namespace BICGRPCHelperNamespace
 
     //*************************************************** Connection Streaming Functions ***************************************************
     /// <summary>
-    /// 
+    /// Enable or disable connection streaming to a gRPC client. 
+    /// Function instructs BIC to start streaming, resulting in data being received by various connection event handler functions.  
+    /// Events puts data in a queue for independent transmission to client by thread utilizing "grpcConnectionStreamThread" function.
     /// </summary>
-    /// <param name="enableSensing"></param>
-    /// <param name="aWriter"></param>
+    /// <param name="enableSensing">True if streaming is being requested to be enabled, false otherwise</param>
+    /// <param name="aWriter">gRPC client writing inteface.</param>
     void BICListener::enableConnectionStreaming(bool enableSensing, grpc::ServerWriter<BICgRPC::ConnectionUpdate>* aWriter)
     {
         // Accessing streaming state objects, grab the mutex for protection against multi-threaded race conditions
@@ -113,7 +115,7 @@ namespace BICGRPCHelperNamespace
     }
 
     /// <summary>
-    /// Private function that reads neural data from queue and sends to gRPC client. Intended to be run as a thread by enableNeuralSensing.
+    /// Private function that reads connection data from queue and sends to gRPC client. Intended to be run as a thread by enableConnectionSensing.
     /// </summary>
     void BICListener::grpcConnectionStreamThread()
     {
@@ -482,10 +484,12 @@ namespace BICGRPCHelperNamespace
 
     //*************************************************** Power Data Streaming Functions ***************************************************
     /// <summary>
-    /// 
+    /// Enable or disable power streaming to a gRPC client. 
+    /// Function instructs BIC to start streaming, resulting in data being received by various power event handler functions.  
+    /// Events puts data in a queue for independent transmission to client by thread utilizing "grpcPowerStreamThread" function.
     /// </summary>
-    /// <param name="enableSensing"></param>
-    /// <param name="aWriter"></param>
+    /// <param name="enableSensing">True if streaming is being requested to be enabled, false otherwise</param>
+    /// <param name="aWriter">gRPC client writing inteface.</param>
     void BICListener::enablePowerStreaming(bool enableSensing, grpc::ServerWriter<BICgRPC::PowerUpdate>* aWriter)
     {
         // Accessing streaming state objects, grab the mutex for protection against multi-threaded race conditions
@@ -518,6 +522,9 @@ namespace BICGRPCHelperNamespace
         }
     }
 
+    /// <summary>
+    /// Private function that reads power data from queue and sends to gRPC client. Intended to be run as a thread by enablePowerSensing.
+    /// </summary>
     void BICListener::grpcPowerStreamThread()
     {
         // Prepare the waiting for data variables
@@ -639,10 +646,12 @@ namespace BICGRPCHelperNamespace
 
     //*************************************************** Temperature Streaming Functions ***************************************************
     /// <summary>
-    /// 
+    /// Enable or disable temperature streaming to a gRPC client. 
+    /// Function instructs BIC to start streaming, resulting in data being received by "onTemperatureChanged" event handler function.  
+    /// onTemperatureChanged puts data in a queue for independent transmission to client by thread utilizing "grpcTemperatureStreamThread" function.
     /// </summary>
-    /// <param name="enableSensing"></param>
-    /// <param name="aWriter"></param>
+    /// <param name="enableSensing">True if streaming is being requested to be enabled, false otherwise</param>
+    /// <param name="aWriter">gRPC client writing inteface.</param>
     void BICListener::enableTemperatureStreaming(bool enableSensing, grpc::ServerWriter<BICgRPC::TemperatureUpdate>* aWriter)
     {
         // Accessing streaming state objects, grab the mutex for protection against multi-threaded race conditions
@@ -675,6 +684,9 @@ namespace BICGRPCHelperNamespace
         }
     }
 
+    /// <summary>
+    /// Private function that reads temperature data from queue and sends to gRPC client. Intended to be run as a thread by enableTemperatureSensing.
+    /// </summary>
     void BICListener::grpcTemperatureStreamThread()
     {
         // Prepare the waiting for data variables
@@ -739,10 +751,12 @@ namespace BICGRPCHelperNamespace
 
     //*************************************************** Humidity Streaming Functions ***************************************************
     /// <summary>
-    /// 
+    /// Enable or disable humidity streaming to a gRPC client. 
+    /// Function instructs BIC to start streaming, resulting in data being received by "onHumidityChanged" event handler function.  
+    /// onHumidityChanged puts data in a queue for independent transmission to client by thread utilizing "grpcHumidityStreamThread" function.
     /// </summary>
-    /// <param name="enableSensing"></param>
-    /// <param name="aWriter"></param>
+    /// <param name="enableSensing">True if streaming is being requested to be enabled, false otherwise</param>
+    /// <param name="aWriter">gRPC client writing inteface.</param>
     void BICListener::enableHumidityeStreaming(bool enableSensing, grpc::ServerWriter<BICgRPC::HumidityUpdate>* aWriter)
     {
         // Accessing streaming state objects, grab the mutex for protection against multi-threaded race conditions
@@ -775,6 +789,9 @@ namespace BICGRPCHelperNamespace
         }
     }
     
+    /// <summary>
+    /// Private function that reads humidity data from queue and sends to gRPC client. Intended to be run as a thread by enableHumiditySensing.
+    /// </summary>
     void BICListener::grpcHumidityStreamThread()
     {
         // Prepare the waiting for data variables
@@ -839,10 +856,12 @@ namespace BICGRPCHelperNamespace
 
     //*************************************************** Error Streaming Functions ***************************************************
     /// <summary>
-    /// 
+    /// Enable or disable error streaming to a gRPC client. 
+    /// Function instructs BIC to start streaming, resulting in data being received by "onError" event handler function.  
+    /// onError puts data in a queue for independent transmission to client by thread utilizing "grpcErrorStreamThread" function.
     /// </summary>
-    /// <param name="enableSensing"></param>
-    /// <param name="aWriter"></param>
+    /// <param name="enableSensing">True if streaming is being requested to be enabled, false otherwise</param>
+    /// <param name="aWriter">gRPC client writing inteface.</param>
     void BICListener::enableErrorStreaming(bool enableSensing, grpc::ServerWriter<BICgRPC::ErrorUpdate>* aWriter)
     {
         // Accessing streaming state objects, grab the mutex for protection against multi-threaded race conditions
@@ -875,6 +894,9 @@ namespace BICGRPCHelperNamespace
         }
     }
 
+    /// <summary>
+    /// Private function that reads error data from queue and sends to gRPC client. Intended to be run as a thread by enableErrorSensing.
+    /// </summary>
     void BICListener::grpcErrorStreamThread()
     {
         // Prepare the waiting for data variables
