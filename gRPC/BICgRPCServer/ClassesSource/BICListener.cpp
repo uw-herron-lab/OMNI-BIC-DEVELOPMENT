@@ -430,7 +430,7 @@ namespace BICGRPCHelperNamespace
                                 }
                                 else
                                 {
-                                    newInterpolatedSample->Clear();
+                                    delete newInterpolatedSample;
                                     std::cout << "GRPC Neural Queue Size Overflow, streaming data skipped" << std::endl;
                                 }
                             }
@@ -472,7 +472,7 @@ namespace BICGRPCHelperNamespace
                 }
                 else
                 {
-                    newSample->Clear();
+                    delete newSample;
                     std::cout << "GRPC Neural Queue Size Overflow, streaming data skipped" << std::endl;
                 }
 
