@@ -229,7 +229,9 @@ namespace BICGRPCHelperNamespace
             }
             catch (const std::exception& theError)
             {
-                reply->set_success("error: exception (useful I know?)");
+                std::string returnMessage = "error: exception - ";
+                returnMessage += theError.what();
+                reply->set_success(returnMessage);
                 return grpc::Status::OK;
             }
         }
@@ -279,9 +281,11 @@ namespace BICGRPCHelperNamespace
         {
             impedanceValue = deviceDirectory[request->deviceaddress()]->theImplant->getImpedance(request->channel());
         }
-        catch (const std::exception&)
+        catch (const std::exception& theError)
         {
-            reply->set_success("error: exception (useful I know?)");
+            std::string returnMessage = "error: exception - ";
+            returnMessage += theError.what();
+            reply->set_success(returnMessage);
             return grpc::Status::OK;
         }
 
@@ -307,9 +311,11 @@ namespace BICGRPCHelperNamespace
         {
             temperatureValue = deviceDirectory[request->deviceaddress()]->theImplant->getTemperature();
         }
-        catch (const std::exception&)
+        catch (const std::exception& theError)
         {
-            reply->set_success("error: exception (useful I know?)");
+            std::string returnMessage = "error: exception - ";
+            returnMessage += theError.what();
+            reply->set_success(returnMessage);
             return grpc::Status::OK;
         }
 
@@ -335,9 +341,11 @@ namespace BICGRPCHelperNamespace
         {
             humidityValue = deviceDirectory[request->deviceaddress()]->theImplant->getHumidity();
         }
-        catch (const std::exception&)
+        catch (const std::exception& theError)
         {
-            reply->set_success("error: exception (useful I know?)");
+            std::string returnMessage = "error: exception - ";
+            returnMessage += theError.what();
+            reply->set_success(returnMessage);
             return grpc::Status::OK;
         }
 
