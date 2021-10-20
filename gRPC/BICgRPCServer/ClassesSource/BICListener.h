@@ -62,7 +62,7 @@ namespace BICGRPCHelperNamespace
         // ************************* Private Neural Streaming Objects *************************
         // Neural streaming requires additional state variables because of data buffering and interpolation functionality.
         // Other streams do not have data buffering and interpolation functionality.
-        uint32_t neuroDataBufferThreshold;      // Neural data tranmission buffer size, provided to Listener using enableNeuralSensing()
+        int neuroDataBufferThreshold;      // Neural data tranmission buffer size, provided to Listener using enableNeuralSensing()
         uint32_t neuroInterplationThreshold;    // Neural interpolation length limit, provided to Listener using enableNeuralSensing()
         uint32_t lastNeuroCount = 0;            // Used to determine the number of samples required for interpolation
         double latestData[32] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };

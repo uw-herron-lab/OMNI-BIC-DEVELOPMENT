@@ -92,7 +92,7 @@ namespace BICGRPCHelperNamespace
                 responseImplantInfo->set_stimulationchannelcount(theImplantInfo->getStimulationChannelCount());
                 responseImplantInfo->set_samplingrate(theImplantInfo->getSamplingRate());
 
-                int numChannels = theImplantInfo->getChannelCount();
+                int64_t numChannels = theImplantInfo->getChannelCount();
                 responseImplantInfo->set_channelcount(numChannels);
 
                 for (int j = 0; j < numChannels; j++)
@@ -122,9 +122,9 @@ namespace BICGRPCHelperNamespace
         const std::lock_guard<std::mutex> lock(rpcServiceLock);
 
         // Split requested bridge/address strings from request
-        int deviceIdIndex = request->deviceaddress().find("/device/");
-        std::string deviceId = request->deviceaddress().substr(((int)deviceIdIndex) + 8);
-        std::string bridgeId = request->deviceaddress().substr(13, ((int)deviceIdIndex) - 13);
+        int64_t deviceIdIndex = request->deviceaddress().find("/device/");
+        std::string deviceId = request->deviceaddress().substr(((int64_t)deviceIdIndex) + 8);
+        std::string bridgeId = request->deviceaddress().substr(13, ((int64_t)deviceIdIndex) - 13);
 
         // Discover external units
         std::vector<CExternalUnitInfo*> exInfos = theImplantFactory->getExternalUnitInfos();
@@ -244,10 +244,10 @@ namespace BICGRPCHelperNamespace
         reply->set_stimulationchannelcount(deviceDirectory[request->deviceaddress()]->theImplantInfo->getStimulationChannelCount());
         reply->set_samplingrate(deviceDirectory[request->deviceaddress()]->theImplantInfo->getSamplingRate());
 
-        int numChannels = deviceDirectory[request->deviceaddress()]->theImplantInfo->getChannelCount();
+        int64_t numChannels = deviceDirectory[request->deviceaddress()]->theImplantInfo->getChannelCount();
         reply->set_channelcount(numChannels);
 
-        for (int i = 0; i < numChannels; i++)
+        for (int64_t i = 0; i < numChannels; i++)
         {
             CChannelInfo* sourceChannel = deviceDirectory[request->deviceaddress()]->theImplantInfo->getChannelInfo()[i];
             bicGetImplantInfoReply_bicChannelInfo* addChannel = reply->add_channelinfolist();

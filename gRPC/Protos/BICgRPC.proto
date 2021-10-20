@@ -117,10 +117,10 @@ message bicGetImplantInfoReply {
 	string deviceType = 2;
 	string deviceId = 3;
 	repeated bicChannelInfo channelInfoList = 4;
-	uint32 channelCount = 5;
-	uint32 measurementChannelCount = 6;
-	uint32 stimulationChannelCount = 7;
-	uint32 samplingRate = 8;
+	int64 channelCount = 5;
+	int64 measurementChannelCount = 6;
+	int64 stimulationChannelCount = 7;
+	int64 samplingRate = 8;
 	string success = 9;
 }
 
@@ -198,16 +198,16 @@ message StimulationFunctionDefinition{
 
 message stimPulseFunction{
 	repeated double amplitude = 1;
-	double pulseWidth = 2;
-	double dZ0duration = 3;
-	double dZ1duration = 4;
+	uint64 pulseWidth = 2;
+	uint64 dZ0duration = 3;
+	uint64 dZ1duration = 4;
 	uint32 repetitions = 5;
 	repeated uint32 sourceElectrodes = 6;
 	repeated uint32 sinkElectrodes = 7;
 }
 
 message pauseFunction{
-	double duration = 1;
+	uint64 duration = 1;
 }
 
 // *************************** Device Streaming Service Messages ***************************

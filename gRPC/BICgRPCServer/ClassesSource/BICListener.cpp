@@ -401,7 +401,7 @@ namespace BICGRPCHelperNamespace
                             // Interpolate and mark data as interpolated in NeuralSample message
                             double interpolationSlopes[32] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
 
-                            for (int interpolatedPointNum = 0; interpolatedPointNum < diff; interpolatedPointNum++)
+                            for (uint32_t interpolatedPointNum = 0; interpolatedPointNum < diff; interpolatedPointNum++)
                             {
                                 // Create a new sample data buffer
                                 NeuralSample* newInterpolatedSample = new NeuralSample();
