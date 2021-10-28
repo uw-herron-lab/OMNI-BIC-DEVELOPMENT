@@ -18,15 +18,6 @@ namespace BICGRPCHelperNamespace {
         std::unique_ptr <cortec::implantapi::CImplantInfo> theImplantInfo;                  // Cached Implant Info
         std::unique_ptr <BICListener> listener;
         cortec::implantapi::IStimulationCommand* theStimulationCommand;
-        //std::mutex rpcDeviceLock;
-
-        // Stream States
-        bool isStreamingTemp = false;
-        bool isStreamingHumid = false;
-        bool isStreamingNeural = false;
-        bool isStreamingConnection = false;
-        bool isStreamingErrors = false;
-        bool isStreamingPower = false;
 
         // Stream Mutexs
         std::mutex tempStreamLock;

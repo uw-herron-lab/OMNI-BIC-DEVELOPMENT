@@ -1,7 +1,9 @@
 #include "BICListener.h"
+#include <thread>
 
 // BIC Usings
 using namespace cortec::implantapi;
+
 
 // GRPC Usings
 using BICgRPC::TemperatureUpdate;
@@ -72,6 +74,84 @@ namespace BICGRPCHelperNamespace
         return m_isMeasuring;
     }
 
+    //*************************************************** Connection Streaming Functions ***************************************************
+    /// <summary>
+    /// Enable or disable connection streaming to a gRPC client. 
+    /// Function instructs BIC to start streaming, resulting in data being received by various connection event handler functions.  
+    /// Events puts data in a queue for independent transmission to client by thread utilizing "grpcConnectionStreamThread" function.
+    /// </summary>
+    /// <param name="enableSensing">True if streaming is being requested to be enabled, false otherwise</param>
+    /// <param name="aWriter">gRPC client writing inteface.</param>
+    void BICListener::enableConnectionStreaming(bool enableSensing, grpc::ServerWriter<BICgRPC::ConnectionUpdate>* aWriter)
+    {
+        // Accessing streaming state objects, grab the mutex for protection against multi-threaded race conditions
+        std::lock_guard<std::mutex> lock(m_mutex);
+
+        // Determine action to be taken. Only take action if requested action matches potential actions based on current state.
+        if (enableSensing && connectionStreamingState == false)
+        {
+            // Prepare to stream connection data
+            connectionStreamingState = true;
+            connectionWriter = aWriter;
+            connectionDataNotify = new std::condition_variable();
+            connectionProcessingThread = new std::thread(&BICListener::grpcConnectionStreamThread, this);
+        }
+        else if (!enableSensing && connectionStreamingState == true)
+        {
+            // Shut down streaming. First notify and wait for streaming handling thread to stop.
+            connectionStreamingState = false;
+            connectionDataNotify->notify_all();
+            connectionProcessingThread->join();
+
+            // Delete generated resources to free memory
+            connectionProcessingThread->~thread();
+            delete connectionProcessingThread;
+            connectionProcessingThread = NULL;
+
+            connectionDataNotify->~condition_variable();
+            delete connectionDataNotify;
+            connectionDataNotify = NULL;
+        }
+    }
+
+    /// <summary>
+    /// Private function that reads connection data from queue and sends to gRPC client. Intended to be run as a thread by enableConnectionSensing.
+    /// </summary>
+    void BICListener::grpcConnectionStreamThread()
+    {
+        // Prepare the waiting for data variables
+        std::mutex connectionDataLock;
+        std::unique_lock<std::mutex> connectionDataWait(connectionDataLock);
+
+        // Loop while streaming is active
+        while (connectionStreamingState)
+        {
+            if (connectionSampleQueue.empty())
+            {
+                connectionDataNotify->wait(connectionDataWait);
+            }
+            else
+            {
+                // Attempt to write the packet to the gRPC stream writer
+                try {
+                    // WARNING - THIS WILL BLOCK IF WRITER BUFFER IS FULL DUE TO SLOW READING BY CLIENT
+                    connectionWriter->Write(*connectionSampleQueue.front());
+
+                    // Clean up the current sample from the list
+                    connectionSampleQueue.pop();
+                }
+                catch (std::exception& anyException)
+                {
+                    std::cout << "GRPC Write Failed. Reason: " << anyException.what() << std::endl;
+                }
+                catch (...)
+                {
+                    std::cout << "GRPC Write Buffer Failed. No reason." << std::endl;
+                }
+            }
+        }
+    }
+
     /// <summary>
     /// Event handler for Brain Interchange connection state change events that include connection update information 
     /// </summary>
@@ -89,12 +169,23 @@ namespace BICGRPCHelperNamespace
                 << (isConnected ? "connected" : "disconnected") << std::endl;
 
             // If gRPC connection streaming is enabled, write out the update
-            if (ConnectionWriter != NULL)
+            if (connectionStreamingState)
             {
-                ConnectionUpdate connectionMessage;
-                connectionMessage.set_connectiontype("USB");
-                connectionMessage.set_isconnected(isConnected);
-                ConnectionWriter->Write(connectionMessage);
+                ConnectionUpdate* connectionMessage = new ConnectionUpdate();
+                connectionMessage->set_connectiontype("USB");
+                connectionMessage->set_isconnected(isConnected);
+
+                // Add it to the buffer if there is room
+                if (connectionSampleQueue.size() < 100)
+                {
+                    connectionSampleQueue.push(connectionMessage);
+                    connectionDataNotify->notify_all();
+                }
+                else
+                {
+                    delete connectionMessage;
+                    std::cout << "GRPC Connection Queue Size Overflow, streaming data skipped" << std::endl;
+                }
             }
         }
         if (info.count(ConnectionType::EXT_TO_IMPLANT) > 0)
@@ -107,12 +198,23 @@ namespace BICGRPCHelperNamespace
                 << (isConnected ? "connected" : "disconnected") << std::endl;
 
             // If gRPC connection streaming is enabled, write out the update
-            if (ConnectionWriter != NULL)
+            if (connectionStreamingState)
             {
-                ConnectionUpdate connectionMessage;
-                connectionMessage.set_connectiontype("Inductive");
-                connectionMessage.set_isconnected(isConnected);
-                ConnectionWriter->Write(connectionMessage);
+                ConnectionUpdate* connectionMessage = new ConnectionUpdate();
+                connectionMessage->set_connectiontype("Inductive");
+                connectionMessage->set_isconnected(isConnected);
+
+                // Add it to the buffer if there is room
+                if (connectionSampleQueue.size() < 100)
+                {
+                    connectionSampleQueue.push(connectionMessage);
+                    connectionDataNotify->notify_all();
+                }
+                else
+                {
+                    delete connectionMessage;
+                    std::cout << "GRPC Connection Queue Size Overflow, streaming data skipped" << std::endl;
+                }
             }
         }
     }
@@ -124,17 +226,141 @@ namespace BICGRPCHelperNamespace
     void BICListener::onConnectionStateChanged(const bool isConnected)
     {
         // If gRPC connection streaming is enabled, write out the update
-        if (ConnectionWriter != NULL)
+        if (connectionStreamingState)
         {
-            ConnectionUpdate connectionMessage;
-            connectionMessage.set_connectiontype("Overall");
-            connectionMessage.set_isconnected(isConnected);
-            ConnectionWriter->Write(connectionMessage);
+            ConnectionUpdate* connectionMessage = new ConnectionUpdate();
+            connectionMessage->set_connectiontype("Overall");
+            connectionMessage->set_isconnected(isConnected);
+
+            // Add it to the buffer if there is room
+            if (connectionSampleQueue.size() < 100)
+            {
+                connectionSampleQueue.push(connectionMessage);
+                connectionDataNotify->notify_all();
+            }
+            else
+            {
+                delete connectionMessage;
+                std::cout << "GRPC Connection Queue Size Overflow, streaming data skipped" << std::endl;
+            }
+        }
+    }
+
+    //*************************************************** Neural Data Streaming Functions ***************************************************
+    /// <summary>
+    /// Enable or disable neural streaming to a gRPC client. 
+    /// Function instructs BIC to start streaming, resulting in data being received by "onData" event handler function.  
+    /// onData puts data in a queue for independent transmission to client by thread utilizing "grpcNeuralStreamThread" function.
+    /// </summary>
+    /// <param name="enableSensing">True if streaming is being requested to be enabled, false otherwise</param>
+    /// <param name="dataBufferSize">Size of buffered data packets to be returned to gRPC client</param>
+    /// <param name="interplationThreshold">The maximum number of data points to interpolate between lost data points</param>
+    /// <param name="aWriter">gRPC client writing inteface.</param>
+    void BICListener::enableNeuralStreaming(bool enableSensing, uint32_t dataBufferSize, uint32_t interplationThreshold, grpc::ServerWriter<BICgRPC::NeuralUpdate>* aWriter)
+    {
+        // Accessing streaming state objects, grab the mutex for protection against multi-threaded race conditions
+        std::lock_guard<std::mutex> lock(m_mutex);
+
+        // Determine action to be taken. Only take action if requested action matches potential actions based on current state.
+        if (enableSensing && neuralStreamingState == false)
+        {
+            // Prepare to stream neural data
+            neuralStreamingState = true;
+            neuroDataBufferThreshold = dataBufferSize;
+            neuroInterplationThreshold = interplationThreshold;
+            neuralWriter = aWriter;
+            neuralDataNotify = new std::condition_variable();
+            neuralProcessingThread = new std::thread (&BICListener::grpcNeuralStreamThread, this);
+        }
+        else if (!enableSensing && neuralStreamingState == true)
+        {
+            // Shut down streaming. First notify and wait for streaming handling thread to stop.
+            neuralStreamingState = false;
+            neuralDataNotify->notify_all();
+            neuralProcessingThread->join();
+
+            // Delete generated resources to free memory
+            neuralProcessingThread->~thread();
+            delete neuralProcessingThread;
+            neuralProcessingThread = NULL;
+
+            neuralDataNotify->~condition_variable();
+            delete neuralDataNotify;
+            neuralDataNotify = NULL;
         }
     }
 
     /// <summary>
-    /// Event handler for Brain Interchange neural data received
+    /// Private function that reads neural data from queue and sends to gRPC client. Intended to be run as a thread by enableNeuralSensing.
+    /// </summary>
+    void BICListener::grpcNeuralStreamThread()
+    {
+        // Create buffer objects for gRPC straming and interpolation
+        BICgRPC::NeuralUpdate* bufferedNeuroUpdate = new BICgRPC::NeuralUpdate();
+        std::mutex neuralDataLock;
+        std::unique_lock<std::mutex> neuroDataWait(neuralDataLock);
+
+        // Loop while streaming is active
+        while (neuralStreamingState)
+        {
+            if (neuralSampleQueue.empty())
+            {
+                neuralDataNotify->wait(neuroDataWait);
+            }
+            else
+            {
+                try {
+                    // Lock the neurobuffer
+                    this->m_neuroBufferLock.lock();
+
+                    // Add the front item to the queue for the current packet
+                    bufferedNeuroUpdate->add_samples()->UnsafeArenaSwap(neuralSampleQueue.front());
+
+                    // Clean up the current sample from the list
+                    neuralSampleQueue.pop();
+
+                    // Unlock the neurobuffer
+                    this->m_neuroBufferLock.unlock();
+                }
+                catch (std::exception& anyException)
+                {
+                    std::cout << "GRPC Read Buffer Failed. Reason: " << anyException.what() << std::endl;
+                }
+                catch (...)
+                {
+                    std::cout << "GRPC Read Buffer Failed. No reason." << std::endl;
+                }
+
+                // If enough data has been queued, send data
+                if (bufferedNeuroUpdate->samples().size() >= neuroDataBufferThreshold)
+                {
+                    // Attempt to write the packet to the gRPC stream writer
+                    try {
+                        // WARNING - THIS WILL BLOCK IF NEURALWRITER BUFFER IS FULL DUE TO SLOW READING BY CLIENT
+                        neuralWriter->Write(*bufferedNeuroUpdate);
+                    }
+                    catch (std::exception& anyException)
+                    {
+                        std::cout << "GRPC Write Failed. Reason: " << anyException.what() << std::endl;
+                    }
+                    catch (...)
+                    {
+                        std::cout << "GRPC Write Buffer Failed. No reason." << std::endl;
+                    }
+
+                    // Delete all elements in the buffer after transmission, freeing up memory.
+                    bufferedNeuroUpdate->mutable_samples()->DeleteSubrange(0, bufferedNeuroUpdate->samples().size());
+                }
+            }
+        }
+
+        // Clean up the buffer
+        delete bufferedNeuroUpdate;
+    }
+
+    /// <summary>
+    /// Event handler for Brain Interchange neural data received. 
+    /// Not intended to be called from gRPC microservice.
     /// </summary>
     /// <param name="samples">BIC sensed LFP samples</param>
     void BICListener::onData(const std::vector<CSample>* samples)
@@ -142,13 +368,21 @@ namespace BICGRPCHelperNamespace
         // Ensure samples is not empty before working with it.
         if (!samples->empty())
         {
-            // Create message container for streaming, may not be used
+            // Loop through retrieved samples
             for (int i = 0; i < samples->size(); i++)
             {
-                // Copy in the time domain data in
+                // Create a new sample data buffer
                 int32_t sampleCounter = samples->at(i).getMeasurementCounter();
                 int16_t sampleNum = samples->at(i).getNumberOfMeasurements();
                 double* theData = samples->at(i).getMeasurements();
+                NeuralSample* newSample = new NeuralSample();
+                newSample->set_numberofmeasurements(sampleNum);
+                newSample->set_supplyvoltage(samples->at(i).getSupplyVoltage());
+                newSample->set_isconnected(samples->at(i).isConnected());
+                newSample->set_stimulationnumber(samples->at(i).getStimulationId());
+                newSample->set_stimulationactive(samples->at(i).isStimulationActive());
+                newSample->set_samplecounter(sampleCounter);
+                newSample->set_isinterpolated(false);
 
                 // Check if we've lost packets, if so interpolate
                 if (lastNeuroCount + 1 != sampleCounter)
@@ -173,7 +407,7 @@ namespace BICGRPCHelperNamespace
                         std::cout << "** Missed Neural Datapoints: " << diff << "! **";
 
                         // Ensure interpolation is a reasonable amount
-                        if (diff <= interplationThreshold)
+                        if (diff <= neuroInterplationThreshold)
                         {
                             // Continue the error
                             std::cout << "Interpolating " << diff << " points..." << std::endl;
@@ -181,17 +415,17 @@ namespace BICGRPCHelperNamespace
                             // Interpolate and mark data as interpolated in NeuralSample message
                             double interpolationSlopes[32] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
 
-                            for (int interpolatedPointNum = 0; interpolatedPointNum < diff; interpolatedPointNum++)
+                            for (uint32_t interpolatedPointNum = 1; interpolatedPointNum <= diff; interpolatedPointNum++)
                             {
-                                // Create a new sample data buffer in the arena
-                                NeuralSample* newInterpolatedSample = google::protobuf::Arena::CreateMessage<NeuralSample>(&arena);
+                                // Create a new sample data buffer
+                                NeuralSample* newInterpolatedSample = new NeuralSample();
 
                                 // Add in the fields from the latest BIC packet
-                                newInterpolatedSample->set_numberofmeasurements(sampleCounter);
-                                newInterpolatedSample->set_supplyvoltage(samples->at(i).getSupplyVoltage());
-                                newInterpolatedSample->set_isconnected(samples->at(i).isConnected());
-                                newInterpolatedSample->set_stimulationnumber(samples->at(i).getStimulationId());
-                                newInterpolatedSample->set_stimulationactive(samples->at(i).isStimulationActive());
+                                newInterpolatedSample->set_numberofmeasurements(sampleNum);
+                                newInterpolatedSample->set_supplyvoltage(newSample->supplyvoltage());
+                                newInterpolatedSample->set_isconnected(newSample->isconnected());
+                                newInterpolatedSample->set_stimulationnumber(newSample->stimulationnumber());
+                                newInterpolatedSample->set_stimulationactive(newSample->stimulationactive());
                                 newInterpolatedSample->set_samplecounter(lastNeuroCount + interpolatedPointNum);
                                 newInterpolatedSample->set_isinterpolated(true);
 
@@ -202,92 +436,139 @@ namespace BICGRPCHelperNamespace
                                     newInterpolatedSample->add_measurements(interpolatedSample);
                                 }
 
-                                // If we're streaming, create message
-                                if (NeuralWriter != NULL)
+                                // Add it to the buffer if there is room
+                                if (neuralSampleQueue.size() < 1000)
                                 {
-                                    bufferedNeuroUpdate->mutable_samples()->AddAllocated(newInterpolatedSample);
+                                    // Lock the neurobuffer, add data, unlock
+                                    this->m_neuroBufferLock.lock();
+                                    neuralSampleQueue.push(newInterpolatedSample);
+                                    this->m_neuroBufferLock.unlock();
+                                }
+                                else
+                                {
+                                    delete newInterpolatedSample;
+                                    std::cout << "GRPC Neural Queue Size Overflow, streaming data skipped" << std::endl;
                                 }
                             }
                         }
                         else
                         {
                             // Continue the error
-                            std::cout << "Exceeded Interpolation limit." << std::endl;
-
-                            // Exceeded interpolation threshold, irregular loss. Send the past buffered dataset out so it's continuous
-                            if (NeuralWriter != NULL && bufferedNeuroUpdate->samples().size() > 0)
-                            {
-                                // Attempt to write the packet to the gRPC stream writer
-                                try {
-                                    // TODO - THIS WILL BLOCK IF NEURALWRITER BUFFER IS FULL DUE TO SLOW READING BY CLIENT
-                                    // NEED TO DISSOCIATE CORTEC READS FROM GRPC STREAMING
-                                    NeuralWriter->Write(*bufferedNeuroUpdate);
-                                }
-                                catch (std::exception& anyException)
-                                {
-                                    std::cout << "GRPC Write Failed. Reason: " << anyException.what() << std::endl;
-                                }
-
-                                // Reset the gRPC memory management arena system
-                                arena.Reset();
-                                bufferedNeuroUpdate = google::protobuf::Arena::CreateMessage<BICgRPC::NeuralUpdate>(&arena);
-                            }
+                            std::cout << "Exceeded Interpolation limit. Data loss indicated by dropout in sample count" << std::endl;
                         }
                     }
                 }
 
-                // If we're streaming, create message
-                if (NeuralWriter != NULL)
-                {
-                    // Create a new sample data buffer in the arena
-                    NeuralSample* newSample = google::protobuf::Arena::CreateMessage<NeuralSample>(&arena);
-
-                    // Add in the fields from the latest BIC packet
-                    newSample->set_numberofmeasurements(sampleNum);
-                    newSample->set_supplyvoltage(samples->at(i).getSupplyVoltage());
-                    newSample->set_isconnected(samples->at(i).isConnected());
-                    newSample->set_stimulationnumber(samples->at(i).getStimulationId());
-                    newSample->set_stimulationactive(samples->at(i).isStimulationActive());
-                    newSample->set_samplecounter(sampleCounter);
-                    newSample->set_isinterpolated(false);
-
-                    // Copy in the data
-                    for (int j = 0; j < sampleNum; j++)
-                    {
-                        newSample->add_measurements(theData[j]);
-                        latestData[j] = theData[j];
-                    }
-
-                    // Add it to the buffer
-                    bufferedNeuroUpdate->mutable_samples()->AddAllocated(newSample);
-                }
-
-                // Update counter
-                delete theData;
+                // Update Interpolation Info for future use
                 lastNeuroCount = sampleCounter;
-            }
 
-            // If streaming, send data
-            if (NeuralWriter != NULL && bufferedNeuroUpdate->samples().size() >= neuroDataBufferThreshold)
+                // Copy in the data to both the newSample and the latest data buffer (for future interpolation). Delete it when done
+                for (int j = 0; j < sampleNum; j++)
+                {
+                    newSample->add_measurements(theData[j]);
+                    latestData[j] = theData[j];
+                }
+                delete theData;
+
+                // Add latest received data packet to the buffer if there is room
+                if (neuralSampleQueue.size() < 1000)
+                {
+                    // Lock the neurobuffer, add data, unlock
+                    this->m_neuroBufferLock.lock();
+                    neuralSampleQueue.push(newSample);
+                    this->m_neuroBufferLock.unlock();
+
+                    // Notify the streaming function that new data exists
+                    neuralDataNotify->notify_all();
+                }
+                else
+                {
+                    delete newSample;
+                    std::cout << "GRPC Neural Queue Size Overflow, streaming data skipped" << std::endl;
+                }
+            }
+        }
+
+        // No matter what, delete samples
+        delete samples;
+    }
+
+    //*************************************************** Power Data Streaming Functions ***************************************************
+    /// <summary>
+    /// Enable or disable power streaming to a gRPC client. 
+    /// Function instructs BIC to start streaming, resulting in data being received by various power event handler functions.  
+    /// Events puts data in a queue for independent transmission to client by thread utilizing "grpcPowerStreamThread" function.
+    /// </summary>
+    /// <param name="enableSensing">True if streaming is being requested to be enabled, false otherwise</param>
+    /// <param name="aWriter">gRPC client writing inteface.</param>
+    void BICListener::enablePowerStreaming(bool enableSensing, grpc::ServerWriter<BICgRPC::PowerUpdate>* aWriter)
+    {
+        // Accessing streaming state objects, grab the mutex for protection against multi-threaded race conditions
+        std::lock_guard<std::mutex> lock(m_mutex);
+
+        // Determine action to be taken. Only take action if requested action matches potential actions based on current state.
+        if (enableSensing && powerStreamingState == false)
+        {
+            // Prepare to stream power data
+            powerStreamingState = true;
+            powerWriter = aWriter;
+            powerDataNotify = new std::condition_variable();
+            powerProcessingThread = new std::thread(&BICListener::grpcPowerStreamThread, this);
+        }
+        else if (!enableSensing && powerStreamingState == true)
+        {
+            // Shut down streaming. First notify and wait for streaming handling thread to stop.
+            powerStreamingState = false;
+            powerDataNotify->notify_all();
+            powerProcessingThread->join();
+
+            // Delete generated resources to free memory
+            powerProcessingThread->~thread();
+            delete powerProcessingThread;
+            powerProcessingThread = NULL;
+
+            powerDataNotify->~condition_variable();
+            delete powerDataNotify;
+            powerDataNotify = NULL;
+        }
+    }
+
+    /// <summary>
+    /// Private function that reads power data from queue and sends to gRPC client. Intended to be run as a thread by enablePowerSensing.
+    /// </summary>
+    void BICListener::grpcPowerStreamThread()
+    {
+        // Prepare the waiting for data variables
+        std::mutex powerDataLock;
+        std::unique_lock<std::mutex> powerDataWait(powerDataLock);
+
+        // Loop while streaming is active
+        while (powerStreamingState)
+        {
+            if (powerSampleQueue.empty())
+            {
+                powerDataNotify->wait(powerDataWait);
+            }
+            else
             {
                 // Attempt to write the packet to the gRPC stream writer
                 try {
-                    // TODO - THIS WILL BLOCK IF NEURALWRITER BUFFER IS FULL DUE TO SLOW READING BY CLIENT
-                    // NEED TO DISSOCIATE CORTEC READS FROM GRPC STREAMING
-                    NeuralWriter->Write(*bufferedNeuroUpdate);
+                    // WARNING - THIS WILL BLOCK IF WRITER BUFFER IS FULL DUE TO SLOW READING BY CLIENT
+                    powerWriter->Write(*powerSampleQueue.front());
+
+                    // Clean up the current sample from the list
+                    powerSampleQueue.pop();
                 }
                 catch (std::exception& anyException)
                 {
                     std::cout << "GRPC Write Failed. Reason: " << anyException.what() << std::endl;
                 }
-
-                // Reset the gRPC memory management arena system
-                arena.Reset();
-                bufferedNeuroUpdate = google::protobuf::Arena::CreateMessage<BICgRPC::NeuralUpdate>(&arena);
+                catch (...)
+                {
+                    std::cout << "GRPC Write Buffer Failed. No reason." << std::endl;
+                }
             }
         }
-
-        delete samples;
     }
 
     /// <summary>
@@ -296,16 +577,25 @@ namespace BICGRPCHelperNamespace
     /// <param name="voltageMicroV">New implant voltage level</param>
     void BICListener::onImplantVoltageChanged(const double voltageMicroV)
     {
-        // TODO check units
-
         // If gRPC power streaming is enabled, write out the update
-        if (PowerWriter != NULL)
+        if (powerStreamingState)
         {
-            PowerUpdate powerMessage;
-            powerMessage.set_parameter("Voltage");
-            powerMessage.set_value(voltageMicroV);
-            powerMessage.set_units("microvolts");
-            PowerWriter->Write(powerMessage);
+            PowerUpdate* powerMessage = new PowerUpdate();
+            powerMessage->set_parameter("Voltage");
+            powerMessage->set_value(voltageMicroV);
+            powerMessage->set_units("microvolts");
+
+            // Add it to the buffer if there is room
+            if (powerSampleQueue.size() < 100)
+            {
+                powerSampleQueue.push(powerMessage);
+                powerDataNotify->notify_all();
+            }
+            else
+            {
+                delete powerMessage;
+                std::cout << "GRPC Power Queue Size Overflow, streaming data skipped" << std::endl;
+            }
         }
     }
 
@@ -316,13 +606,24 @@ namespace BICGRPCHelperNamespace
     void BICListener::onPrimaryCoilCurrentChanged(const double currentMilliA)
     {
         // If gRPC power streaming is enabled, write out the update
-        if (PowerWriter != NULL)
+        if (powerStreamingState)
         {
-            PowerUpdate powerMessage;
-            powerMessage.set_parameter("CoilCurrent");
-            powerMessage.set_value(currentMilliA);
-            powerMessage.set_units("milliamperes");
-            PowerWriter->Write(powerMessage);
+            PowerUpdate* powerMessage = new PowerUpdate();
+            powerMessage->set_parameter("CoilCurrent");
+            powerMessage->set_value(currentMilliA);
+            powerMessage->set_units("milliamperes");
+
+            // Add it to the buffer if there is room
+            if (powerSampleQueue.size() < 100)
+            {
+                powerSampleQueue.push(powerMessage);
+                powerDataNotify->notify_all();
+            }
+            else
+            {
+                delete powerMessage;
+                std::cout << "GRPC Power Queue Size Overflow, streaming data skipped" << std::endl;
+            }
         }
     }
 
@@ -333,13 +634,102 @@ namespace BICGRPCHelperNamespace
     void BICListener::onImplantControlValueChanged(const double controlValue)
     {
         // If gRPC power streaming is enabled, write out the update
-        if (PowerWriter != NULL)
+        if (powerStreamingState)
         {
-            PowerUpdate powerMessage;
-            powerMessage.set_parameter("Control");
-            powerMessage.set_value(controlValue);
-            powerMessage.set_units("%");
-            PowerWriter->Write(powerMessage);
+            PowerUpdate* powerMessage = new PowerUpdate();
+            powerMessage->set_parameter("Control");
+            powerMessage->set_value(controlValue);
+            powerMessage->set_units("%");
+
+            // Add it to the buffer if there is room
+            if (powerSampleQueue.size() < 100)
+            {
+                powerSampleQueue.push(powerMessage);
+                powerDataNotify->notify_all();
+            }
+            else
+            {
+                delete powerMessage;
+                std::cout << "GRPC Power Queue Size Overflow, streaming data skipped" << std::endl;
+            }
+        }
+    }
+
+    //*************************************************** Temperature Streaming Functions ***************************************************
+    /// <summary>
+    /// Enable or disable temperature streaming to a gRPC client. 
+    /// Function instructs BIC to start streaming, resulting in data being received by "onTemperatureChanged" event handler function.  
+    /// onTemperatureChanged puts data in a queue for independent transmission to client by thread utilizing "grpcTemperatureStreamThread" function.
+    /// </summary>
+    /// <param name="enableSensing">True if streaming is being requested to be enabled, false otherwise</param>
+    /// <param name="aWriter">gRPC client writing inteface.</param>
+    void BICListener::enableTemperatureStreaming(bool enableSensing, grpc::ServerWriter<BICgRPC::TemperatureUpdate>* aWriter)
+    {
+        // Accessing streaming state objects, grab the mutex for protection against multi-threaded race conditions
+        std::lock_guard<std::mutex> lock(m_mutex);
+
+        // Determine action to be taken. Only take action if requested action matches potential actions based on current state.
+        if (enableSensing && temperatureStreamingState == false)
+        {
+            // Prepare to stream neural data
+            temperatureStreamingState = true;
+            temperatureWriter = aWriter;
+            temperatureDataNotify = new std::condition_variable();
+            temperatureProcessingThread = new std::thread(&BICListener::grpcTemperatureStreamThread, this);
+        }
+        else if (!enableSensing && temperatureStreamingState == true)
+        {
+            // Shut down streaming. First notify and wait for streaming handling thread to stop.
+            temperatureStreamingState = false;
+            temperatureDataNotify->notify_all();
+            temperatureProcessingThread->join();
+
+            // Delete generated resources to free memory
+            temperatureProcessingThread->~thread();
+            delete temperatureProcessingThread;
+            temperatureProcessingThread = NULL;
+
+            temperatureDataNotify->~condition_variable();
+            delete temperatureDataNotify;
+            temperatureDataNotify = NULL;
+        }
+    }
+
+    /// <summary>
+    /// Private function that reads temperature data from queue and sends to gRPC client. Intended to be run as a thread by enableTemperatureSensing.
+    /// </summary>
+    void BICListener::grpcTemperatureStreamThread()
+    {
+        // Prepare the waiting for data variables
+        std::mutex temperatureDataLock;
+        std::unique_lock<std::mutex> temperatureDataWait(temperatureDataLock);
+
+        // Loop while streaming is active
+        while (temperatureStreamingState)
+        {
+            if (temperatureSampleQueue.empty())
+            {
+                temperatureDataNotify->wait(temperatureDataWait);
+            }
+            else
+            {
+                // Attempt to write the packet to the gRPC stream writer
+                try {
+                    // WARNING - THIS WILL BLOCK IF WRITER BUFFER IS FULL DUE TO SLOW READING BY CLIENT
+                    temperatureWriter->Write(*temperatureSampleQueue.front());
+
+                    // Clean up the current sample from the list
+                    temperatureSampleQueue.pop();
+                }
+                catch (std::exception& anyException)
+                {
+                    std::cout << "GRPC Write Failed. Reason: " << anyException.what() << std::endl;
+                }
+                catch (...)
+                {
+                    std::cout << "GRPC Write Buffer Failed. No reason." << std::endl;
+                }
+            }
         }
     }
 
@@ -350,12 +740,101 @@ namespace BICGRPCHelperNamespace
     void BICListener::onTemperatureChanged(const double temperature)
     {
         // If gRPC temperature streaming is enabled, write out the update
-        if (TemperatureWriter != NULL)
+        if (temperatureStreamingState)
         {
-            TemperatureUpdate tempMessage;
-            tempMessage.set_temperature(temperature);
-            tempMessage.set_units("celsius");
-            TemperatureWriter->Write(tempMessage);
+            TemperatureUpdate* temperatureMessage = new TemperatureUpdate();
+            temperatureMessage->set_temperature(temperature);
+            temperatureMessage->set_units("celsius");
+
+            // Add it to the buffer if there is room
+            if (temperatureSampleQueue.size() < 100)
+            {
+                temperatureSampleQueue.push(temperatureMessage);
+                temperatureDataNotify->notify_all();
+            }
+            else
+            {
+                delete temperatureMessage;
+                std::cout << "GRPC Temperature Queue Size Overflow, streaming data skipped" << std::endl;
+            }
+        }
+    }
+
+    //*************************************************** Humidity Streaming Functions ***************************************************
+    /// <summary>
+    /// Enable or disable humidity streaming to a gRPC client. 
+    /// Function instructs BIC to start streaming, resulting in data being received by "onHumidityChanged" event handler function.  
+    /// onHumidityChanged puts data in a queue for independent transmission to client by thread utilizing "grpcHumidityStreamThread" function.
+    /// </summary>
+    /// <param name="enableSensing">True if streaming is being requested to be enabled, false otherwise</param>
+    /// <param name="aWriter">gRPC client writing inteface.</param>
+    void BICListener::enableHumidityeStreaming(bool enableSensing, grpc::ServerWriter<BICgRPC::HumidityUpdate>* aWriter)
+    {
+        // Accessing streaming state objects, grab the mutex for protection against multi-threaded race conditions
+        std::lock_guard<std::mutex> lock(m_mutex);
+
+        // Determine action to be taken. Only take action if requested action matches potential actions based on current state.
+        if (enableSensing && humidityStreamingState == false)
+        {
+            // Prepare to stream humidity data
+            humidityStreamingState = true;
+            humidityWriter = aWriter;
+            humidityDataNotify = new std::condition_variable();
+            humidityProcessingThread = new std::thread(&BICListener::grpcHumidityStreamThread, this);
+        }
+        else if (!enableSensing && humidityStreamingState == true)
+        {
+            // Shut down streaming. First notify and wait for streaming handling thread to stop.
+            humidityStreamingState = false;
+            humidityDataNotify->notify_all();
+            humidityProcessingThread->join();
+
+            // Delete generated resources to free memory
+            humidityProcessingThread->~thread();
+            delete humidityProcessingThread;
+            humidityProcessingThread = NULL;
+
+            humidityDataNotify->~condition_variable();
+            delete humidityDataNotify;
+            humidityDataNotify = NULL;
+        }
+    }
+    
+    /// <summary>
+    /// Private function that reads humidity data from queue and sends to gRPC client. Intended to be run as a thread by enableHumiditySensing.
+    /// </summary>
+    void BICListener::grpcHumidityStreamThread()
+    {
+        // Prepare the waiting for data variables
+        std::mutex humidityDataLock;
+        std::unique_lock<std::mutex> humidityDataWait(humidityDataLock);
+
+        // Loop while streaming is active
+        while (humidityStreamingState)
+        {
+            if (humiditySampleQueue.empty())
+            {
+                humidityDataNotify->wait(humidityDataWait);
+            }
+            else
+            {
+                // Attempt to write the packet to the gRPC stream writer
+                try {
+                    // WARNING - THIS WILL BLOCK IF WRITER BUFFER IS FULL DUE TO SLOW READING BY CLIENT
+                    humidityWriter->Write(*humiditySampleQueue.front());
+
+                    // Clean up the current sample from the list
+                    humiditySampleQueue.pop();
+                }
+                catch (std::exception& anyException)
+                {
+                    std::cout << "GRPC Write Failed. Reason: " << anyException.what() << std::endl;
+                }
+                catch (...)
+                {
+                    std::cout << "GRPC Write Buffer Failed. No reason." << std::endl;
+                }
+            }
         }
     }
 
@@ -366,12 +845,101 @@ namespace BICGRPCHelperNamespace
     void BICListener::onHumidityChanged(const double humidity)
     {
         // If gRPC humidity streaming is enabled, write out the update
-        if (HumidityWriter != NULL)
+        if (humidityStreamingState)
         {
-            HumidityUpdate humidMessage;
-            humidMessage.set_humidity(humidity);
-            humidMessage.set_units("rh");
-            HumidityWriter->Write(humidMessage);
+            HumidityUpdate* humidityMessage = new HumidityUpdate();
+            humidityMessage->set_humidity(humidity);
+            humidityMessage->set_units("rh");
+
+            // Add it to the buffer if there is room
+            if (humiditySampleQueue.size() < 100)
+            {
+                humiditySampleQueue.push(humidityMessage);
+                humidityDataNotify->notify_all();
+            }
+            else
+            {
+                delete humidityMessage;
+                std::cout << "GRPC Humidity Queue Size Overflow, streaming data skipped" << std::endl;
+            }
+        }
+    }
+
+    //*************************************************** Error Streaming Functions ***************************************************
+    /// <summary>
+    /// Enable or disable error streaming to a gRPC client. 
+    /// Function instructs BIC to start streaming, resulting in data being received by "onError" event handler function.  
+    /// onError puts data in a queue for independent transmission to client by thread utilizing "grpcErrorStreamThread" function.
+    /// </summary>
+    /// <param name="enableSensing">True if streaming is being requested to be enabled, false otherwise</param>
+    /// <param name="aWriter">gRPC client writing inteface.</param>
+    void BICListener::enableErrorStreaming(bool enableSensing, grpc::ServerWriter<BICgRPC::ErrorUpdate>* aWriter)
+    {
+        // Accessing streaming state objects, grab the mutex for protection against multi-threaded race conditions
+        std::lock_guard<std::mutex> lock(m_mutex);
+
+        // Determine action to be taken. Only take action if requested action matches potential actions based on current state.
+        if (enableSensing && errorStreamingState == false)
+        {
+            // Prepare to stream error data
+            errorStreamingState = true;
+            errorWriter = aWriter;
+            errorDataNotify = new std::condition_variable();
+            errorProcessingThread = new std::thread(&BICListener::grpcErrorStreamThread, this);
+        }
+        else if (!enableSensing && errorStreamingState == true)
+        {
+            // Shut down streaming. First notify and wait for streaming handling thread to stop.
+            errorStreamingState = false;
+            errorDataNotify->notify_all();
+            errorProcessingThread->join();
+
+            // Delete generated resources to free memory
+            errorProcessingThread->~thread();
+            delete errorProcessingThread;
+            errorProcessingThread = NULL;
+
+            errorDataNotify->~condition_variable();
+            delete errorDataNotify;
+            errorDataNotify = NULL;
+        }
+    }
+
+    /// <summary>
+    /// Private function that reads error data from queue and sends to gRPC client. Intended to be run as a thread by enableErrorSensing.
+    /// </summary>
+    void BICListener::grpcErrorStreamThread()
+    {
+        // Prepare the waiting for data variables
+        std::mutex errorDataLock;
+        std::unique_lock<std::mutex> errorDataWait(errorDataLock);
+
+        // Loop while streaming is active
+        while (errorStreamingState)
+        {
+            if (errorSampleQueue.empty())
+            {
+                errorDataNotify->wait(errorDataWait);
+            }
+            else
+            {
+                // Attempt to write the packet to the gRPC stream writer
+                try {
+                    // WARNING - THIS WILL BLOCK IF WRITER BUFFER IS FULL DUE TO SLOW READING BY CLIENT
+                    errorWriter->Write(*errorSampleQueue.front());
+
+                    // Clean up the current sample from the list
+                    errorSampleQueue.pop();
+                }
+                catch (std::exception& anyException)
+                {
+                    std::cout << "GRPC Write Failed. Reason: " << anyException.what() << std::endl;
+                }
+                catch (...)
+                {
+                    std::cout << "GRPC Write Buffer Failed. No reason." << std::endl;
+                }
+            }
         }
     }
 
@@ -382,11 +950,22 @@ namespace BICGRPCHelperNamespace
     void BICListener::onError(const std::exception& err)
     {
         // If gRPC error streaming is enabled, write out the update
-        if (ErrorWriter != NULL)
+        if (errorStreamingState)
         {
-            ErrorUpdate errorMessage;
-            errorMessage.set_message(err.what());
-            ErrorWriter->Write(errorMessage);
+            ErrorUpdate* errorMessage = new ErrorUpdate();
+            errorMessage->set_message(err.what());
+
+            // Add it to the buffer if there is room
+            if (errorSampleQueue.size() < 100)
+            {
+                errorSampleQueue.push(errorMessage);
+                errorDataNotify->notify_all();
+            }
+            else
+            {
+                delete errorMessage;
+                std::cout << "GRPC Error Queue Size Overflow, streaming data skipped" << std::endl;
+            }
         }
     }
 
@@ -399,11 +978,22 @@ namespace BICGRPCHelperNamespace
         std::cout << "*** Warning: Data processing too slow" << std::endl;
         
         // If gRPC error streaming is enabled, write out the update
-        if (ErrorWriter != NULL)
+        if (errorStreamingState)
         {
-            ErrorUpdate errorMessage;
-            errorMessage.set_message("Warning: Data processing too slow");
-            ErrorWriter->Write(errorMessage);
+            ErrorUpdate* errorMessage = new ErrorUpdate();
+            errorMessage->set_message("Warning: Data processing too slow");
+
+            // Add it to the buffer if there is room
+            if (errorSampleQueue.size() < 100)
+            {
+                errorSampleQueue.push(errorMessage);
+                errorDataNotify->notify_all();
+            }
+            else
+            {
+                delete errorMessage;
+                std::cout << "GRPC Error Queue Size Overflow, streaming data skipped" << std::endl;
+            }
         }
     }
 }
