@@ -56,6 +56,7 @@ namespace BICGRPCHelperNamespace
         // ************************* Private State Objects *************************
         // Generic state variables.
         std::mutex m_mutex;                     // General purpose mutex used for protecting against multi-threaded state access.
+        std::mutex m_neuroBufferLock;           // General purpose mutex for protecting the neurobuffer against incomplete read/writes
         bool m_isStimulating;                   // State variable indicating latest stimulation state received from device.
         bool m_isMeasuring;                     // State variable indicating latest measurement state received from device.
 

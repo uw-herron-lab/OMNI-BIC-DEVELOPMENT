@@ -42,6 +42,8 @@ namespace RealtimeGraphing
 
         public bool BICConnect()
         {
+#warning TODO: Add a check for already connected devices?
+#warning TODO: Add InfoService
             // Instantiate the Bridge and scan for bridges
             Console.WriteLine("Instantiating Bridge Service Client and scanning for bridges...");
             bridgeClient = new BICBridgeService.BICBridgeServiceClient(aGRPChannel);

@@ -310,11 +310,17 @@ namespace BICGRPCHelperNamespace
             else
             {
                 try {
+                    // Lock the neurobuffer
+                    this->m_neuroBufferLock.lock();
+
                     // Add the front item to the queue for the current packet
                     bufferedNeuroUpdate->add_samples()->UnsafeArenaSwap(neuralSampleQueue.front());
-                    
+
                     // Clean up the current sample from the list
                     neuralSampleQueue.pop();
+
+                    // Unlock the neurobuffer
+                    this->m_neuroBufferLock.unlock();
                 }
                 catch (std::exception& anyException)
                 {
@@ -342,7 +348,7 @@ namespace BICGRPCHelperNamespace
                         std::cout << "GRPC Write Buffer Failed. No reason." << std::endl;
                     }
 
-                    // Delete all elements in the buffer after trasmission, freeing up memory.
+                    // Delete all elements in the buffer after transmission, freeing up memory.
                     bufferedNeuroUpdate->mutable_samples()->DeleteSubrange(0, bufferedNeuroUpdate->samples().size());
                 }
             }
@@ -365,10 +371,18 @@ namespace BICGRPCHelperNamespace
             // Loop through retrieved samples
             for (int i = 0; i < samples->size(); i++)
             {
-                // Copy in the time domain data in
+                // Create a new sample data buffer
                 int32_t sampleCounter = samples->at(i).getMeasurementCounter();
                 int16_t sampleNum = samples->at(i).getNumberOfMeasurements();
                 double* theData = samples->at(i).getMeasurements();
+                NeuralSample* newSample = new NeuralSample();
+                newSample->set_numberofmeasurements(sampleNum);
+                newSample->set_supplyvoltage(samples->at(i).getSupplyVoltage());
+                newSample->set_isconnected(samples->at(i).isConnected());
+                newSample->set_stimulationnumber(samples->at(i).getStimulationId());
+                newSample->set_stimulationactive(samples->at(i).isStimulationActive());
+                newSample->set_samplecounter(sampleCounter);
+                newSample->set_isinterpolated(false);
 
                 // Check if we've lost packets, if so interpolate
                 if (lastNeuroCount + 1 != sampleCounter)
@@ -401,17 +415,17 @@ namespace BICGRPCHelperNamespace
                             // Interpolate and mark data as interpolated in NeuralSample message
                             double interpolationSlopes[32] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
 
-                            for (uint32_t interpolatedPointNum = 0; interpolatedPointNum < diff; interpolatedPointNum++)
+                            for (uint32_t interpolatedPointNum = 1; interpolatedPointNum <= diff; interpolatedPointNum++)
                             {
                                 // Create a new sample data buffer
                                 NeuralSample* newInterpolatedSample = new NeuralSample();
 
                                 // Add in the fields from the latest BIC packet
-                                newInterpolatedSample->set_numberofmeasurements(sampleCounter);
-                                newInterpolatedSample->set_supplyvoltage(samples->at(i).getSupplyVoltage());
-                                newInterpolatedSample->set_isconnected(samples->at(i).isConnected());
-                                newInterpolatedSample->set_stimulationnumber(samples->at(i).getStimulationId());
-                                newInterpolatedSample->set_stimulationactive(samples->at(i).isStimulationActive());
+                                newInterpolatedSample->set_numberofmeasurements(sampleNum);
+                                newInterpolatedSample->set_supplyvoltage(newSample->supplyvoltage());
+                                newInterpolatedSample->set_isconnected(newSample->isconnected());
+                                newInterpolatedSample->set_stimulationnumber(newSample->stimulationnumber());
+                                newInterpolatedSample->set_stimulationactive(newSample->stimulationactive());
                                 newInterpolatedSample->set_samplecounter(lastNeuroCount + interpolatedPointNum);
                                 newInterpolatedSample->set_isinterpolated(true);
 
@@ -425,8 +439,10 @@ namespace BICGRPCHelperNamespace
                                 // Add it to the buffer if there is room
                                 if (neuralSampleQueue.size() < 1000)
                                 {
+                                    // Lock the neurobuffer, add data, unlock
+                                    this->m_neuroBufferLock.lock();
                                     neuralSampleQueue.push(newInterpolatedSample);
-                                    neuralDataNotify->notify_all();
+                                    this->m_neuroBufferLock.unlock();
                                 }
                                 else
                                 {
@@ -443,20 +459,10 @@ namespace BICGRPCHelperNamespace
                     }
                 }
 
-                // If we're streaming, create message
-                // Create a new sample data buffer
-                NeuralSample* newSample = new NeuralSample();
+                // Update Interpolation Info for future use
+                lastNeuroCount = sampleCounter;
 
-                // Add in the fields from the latest BIC packet
-                newSample->set_numberofmeasurements(sampleNum);
-                newSample->set_supplyvoltage(samples->at(i).getSupplyVoltage());
-                newSample->set_isconnected(samples->at(i).isConnected());
-                newSample->set_stimulationnumber(samples->at(i).getStimulationId());
-                newSample->set_stimulationactive(samples->at(i).isStimulationActive());
-                newSample->set_samplecounter(sampleCounter);
-                newSample->set_isinterpolated(false);
-
-                // Copy in the data to both the newSample and the latest data buffer (for interpolation). Delete it when done
+                // Copy in the data to both the newSample and the latest data buffer (for future interpolation). Delete it when done
                 for (int j = 0; j < sampleNum; j++)
                 {
                     newSample->add_measurements(theData[j]);
@@ -464,10 +470,15 @@ namespace BICGRPCHelperNamespace
                 }
                 delete theData;
 
-                // Add it to the buffer if there is room
+                // Add latest received data packet to the buffer if there is room
                 if (neuralSampleQueue.size() < 1000)
                 {
+                    // Lock the neurobuffer, add data, unlock
+                    this->m_neuroBufferLock.lock();
                     neuralSampleQueue.push(newSample);
+                    this->m_neuroBufferLock.unlock();
+
+                    // Notify the streaming function that new data exists
                     neuralDataNotify->notify_all();
                 }
                 else
@@ -475,9 +486,6 @@ namespace BICGRPCHelperNamespace
                     delete newSample;
                     std::cout << "GRPC Neural Queue Size Overflow, streaming data skipped" << std::endl;
                 }
-
-                // Update counter
-                lastNeuroCount = sampleCounter;
             }
         }
 
