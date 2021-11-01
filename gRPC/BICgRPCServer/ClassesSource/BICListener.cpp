@@ -314,7 +314,7 @@ namespace BICGRPCHelperNamespace
                     this->m_neuroBufferLock.lock();
 
                     // Add the front item to the queue for the current packet
-                    bufferedNeuroUpdate->add_samples()->UnsafeArenaSwap(neuralSampleQueue.front());
+                    bufferedNeuroUpdate->mutable_samples()->AddAllocated(neuralSampleQueue.front());
 
                     // Clean up the current sample from the list
                     neuralSampleQueue.pop();
@@ -349,7 +349,8 @@ namespace BICGRPCHelperNamespace
                     }
 
                     // Delete all elements in the buffer after transmission, freeing up memory.
-                    bufferedNeuroUpdate->mutable_samples()->DeleteSubrange(0, bufferedNeuroUpdate->samples().size());
+                    delete bufferedNeuroUpdate;
+                    bufferedNeuroUpdate = new BICgRPC::NeuralUpdate();
                 }
             }
         }
