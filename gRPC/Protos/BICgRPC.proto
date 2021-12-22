@@ -1,4 +1,4 @@
-// Copyright 2015 gRPC authors.
+﻿ // Copyright 2015 gRPC authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import "google/protobuf/any.proto";
 import "google/protobuf/empty.proto";
 
 // The BICBridgeService definition
-service BICBridgeService {
+service BICBridgeService { 
 	rpc ListBridges(QueryBridgesRequest) returns (QueryBridgesResponse);
 	rpc ScanBridges(QueryBridgesRequest) returns (QueryBridgesResponse);
 	rpc ConnectedBridges(QueryBridgesRequest) returns (QueryBridgesResponse);
@@ -68,6 +68,11 @@ service BICDeviceService{
 	rpc bicErrorStream (bicSetStreamEnable) returns (stream ErrorUpdate) {}
 }
 
+service infoService{
+	rpc VersionNumber (VersionNumberRequest) returns (VersionNumberResponse); // List the version number for the Summit Server
+	rpc SupportedDevices (SupportedDevicesRequest) returns (SupportedDevicesResponse); // List supported devices.
+	rpc InspectRepository (InspectRepositoryRequest) returns (InspectRepositoryResponse); // Inspect Repository.
+}
 // Basic Messages
 message bicSuccessReply{
 }
@@ -378,4 +383,61 @@ message DisconnectBridgeRequest {
    * 'xxxxxxxxx' is the serial number of the bridge.
    */
   string name = 1;
+}
+
+message VersionNumberRequest {}
+​
+message VersionNumberResponse {
+  /**
+   String with the version number for the Summit Server 
+   */
+  string version_number = 1;
+}
+​
+message SupportedDevicesRequest {}
+​
+message SupportedDevicesResponse {
+  /**
+   * List with supported devices.
+   */
+  repeated string supported_devices = 1;​
+}
+​
+message InspectRepositoryRequest{
+}
+​
+message InspectRepositoryResponse{​
+  /**
+   * List of URI's in repository
+   */
+  repeated string repo_uri = 1;​
+}
+
+message VersionNumberRequest {}
+​
+message VersionNumberResponse {
+  /**
+   String with the version number for the Summit Server 
+   */
+  string version_number = 1;
+}
+​
+message SupportedDevicesRequest {}
+​
+message SupportedDevicesResponse {
+  /**
+   * List with supported devices.
+   */
+  repeated string supported_devices = 1;​
+}
+​
+message InspectRepositoryRequest{
+}
+​
+message InspectRepositoryResponse{​
+  /**
+   * List of URI's in repository
+   */
+  repeated string repo_uri = 1;
+​
 }
