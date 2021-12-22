@@ -68,11 +68,13 @@ service BICDeviceService{
 	rpc bicErrorStream (bicSetStreamEnable) returns (stream ErrorUpdate) {}
 }
 
-service infoService{
-	rpc VersionNumber (VersionNumberRequest) returns (VersionNumberResponse); // List the version number for the Summit Server
-	rpc SupportedDevices (SupportedDevicesRequest) returns (SupportedDevicesResponse); // List supported devices.
-	rpc InspectRepository (InspectRepositoryRequest) returns (InspectRepositoryResponse); // Inspect Repository.
+// The Info Service Definition
+service InfoService{
+	rpc VersionNumber (VersionNumberRequest) returns (VersionNumberResponse) {} // List the version number for the Summit Server
+	rpc SupportedDevices (SupportedDevicesRequest) returns (SupportedDevicesResponse) {} // List supported devices.
+	rpc InspectRepository (InspectRepositoryRequest) returns (InspectRepositoryResponse) {} // Inspect Repository.
 }
+
 // Basic Messages
 message bicSuccessReply{
 }
@@ -385,59 +387,32 @@ message DisconnectBridgeRequest {
   string name = 1;
 }
 
-message VersionNumberRequest {}
-​
-message VersionNumberResponse {
-  /**
-   String with the version number for the Summit Server 
-   */
-  string version_number = 1;
-}
-​
-message SupportedDevicesRequest {}
-​
-message SupportedDevicesResponse {
-  /**
-   * List with supported devices.
-   */
-  repeated string supported_devices = 1;​
-}
-​
-message InspectRepositoryRequest{
-}
-​
-message InspectRepositoryResponse{​
-  /**
-   * List of URI's in repository
-   */
-  repeated string repo_uri = 1;​
+message VersionNumberRequest {
 }
 
-message VersionNumberRequest {}
-​
 message VersionNumberResponse {
   /**
    String with the version number for the Summit Server 
    */
   string version_number = 1;
 }
-​
-message SupportedDevicesRequest {}
-​
+
+message SupportedDevicesRequest {
+}
+
 message SupportedDevicesResponse {
   /**
    * List with supported devices.
    */
-  repeated string supported_devices = 1;​
+   repeated string supported_devices = 1;
 }
-​
+
 message InspectRepositoryRequest{
 }
-​
-message InspectRepositoryResponse{​
+
+message InspectRepositoryResponse{
   /**
    * List of URI's in repository
    */
-  repeated string repo_uri = 1;
-​
+   repeated string repo_uri = 1;
 }
