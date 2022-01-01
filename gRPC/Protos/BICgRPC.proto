@@ -69,7 +69,7 @@ service BICDeviceService{
 }
 
 // The Info Service Definition
-service InfoService{
+service BICInfoService{
 	rpc VersionNumber (VersionNumberRequest) returns (VersionNumberResponse) {} // List the version number for the Summit Server
 	rpc SupportedDevices (SupportedDevicesRequest) returns (SupportedDevicesResponse) {} // List supported devices.
 	rpc InspectRepository (InspectRepositoryRequest) returns (InspectRepositoryResponse) {} // Inspect Repository.

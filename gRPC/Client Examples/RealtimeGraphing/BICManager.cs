@@ -15,12 +15,13 @@ namespace RealtimeGraphing
         private Channel aGRPChannel;
         private BICBridgeService.BICBridgeServiceClient bridgeClient;
         private BICDeviceService.BICDeviceServiceClient deviceClient;
+        private BICInfoService.BICInfoServiceClient infoClient;
         private string DeviceName;
         private List<double>[] dataBuffer;
         private const int numSensingChannelsDef = 32;
         public int DataBufferMaxSampleNumber { get; set; }
-        private object dataBufferLock = new object();
 
+        private object dataBufferLock = new object();
 
         // Task pointers for streaming methods
         private Task neuroMonitor = null;
@@ -39,14 +40,24 @@ namespace RealtimeGraphing
                 dataBuffer[i] = new List<double>();
             }
         }
-
         public bool BICConnect()
         {
-#warning TODO: Add a check for already connected devices?
-#warning TODO: Add InfoService
+//#warning TODO: Add a check for already connected devices?
+
+//#warning TODO: Add InfoService- prompted by "?"
+            infoClient = new BICInfoService.BICInfoServiceClient(aGRPChannel);
+            Console.WriteLine("Grabbing information: ");
+            var versionNumberReply = infoClient.VersionNumber(new VersionNumberRequest());
+            var supportedDevicesReply = infoClient.SupportedDevices(new SupportedDevicesRequest());
+            var inspectRepositoryReply = infoClient.InspectRepository(new InspectRepositoryRequest());
+            Console.WriteLine("\tVersion Number: " + versionNumberReply.VersionNumber);
+            Console.WriteLine("\tSupported Devices: " + supportedDevicesReply.SupportedDevices);
+            Console.WriteLine("\tRepository: " + inspectRepositoryReply.RepoUri);
+
             // Instantiate the Bridge and scan for bridges
             Console.WriteLine("Instantiating Bridge Service Client and scanning for bridges...");
             bridgeClient = new BICBridgeService.BICBridgeServiceClient(aGRPChannel);
+            var connectedBridgesReply = bridgeClient.ConnectedBridges(new QueryBridgesRequest());
             var scanBridgesReply = bridgeClient.ScanBridges(new QueryBridgesRequest());
             if (scanBridgesReply.Bridges.Count == 0)
             {
