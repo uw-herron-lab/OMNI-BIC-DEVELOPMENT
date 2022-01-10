@@ -4,9 +4,7 @@
 
 #include <grpcpp/grpcpp.h>
 
-#include <mutex>
 #include <string>
-#include <unordered_map>
 
 #include "BICgRPC.grpc.pb.h"
 #include "BICDeviceInfoStruct.h"
@@ -17,13 +15,12 @@ namespace BICGRPCHelperNamespace
     public:
         // ************************* Cross-Function Service Variable Declarations *************************
         // BIC Initialization Objects - service wide
-        cortec::implantapi::IImplantFactory* theImplantFactory;
-        std::vector<std::unique_ptr<BICDeviceInfoStruct>> theImplants;
-        std::unordered_map<std::string, BICDeviceInfoStruct*> deviceDirectory;
-        std::mutex rpcServiceLock;
+        std::string repoInfo;
+        //std::unordered_map<std::string, BICDeviceInfoStruct*> deviceDirectory;- not needed?
 
         // ************************* Non-GRPC Helper Service Function Declarations *************************
-        void passFactory(cortec::implantapi::IImplantFactory* serverFactory);
+
+        void addRepository(std::unique_ptr<BICDeviceInfoStruct> &theImplantsAddress);
 
         // ************************* Construction, Initialization, and Destruction Function Declarations *************************
         grpc::Status VersionNumber(grpc::ServerContext* context, const BICgRPC::VersionNumberRequest* request, BICgRPC::VersionNumberResponse* reply) override;
