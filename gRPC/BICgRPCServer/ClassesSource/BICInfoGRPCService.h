@@ -15,12 +15,12 @@ namespace BICGRPCHelperNamespace
     public:
         // ************************* Cross-Function Service Variable Declarations *************************
         // BIC Initialization Objects - service wide
-        std::string repoInfo;
-        //std::unordered_map<std::string, BICDeviceInfoStruct*> deviceDirectory;- not needed?
+
+        std::vector<std::unique_ptr<BICDeviceInfoStruct>>* pointerVar;
 
         // ************************* Non-GRPC Helper Service Function Declarations *************************
 
-        void addRepository(std::unique_ptr<BICDeviceInfoStruct> &theImplantsAddress);
+        void addRepository(std::vector<std::unique_ptr<BICDeviceInfoStruct>>* theImplantsAddress);
 
         // ************************* Construction, Initialization, and Destruction Function Declarations *************************
         grpc::Status VersionNumber(grpc::ServerContext* context, const BICgRPC::VersionNumberRequest* request, BICgRPC::VersionNumberResponse* reply) override;
