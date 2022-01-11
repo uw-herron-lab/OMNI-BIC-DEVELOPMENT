@@ -16,7 +16,7 @@ namespace BICGRPCHelperNamespace
         // ************************* Cross-Function Service Variable Declarations *************************
         // BIC Initialization Objects - service wide
 
-        std::vector<std::unique_ptr<BICDeviceInfoStruct>>* pointerVar;
+        std::vector<std::unique_ptr<BICDeviceInfoStruct>>* infoVector;
 
         // ************************* Non-GRPC Helper Service Function Declarations *************************
 
