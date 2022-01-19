@@ -114,6 +114,7 @@ void RunServer() {
     // Register "service" as the instance through which we'll communicate with clients. In this case it corresponds to an *synchronous* service.
     builder.RegisterService(&deviceService);
     builder.RegisterService(&bridgeService);
+    builder.RegisterService(&infoService);
     // Finally assemble the server.
     gRPCServer = builder.BuildAndStart();
     std::cout << "Server listening on " << server_address << std::endl;
