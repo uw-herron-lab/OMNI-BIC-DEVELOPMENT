@@ -26,15 +26,12 @@ namespace BICGRPCHelperNamespace
     }
 
     grpc::Status BICInfoGRPCService::SupportedDevices(grpc::ServerContext* context, const BICgRPC::SupportedDevicesRequest* request, BICgRPC::SupportedDevicesResponse* reply) {
-        int index = 1;
-        std::string returnMessage = "Summit Server";
-        reply->set_supported_devices(index, returnMessage);
+        std::string returnMessage = "Cortec BrainInterchange";
+        reply->add_supported_devices(returnMessage);
         return grpc::Status::OK;
     }
 
     grpc::Status BICInfoGRPCService::InspectRepository(grpc::ServerContext* context, const BICgRPC::InspectRepositoryRequest* request, BICgRPC::InspectRepositoryResponse* reply) {
-        int index = 1;
-
         for (const auto& i : *infoVector) {
             reply->add_repo_uri(i->deviceAddress);
         }
