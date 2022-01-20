@@ -10,6 +10,7 @@ namespace BICgRPC_ConsoleTest
         // Clients
         static BICBridgeService.BICBridgeServiceClient bridgeClient;
         static BICDeviceService.BICDeviceServiceClient deviceClient;
+        static BICInfoService.BICInfoServiceClient infoClient;
         static string DeviceName;
 
         public static void Main(string[] args)
@@ -51,6 +52,9 @@ namespace BICgRPC_ConsoleTest
             Console.WriteLine("Instantiating Bridge Service Client and scanning for bridges...");
             deviceClient = new BICDeviceService.BICDeviceServiceClient(channel);
             var scanDevicesReply = deviceClient.ScanDevices(new ScanDevicesRequest() { BridgeName = bridgeName });
+
+            // testing infoSservice
+            infoClient = new BICInfoService.BICInfoServiceClient(channel);
 
             // Ensure a device was found
             if(scanDevicesReply.Name == "")
@@ -155,6 +159,16 @@ namespace BICgRPC_ConsoleTest
                             // Stop the stream
                             deviceClient.bicHumidityStream(new bicSetStreamEnable() { DeviceAddress = DeviceName, Enable = false });
                         }
+                        break;
+                    case ConsoleKey.F:
+                        // infoService
+                        VersionNumberResponse verNumber = infoClient.VersionNumber(new VersionNumberRequest());
+                        SupportedDevicesResponse suppDevices = infoClient.SupportedDevices(new SupportedDevicesRequest());
+                        InspectRepositoryResponse repos = infoClient.InspectRepository(new InspectRepositoryRequest());
+                        Console.WriteLine("Testing infoService:");
+                        Console.WriteLine("\tInfo.VersionNumber: " + verNumber.VersionNumber.ToString());
+                        Console.WriteLine("\tInfo.SupportedDevices: " + suppDevices.SupportedDevices.ToString());
+                        Console.WriteLine("\tInfo.InspectRepository: " + repos.ToString());
                         break;
                     case ConsoleKey.E:
                         if (errorMonitor == null || errorMonitor.IsCompleted)
@@ -311,6 +325,7 @@ namespace BICgRPC_ConsoleTest
             Console.WriteLine("\ti : Get Impedance Measurement for a random electrode");
             Console.WriteLine("\tt : Get Temperature and toggle Temperature Streaming");
             Console.WriteLine("\th : Get Humidity and toggle Humidity Streaming");
+            Console.WriteLine("\tf : Testing infoService");
             Console.WriteLine("\te : Toggle Error Streaming");
             Console.WriteLine("\tc : Toggle Connection Streaming");
             Console.WriteLine("\tl : Toggle Power State Streaming");
