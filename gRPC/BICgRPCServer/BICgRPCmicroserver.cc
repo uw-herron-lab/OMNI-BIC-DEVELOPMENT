@@ -27,6 +27,7 @@
 #include "ClassesSource/BICListener.h"
 #include "ClassesSource/BICDeviceGRPCService.h"
 #include "ClassesSource/BICBridgeGRPCService.h"
+#include "ClassesSource/BICInfoGRPCService.h"
 
 
 // BIC Usings
@@ -44,6 +45,7 @@ using grpc::Status;
 std::unique_ptr<Server> gRPCServer;
 BICDeviceGRPCService deviceService;
 BICBridgeGRPCService bridgeService;
+BICInfoGRPCService infoService;
 
 // Server Control Handler
 BOOL WINAPI CtrlHandler(DWORD fdwCtrlType)
@@ -106,11 +108,13 @@ void RunServer() {
     theImplantFactory.reset(createImplantFactory(false, ""));
     bridgeService.passFactory(theImplantFactory.get());
     deviceService.passFactory(theImplantFactory.get());
+    infoService.addRepository(&deviceService.theImplants);
     
     // ******************* Start up the gRPC BIC Server *******************
     // Register "service" as the instance through which we'll communicate with clients. In this case it corresponds to an *synchronous* service.
     builder.RegisterService(&deviceService);
     builder.RegisterService(&bridgeService);
+    builder.RegisterService(&infoService);
     // Finally assemble the server.
     gRPCServer = builder.BuildAndStart();
     std::cout << "Server listening on " << server_address << std::endl;
