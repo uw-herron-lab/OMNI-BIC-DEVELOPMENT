@@ -375,6 +375,18 @@ namespace BICGRPCHelperNamespace
                 // Create a new sample data buffer
                 int32_t sampleCounter = samples->at(i).getMeasurementCounter();
                 int16_t sampleNum = samples->at(i).getNumberOfMeasurements();
+                
+                // stuff for IIR filtering
+                int datLen = 100;
+                int channel = 0;
+                double currSamp;
+                double filtTemp;
+                filtData.resize(datLen, 0);
+                prevData.resize(datLen, 0);
+                // hardcoding filter coefficients for now
+                double b[3] = {-0.592, 0, 0.592};
+                double a[3] = { 0, 1, 0 };
+
                 double* theData = samples->at(i).getMeasurements();
                 NeuralSample* newSample = new NeuralSample();
                 newSample->set_numberofmeasurements(sampleNum);
@@ -436,6 +448,7 @@ namespace BICGRPCHelperNamespace
                                     double interpolatedSample = latestData[interChannelPoint] + (interpolationSlopes[interChannelPoint] * interpolatedPointNum);
                                     newInterpolatedSample->add_measurements(interpolatedSample);
                                 }
+                                // for one channel, filter with IIR (if sample is interpolated)
 
                                 // Add it to the buffer if there is room
                                 if (neuralSampleQueue.size() < 1000)
@@ -463,6 +476,33 @@ namespace BICGRPCHelperNamespace
                 // Update Interpolation Info for future use
                 lastNeuroCount = sampleCounter;
 
+                // apply IIR filtering to a channel
+                // are there 32 channels of data? Is this why latestData has length 32?
+                // A little confused since sampleNum grabs number of measurements, not sure if this is 32 samples for one channel or 1 sample for 32 channels
+
+                // Under the assumption that the situation is the latter
+
+                currSamp = theData[channel];
+                
+                // check if n-1 is negative, then n-2 would also be negative
+                if (filtData[0] == 0) // no data has gone through yet
+                {
+                    filtTemp = b[0] * currSamp;
+                }
+                else if (filtData[1] == 0)
+                {
+                    filtTemp = b[0] * currSamp + b[1] * prevData[0] - a[0] * filtData[0];
+                }
+                else
+                {
+                    filtTemp = b[0] * currSamp + b[1] * prevData[0] + b[2] * prevData[1] + a[1] * filtData[0] - a[2] * filtData[1];
+                }
+                // remove the last sample and insert the most recent sample to the front of the vector
+                filtData.pop_back();
+                filtData.insert(filtData.begin(), filtTemp);
+                prevData.pop_back();
+                prevData.insert(prevData.begin(), currSamp);
+
                 // Copy in the data to both the newSample and the latest data buffer (for future interpolation). Delete it when done
                 for (int j = 0; j < sampleNum; j++)
                 {
@@ -472,6 +512,7 @@ namespace BICGRPCHelperNamespace
                 delete theData;
 
                 // Add latest received data packet to the buffer if there is room
+                // If sending filtered data to stream, would update queue (filtNeuralSampleQueue) here..?
                 if (neuralSampleQueue.size() < 1000)
                 {
                     // Lock the neurobuffer, add data, unlock
