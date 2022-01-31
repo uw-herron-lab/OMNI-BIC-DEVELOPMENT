@@ -68,6 +68,9 @@ namespace BICGRPCHelperNamespace
         uint32_t lastNeuroCount = 0;            // Used to determine the number of samples required for interpolation
         double latestData[32] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
 
+        std::vector<double> filtData;
+        std::vector<double> prevData;
+
         // ************************* Private Stream Coordination Objects *************************
         // Pointers for gRPC-managed streaming interfaces. Set by the BICDeviceServiceImpl class, null when not in use.
         grpc::ServerWriter<BICgRPC::NeuralUpdate>* neuralWriter;
@@ -79,6 +82,7 @@ namespace BICGRPCHelperNamespace
 
         //  Streaming Data Queues 
         std::queue<BICgRPC::NeuralSample*> neuralSampleQueue;
+        // std::queue<BICgRPC::NeuralSample*> filtNeuralSampleQueue;
         std::queue<BICgRPC::TemperatureUpdate*> temperatureSampleQueue;
         std::queue<BICgRPC::HumidityUpdate*> humiditySampleQueue;
         std::queue<BICgRPC::ConnectionUpdate*> connectionSampleQueue;
