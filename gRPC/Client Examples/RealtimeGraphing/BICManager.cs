@@ -18,6 +18,7 @@ namespace RealtimeGraphing
         private BICInfoService.BICInfoServiceClient infoClient;
         private string DeviceName;
         private List<double>[] dataBuffer;
+        private List<double>[] filtDataBuffer;
         private const int numSensingChannelsDef = 32;
         public int DataBufferMaxSampleNumber { get; set; }
 
@@ -35,10 +36,12 @@ namespace RealtimeGraphing
             // Set up variables for visualization: instantiate data buffers and length variables.
             DataBufferMaxSampleNumber = definedDataBufferLength;
             dataBuffer = new List<double>[numSensingChannelsDef];
+            filtDataBuffer = new List<double>[1];
             for(int i = 0; i < numSensingChannelsDef; i++)
             {
                 dataBuffer[i] = new List<double>();
             }
+            filtDataBuffer[0] = new List<double>();
         }
         public bool BICConnect()
         {
@@ -133,17 +136,23 @@ namespace RealtimeGraphing
         /// Provide a copy of the current data buffers
         /// </summary>
         /// <returns>A list of double-arrays, each array is composed of the latest time domain data from each BIC channel. index 0 is the oldest data. </returns>
-        public List<double>[] getData()
+        public List<double>[] getData() // need to modify this section in order to get filtered data
         {
-            List<double>[] outputBuffer = new List<double>[dataBuffer.Length];
+            List<double>[] outputBuffer = new List<double>[dataBuffer.Length + filtDataBuffer.Length];
 
             lock(dataBufferLock)
             {
-                for(int i = 0; i < dataBuffer.Length; i++)
+                for (int i = 0; i < dataBuffer.Length; i++)
                 {
                     outputBuffer[i] = new List<double>(dataBuffer[i]);
                 }
+                for (int j = 0; j < filtDataBuffer.Length; j++)
+                {
+                    outputBuffer[dataBuffer.Length + j] = new List<double>(filtDataBuffer[j]);
+                }
+
             }
+            // have something similar for filtered data buffer
 
             return outputBuffer;
         }
@@ -197,6 +206,9 @@ namespace RealtimeGraphing
                         {
                             dataBuffer[channelNum].AddRange(nanBuffer);
                         }
+
+                        // do the same for the filtered data buffer
+                        filtDataBuffer[0].AddRange(nanBuffer);
                     }
                 }
 
@@ -206,6 +218,7 @@ namespace RealtimeGraphing
                 // Create local copy buffers and loop variables
                 int numSamples = stream.ResponseStream.Current.Samples.Count;
                 double[] copyBuffer = new double[numSamples];
+                double[] filtBuffer = new double [numSamples];
 
                 // Lock dataBuffer access to ensure no mid-update copy.
                 lock (dataBufferLock)
@@ -229,6 +242,22 @@ namespace RealtimeGraphing
                             // Too long, remove the difference
                             dataBuffer[channelNum].RemoveRange(0, diffLength);
                         }
+                    }
+
+                    // Update the filter data buffer
+                    for (int sampleNum = 0; sampleNum < numSamples; sampleNum++)
+                    {
+                        filtBuffer[sampleNum] = stream.ResponseStream.Current.Samples[sampleNum].FiltSample;
+                    }
+                    // Add new data to filtered data buffer
+                    filtDataBuffer[0].AddRange(filtBuffer);
+
+                    // Check if filtered data buffer is too long
+                    int filtDiffLength = filtDataBuffer[0].Count - DataBufferMaxSampleNumber;
+                    if (filtDiffLength > 0)
+                    {
+                        // if too long, remove the difference
+                        filtDataBuffer[0].RemoveRange(0, filtDiffLength);
                     }
                 }
 

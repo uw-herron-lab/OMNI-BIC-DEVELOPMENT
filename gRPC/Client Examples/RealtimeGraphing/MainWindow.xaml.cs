@@ -58,6 +58,13 @@ namespace RealtimeGraphing
                     Color = System.Drawing.Color.Green,
                     ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line
                 });
+            neuroDataChart.Series.Add(
+                new System.Windows.Forms.DataVisualization.Charting.Series
+                {
+                    Name = "Filtered Channel",
+                    Color = System.Drawing.Color.Black,
+                    ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line
+                });
 
             // Start the update timer
             graphUpdateTimer = new Timer(200);
@@ -75,6 +82,7 @@ namespace RealtimeGraphing
                     neuroDataChart.Series[0].Points.DataBindY(theData[0]);
                     neuroDataChart.Series[1].Points.DataBindY(theData[1]);
                     neuroDataChart.Series[2].Points.DataBindY(theData[2]);
+                    neuroDataChart.Series[3].Points.DataBindY(theData[32]); // addition of filtered data
                 }));
         }
 
