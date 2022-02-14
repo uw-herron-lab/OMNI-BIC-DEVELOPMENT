@@ -44,7 +44,7 @@ namespace BICGRPCHelperNamespace
         // Return the value, local-scoped locked is released at end of function
         return m_isStimulating;
     }
-
+    
     /// <summary>
     /// Event Handler for Brain Interchange measurement/sensing state change events
     /// </summary>
@@ -359,6 +359,34 @@ namespace BICGRPCHelperNamespace
         delete bufferedNeuroUpdate;
     }
 
+    double BICListener::filterIIR(const double currSamp, double b[], double a[])
+    {
+        double filtTemp;
+
+        // check if n-1 is negative, then n-2 would also be negative
+        if (filtData[0] == 0) // no data has gone through yet
+        {
+            filtTemp = b[0] * currSamp;
+        }
+        else if (filtData[1] == 0)
+        {
+            filtTemp = b[0] * currSamp + b[1] * prevData[0] - a[0] * filtData[0];
+        }
+        else
+        {
+            filtTemp = b[0] * currSamp + b[1] * prevData[0] + b[2] * prevData[1] + a[1] * filtData[0] - a[2] * filtData[1];
+        }
+        // remove the last sample and insert the most recent sample to the front of the vector
+        filtData.pop_back();
+        filtData.insert(filtData.begin(), filtTemp);
+
+        // prevData[0] holds the most recent sample while prevData[1] keeps older sample
+        prevData[1] = prevData[0];
+        prevData[0] = currSamp;
+
+        return filtTemp;
+    }
+
     /// <summary>
     /// Event handler for Brain Interchange neural data received. 
     /// Not intended to be called from gRPC microservice.
@@ -376,13 +404,10 @@ namespace BICGRPCHelperNamespace
                 int32_t sampleCounter = samples->at(i).getMeasurementCounter();
                 int16_t sampleNum = samples->at(i).getNumberOfMeasurements();
                 
-                // stuff for IIR filtering
+                // variables for IIR filtering
                 int datLen = 100;
                 int channel = 0;
-                double currSamp;
-                double filtTemp;
                 filtData.resize(datLen, 0);
-                prevData.resize(datLen, 0);
                 // hardcoding filter coefficients for now
                 double b[3] = {-0.592, 0, 0.592};
                 double a[3] = { 0, 1, 0 };
@@ -396,6 +421,7 @@ namespace BICGRPCHelperNamespace
                 newSample->set_stimulationactive(samples->at(i).isStimulationActive());
                 newSample->set_samplecounter(sampleCounter);
                 newSample->set_isinterpolated(false);
+                newSample->set_filtchannel(channel);
 
                 // Check if we've lost packets, if so interpolate
                 if (lastNeuroCount + 1 != sampleCounter)
@@ -441,14 +467,20 @@ namespace BICGRPCHelperNamespace
                                 newInterpolatedSample->set_stimulationactive(newSample->stimulationactive());
                                 newInterpolatedSample->set_samplecounter(lastNeuroCount + interpolatedPointNum);
                                 newInterpolatedSample->set_isinterpolated(true);
+                                newInterpolatedSample->set_filtchannel(channel);
 
                                 // Copy in the time domain data in
                                 for (int interChannelPoint = 0; interChannelPoint < sampleNum; interChannelPoint++)
                                 {
                                     double interpolatedSample = latestData[interChannelPoint] + (interpolationSlopes[interChannelPoint] * interpolatedPointNum);
                                     newInterpolatedSample->add_measurements(interpolatedSample);
+                                    if (interChannelPoint == channel)
+                                    {
+                                        // when interpolating the sample for a specific channel, also apply an IIR filter for that sample
+                                        double filtSamp = filterIIR(interpolatedSample, b, a);
+                                        newInterpolatedSample->set_filtsample(filtSamp); // set the filtered sample in the neural sample
+                                    }
                                 }
-                                // for one channel, filter with IIR (if sample is interpolated)
 
                                 // Add it to the buffer if there is room
                                 if (neuralSampleQueue.size() < 1000)
@@ -476,38 +508,17 @@ namespace BICGRPCHelperNamespace
                 // Update Interpolation Info for future use
                 lastNeuroCount = sampleCounter;
 
-                // apply IIR filtering to a channel
-                // are there 32 channels of data? Is this why latestData has length 32?
-                // A little confused since sampleNum grabs number of measurements, not sure if this is 32 samples for one channel or 1 sample for 32 channels
-
-                // Under the assumption that the situation is the latter
-
-                currSamp = theData[channel];
-                
-                // check if n-1 is negative, then n-2 would also be negative
-                if (filtData[0] == 0) // no data has gone through yet
-                {
-                    filtTemp = b[0] * currSamp;
-                }
-                else if (filtData[1] == 0)
-                {
-                    filtTemp = b[0] * currSamp + b[1] * prevData[0] - a[0] * filtData[0];
-                }
-                else
-                {
-                    filtTemp = b[0] * currSamp + b[1] * prevData[0] + b[2] * prevData[1] + a[1] * filtData[0] - a[2] * filtData[1];
-                }
-                // remove the last sample and insert the most recent sample to the front of the vector
-                filtData.pop_back();
-                filtData.insert(filtData.begin(), filtTemp);
-                prevData.pop_back();
-                prevData.insert(prevData.begin(), currSamp);
-
                 // Copy in the data to both the newSample and the latest data buffer (for future interpolation). Delete it when done
                 for (int j = 0; j < sampleNum; j++)
                 {
                     newSample->add_measurements(theData[j]);
                     latestData[j] = theData[j];
+                    if (j == channel)
+                    {
+                        // filter data for particular channel and set it in newSample
+                        double filtSamp = filterIIR(theData[j], b, a);
+                        newSample->set_filtsample(filtSamp);
+                    }
                 }
                 delete theData;
 

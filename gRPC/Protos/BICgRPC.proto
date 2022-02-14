@@ -241,6 +241,8 @@ message NeuralSample{
 	bool stimulationActive = 6;
 	uint32 sampleCounter = 7;
 	bool isInterpolated = 8;
+	double filtSample = 9;
+	uint32 filtChannel = 10;
 }
 
 message ConnectionUpdate{
