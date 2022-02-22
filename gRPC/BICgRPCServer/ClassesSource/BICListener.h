@@ -71,8 +71,8 @@ namespace BICGRPCHelperNamespace
         uint32_t lastNeuroCount = 0;            // Used to determine the number of samples required for interpolation
         double latestData[32] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
 
-        std::vector<double> filtData;
-        double prevData[2] = { 0,0 };
+        std::vector<double> filtData = { 0,0 };
+        std::vector<double> prevData = { 0,0 };
 
         // ************************* Private Stream Coordination Objects *************************
         // Pointers for gRPC-managed streaming interfaces. Set by the BICDeviceServiceImpl class, null when not in use.

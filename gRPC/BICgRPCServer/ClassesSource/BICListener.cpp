@@ -364,25 +364,15 @@ namespace BICGRPCHelperNamespace
         double filtTemp;
 
         // check if n-1 is negative, then n-2 would also be negative
-        if (filtData[0] == 0) // no data has gone through yet
-        {
-            filtTemp = b[0] * currSamp;
-        }
-        else if (filtData[1] == 0)
-        {
-            filtTemp = b[0] * currSamp + b[1] * prevData[0] - a[0] * filtData[0];
-        }
-        else
-        {
-            filtTemp = b[0] * currSamp + b[1] * prevData[0] + b[2] * prevData[1] + a[1] * filtData[0] - a[2] * filtData[1];
-        }
+        filtTemp = b[0] * currSamp + b[1] * prevData[0] + b[2] * prevData[1] + a[1] * filtData[0] - a[2] * filtData[1];
+        
         // remove the last sample and insert the most recent sample to the front of the vector
-        filtData.pop_back();
         filtData.insert(filtData.begin(), filtTemp);
-
+        filtData.pop_back();
+        
         // prevData[0] holds the most recent sample while prevData[1] keeps older sample
-        prevData[1] = prevData[0];
-        prevData[0] = currSamp;
+        prevData.insert(prevData.begin(), currSamp);
+        prevData.pop_back();
 
         return filtTemp;
     }
