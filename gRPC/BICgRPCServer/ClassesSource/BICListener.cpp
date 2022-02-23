@@ -364,7 +364,7 @@ namespace BICGRPCHelperNamespace
         double filtTemp;
 
         // check if n-1 is negative, then n-2 would also be negative
-        filtTemp = b[0] * currSamp + b[1] * prevData[0] + b[2] * prevData[1] + a[1] * filtData[0] - a[2] * filtData[1];
+        filtTemp = b[0] * currSamp + b[1] * prevData[0] + b[2] * prevData[1] - a[1] * filtData[0] - a[2] * filtData[1];
         
         // remove the last sample and insert the most recent sample to the front of the vector
         filtData.insert(filtData.begin(), filtTemp);
@@ -399,8 +399,8 @@ namespace BICGRPCHelperNamespace
                 int channel = 0;
                 filtData.resize(datLen, 0);
                 // hardcoding filter coefficients for now
-                double b[3] = {-0.592, 0, 0.592};
-                double a[3] = { 0, 1, 0 };
+                double b[3] = { -0.0305, 0, 0.0305 };
+                double a[3] = { 1, -1.9247, 0.9391 };
 
                 double* theData = samples->at(i).getMeasurements();
                 NeuralSample* newSample = new NeuralSample();
