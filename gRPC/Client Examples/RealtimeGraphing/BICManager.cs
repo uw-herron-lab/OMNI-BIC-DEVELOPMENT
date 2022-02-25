@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
-
+using System.IO;
 using Grpc.Core;
 using BICgRPC;
 
@@ -12,6 +12,7 @@ namespace RealtimeGraphing
 {
     class BICManager : IDisposable
     {
+        // Private class objects
         private Channel aGRPChannel;
         private BICBridgeService.BICBridgeServiceClient bridgeClient;
         private BICDeviceService.BICDeviceServiceClient deviceClient;
@@ -20,9 +21,17 @@ namespace RealtimeGraphing
         private List<double>[] dataBuffer;
         private List<double>[] filtDataBuffer;
         private const int numSensingChannelsDef = 32;
-        public int DataBufferMaxSampleNumber { get; set; }
-
         private object dataBufferLock = new object();
+
+        // Logging Objects
+        FileStream logFileStream;
+        StreamWriter logFileWriter;
+        string filePath = "./filterLog.csv";
+
+        // Public Class Properties
+        public int DataBufferMaxSampleNumber { get; set; }
+        
+        
 
         // Task pointers for streaming methods
         private Task neuroMonitor = null;
@@ -42,6 +51,15 @@ namespace RealtimeGraphing
                 dataBuffer[i] = new List<double>();
             }
             filtDataBuffer[0] = new List<double>();
+
+            // Set up the logging interface
+            if(File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
+            logFileStream = new FileStream("./filterLog.csv", FileMode.Create, FileAccess.Write, FileShare.None, 4096, FileOptions.Asynchronous);
+            logFileWriter = new StreamWriter(logFileStream);
+            logFileWriter.WriteLine("PacketNum, FilteredChannelNum, RawChannelData, FilteredChannelData");
         }
         public bool BICConnect()
         {
@@ -130,6 +148,12 @@ namespace RealtimeGraphing
             var disposeReply = deviceClient.bicDispose(new RequestDeviceAddress() { DeviceAddress = DeviceName });
             Console.WriteLine("Dispose BIC Response: " + disposeReply.ToString());
             aGRPChannel.ShutdownAsync().Wait();
+
+            // Tell logging we want to close
+            logFileWriter.Flush();
+            logFileWriter.Dispose();
+            logFileStream.Flush();
+            logFileStream.Dispose();
         }
 
         /// <summary>
@@ -248,6 +272,21 @@ namespace RealtimeGraphing
                     for (int sampleNum = 0; sampleNum < numSamples; sampleNum++)
                     {
                         filtBuffer[sampleNum] = stream.ResponseStream.Current.Samples[sampleNum].FiltSample;
+
+                        // Log the latest info out to the CSV
+                        int filteredIndex = (int)stream.ResponseStream.Current.Samples[sampleNum].FiltChannel;
+                        try
+                        {
+                            Task newLoggingTask = logFileWriter.WriteAsync(
+                                latestPacketNum.ToString() + ", " +
+                                filteredIndex.ToString() + ", " +
+                                stream.ResponseStream.Current.Samples[sampleNum].Measurements[filteredIndex].ToString() + ", " +
+                                stream.ResponseStream.Current.Samples[sampleNum].FiltSample.ToString());
+                        }
+                        catch
+                        {
+                            Console.WriteLine("logging exception occured");
+                        }
                     }
                     // Add new data to filtered data buffer
                     filtDataBuffer[0].AddRange(filtBuffer);
