@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 using System.Diagnostics;
 using System.IO;
 using Grpc.Core;
@@ -27,6 +28,9 @@ namespace RealtimeGraphing
         FileStream logFileStream;
         StreamWriter logFileWriter;
         string filePath = "./filterLog.csv";
+        Queue<string> logLineQueue = new Queue<string>();
+        Thread newLoggingThread;
+        bool loggingNotDisposed = true;
 
         // Public Class Properties
         public int DataBufferMaxSampleNumber { get; set; }
@@ -150,6 +154,7 @@ namespace RealtimeGraphing
             aGRPChannel.ShutdownAsync().Wait();
 
             // Tell logging we want to close
+            loggingNotDisposed = false;
             logFileWriter.Flush();
             logFileWriter.Dispose();
             logFileStream.Flush();
@@ -181,6 +186,29 @@ namespace RealtimeGraphing
             return outputBuffer;
         }
 
+        private void loggingThread()
+        {
+            while(loggingNotDisposed)
+            {
+                try
+                {
+                    if(logLineQueue.Count > 1)
+                    {
+                        logFileWriter.WriteLine(logLineQueue.Dequeue());
+                    }
+                    else
+                    {
+                        Thread.Sleep(1);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("logging exception occured: " + e.Message);
+                }
+
+            }
+        }
+
         /// <summary>
         /// Monitor the neural stream for new data
         /// </summary>
@@ -191,6 +219,8 @@ namespace RealtimeGraphing
         
             // Create performance-tracking interpacket variables
             Stopwatch aStopwatch = new Stopwatch();
+            newLoggingThread = new Thread(loggingThread);
+            newLoggingThread.Start();
             
             uint latestPacketNum = 0;
             while (await stream.ResponseStream.MoveNext())
@@ -275,19 +305,14 @@ namespace RealtimeGraphing
 
                         // Log the latest info out to the CSV
                         int filteredIndex = (int)stream.ResponseStream.Current.Samples[sampleNum].FiltChannel;
-                        try
-                        {
-                            Task newLoggingTask = logFileWriter.WriteLineAsync(
-                                latestPacketNum.ToString() + ", " +
-                                filteredIndex.ToString() + ", " +
-                                stream.ResponseStream.Current.Samples[sampleNum].Measurements[filteredIndex].ToString() + ", " +
-                                stream.ResponseStream.Current.Samples[sampleNum].FiltSample.ToString() + ", " +
-                                stream.ResponseStream.Current.Samples[sampleNum].IsInterpolated.ToString());
-                        }
-                        catch (Exception e)
-                        {
-                            Console.WriteLine("logging exception occured: " + e.Message);
-                        }
+                        logLineQueue.Enqueue(
+                            stream.ResponseStream.Current.Samples[sampleNum].SampleCounter.ToString() + ", " +
+                            filteredIndex.ToString() + ", " +
+                            stream.ResponseStream.Current.Samples[sampleNum].Measurements[filteredIndex].ToString() + ", " +
+                            stream.ResponseStream.Current.Samples[sampleNum].FiltSample.ToString() + ", " +
+                            stream.ResponseStream.Current.Samples[sampleNum].IsInterpolated.ToString()
+                        );
+
                     }
                     // Add new data to filtered data buffer
                     filtDataBuffer[0].AddRange(filtBuffer);
