@@ -59,7 +59,7 @@ namespace RealtimeGraphing
             }
             logFileStream = new FileStream("./filterLog.csv", FileMode.Create, FileAccess.Write, FileShare.None, 4096, FileOptions.Asynchronous);
             logFileWriter = new StreamWriter(logFileStream);
-            logFileWriter.WriteLine("PacketNum, FilteredChannelNum, RawChannelData, FilteredChannelData");
+            logFileWriter.WriteLine("PacketNum, FilteredChannelNum, RawChannelData, FilteredChannelData, boolInterpolated");
         }
         public bool BICConnect()
         {
@@ -191,8 +191,8 @@ namespace RealtimeGraphing
         
             // Create performance-tracking interpacket variables
             Stopwatch aStopwatch = new Stopwatch();
-            uint latestPacketNum = 0;
             
+            uint latestPacketNum = 0;
             while (await stream.ResponseStream.MoveNext())
             {
                 // Missing packet handling
@@ -277,15 +277,16 @@ namespace RealtimeGraphing
                         int filteredIndex = (int)stream.ResponseStream.Current.Samples[sampleNum].FiltChannel;
                         try
                         {
-                            Task newLoggingTask = logFileWriter.WriteAsync(
+                            Task newLoggingTask = logFileWriter.WriteLineAsync(
                                 latestPacketNum.ToString() + ", " +
                                 filteredIndex.ToString() + ", " +
                                 stream.ResponseStream.Current.Samples[sampleNum].Measurements[filteredIndex].ToString() + ", " +
-                                stream.ResponseStream.Current.Samples[sampleNum].FiltSample.ToString());
+                                stream.ResponseStream.Current.Samples[sampleNum].FiltSample.ToString() + ", " +
+                                stream.ResponseStream.Current.Samples[sampleNum].IsInterpolated.ToString());
                         }
-                        catch
+                        catch (Exception e)
                         {
-                            Console.WriteLine("logging exception occured");
+                            Console.WriteLine("logging exception occured: " + e.Message);
                         }
                     }
                     // Add new data to filtered data buffer

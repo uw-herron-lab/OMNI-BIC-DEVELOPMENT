@@ -35,7 +35,7 @@ namespace BICGRPCHelperNamespace
         void onDataProcessingTooSlow();
 
         // 
-        double filterIIR(const double currSamp, double b[], double a[]);
+        double filterIIR(double currSamp, double b[], double a[]);
         
         // ************************* Public Boolean State Accessors *************************
         bool isStimulating();

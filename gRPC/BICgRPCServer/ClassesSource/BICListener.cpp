@@ -359,7 +359,7 @@ namespace BICGRPCHelperNamespace
         delete bufferedNeuroUpdate;
     }
 
-    double BICListener::filterIIR(const double currSamp, double b[], double a[])
+    double BICListener::filterIIR(double currSamp, double b[], double a[])
     {
         double filtTemp;
 
