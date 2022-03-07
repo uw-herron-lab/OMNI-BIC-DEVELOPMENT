@@ -399,7 +399,7 @@ namespace BICGRPCHelperNamespace
                 int channel = 0;
                 filtData.resize(datLen, 0);
                 // hardcoding filter coefficients for now
-                double b[3] = { -0.0305, 0, 0.0305 };
+                double b[3] = { 0.0305, 0, -0.0305 }; 
                 double a[3] = { 1, -1.9247, 0.9391 };
 
                 double* theData = samples->at(i).getMeasurements();
