@@ -377,6 +377,20 @@ namespace BICGRPCHelperNamespace
         return filtTemp;
     }
 
+    bool BICListener::isZeroCrossing(std::vector<double> filtData)
+    {
+        bool sendStim = false;
+
+        if (filtData[0] < 0)
+        {
+            if (filtData[1] > 0)
+            {
+                sendStim = true;
+            }
+        }
+        return sendStim;
+    }
+
     /// <summary>
     /// Event handler for Brain Interchange neural data received. 
     /// Not intended to be called from gRPC microservice.
@@ -508,6 +522,11 @@ namespace BICGRPCHelperNamespace
                         // filter data for particular channel and set it in newSample
                         double filtSamp = filterIIR(theData[j], b, a);
                         newSample->set_filtsample(filtSamp);
+
+                        if (isZeroCrossing(filtData))
+                        {
+                            // start thread to execute stim command
+                        }
                     }
                 }
                 delete theData;

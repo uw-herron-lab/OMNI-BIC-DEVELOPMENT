@@ -34,8 +34,8 @@ namespace BICGRPCHelperNamespace
         void onError(const std::exception& err);
         void onDataProcessingTooSlow();
 
-        // 
         double filterIIR(double currSamp, double b[], double a[]);
+        bool isZeroCrossing(std::vector<double> filtData);
         
         // ************************* Public Boolean State Accessors *************************
         bool isStimulating();
