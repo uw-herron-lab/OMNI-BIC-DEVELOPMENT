@@ -55,6 +55,8 @@ namespace BICGRPCHelperNamespace
         void grpcConnectionStreamThread(void);
         void grpcPowerStreamThread(void);
         void grpcErrorStreamThread(void);
+        // for beta-based stim
+        void grpcSendStimThread(void);
 
         // ************************* Private State Objects *************************
         // Generic state variables.
@@ -99,6 +101,8 @@ namespace BICGRPCHelperNamespace
         std::thread* connectionProcessingThread;
         std::thread* errorProcessingThread;
         std::thread* powerProcessingThread;
+        // for beta- based stim
+        std::thread* betaStimThread;
 
         // Stream data ready signals
         std::condition_variable* neuralDataNotify;

@@ -380,9 +380,10 @@ namespace BICGRPCHelperNamespace
     bool BICListener::isZeroCrossing(std::vector<double> filtData)
     {
         bool sendStim = false;
-
+        // check if most recent filtered sample is negative
         if (filtData[0] < 0)
         {
+            // then check if older filtered sample was positive
             if (filtData[1] > 0)
             {
                 sendStim = true;
@@ -480,9 +481,17 @@ namespace BICGRPCHelperNamespace
                                     newInterpolatedSample->add_measurements(interpolatedSample);
                                     if (interChannelPoint == channel)
                                     {
+                                        // if at a negative zero crossing, send stimulation
+                                        if (isZeroCrossing(filtData))
+                                        {
+                                            // start thread to execute stim command
+                                            betaStimThread = new std::thread(&BICListener::grpcSendStimThread, this);
+                                            betaStimThread->join();
+                                        }
+
                                         // when interpolating the sample for a specific channel, also apply an IIR filter for that sample
                                         double filtSamp = filterIIR(interpolatedSample, b, a);
-                                        newInterpolatedSample->set_filtsample(filtSamp); // set the filtered sample in the neural sample
+                                        newInterpolatedSample->set_filtsample(filtSamp); // set the filtered sample in the neural sample 
                                     }
                                 }
 
@@ -519,14 +528,18 @@ namespace BICGRPCHelperNamespace
                     latestData[j] = theData[j];
                     if (j == channel)
                     {
-                        // filter data for particular channel and set it in newSample
-                        double filtSamp = filterIIR(theData[j], b, a);
-                        newSample->set_filtsample(filtSamp);
-
+                        // if at a negative zero crossing, send stimulation
                         if (isZeroCrossing(filtData))
                         {
                             // start thread to execute stim command
+                            betaStimThread = new std::thread(&BICListener::grpcSendStimThread, this);
+                            betaStimThread->join();
                         }
+
+                        // filter data for particular channel and set it in newSample
+                        double filtSamp = filterIIR(theData[j], b, a);
+                        newSample->set_filtsample(filtSamp);
+                        
                     }
                 }
                 delete theData;
@@ -553,6 +566,15 @@ namespace BICGRPCHelperNamespace
 
         // No matter what, delete samples
         delete samples;
+    }
+
+
+    // beta-based stim function
+    void BICListener::grpcSendStimThread()
+    {
+        // fill in here
+        //bicStartStimulation
+
     }
 
     //*************************************************** Power Data Streaming Functions ***************************************************
