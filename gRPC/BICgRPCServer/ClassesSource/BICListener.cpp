@@ -246,7 +246,7 @@ namespace BICGRPCHelperNamespace
         }
     }
 
-    //*************************************************** Neural Data Streaming Functions ***************************************************
+    //*************************************************** Neural Data Streaming and Closed-Loop Stim Functions ***************************************************
     /// <summary>
     /// Enable or disable neural streaming to a gRPC client. 
     /// Function instructs BIC to start streaming, resulting in data being received by "onData" event handler function.  
@@ -482,11 +482,10 @@ namespace BICGRPCHelperNamespace
                                     if (interChannelPoint == channel)
                                     {
                                         // if at a negative zero crossing, send stimulation
-                                        if (isZeroCrossing(filtData))
+                                        if (isCLStimEn && isZeroCrossing(filtData))
                                         {
                                             // start thread to execute stim command
-                                            betaStimThread = new std::thread(&BICListener::grpcSendStimThread, this);
-                                            betaStimThread->join();
+                                            stimTrigger->notify_all();
                                         }
 
                                         // when interpolating the sample for a specific channel, also apply an IIR filter for that sample
@@ -529,11 +528,10 @@ namespace BICGRPCHelperNamespace
                     if (j == channel)
                     {
                         // if at a negative zero crossing, send stimulation
-                        if (isZeroCrossing(filtData))
+                        if (isCLStimEn && isZeroCrossing(filtData))
                         {
                             // start thread to execute stim command
-                            betaStimThread = new std::thread(&BICListener::grpcSendStimThread, this);
-                            betaStimThread->join();
+                            stimTrigger->notify_all();
                         }
 
                         // filter data for particular channel and set it in newSample
@@ -572,9 +570,57 @@ namespace BICGRPCHelperNamespace
     // beta-based stim function
     void BICListener::grpcSendStimThread()
     {
-        // fill in here
-        //bicStartStimulation
+        // Create a mutex to make the conditional 'wait' functionality
+        std::mutex stimLock;
+        std::unique_lock<std::mutex> stimTriggerWait(stimLock);
 
+        // Wait for a zero crossing
+        stimTrigger->wait(stimTriggerWait);
+
+        // Loop while streaming is active
+        while (isCLStimEn)
+        {
+            // Send a stim command
+            theImplant->startStimulation(
+                // <Stim code>
+
+            // Wait for a zero crossing
+            stimTrigger->wait(stimTriggerWait);
+        }
+    }
+
+    
+    void BICListener::enableClosedLoopStim(bool enableClosedLoop)
+    {
+        if (enableClosedLoop && !isCLStimEn)
+        {
+            // Enable Closed Loop since it is not enabled and request is to enable
+            // Instantiate the conditional variable for thread notification
+            stimTrigger = new std::condition_variable();
+
+            // Update state tracking variable
+            isCLStimEn = true;
+
+            // Start thread up
+            betaStimThread = new std::thread(&BICListener::grpcSendStimThread, this);
+        }
+        else if (!enableClosedLoop && isCLStimEn)
+        {
+            // Update state tracking variable
+            isCLStimEn = false;
+            stimTrigger->notify_all();
+
+            // Disable Closed Loop since it is enabled and request is to disable
+            betaStimThread->join();
+            betaStimThread->~thread();
+            delete betaStimThread;
+            betaStimThread = NULL;
+            
+            // Clean up the conditional variable
+            stimTrigger->~condition_variable();
+            delete stimTrigger;
+            stimTrigger = NULL;
+        }
     }
 
     //*************************************************** Power Data Streaming Functions ***************************************************

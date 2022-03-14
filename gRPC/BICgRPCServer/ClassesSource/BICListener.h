@@ -12,13 +12,17 @@ namespace BICGRPCHelperNamespace
     class BICListener : public cortec::implantapi::IImplantListener
     {
     public:
-        // ************************* Sensing Management **********************
+        // ************************* Public Sensing Management **********************
         void enableNeuralStreaming(bool enableSensing, uint32_t dataBufferSize, uint32_t interplationThreshold, grpc::ServerWriter<BICgRPC::NeuralUpdate>* aWriter);
         void enableTemperatureStreaming(bool enableSensing, grpc::ServerWriter<BICgRPC::TemperatureUpdate>* aWriter);
         void enableHumidityeStreaming(bool enableSensing, grpc::ServerWriter<BICgRPC::HumidityUpdate>* aWriter);
         void enableConnectionStreaming(bool enableSensing, grpc::ServerWriter<BICgRPC::ConnectionUpdate>* aWriter);
         void enableErrorStreaming(bool enableSensing, grpc::ServerWriter<BICgRPC::ErrorUpdate>* aWriter);
         void enablePowerStreaming(bool enableSensing, grpc::ServerWriter<BICgRPC::PowerUpdate>* aWriter);
+
+        // ************************* Public Research Stim *************************
+        void enableClosedLoopStim(bool enableClosedLoop);
+        void addImplantPointer(std::unique_ptr <cortec::implantapi::IImplant> theImplantedDevice);
 
         // ************************* Public Event Handlers *************************
         void onStimulationStateChanged(const bool isStimulating);
@@ -64,6 +68,8 @@ namespace BICGRPCHelperNamespace
         std::mutex m_neuroBufferLock;           // General purpose mutex for protecting the neurobuffer against incomplete read/writes
         bool m_isStimulating;                   // State variable indicating latest stimulation state received from device.
         bool m_isMeasuring;                     // State variable indicating latest measurement state received from device.
+        bool isCLStimEn = false;
+        std::unique_ptr <cortec::implantapi::IImplant> theImplantedDevice;
 
         // ************************* Private Neural Streaming Objects *************************
         // Neural streaming requires additional state variables because of data buffering and interpolation functionality.
@@ -111,5 +117,6 @@ namespace BICGRPCHelperNamespace
         std::condition_variable* connectionDataNotify;
         std::condition_variable* errorDataNotify;
         std::condition_variable* powerDataNotify;
+        std::condition_variable* stimTrigger;
     };
 }
