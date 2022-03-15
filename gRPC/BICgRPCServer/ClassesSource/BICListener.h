@@ -22,7 +22,7 @@ namespace BICGRPCHelperNamespace
 
         // ************************* Public Research Stim *************************
         void enableClosedLoopStim(bool enableClosedLoop);
-        void addImplantPointer(std::unique_ptr <cortec::implantapi::IImplant> theImplantedDevice);
+        void addImplantPointer(cortec::implantapi::IImplant* theImplantedDevice);
 
         // ************************* Public Event Handlers *************************
         void onStimulationStateChanged(const bool isStimulating);
@@ -37,10 +37,7 @@ namespace BICGRPCHelperNamespace
         void onHumidityChanged(const double humidity);
         void onError(const std::exception& err);
         void onDataProcessingTooSlow();
-
-        double filterIIR(double currSamp, double b[], double a[]);
-        bool isZeroCrossing(std::vector<double> filtData);
-        
+  
         // ************************* Public Boolean State Accessors *************************
         bool isStimulating();
         bool isMeasuring();
@@ -59,8 +56,11 @@ namespace BICGRPCHelperNamespace
         void grpcConnectionStreamThread(void);
         void grpcPowerStreamThread(void);
         void grpcErrorStreamThread(void);
-        // for beta-based stim
-        void grpcSendStimThread(void);
+
+        // ************************* Private Research Stim *************************
+        void phaseTriggeredSendStimThread(void);
+        double filterIIR(double currSamp, double b[], double a[]);
+        bool isZeroCrossing(std::vector<double> filtData);
 
         // ************************* Private State Objects *************************
         // Generic state variables.
@@ -69,7 +69,7 @@ namespace BICGRPCHelperNamespace
         bool m_isStimulating;                   // State variable indicating latest stimulation state received from device.
         bool m_isMeasuring;                     // State variable indicating latest measurement state received from device.
         bool isCLStimEn = false;
-        std::unique_ptr <cortec::implantapi::IImplant> theImplantedDevice;
+        cortec::implantapi::IImplant* theImplantedDevice;
 
         // ************************* Private Neural Streaming Objects *************************
         // Neural streaming requires additional state variables because of data buffering and interpolation functionality.

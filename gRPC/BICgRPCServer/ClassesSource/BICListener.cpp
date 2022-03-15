@@ -568,11 +568,19 @@ namespace BICGRPCHelperNamespace
 
 
     // beta-based stim function
-    void BICListener::grpcSendStimThread()
+    void BICListener::phaseTriggeredSendStimThread()
     {
         // Create a mutex to make the conditional 'wait' functionality
         std::mutex stimLock;
         std::unique_lock<std::mutex> stimTriggerWait(stimLock);
+
+        // Create stimulation command "factory"
+        std::unique_ptr<IStimulationCommandFactory> theStimFactory(createStimulationCommandFactory());
+        IStimulationCommand* stimulationCommand = theStimFactory->createStimulationCommand();
+        IStimulationFunction* stimulationFunction = theStimFactory->createStimulationFunction();
+
+        // Create stimulation waveform
+            // <TODO>
 
         // Wait for a zero crossing
         stimTrigger->wait(stimTriggerWait);
@@ -581,14 +589,18 @@ namespace BICGRPCHelperNamespace
         while (isCLStimEn)
         {
             // Send a stim command
-            theImplant->startStimulation(
-                // <Stim code>
+            theImplantedDevice->startStimulation(stimulationCommand);
 
             // Wait for a zero crossing
             stimTrigger->wait(stimTriggerWait);
         }
     }
 
+
+    void BICListener::addImplantPointer(cortec::implantapi::IImplant* anImplantedDevice)
+    {
+        theImplantedDevice = anImplantedDevice;
+    }
     
     void BICListener::enableClosedLoopStim(bool enableClosedLoop)
     {
@@ -602,7 +614,7 @@ namespace BICGRPCHelperNamespace
             isCLStimEn = true;
 
             // Start thread up
-            betaStimThread = new std::thread(&BICListener::grpcSendStimThread, this);
+            betaStimThread = new std::thread(&BICListener::phaseTriggeredSendStimThread, this);
         }
         else if (!enableClosedLoop && isCLStimEn)
         {
