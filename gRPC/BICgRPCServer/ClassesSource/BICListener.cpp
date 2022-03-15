@@ -271,9 +271,15 @@ namespace BICGRPCHelperNamespace
             neuralWriter = aWriter;
             neuralDataNotify = new std::condition_variable();
             neuralProcessingThread = new std::thread (&BICListener::grpcNeuralStreamThread, this);
+
+            // TEMPORARY
+            enablePhasicStim(true, 0, 0);
         }
         else if (!enableSensing && neuralStreamingState == true)
         {
+            // TEMPORARY
+            enablePhasicStim(false, 0, 0);
+
             // Shut down streaming. First notify and wait for streaming handling thread to stop.
             neuralStreamingState = false;
             neuralDataNotify->notify_all();
@@ -609,6 +615,8 @@ namespace BICGRPCHelperNamespace
     
     /// <summary>
     /// Function that enables phase-locked stimulation functionality on a output channel based on an input channel's sensed neural activity
+    /// TODO: add stim parameters?
+    /// TODO: add to protobuf
     /// </summary>
     /// <param name="enableClosedLoop">A boolean indicating if phasic stim should be enabled or disabled</param>
     /// <param name="phaseSensingChannel">The channel to sense phase on</param>
