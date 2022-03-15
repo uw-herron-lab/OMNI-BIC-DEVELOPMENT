@@ -21,7 +21,7 @@ namespace BICGRPCHelperNamespace
         void enablePowerStreaming(bool enableSensing, grpc::ServerWriter<BICgRPC::PowerUpdate>* aWriter);
 
         // ************************* Public Research Stim *************************
-        void enableClosedLoopStim(bool enableClosedLoop);
+        void enablePhasicStim(bool enableClosedLoop, int phaseSensingChannel, int phaseStimChannel);
         void addImplantPointer(cortec::implantapi::IImplant* theImplantedDevice);
 
         // ************************* Public Event Handlers *************************
@@ -50,6 +50,7 @@ namespace BICGRPCHelperNamespace
        
     private:
         // ************************* Private Stream Functions *************************
+        // Generic Functions
         void grpcNeuralStreamThread(void);
         void grpcTemperatureStreamThread(void);
         void grpcHumidityStreamThread(void);
@@ -57,7 +58,7 @@ namespace BICGRPCHelperNamespace
         void grpcPowerStreamThread(void);
         void grpcErrorStreamThread(void);
 
-        // ************************* Private Research Stim *************************
+        // Phase Locked Stim Functions
         void phaseTriggeredSendStimThread(void);
         double filterIIR(double currSamp, double b[], double a[]);
         bool isZeroCrossing(std::vector<double> filtData);
@@ -68,6 +69,8 @@ namespace BICGRPCHelperNamespace
         std::mutex m_neuroBufferLock;           // General purpose mutex for protecting the neurobuffer against incomplete read/writes
         bool m_isStimulating;                   // State variable indicating latest stimulation state received from device.
         bool m_isMeasuring;                     // State variable indicating latest measurement state received from device.
+
+        // Phase Locked Stim Variables
         bool isCLStimEn = false;
         cortec::implantapi::IImplant* theImplantedDevice;
 
