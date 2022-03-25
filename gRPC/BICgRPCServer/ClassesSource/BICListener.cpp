@@ -487,7 +487,7 @@ namespace BICGRPCHelperNamespace
                                     newInterpolatedSample->add_measurements(interpolatedSample);
                                     if (interChannelPoint == channel)
                                     {
-                                        enableClosedLoopStim(true);
+                                        enablePhasicStim(true, 0, 0);
                                         // if at a negative zero crossing, send stimulation
                                         if (isCLStimEn && isZeroCrossing(filtData))
                                         {
@@ -534,7 +534,7 @@ namespace BICGRPCHelperNamespace
                     latestData[j] = theData[j];
                     if (j == channel)
                     {
-                        enableClosedLoopStim(true);
+                        enablePhasicStim(true,0,0);
                         // if at a negative zero crossing and closed loop stim is enabled, send stimulation
                         if (isCLStimEn && isZeroCrossing(filtData))
                         {
