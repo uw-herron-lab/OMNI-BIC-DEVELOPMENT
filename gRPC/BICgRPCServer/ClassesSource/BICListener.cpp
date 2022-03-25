@@ -481,6 +481,7 @@ namespace BICGRPCHelperNamespace
                                     newInterpolatedSample->add_measurements(interpolatedSample);
                                     if (interChannelPoint == channel)
                                     {
+                                        enableClosedLoopStim(true);
                                         // if at a negative zero crossing, send stimulation
                                         if (isCLStimEn && isZeroCrossing(filtData))
                                         {
@@ -527,7 +528,8 @@ namespace BICGRPCHelperNamespace
                     latestData[j] = theData[j];
                     if (j == channel)
                     {
-                        // if at a negative zero crossing, send stimulation
+                        enableClosedLoopStim(true);
+                        // if at a negative zero crossing and closed loop stim is enabled, send stimulation
                         if (isCLStimEn && isZeroCrossing(filtData))
                         {
                             // start thread to execute stim command
@@ -561,7 +563,6 @@ namespace BICGRPCHelperNamespace
                 }
             }
         }
-
         // No matter what, delete samples
         delete samples;
     }
@@ -580,8 +581,18 @@ namespace BICGRPCHelperNamespace
         IStimulationFunction* stimulationFunction = theStimFactory->createStimulationFunction();
 
         // Create stimulation waveform
-            // <TODO>
+        std::set<uint32_t> sources = { 2 };
+        std::set<uint32_t> sinks; // empty set
+        // settings are temporary
+        int stimAmp = 1;   // in V if voltage driven, in mA if current driven
+        int stimDur = 1000; // in us
+        stimulationFunction->setRepetitions(5);
+        stimulationFunction->append(theStimFactory->createRectStimulationAtom(stimAmp, stimDur));
+        // sources.insert(16u + 7u);
+        sinks.insert(BIC3232Constants::c_groundElectrode);
+        stimulationFunction->setVirtualStimulationElectrodes(sources, sinks);
 
+        stimulationCommand->append(stimulationFunction);
         // Wait for a zero crossing
         stimTrigger->wait(stimTriggerWait);
 
