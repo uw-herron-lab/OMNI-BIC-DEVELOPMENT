@@ -681,6 +681,7 @@ namespace BICGRPCHelperNamespace
                         request->functions().at(i).stimpulse().pulsewidth() * 4));
 
                     // Generate atoms -- DZ0
+                    // TODO - SHOULD THIS BE HERE?
                     theFunction->append(theFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, request->functions().at(i).stimpulse().dz0duration()));
 
                     // Generate atoms -- DZ1

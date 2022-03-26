@@ -586,21 +586,28 @@ namespace BICGRPCHelperNamespace
         // Create stimulation command "factory"
         std::unique_ptr<IStimulationCommandFactory> theStimFactory(createStimulationCommandFactory());
         IStimulationCommand* stimulationCommand = theStimFactory->createStimulationCommand();
-        IStimulationFunction* stimulationFunction = theStimFactory->createStimulationFunction();
+
+        // Create the pulse function
+        IStimulationFunction* stimulationPulseFunction = theStimFactory->createStimulationFunction();
+        stimulationPulseFunction->setName("pulseFunction");
 
         // Create stimulation waveform
+        stimulationPulseFunction->setRepetitions(5);
         std::set<uint32_t> sources = { 2 };
-        std::set<uint32_t> sinks; // empty set
-        // settings are temporary
-        int stimAmp = 1;   // in V if voltage driven, in mA if current driven
-        int stimDur = 1000; // in us
-        stimulationFunction->setRepetitions(5);
-        stimulationFunction->append(theStimFactory->createRectStimulationAtom(stimAmp, stimDur));
-        // sources.insert(16u + 7u);
-        sinks.insert(BIC3232Constants::c_groundElectrode);
-        stimulationFunction->setVirtualStimulationElectrodes(sources, sinks);
+        std::set<uint32_t> sinks = { 0x0002FFFF };
 
-        stimulationCommand->append(stimulationFunction);
+        stimulationPulseFunction->setVirtualStimulationElectrodes(sources, sinks);
+        stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(1000, 0, 0, 0, 400));
+        stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, 10));
+        stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(-250, 0, 0, 0, 1600));
+        stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, 2550));
+        stimulationCommand->append(stimulationPulseFunction);
+
+        IStimulationFunction* stimulationPauseFunction = theStimFactory->createStimulationFunction();
+        stimulationPauseFunction->setName("pauseFunction");
+        stimulationPauseFunction->append(theStimFactory->createStimulationPauseAtom(1000));
+        stimulationCommand->append(stimulationPauseFunction);
+
         // Wait for a zero crossing
         stimTrigger->wait(stimTriggerWait);
 
