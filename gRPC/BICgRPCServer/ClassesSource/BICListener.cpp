@@ -386,6 +386,7 @@ namespace BICGRPCHelperNamespace
     bool BICListener::isZeroCrossing(std::vector<double> filtData)
     {
         bool sendStim = false;
+
         // check if most recent filtered sample is negative
         if (filtData[0] < 0)
         {
@@ -592,15 +593,16 @@ namespace BICGRPCHelperNamespace
         stimulationPulseFunction->setName("pulseFunction");
 
         // Create stimulation waveform
-        stimulationPulseFunction->setRepetitions(5);
-        std::set<uint32_t> sources = { 2 };
+        stimulationPulseFunction->setRepetitions(1);
+        std::set<uint32_t> sources = { 5 };
         std::set<uint32_t> sinks = { 0x0002FFFF };
 
         stimulationPulseFunction->setVirtualStimulationElectrodes(sources, sinks);
-        stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(1000, 0, 0, 0, 400));
-        stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, 10));
-        stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(-250, 0, 0, 0, 1600));
-        stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, 2550));
+        stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(1000, 0, 0, 0, 400)); // positive pulse
+        stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, 10)); // generate atoms --dz0
+        stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(-250, 0, 0, 0, 1600)); // charge balance
+        stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, 10)); // generate atoms --dz0
+        stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, 2550)); // generate atoms --dz1
         stimulationCommand->append(stimulationPulseFunction);
 
         IStimulationFunction* stimulationPauseFunction = theStimFactory->createStimulationFunction();
