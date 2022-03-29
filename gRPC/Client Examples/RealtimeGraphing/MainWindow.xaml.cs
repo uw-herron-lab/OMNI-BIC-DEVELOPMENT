@@ -44,6 +44,7 @@ namespace RealtimeGraphing
                     Color = System.Drawing.Color.Blue,
                     ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastLine
                 });
+            /**
             neuroDataChart.Series.Add(
                 new System.Windows.Forms.DataVisualization.Charting.Series
                 {
@@ -58,11 +59,19 @@ namespace RealtimeGraphing
                     Color = System.Drawing.Color.Green,
                     ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line
                 });
+            **/
             neuroDataChart.Series.Add(
                 new System.Windows.Forms.DataVisualization.Charting.Series
                 {
                     Name = "Filtered Channel",
                     Color = System.Drawing.Color.Black,
+                    ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line
+                });
+            neuroDataChart.Series.Add(
+                new System.Windows.Forms.DataVisualization.Charting.Series
+                {
+                    Name = "Stim Channel",
+                    Color = System.Drawing.Color.DarkOrange,
                     ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line
                 });
 
@@ -83,6 +92,7 @@ namespace RealtimeGraphing
                     neuroDataChart.Series[1].Points.DataBindY(theData[1]);
                     neuroDataChart.Series[2].Points.DataBindY(theData[2]);
                     neuroDataChart.Series[3].Points.DataBindY(theData[32]); // addition of filtered data
+                    neuroDataChart.Series[4].Points.DataBindY(theData[5]); // addition of stim channel
                 }));
         }
 

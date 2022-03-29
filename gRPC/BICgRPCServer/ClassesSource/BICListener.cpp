@@ -1,5 +1,8 @@
 #include "BICListener.h"
 #include <thread>
+#include <iostream>
+#include <chrono>
+#include <ctime>
 
 // BIC Usings
 using namespace cortec::implantapi;
@@ -23,7 +26,7 @@ namespace BICGRPCHelperNamespace
     void BICListener::onStimulationStateChanged(const bool isStimulating)
     {
         // Write Event Information to Console
-        std::cout << "\tDEBUG: Stimulation state changed: " << isStimulating << std::endl;
+        //std::cout << "\tDEBUG: Stimulation state changed: " << isStimulating << std::endl;
 
         // Grab a local-scoped lock before updating multi-threaded accessable state variables
         std::lock_guard<std::mutex> lock(m_mutex);
@@ -52,7 +55,7 @@ namespace BICGRPCHelperNamespace
     void BICListener::onMeasurementStateChanged(const bool isMeasuring)
     {
         // Write Event Information to Console
-        std::cout << "\tDEBUG: Measurement state changed: " << isMeasuring << std::endl;
+        //std::cout << "\tDEBUG: Measurement state changed: " << isMeasuring << std::endl;
 
         // Grab a local-scoped lock before updating multi-threaded accessable state variables
         std::lock_guard<std::mutex> lock(m_mutex);
@@ -438,6 +441,7 @@ namespace BICGRPCHelperNamespace
                 // Check if we've lost packets, if so interpolate
                 if (lastNeuroCount + 1 != sampleCounter)
                 {
+                    auto start1 = std::chrono::system_clock::now();
                     if (lastNeuroCount == sampleCounter)
                     {
                         // Repeated Packet Count! 
@@ -446,6 +450,7 @@ namespace BICGRPCHelperNamespace
                     }
                     else
                     {
+                        auto start2 = std::chrono::system_clock::now();
                         // Missed packet!
                         uint32_t diff = sampleCounter - (lastNeuroCount + 1);
                         if (diff < 0)
@@ -455,13 +460,13 @@ namespace BICGRPCHelperNamespace
                         }
 
                         // Write error message to server console
-                        std::cout << "** Missed Neural Datapoints: " << diff << "! **";
+                        //std::cout << "** Missed Neural Datapoints: " << diff << "! **";
 
                         // Ensure interpolation is a reasonable amount
                         if (diff <= neuroInterplationThreshold)
                         {
                             // Continue the error
-                            std::cout << "Interpolating " << diff << " points..." << std::endl;
+                            //std::cout << "Interpolating " << diff << " points..." << std::endl;
 
                             // Interpolate and mark data as interpolated in NeuralSample message
                             double interpolationSlopes[32] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
@@ -494,6 +499,11 @@ namespace BICGRPCHelperNamespace
                                         {
                                             // start thread to execute stim command
                                             stimTrigger->notify_all();
+                                            auto end1 = std::chrono::system_clock::now();
+                                            std::chrono::duration<double> elapsed_time1 = end1 - start1;
+                                            std::chrono::duration<double> elapsed_time2 = end1 - start2;
+                                            //std::cout << "elapsed time1: " << elapsed_time1.count() << "s\n";
+                                            //std::cout << "elapsed time2: " << elapsed_time2.count() << "s\n";
                                         }
 
                                         // when interpolating the sample for a specific channel, also apply an IIR filter for that sample
@@ -602,25 +612,40 @@ namespace BICGRPCHelperNamespace
         stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, 10)); // generate atoms --dz0
         stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(-250, 0, 0, 0, 1600)); // charge balance
         stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, 10)); // generate atoms --dz0
-        stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, 2550)); // generate atoms --dz1
+        stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, 10)); // generate atoms --dz1
         stimulationCommand->append(stimulationPulseFunction);
 
         IStimulationFunction* stimulationPauseFunction = theStimFactory->createStimulationFunction();
         stimulationPauseFunction->setName("pauseFunction");
-        stimulationPauseFunction->append(theStimFactory->createStimulationPauseAtom(1000));
-        stimulationCommand->append(stimulationPauseFunction);
+        stimulationPauseFunction->append(theStimFactory->createStimulationPauseAtom(10));
+        //stimulationCommand->append(stimulationPauseFunction);
 
         // Wait for a zero crossing
-        stimTrigger->wait(stimTriggerWait);
+        //stimTrigger->wait(stimTriggerWait);
 
         // Loop while streaming is active
         while (isCLStimEn)
         {
             // Send a stim command
-            theImplantedDevice->startStimulation(stimulationCommand);
+            try
+            {
+                auto start = std::chrono::system_clock::now();
+                theImplantedDevice->startStimulation(stimulationCommand);
+                auto end = std::chrono::system_clock::now();
+                std::chrono::duration<double> elapsed_sec = end - start;
 
+                std::cout << "finished stim in " << elapsed_sec.count() << "s\n";
+            }
+            catch (std::exception& anyException)
+            {
+                std::cout << "stim error " << anyException.what() << std::endl;
+            }
+            catch (...)
+            {
+                std::cout << "stim error. no reason" << std::endl;
+            }
             // Wait for a zero crossing
-            stimTrigger->wait(stimTriggerWait);
+            //stimTrigger->wait(stimTriggerWait);
         }
     }
 
