@@ -23,6 +23,7 @@ namespace BICGRPCHelperNamespace
         // ************************* Public Research Stim *************************
         void enablePhasicStim(bool enableClosedLoop, int phaseSensingChannel, int phaseStimChannel);
         void addImplantPointer(cortec::implantapi::IImplant* theImplantedDevice);
+        void enableStimTimeStreaming(bool enableSensing);
 
         // ************************* Public Event Handlers *************************
         void onStimulationStateChanged(const bool isStimulating);
@@ -47,6 +48,7 @@ namespace BICGRPCHelperNamespace
         bool connectionStreamingState = false;
         bool errorStreamingState = false;
         bool powerStreamingState = false;
+        bool stimTimeStreamingState = false;
        
     private:
         // ************************* Private Stream Functions *************************
@@ -63,10 +65,14 @@ namespace BICGRPCHelperNamespace
         double filterIIR(double currSamp, double b[], double a[]);
         bool isZeroCrossing(std::vector<double> filtData);
 
+        // Stim Logging Functions
+        void logStimTimeStreamThread(void);
+
         // ************************* Private State Objects *************************
         // Generic state variables.
         std::mutex m_mutex;                     // General purpose mutex used for protecting against multi-threaded state access.
         std::mutex m_neuroBufferLock;           // General purpose mutex for protecting the neurobuffer against incomplete read/writes
+        std::mutex m_stimTimeBufferLock;        // General purpose mutex for protecting stimtimebuffer against incomplete read/writes
         bool m_isStimulating;                   // State variable indicating latest stimulation state received from device.
         bool m_isMeasuring;                     // State variable indicating latest measurement state received from device.
 
@@ -96,12 +102,12 @@ namespace BICGRPCHelperNamespace
 
         //  Streaming Data Queues 
         std::queue<BICgRPC::NeuralSample*> neuralSampleQueue;
-        // std::queue<BICgRPC::NeuralSample*> filtNeuralSampleQueue;
         std::queue<BICgRPC::TemperatureUpdate*> temperatureSampleQueue;
         std::queue<BICgRPC::HumidityUpdate*> humiditySampleQueue;
         std::queue<BICgRPC::ConnectionUpdate*> connectionSampleQueue;
         std::queue<BICgRPC::ErrorUpdate*> errorSampleQueue;
         std::queue<BICgRPC::PowerUpdate*> powerSampleQueue;
+        std::queue<double> stimTimeSampleQueue;
 
         // Stream processing threads
         std::thread* neuralProcessingThread;
@@ -110,6 +116,7 @@ namespace BICGRPCHelperNamespace
         std::thread* connectionProcessingThread;
         std::thread* errorProcessingThread;
         std::thread* powerProcessingThread;
+        std::thread* stimTimeProcessingThread;
         // for beta- based stim
         std::thread* betaStimThread;
 
@@ -121,5 +128,6 @@ namespace BICGRPCHelperNamespace
         std::condition_variable* errorDataNotify;
         std::condition_variable* powerDataNotify;
         std::condition_variable* stimTrigger;
+        std::condition_variable* stimTimeDataNotify;
     };
 }

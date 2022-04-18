@@ -44,6 +44,7 @@ namespace RealtimeGraphing
                     Color = System.Drawing.Color.Blue,
                     ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastLine
                 });
+            /**
             neuroDataChart.Series.Add(
                 new System.Windows.Forms.DataVisualization.Charting.Series
                 {
@@ -51,6 +52,7 @@ namespace RealtimeGraphing
                     Color = System.Drawing.Color.Red,
                     ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastLine
                 });
+            
             neuroDataChart.Series.Add(
                 new System.Windows.Forms.DataVisualization.Charting.Series
                 {
@@ -58,14 +60,22 @@ namespace RealtimeGraphing
                     Color = System.Drawing.Color.Green,
                     ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line
                 });
+            **/
             neuroDataChart.Series.Add(
                 new System.Windows.Forms.DataVisualization.Charting.Series
                 {
                     Name = "Filtered Channel",
                     Color = System.Drawing.Color.Black,
                     ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line
+                });           
+            neuroDataChart.Series.Add(
+                new System.Windows.Forms.DataVisualization.Charting.Series
+                {
+                    Name = "Stim Channel",
+                    Color = System.Drawing.Color.DarkOrange,
+                    ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line
                 });
-
+            
             // Start the update timer
             graphUpdateTimer = new Timer(200);
             graphUpdateTimer.Elapsed += graphUpdateTimer_Elapsed;
@@ -80,9 +90,10 @@ namespace RealtimeGraphing
             neuroDataChart.Invoke(new System.Windows.Forms.MethodInvoker(
                 delegate { 
                     neuroDataChart.Series[0].Points.DataBindY(theData[0]);
-                    neuroDataChart.Series[1].Points.DataBindY(theData[1]);
-                    neuroDataChart.Series[2].Points.DataBindY(theData[2]);
-                    neuroDataChart.Series[3].Points.DataBindY(theData[32]); // addition of filtered data
+                    //neuroDataChart.Series[1].Points.DataBindY(theData[1]);
+                    //neuroDataChart.Series[1].Points.DataBindY(theData[2]);
+                    neuroDataChart.Series[1].Points.DataBindY(theData[32]); // addition of filtered data
+                    neuroDataChart.Series[2].Points.DataBindY(theData[5]); // addition of stim channel
                 }));
         }
 
