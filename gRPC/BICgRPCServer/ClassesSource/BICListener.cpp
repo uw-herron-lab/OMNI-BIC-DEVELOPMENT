@@ -589,7 +589,7 @@ namespace BICGRPCHelperNamespace
         IStimulationFunction* stimulationPauseFunction = theStimFactory->createStimulationFunction();
         stimulationPauseFunction->setName("pauseFunction");
         stimulationPauseFunction->append(theStimFactory->createStimulationPauseAtom(10));
-        stimulationCommand->append(stimulationPauseFunction);
+        //stimulationCommand->append(stimulationPauseFunction);
 
         // enable stim time streaming
         enableStimTimeStreaming(true);
