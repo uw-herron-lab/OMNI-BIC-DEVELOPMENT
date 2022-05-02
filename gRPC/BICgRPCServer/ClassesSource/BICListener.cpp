@@ -387,6 +387,11 @@ namespace BICGRPCHelperNamespace
         return filtTemp;
     }
 
+    /// <summary>
+    /// Helper function for identifying if the latest point is a negative zero crossing
+    /// </summary>
+    /// <param name="filtData">vector of sensing data to assess for zero crossing</param>
+    /// <returns>Boolean indicating if the latest point is a negative zero crossing</returns>
     bool BICListener::isZeroCrossing(std::vector<double> filtData)
     {
         bool sendStim = false;
