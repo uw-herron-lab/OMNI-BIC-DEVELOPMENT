@@ -208,9 +208,11 @@ message stimPulseFunction{
 	uint64 pulseWidth = 2;
 	uint64 dZ0duration = 3;
 	uint64 dZ1duration = 4;
-	uint32 repetitions = 5;
-	repeated uint32 sourceElectrodes = 6;
-	repeated uint32 sinkElectrodes = 7;
+	uint32 pulseRepetitions = 5;
+	uint32 burstRepetitions = 6;
+	repeated uint32 sourceElectrodes = 7;
+	repeated uint32 sinkElectrodes = 8;
+	bool useGround = 9;
 }
 
 message pauseFunction{
@@ -274,7 +276,7 @@ message Bridge {
    * Additional platform specific details. These are defined in a separate
    * protobuf files, one per device manufacturer.
    */
-  string implantType = 2;
+  string deviceType = 2;
   string deviceId = 3;
   string firmwareVersion = 4;
 }

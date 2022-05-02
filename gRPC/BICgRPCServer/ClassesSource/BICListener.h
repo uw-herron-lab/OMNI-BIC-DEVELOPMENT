@@ -1,7 +1,6 @@
 #pragma once
 #include <cppapi/bicapi.h>
 #include <cppapi/Sample.h>
-#include <cppapi/bic3232constants.h>
 #include <queue>
 #include <thread>
 #include <grpcpp/grpcpp.h>
@@ -38,6 +37,8 @@ namespace BICGRPCHelperNamespace
         void onHumidityChanged(const double humidity);
         void onError(const std::exception& err);
         void onDataProcessingTooSlow();
+        void onStimulationFunctionFinished(const uint64_t numFinishedFunctions);
+        void onRfQualityUpdate(const int8_t antennaQualitydBm, const uint8_t packagePercentage);
   
         // ************************* Public Boolean State Accessors *************************
         bool isStimulating();

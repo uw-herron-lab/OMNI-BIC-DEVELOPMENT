@@ -637,7 +637,7 @@ namespace BICGRPCHelperNamespace
                 if (request->functions().at(i).has_stimpulse())
                 {
                     // Set repetition field
-                    theFunction->setRepetitions(request->functions().at(i).stimpulse().repetitions());
+                    theFunction->setRepetitions(request->functions().at(i).stimpulse().pulserepetitions(), request->functions().at(i).stimpulse().burstrepetitions());
 
                     // Pull out the electrodes and set the electrode fields
                     std::set<uint32_t> sources;
@@ -648,17 +648,9 @@ namespace BICGRPCHelperNamespace
                     }
                     for (int j = 0; j < request->functions().at(i).stimpulse().sinkelectrodes().size(); j++)
                     {
-                        if (request->functions().at(i).stimpulse().sinkelectrodes()[j] >= 32)
-                        {
-                            sinks.insert(0x0002FFFF);
-                        }
-                        else
-                        {
-                            sinks.insert(request->functions().at(i).stimpulse().sinkelectrodes()[j]);
-                        }
-
+                        sinks.insert(request->functions().at(i).stimpulse().sinkelectrodes()[j]);
                     }
-                    theFunction->setVirtualStimulationElectrodes(sources, sinks);
+                    theFunction->setVirtualStimulationElectrodes(sources, sinks, request->functions().at(i).stimpulse().useground());
 
                     // Generate the stimulation pulse by assembling atoms and appending them to the function
                     // Generate Atoms -- positive  pulse

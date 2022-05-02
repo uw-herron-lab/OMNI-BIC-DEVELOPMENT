@@ -98,7 +98,7 @@ namespace RealtimeGraphing
                 Console.WriteLine("\tBridge.Address: " + scanBridgesReply.Bridges[i].Name);
                 Console.WriteLine("\tBridge.DeviceId: " + scanBridgesReply.Bridges[i].DeviceId);
                 Console.WriteLine("\tBridge.FirmwareVersion: " + scanBridgesReply.Bridges[i].FirmwareVersion);
-                Console.WriteLine("\tBridge.ImplantType: " + scanBridgesReply.Bridges[i].ImplantType);
+                Console.WriteLine("\tBridge.DeviceType: " + scanBridgesReply.Bridges[i].DeviceType);
                 Console.WriteLine();
             }
 

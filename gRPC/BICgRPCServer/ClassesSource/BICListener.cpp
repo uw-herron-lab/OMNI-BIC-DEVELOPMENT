@@ -20,6 +20,7 @@ using BICgRPC::NeuralSample;
 
 namespace BICGRPCHelperNamespace
 {
+    //*************************************************** Device State Event Handlers ***************************************************
     /// <summary>
     /// Event Handler for Brain Interchange stimulation state change events
     /// </summary>
@@ -27,7 +28,7 @@ namespace BICGRPCHelperNamespace
     void BICListener::onStimulationStateChanged(const bool isStimulating)
     {
         // Write Event Information to Console
-        //std::cout << "\tDEBUG: Stimulation state changed: " << isStimulating << std::endl;
+        std::cout << "\tDEBUG: Stimulation state changed: " << isStimulating << std::endl;
 
         // Grab a local-scoped lock before updating multi-threaded accessable state variables
         std::lock_guard<std::mutex> lock(m_mutex);
@@ -56,7 +57,7 @@ namespace BICGRPCHelperNamespace
     void BICListener::onMeasurementStateChanged(const bool isMeasuring)
     {
         // Write Event Information to Console
-        //std::cout << "\tDEBUG: Measurement state changed: " << isMeasuring << std::endl;
+        std::cout << "\tDEBUG: Measurement state changed: " << isMeasuring << std::endl;
 
         // Grab a local-scoped lock before updating multi-threaded accessable state variables
         std::lock_guard<std::mutex> lock(m_mutex);
@@ -76,6 +77,27 @@ namespace BICGRPCHelperNamespace
 
         // Return the value, local-scoped locked is released at end of functione
         return m_isMeasuring;
+    }
+
+    /// <summary>
+    /// Event handler that indicates when a stimulation function has finished executing
+    /// </summary>
+    /// <param name="numFinishedFunctions">The number of functions that have finished</param>
+    void BICListener::onStimulationFunctionFinished(const uint64_t numFinishedFunctions)
+    {
+        // Write Event Information to Console
+        std::cout << "\tDEBUG: Stimulation Function Completed: " << numFinishedFunctions << " Finished Functions." << std::endl;
+    }
+
+    /// <summary>
+    /// Event handler that indicates when the RF connection between implant and external unit updates
+    /// </summary>
+    /// <param name="antennaQualitydBm">Antenna connection quality measure measured in dBm</param>
+    /// <param name="packagePercentage">Percentage of successful packets</param>
+    void BICListener::onRfQualityUpdate(const int8_t antennaQualitydBm, const uint8_t packagePercentage)
+    {
+        // Write Event Information to Console
+        std::cout << "\tDEBUG: Rf Quality Update: " << antennaQualitydBm << "dBm" << packagePercentage << "% packets successful" << std::endl;
     }
 
     //*************************************************** Connection Streaming Functions ***************************************************
@@ -369,45 +391,6 @@ namespace BICGRPCHelperNamespace
         delete bufferedNeuroUpdate;
     }
 
-    double BICListener::filterIIR(double currSamp, double b[], double a[])
-    {
-        double filtTemp;
-
-        // check if n-1 is negative, then n-2 would also be negative
-        filtTemp = b[0] * currSamp + b[1] * prevData[0] + b[2] * prevData[1] - a[1] * filtData[0] - a[2] * filtData[1];
-        
-        // remove the last sample and insert the most recent sample to the front of the vector
-        filtData.insert(filtData.begin(), filtTemp);
-        filtData.pop_back();
-        
-        // prevData[0] holds the most recent sample while prevData[1] keeps older sample
-        prevData.insert(prevData.begin(), currSamp);
-        prevData.pop_back();
-
-        return filtTemp;
-    }
-
-    /// <summary>
-    /// Helper function for identifying if the latest point is a negative zero crossing
-    /// </summary>
-    /// <param name="filtData">vector of sensing data to assess for zero crossing</param>
-    /// <returns>Boolean indicating if the latest point is a negative zero crossing</returns>
-    bool BICListener::isZeroCrossing(std::vector<double> filtData)
-    {
-        bool sendStim = false;
-
-        // check if most recent filtered sample is negative
-        if (filtData[0] < 0)
-        {
-            // then check if older filtered sample was positive
-            if (filtData[1] > 0)
-            {
-                sendStim = true;
-            }
-        }
-        return sendStim;
-    }
-
     /// <summary>
     /// Event handler for Brain Interchange neural data received. 
     /// Not intended to be called from gRPC microservice.
@@ -607,11 +590,11 @@ namespace BICGRPCHelperNamespace
         stimulationPulseFunction->setName("pulseFunction");
 
         // Create stimulation waveform
-        stimulationPulseFunction->setRepetitions(1);
+        stimulationPulseFunction->setRepetitions(1,1);
         std::set<uint32_t> sources = { 5 };
-        std::set<uint32_t> sinks = { 0x0002FFFF };
+        std::set<uint32_t> sinks = { };
 
-        stimulationPulseFunction->setVirtualStimulationElectrodes(sources, sinks);
+        stimulationPulseFunction->setVirtualStimulationElectrodes(sources, sinks, true);
         stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(1000, 0, 0, 0, 400)); // positive pulse
         stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, 10)); // generate atoms --dz0
         stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(-250, 0, 0, 0, 1600)); // charge balance
@@ -721,6 +704,53 @@ namespace BICGRPCHelperNamespace
             stimTrigger = NULL;
         }
     }
+
+    /// <summary>
+    /// Private function that applies an IIR filter to incoming neural data
+    /// </summary>
+    /// <param name="currSamp">latest neural sample</param>
+    /// <param name="b">b-array for IIR constants</param>
+    /// <param name="a">a-array for IIR constants</param>
+    /// <returns>current filtered output</returns>
+    double BICListener::filterIIR(double currSamp, double b[], double a[])
+    {
+        double filtTemp;
+
+        // check if n-1 is negative, then n-2 would also be negative
+        filtTemp = b[0] * currSamp + b[1] * prevData[0] + b[2] * prevData[1] - a[1] * filtData[0] - a[2] * filtData[1];
+
+        // remove the last sample and insert the most recent sample to the front of the vector
+        filtData.insert(filtData.begin(), filtTemp);
+        filtData.pop_back();
+
+        // prevData[0] holds the most recent sample while prevData[1] keeps older sample
+        prevData.insert(prevData.begin(), currSamp);
+        prevData.pop_back();
+
+        return filtTemp;
+    }
+
+    /// <summary>
+    /// Helper function for identifying if the latest point is a negative zero crossing
+    /// </summary>
+    /// <param name="filtData">vector of sensing data to assess for zero crossing</param>
+    /// <returns>Boolean indicating if the latest point is a negative zero crossing</returns>
+    bool BICListener::isZeroCrossing(std::vector<double> filtData)
+    {
+        bool sendStim = false;
+
+        // check if most recent filtered sample is negative
+        if (filtData[0] < 0)
+        {
+            // then check if older filtered sample was positive
+            if (filtData[1] > 0)
+            {
+                sendStim = true;
+            }
+        }
+        return sendStim;
+    }
+
     /// <summary>
     /// Private function that reads stimulation time data from queue and record to a file
     /// </summary>
@@ -769,7 +799,6 @@ namespace BICGRPCHelperNamespace
     /// <param name="enableSensing">Boolean to determine whether logging of stimulation time is enabled or not</param>
     void BICListener::enableStimTimeStreaming(bool enableSensing)
     {
-
         // Determine action to be taken. Only take action if requested action matches potential actions based on current state.
         if (enableSensing && stimTimeStreamingState == false)
         {

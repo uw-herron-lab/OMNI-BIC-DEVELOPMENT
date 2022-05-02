@@ -21,7 +21,6 @@
 #include <memory>
 #include <string>
 #include <unordered_map>
-#include <cppapi/bic3232constants.h>
 
 #include "BICgRPC.grpc.pb.h"
 #include "ClassesSource/BICListener.h"

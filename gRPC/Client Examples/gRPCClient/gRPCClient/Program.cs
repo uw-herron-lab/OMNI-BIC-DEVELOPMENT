@@ -37,7 +37,7 @@ namespace BICgRPC_ConsoleTest
                 Console.WriteLine("\tBridge.Address: " + scanBridgesReply.Bridges[i].Name);
                 Console.WriteLine("\tBridge.DeviceId: " + scanBridgesReply.Bridges[i].DeviceId);
                 Console.WriteLine("\tBridge.FirmwareVersion: " + scanBridgesReply.Bridges[i].FirmwareVersion);
-                Console.WriteLine("\tBridge.ImplantType: " + scanBridgesReply.Bridges[i].ImplantType);
+                Console.WriteLine("\tBridge.DeviceType: " + scanBridgesReply.Bridges[i].DeviceType);
                 Console.WriteLine();
             }
 
@@ -228,7 +228,7 @@ namespace BICgRPC_ConsoleTest
                         bicStimulationFunctionDefinitionRequest aNewWaveform = new bicStimulationFunctionDefinitionRequest() { DeviceAddress = DeviceName };
                         // Create a pulse function
                         StimulationFunctionDefinition pulseFunction = new StimulationFunctionDefinition() { FunctionName = "pulseFunction", 
-                            StimPulse = new stimPulseFunction() { Amplitude = { 1000, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 2550, PulseWidth = 400, Repetitions = (uint)randomNumGen.Next(1,10), SourceElectrodes = { 0 }, SinkElectrodes = { 32 } } };
+                            StimPulse = new stimPulseFunction() { Amplitude = { 1000, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 2550, PulseWidth = 400, PulseRepetitions = (uint)randomNumGen.Next(1,10), SourceElectrodes = { 5 }, SinkElectrodes = { }, UseGround = true, BurstRepetitions = 1 } };
                         // Create a pause function
                         StimulationFunctionDefinition pauseFunction = new StimulationFunctionDefinition() { FunctionName = "pauseFunction",
                             Pause = new pauseFunction() { Duration = 30000 } };

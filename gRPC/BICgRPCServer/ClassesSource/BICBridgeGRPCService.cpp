@@ -61,7 +61,7 @@ namespace BICGRPCHelperNamespace
             Bridge* aBridge = reply->add_bridges();
             aBridge->set_name("//bic/bridge/" + exInfos[i]->getDeviceId());
             aBridge->set_firmwareversion(exInfos[i]->getFirmwareVersion());
-            aBridge->set_implanttype(exInfos[i]->getImplantType());
+            aBridge->set_devicetype(exInfos[i]->getDeviceType());
             aBridge->set_deviceid(exInfos[i]->getDeviceId());
         }
         exInfos.~vector();
@@ -97,7 +97,7 @@ namespace BICGRPCHelperNamespace
                 Bridge* aBridge = reply->mutable_details();
                 aBridge->set_name("//bic/bridge/" + exInfos[i]->getDeviceId());
                 aBridge->set_firmwareversion(exInfos[i]->getFirmwareVersion());
-                aBridge->set_implanttype(exInfos[i]->getImplantType());
+                aBridge->set_devicetype(exInfos[i]->getDeviceType());
                 aBridge->set_deviceid(exInfos[i]->getDeviceId());
                 return grpc::Status::OK;
             }
