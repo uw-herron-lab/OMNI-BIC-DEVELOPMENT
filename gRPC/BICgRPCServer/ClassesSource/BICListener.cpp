@@ -407,17 +407,6 @@ namespace BICGRPCHelperNamespace
                 // Create a new sample data buffer
                 int32_t sampleCounter = samples->at(i).getMeasurementCounter();
                 int16_t sampleNum = samples->at(i).getNumberOfMeasurements();
-                
-                // variables for IIR filtering
-                int datLen = 100;
-                int channel = 0;
-                filtData.resize(datLen, 0);
-                // hardcoding filter coefficients for now
-                double b[3] = { 0.0305, 0, -0.0305 }; 
-                double a[3] = { 1, -1.9247, 0.9391 };
-                // track stimulation time
-                double stimTime = 0;
-
                 double* theData = samples->at(i).getMeasurements();
                 NeuralSample* newSample = new NeuralSample();
                 newSample->set_numberofmeasurements(sampleNum);
@@ -427,7 +416,7 @@ namespace BICGRPCHelperNamespace
                 newSample->set_stimulationactive(samples->at(i).isStimulationActive());
                 newSample->set_samplecounter(sampleCounter);
                 newSample->set_isinterpolated(false);
-                newSample->set_filtchannel(channel);
+                newSample->set_filtchannel(iirChannel);
 
                 // Check if we've lost packets, if so interpolate
                 if (lastNeuroCount + 1 != sampleCounter)
@@ -473,26 +462,26 @@ namespace BICGRPCHelperNamespace
                                 newInterpolatedSample->set_stimulationactive(newSample->stimulationactive());
                                 newInterpolatedSample->set_samplecounter(lastNeuroCount + interpolatedPointNum);
                                 newInterpolatedSample->set_isinterpolated(true);
-                                newInterpolatedSample->set_filtchannel(channel);
+                                newInterpolatedSample->set_filtchannel(iirChannel);
 
                                 // Copy in the time domain data in
                                 for (int interChannelPoint = 0; interChannelPoint < sampleNum; interChannelPoint++)
                                 {
                                     double interpolatedSample = latestData[interChannelPoint] + (interpolationSlopes[interChannelPoint] * interpolatedPointNum);
                                     newInterpolatedSample->add_measurements(interpolatedSample);
-                                    if (interChannelPoint == channel)
+                                    if (interChannelPoint == iirChannel)
                                     {
-                                        enablePhasicStim(true, 0, 0);
-                                        // if at a negative zero crossing, send stimulation
-                                        if (isCLStimEn && isZeroCrossing(filtData))
+                                        // when interpolating the sample for a specific channel, also apply an IIR filter for that sample
+                                        double filtSamp = filterIIR(interpolatedSample, iirB, iirA);
+                                        newInterpolatedSample->set_filtsample(filtSamp); // set the filtered sample in the neural sample 
+
+                                                                                // if at a negative zero crossing, send stimulation
+                                        if (isCLStimEn && isZeroCrossing())
                                         {
                                             // TODO: check if previous wave above a certain threshold
                                             // start thread to execute stim command
                                             stimTrigger->notify_all();
                                         }
-                                        // when interpolating the sample for a specific channel, also apply an IIR filter for that sample
-                                        double filtSamp = filterIIR(interpolatedSample, b, a);
-                                        newInterpolatedSample->set_filtsample(filtSamp); // set the filtered sample in the neural sample 
                                     }
                                 }
                                 // Add it to the buffer if there is room
@@ -526,22 +515,19 @@ namespace BICGRPCHelperNamespace
                 {
                     newSample->add_measurements(theData[j]);
                     latestData[j] = theData[j];
-                    if (j == channel)
+                    if (j == iirChannel)
                     {
-                        enablePhasicStim(true, 0, 0);
-
+                        // filter data for particular channel and set it in newSample
+                        double filtSamp = filterIIR(theData[j], iirB, iirA);
+                        newSample->set_filtsample(filtSamp);
+                        
                         // if at a negative zero crossing and closed loop stim is enabled, send stimulation
-                        if (isCLStimEn && isZeroCrossing(filtData))
+                        if (isCLStimEn && isZeroCrossing())
                         {
                             // TODO: check if previous wave is above a certain threshold
                             // start thread to execute stim command
                             stimTrigger->notify_all();
                         }
-
-                        // filter data for particular channel and set it in newSample
-                        double filtSamp = filterIIR(theData[j], b, a);
-                        newSample->set_filtsample(filtSamp);
-                        
                     }
                 }
                 delete theData;
@@ -585,31 +571,31 @@ namespace BICGRPCHelperNamespace
         std::unique_ptr<IStimulationCommandFactory> theStimFactory(createStimulationCommandFactory());
         IStimulationCommand* stimulationCommand = theStimFactory->createStimulationCommand();
 
-        // Create the pulse function
+        // Create stimulation waveform
+            // Create the pulse function
         IStimulationFunction* stimulationPulseFunction = theStimFactory->createStimulationFunction();
         stimulationPulseFunction->setName("pulseFunction");
-
-        // Create stimulation waveform
         stimulationPulseFunction->setRepetitions(1,1);
         std::set<uint32_t> sources = { 5 };
         std::set<uint32_t> sinks = { };
-
         stimulationPulseFunction->setVirtualStimulationElectrodes(sources, sinks, true);
         stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(1000, 0, 0, 0, 400)); // positive pulse
         stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, 10)); // generate atoms --dz0
         stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(-250, 0, 0, 0, 1600)); // charge balance
         stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, 10)); // generate atoms --dz0
         stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, 10)); // generate atoms --dz1
-
         stimulationCommand->append(stimulationPulseFunction);
-
+            // Create interpulse pause in burst
         IStimulationFunction* stimulationPauseFunction = theStimFactory->createStimulationFunction();
         stimulationPauseFunction->setName("pauseFunction");
         stimulationPauseFunction->append(theStimFactory->createStimulationPauseAtom(10));
-        //stimulationCommand->append(stimulationPauseFunction);
+        stimulationCommand->append(stimulationPauseFunction);
+
+        // enable stim time streaming
+        enableStimTimeStreaming(true);
 
         // Wait for a zero crossing
-        //stimTrigger->wait(stimTriggerWait);
+        stimTrigger->wait(stimTriggerWait);
 
         // Loop while streaming is active
         while (isCLStimEn)
@@ -617,7 +603,6 @@ namespace BICGRPCHelperNamespace
             // Send a stim command
             try
             {
-                enableStimTimeStreaming(true);
                 auto start = std::chrono::system_clock::now();
                 theImplantedDevice->startStimulation(stimulationCommand);
                 auto end = std::chrono::system_clock::now();
@@ -650,8 +635,9 @@ namespace BICGRPCHelperNamespace
             {
                 std::cout << "stim error. no reason" << std::endl;
             }
+
             // Wait for a zero crossing
-            //stimTrigger->wait(stimTriggerWait);
+            stimTrigger->wait(stimTriggerWait);
         }
     }
 
@@ -735,7 +721,7 @@ namespace BICGRPCHelperNamespace
     /// </summary>
     /// <param name="filtData">vector of sensing data to assess for zero crossing</param>
     /// <returns>Boolean indicating if the latest point is a negative zero crossing</returns>
-    bool BICListener::isZeroCrossing(std::vector<double> filtData)
+    bool BICListener::isZeroCrossing()
     {
         bool sendStim = false;
 
@@ -759,6 +745,10 @@ namespace BICGRPCHelperNamespace
         std::mutex stimTimeDataLock;
         std::unique_lock<std::mutex> stimTimeDataWait(stimTimeDataLock);
 
+        // Open File
+        std::ofstream myFile;
+        myFile.open("stimTimeLog.csv", std::ios_base::app);
+
         // Loop while streaming is active
         while (stimTimeStreamingState)
         {
@@ -771,11 +761,9 @@ namespace BICGRPCHelperNamespace
                 try {
                     // Lock the buffer
                     this->m_stimTimeBufferLock.lock();
-                    std::ofstream myFile;
-                    myFile.open("stimTimeLog.csv", std::ios_base::app);
+                    // Write out new line to file
                     myFile << stimTimeSampleQueue.front();
                     myFile << "\n";
-                    myFile.close();
                     // Clean up the current sample from the list
                     stimTimeSampleQueue.pop(); // take out first sample of queue
                     // Unlock the neurobuffer
@@ -791,6 +779,9 @@ namespace BICGRPCHelperNamespace
                 }
             }
         }
+
+        // Close file
+        myFile.close();
     }
 
     /// <summary>

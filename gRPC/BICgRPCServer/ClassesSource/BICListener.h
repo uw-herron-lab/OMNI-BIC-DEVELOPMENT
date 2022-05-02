@@ -64,7 +64,7 @@ namespace BICGRPCHelperNamespace
         // Phase Locked Stim Functions
         void phaseTriggeredSendStimThread(void);
         double filterIIR(double currSamp, double b[], double a[]);
-        bool isZeroCrossing(std::vector<double> filtData);
+        bool isZeroCrossing();
 
         // Stim Logging Functions
         void logStimTimeStreamThread(void);
@@ -89,8 +89,11 @@ namespace BICGRPCHelperNamespace
         uint32_t lastNeuroCount = 0;            // Used to determine the number of samples required for interpolation
         double latestData[32] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
 
-        std::vector<double> filtData = { 0,0 };
-        std::vector<double> prevData = { 0,0 };
+        std::vector<double> filtData = { 0, 0 };
+        std::vector<double> prevData = { 0, 0 };
+        int iirChannel = 0;
+        double iirB[3] = { 0.0305, 0, -0.0305 };
+        double iirA[3] = { 1, -1.9247, 0.9391 };
 
         // ************************* Private Stream Coordination Objects *************************
         // Pointers for gRPC-managed streaming interfaces. Set by the BICDeviceServiceImpl class, null when not in use.

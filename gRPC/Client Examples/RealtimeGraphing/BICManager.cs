@@ -157,7 +157,6 @@ namespace RealtimeGraphing
             loggingNotDisposed = false;
             logFileWriter.Flush();
             logFileWriter.Dispose();
-            logFileStream.Flush();
             logFileStream.Dispose();
         }
 
