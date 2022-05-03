@@ -92,6 +92,7 @@ namespace BICgRPC_ConsoleTest
             // Done initializing, start user controlled loop
             writeCommandMenu();
             Random randomNumGen = new Random();
+            bool phasicStimEn = false;
             ConsoleKeyInfo userCommand;
             
             do
@@ -217,6 +218,19 @@ namespace BICgRPC_ConsoleTest
                             deviceClient.bicNeuralStream(new bicNeuralSetStreamingEnable() { DeviceAddress = DeviceName, Enable = false });
                         }
                         break;
+                    case ConsoleKey.R:
+                        if (!phasicStimEn)
+                        {
+                            // Start up the stream
+                            deviceClient.enablePhasicStimulation(new phasicStimEnableRequest() { DeviceAddress = DeviceName, Enable = true });
+                            phasicStimEn = true;
+                        }
+                        else
+                        {
+                            deviceClient.enablePhasicStimulation(new phasicStimEnableRequest() { DeviceAddress = DeviceName, Enable = false });
+                            phasicStimEn = false;
+                        }
+                        break;
                     case ConsoleKey.P:
                         Console.WriteLine("Implant Power On Command Result: " + deviceClient.bicSetImplantPower(new bicSetImplantPowerRequest() { DeviceAddress = DeviceName, PowerEnabled = true }));
                         break;
@@ -330,6 +344,7 @@ namespace BICgRPC_ConsoleTest
             Console.WriteLine("\tc : Toggle Connection Streaming");
             Console.WriteLine("\tl : Toggle Power State Streaming");
             Console.WriteLine("\ts : Toggle Neural Sense Streaming");
+            Console.WriteLine("\tr : Toggle Phase Responsive Stim Functionality");
             Console.WriteLine("\tp : Enable Power to Implant (enabled by default)");
             Console.WriteLine("\to : Disable Power to Implant (enabled by default)");
             Console.WriteLine("\t1 : Start Stimulation - random number (1-9) 1mA pulses");

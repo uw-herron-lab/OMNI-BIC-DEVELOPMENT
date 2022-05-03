@@ -191,7 +191,6 @@ namespace BICGRPCHelperNamespace
         {
             // Not found!
             return grpc::Status(grpc::StatusCode::FAILED_PRECONDITION, "Not Initialized");
-            return grpc::Status::OK;
         }
 
         // Stop all streaming!
@@ -703,6 +702,21 @@ namespace BICGRPCHelperNamespace
             return grpc::Status::OK;
         }
 
+        return grpc::Status::OK;
+    }
+
+    grpc::Status BICDeviceGRPCService::enablePhasicStimulation(grpc::ServerContext* context, const BICgRPC::phasicStimEnableRequest* request, BICgRPC::bicSuccessReply* reply)
+    {
+        // Check if already initialized
+        if (deviceDirectory.find(request->deviceaddress()) == deviceDirectory.end())
+        {
+            return grpc::Status(grpc::StatusCode::FAILED_PRECONDITION, "Not Initialized");
+        }
+
+        // Perform the operation
+        deviceDirectory[request->deviceaddress()]->listener->enablePhasicStim(request->enable(), request->phasesensingchannel(), request->phasestimchannel());
+
+        // Respond to client
         return grpc::Status::OK;
     }
 }
