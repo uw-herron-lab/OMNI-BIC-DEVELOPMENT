@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Forms.DataVisualization;
 using System.Timers;
+using System.Threading;
 
 namespace RealtimeGraphing
 {
@@ -23,7 +24,8 @@ namespace RealtimeGraphing
     public partial class MainWindow : Window
     {
         private BICManager aBICManager;
-        private Timer graphUpdateTimer;
+        private System.Timers.Timer graphUpdateTimer;
+        private bool phasicStimState = false;
 
         public MainWindow()
         {
@@ -44,23 +46,6 @@ namespace RealtimeGraphing
                     Color = System.Drawing.Color.Blue,
                     ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastLine
                 });
-            /**
-            neuroDataChart.Series.Add(
-                new System.Windows.Forms.DataVisualization.Charting.Series
-                {
-                    Name = "Channel 2",
-                    Color = System.Drawing.Color.Red,
-                    ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastLine
-                });
-            
-            neuroDataChart.Series.Add(
-                new System.Windows.Forms.DataVisualization.Charting.Series
-                {
-                    Name = "Channel 3",
-                    Color = System.Drawing.Color.Green,
-                    ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line
-                });
-            **/
             neuroDataChart.Series.Add(
                 new System.Windows.Forms.DataVisualization.Charting.Series
                 {
@@ -77,7 +62,7 @@ namespace RealtimeGraphing
                 });
             
             // Start the update timer
-            graphUpdateTimer = new Timer(200);
+            graphUpdateTimer = new System.Timers.Timer(200);
             graphUpdateTimer.Elapsed += graphUpdateTimer_Elapsed;
             graphUpdateTimer.Start();
         }
@@ -90,8 +75,6 @@ namespace RealtimeGraphing
             neuroDataChart.Invoke(new System.Windows.Forms.MethodInvoker(
                 delegate { 
                     neuroDataChart.Series[0].Points.DataBindY(theData[0]);
-                    //neuroDataChart.Series[1].Points.DataBindY(theData[1]);
-                    //neuroDataChart.Series[1].Points.DataBindY(theData[2]);
                     neuroDataChart.Series[1].Points.DataBindY(theData[32]); // addition of filtered data
                     neuroDataChart.Series[2].Points.DataBindY(theData[5]); // addition of stim channel
                 }));
@@ -101,6 +84,23 @@ namespace RealtimeGraphing
         {
             graphUpdateTimer.Dispose();
             aBICManager.Dispose();
+        }
+
+        private void PhasicToggle_Click(object sender, RoutedEventArgs e)
+        {
+            ThreadPool.QueueUserWorkItem(a =>
+           {
+               if (!phasicStimState)
+               {
+                   aBICManager.enablePhasicStim(true);
+                   phasicStimState = true;
+               }
+               else
+               {
+                   aBICManager.enablePhasicStim(false);
+                   phasicStimState = false;
+               }
+           });
         }
     }
 }

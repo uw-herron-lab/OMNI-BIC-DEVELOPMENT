@@ -160,6 +160,11 @@ namespace RealtimeGraphing
             logFileStream.Dispose();
         }
 
+        public void enablePhasicStim(bool phasicStimEn)
+        {
+            deviceClient.enablePhasicStimulation(new phasicStimEnableRequest() { DeviceAddress = DeviceName, Enable = phasicStimEn });
+        }
+
         /// <summary>
         /// Provide a copy of the current data buffers
         /// </summary>
