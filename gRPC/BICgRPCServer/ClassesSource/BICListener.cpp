@@ -614,7 +614,7 @@ namespace BICGRPCHelperNamespace
         IStimulationFunction* stimulationPulseFunction = theStimFactory->createStimulationFunction();
         stimulationPulseFunction->setName("pulseFunction");
         stimulationPulseFunction->setRepetitions(1,1);
-        std::set<uint32_t> sources = { 5 };
+        std::set<uint32_t> sources = { 31 };
         std::set<uint32_t> sinks = { };
         stimulationPulseFunction->setVirtualStimulationElectrodes(sources, sinks, true);
         stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(1000, 0, 0, 0, 400)); // positive pulse
@@ -626,6 +626,8 @@ namespace BICGRPCHelperNamespace
 
         // enable stim time streaming
         std::chrono::duration<double> elapsed_sec;
+        std::chrono::system_clock::time_point chronoStart;
+        std::chrono::system_clock::time_point chronoStop;
         enableStimTimeStreaming(true);
 
         // Wait for a zero crossing
@@ -638,14 +640,14 @@ namespace BICGRPCHelperNamespace
             try
             {
                 // Start a timer to measure the time that it takes to send a stimulation command
-                auto start = std::chrono::system_clock::now();
+                chronoStart = std::chrono::system_clock::now();
 
                 // Execute the stimulation command
                 theImplantedDevice->startStimulation(stimulationCommand);
 
                 // Measure the t
-                auto end = std::chrono::system_clock::now();
-                elapsed_sec = end - start;
+                chronoStop = std::chrono::system_clock::now();
+                elapsed_sec = chronoStop - chronoStart;
 
 #ifdef DEBUG_CONSOLE_ENABLE
                 std::cout << "DEBUG: finished stim in " << elapsed_sec.count() << "s\n";
