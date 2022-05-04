@@ -173,8 +173,17 @@ message bicNeuralSetStreamingEnable{
 	string deviceAddress = 1;
 	bool enable = 2;
 	repeated uint32 refChannels = 3;
-	uint32 bufferSize = 4;
-	uint32 maxInterpolationPoints = 5;
+	bool useGroundReference = 4;
+	RecordingAmplificationFactor amplificationFactor = 5;
+	uint32 bufferSize = 6;
+	uint32 maxInterpolationPoints = 7;
+}
+
+enum RecordingAmplificationFactor{
+	AMPLIFICATION_57_5dB = 0;
+    AMPLIFICATION_51_5dB = 1;
+    AMPLIFICATION_45_5dB = 2;
+    AMPLIFICATION_39_5dB = 3;
 }
 
 // bicSetImplantPower Messages

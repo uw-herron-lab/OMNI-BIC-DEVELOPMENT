@@ -324,7 +324,7 @@ namespace BICgRPC_ConsoleTest
 
         static async Task neuralMonitorTaskAsync()
         {
-            var stream = deviceClient.bicNeuralStream(new bicNeuralSetStreamingEnable() { DeviceAddress = DeviceName, Enable = true, BufferSize = 100 });
+            var stream = deviceClient.bicNeuralStream(new bicNeuralSetStreamingEnable() { DeviceAddress = DeviceName, Enable = true, BufferSize = 100, AmplificationFactor = RecordingAmplificationFactor.Amplification575DB, UseGroundReference = true });
             while (await stream.ResponseStream.MoveNext())
             {
                 Console.WriteLine("Implant Stream Neural Samples Received: " + stream.ResponseStream.Current.Samples.Count);

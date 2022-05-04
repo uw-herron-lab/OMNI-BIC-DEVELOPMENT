@@ -543,7 +543,7 @@ namespace BICGRPCHelperNamespace
             std::unique_lock<std::mutex> StreamLockInst(deviceDirectory[request->deviceaddress()]->neuralStreamLock);
 
             // Start measurement until lock is called
-            deviceDirectory[request->deviceaddress()]->theImplant->startMeasurement(referenceElectrodes);
+            deviceDirectory[request->deviceaddress()]->theImplant->startMeasurement(referenceElectrodes, (RecordingAmplificationFactor)request->amplificationfactor(), request->usegroundreference());
             deviceDirectory[request->deviceaddress()]->neuralStreamNotify.wait(StreamLockInst);
             deviceDirectory[request->deviceaddress()]->theImplant->stopMeasurement();
 
