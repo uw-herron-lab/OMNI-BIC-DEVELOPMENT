@@ -749,7 +749,6 @@ namespace BICGRPCHelperNamespace
 
         // Open File
         std::ofstream myFile;
-        myFile.open("stimTimeLog.csv", std::ios_base::app);
 
         // Loop while streaming is active
         while (stimTimeStreamingState)
@@ -764,8 +763,10 @@ namespace BICGRPCHelperNamespace
                     // Lock the buffer
                     this->m_stimTimeBufferLock.lock();
                     // Write out new line to file
+                    myFile.open("stimTimeLog.csv", std::ios_base::app);
                     myFile << stimTimeSampleQueue.front();
                     myFile << "\n";
+                    myFile.close();
                     // Clean up the current sample from the list
                     stimTimeSampleQueue.pop(); // take out first sample of queue
                     // Unlock the neurobuffer
@@ -781,9 +782,6 @@ namespace BICGRPCHelperNamespace
                 }
             }
         }
-
-        // Close file
-        myFile.close();
     }
 
     /// <summary>
