@@ -76,7 +76,7 @@ namespace RealtimeGraphing
                 delegate { 
                     neuroDataChart.Series[0].Points.DataBindY(theData[0]);
                     neuroDataChart.Series[1].Points.DataBindY(theData[32]); // addition of filtered data
-                    neuroDataChart.Series[2].Points.DataBindY(theData[5]); // addition of stim channel
+                    neuroDataChart.Series[2].Points.DataBindY(theData[31]); // addition of stim channel
                 }));
         }
 
