@@ -446,9 +446,14 @@ namespace BICGRPCHelperNamespace
                             std::cout << "DEBUG: Interpolating " << diff << " points..." << std::endl;
 #endif
 
-                            // Interpolate and mark data as interpolated in NeuralSample message
+                            // Determine the interpolation slopes
                             double interpolationSlopes[32] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
+                            for (int index = 0; index < 32; index++)
+                            {
+                                interpolationSlopes[index] = (theData[index] - latestData[index]) / diff;
+                            }
 
+                            // Interpolate and mark data as interpolated in NeuralSample message
                             for (uint32_t interpolatedPointNum = 1; interpolatedPointNum <= diff; interpolatedPointNum++)
                             {
                                 // Create a new sample data buffer
@@ -825,7 +830,7 @@ namespace BICGRPCHelperNamespace
     /// Events puts data in a queue for independent transmission to client by thread utilizing "grpcPowerStreamThread" function.
     /// </summary>
     /// <param name="enableSensing">True if streaming is being requested to be enabled, false otherwise</param>
-    /// <param name="aWriter">gRPC client writing inteface.</param>
+    /// <param name="aWriter">gRPC client writing interface.</param>
     void BICListener::enablePowerStreaming(bool enableSensing, grpc::ServerWriter<BICgRPC::PowerUpdate>* aWriter)
     {
         // Accessing streaming state objects, grab the mutex for protection against multi-threaded race conditions
