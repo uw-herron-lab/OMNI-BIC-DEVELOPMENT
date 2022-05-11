@@ -20,9 +20,10 @@ namespace BICGRPCHelperNamespace
         void enablePowerStreaming(bool enableSensing, grpc::ServerWriter<BICgRPC::PowerUpdate>* aWriter);
 
         // ************************* Public Research Stim *************************
-        void enablePhasicStim(bool enableClosedLoop, int phaseSensingChannel, int phaseStimChannel);
+        void enableDistributedStim(bool enableDistributed, int phaseSensingChannel, int phaseStimChannel);
         void addImplantPointer(cortec::implantapi::IImplant* theImplantedDevice);
         void enableStimTimeStreaming(bool enableSensing);
+        double processingHelper(double newData);
 
         // ************************* Public Event Handlers *************************
         void onStimulationStateChanged(const bool isStimulating);
@@ -62,9 +63,9 @@ namespace BICGRPCHelperNamespace
         void grpcErrorStreamThread(void);
 
         // Phase Locked Stim Functions
-        void phaseTriggeredSendStimThread(void);
-        double filterIIR(double currSamp, double b[], double a[]);
-        bool isZeroCrossing();
+        void triggeredSendStimThread(void);
+        double filterIIR(double currSamp, std::vector<double>* prevFiltOut, std::vector<double>* prevInput, double b[], double a[]);
+        bool isZeroCrossing(std::vector<double> dataArray);
 
         // Stim Logging Functions
         void logStimTimeStreamThread(void);
@@ -89,11 +90,11 @@ namespace BICGRPCHelperNamespace
         uint32_t lastNeuroCount = 0;            // Used to determine the number of samples required for interpolation
         double latestData[32] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
 
-        std::vector<double> filtData = { 0, 0 };
-        std::vector<double> prevData = { 0, 0 };
-        int iirChannel = 0;
-        double iirB[3] = { 0.0305, 0, -0.0305 };
-        double iirA[3] = { 1, -1.9247, 0.9391 };
+        std::vector<double> bpFiltData = { 0, 0 };
+        std::vector<double> bpPrevData = { 0, 0 };
+        int processingChannel = 0;
+        double betaBandPassIIR_B[3] = { 0.0305, 0, -0.0305 };
+        double betaBandPassIIR_A[3] = { 1, -1.9247, 0.9391 };
 
         // ************************* Private Stream Coordination Objects *************************
         // Pointers for gRPC-managed streaming interfaces. Set by the BICDeviceServiceImpl class, null when not in use.

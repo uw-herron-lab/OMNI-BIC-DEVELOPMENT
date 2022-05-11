@@ -55,7 +55,7 @@ service BICDeviceService{
 	rpc bicStartStimulation (bicStartStimulationRequest) returns (bicSuccessReply) {}
 	rpc bicStopStimulation (RequestDeviceAddress) returns (bicSuccessReply) {}
 	rpc bicDefineStimulationWaveform (bicStimulationFunctionDefinitionRequest) returns (bicSuccessReply) {}
-	rpc enablePhasicStimulation (phasicStimEnableRequest) returns (bicSuccessReply) {}
+	rpc enableDistributedStimulation (distributedStimEnableRequest) returns (bicSuccessReply) {}
 
 	// Streaming endpoints
 	rpc bicNeuralStream (bicNeuralSetStreamingEnable) returns (stream NeuralUpdate) {}
@@ -226,7 +226,7 @@ message pauseFunction{
 	uint64 duration = 1;
 }
 
-message phasicStimEnableRequest{
+message distributedStimEnableRequest{
 	string deviceAddress = 1;
 	bool enable = 2;
 	uint32 phaseSensingChannel = 3;

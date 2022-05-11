@@ -160,9 +160,9 @@ namespace RealtimeGraphing
             logFileStream.Dispose();
         }
 
-        public void enablePhasicStim(bool phasicStimEn)
+        public void enableDistributedStim(bool closedStimEn)
         {
-            deviceClient.enablePhasicStimulation(new phasicStimEnableRequest() { DeviceAddress = DeviceName, Enable = phasicStimEn });
+            deviceClient.enableDistributedStimulation(new distributedStimEnableRequest() { DeviceAddress = DeviceName, Enable = closedStimEn });
         }
 
         /// <summary>

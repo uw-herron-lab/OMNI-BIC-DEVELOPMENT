@@ -222,12 +222,12 @@ namespace BICgRPC_ConsoleTest
                         if (!phasicStimEn)
                         {
                             // Start up the stream
-                            deviceClient.enablePhasicStimulation(new phasicStimEnableRequest() { DeviceAddress = DeviceName, Enable = true });
+                            deviceClient.enableDistributedStimulation(new distributedStimEnableRequest() { DeviceAddress = DeviceName, Enable = true });
                             phasicStimEn = true;
                         }
                         else
                         {
-                            deviceClient.enablePhasicStimulation(new phasicStimEnableRequest() { DeviceAddress = DeviceName, Enable = false });
+                            deviceClient.enableDistributedStimulation(new distributedStimEnableRequest() { DeviceAddress = DeviceName, Enable = false });
                             phasicStimEn = false;
                         }
                         break;

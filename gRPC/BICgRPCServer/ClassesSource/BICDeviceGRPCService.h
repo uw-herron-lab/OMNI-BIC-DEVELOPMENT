@@ -64,6 +64,6 @@ namespace BICGRPCHelperNamespace
 
         grpc::Status bicDefineStimulationWaveform(grpc::ServerContext* context, const BICgRPC::bicStimulationFunctionDefinitionRequest* request, BICgRPC::bicSuccessReply* reply) override;
 
-        grpc::Status enablePhasicStimulation(grpc::ServerContext* context, const BICgRPC::phasicStimEnableRequest* request, BICgRPC::bicSuccessReply* reply) override;
+        grpc::Status enableDistributedStimulation(grpc::ServerContext* context, const BICgRPC::distributedStimEnableRequest* request, BICgRPC::bicSuccessReply* reply) override;
     };
 }
