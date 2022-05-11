@@ -47,11 +47,8 @@ service BICDeviceService{
 	rpc bicGetImpedance (bicGetImpedanceRequest) returns (bicGetImpedanceReply) {}
 	rpc bicGetTemperature (RequestDeviceAddress) returns (bicGetTemperatureReply) {}
 	rpc bicGetHumidity (RequestDeviceAddress) returns (bicGetHumidityReply) {}
-	//rpc bicIsStimulating (google.protobuf.Empty) returns 
-	//rpc bicIsMeasuring (google.protobuf.Empty) returns 
 
 	// Set Functions
-	//rpc bicSetSensingEnable (bicSetSensingEnableRequest) returns (bicSuccessReply) {} // Depreciated
 	rpc bicSetImplantPower (bicSetImplantPowerRequest) returns (bicSuccessReply) {}
 
 	// Stim Functions
