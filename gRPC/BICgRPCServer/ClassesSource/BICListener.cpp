@@ -596,20 +596,31 @@ namespace BICGRPCHelperNamespace
         // Create stimulation command "factory"
         std::unique_ptr<IStimulationCommandFactory> theStimFactory(createStimulationCommandFactory());
         IStimulationCommand* stimulationCommand = theStimFactory->createStimulationCommand();
+        stimulationCommand->setName("TestPulse");
 
         // Create stimulation waveform
-        IStimulationFunction* stimulationPulseFunction = theStimFactory->createStimulationFunction();
-        stimulationPulseFunction->setName("pulseFunction");
-        stimulationPulseFunction->setRepetitions(1,1);
-        std::set<uint32_t> sources = { 31 };
-        std::set<uint32_t> sinks = { };
-        stimulationPulseFunction->setVirtualStimulationElectrodes(sources, sinks, true);
-        stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(1000, 0, 0, 0, 400)); // positive pulse
-        stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, 10)); // generate atoms --dz0
-        stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(-250, 0, 0, 0, 1600)); // charge balance
-        stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, 10)); // generate atoms --dz0
-        stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, 10)); // generate atoms --dz1
-        stimulationCommand->append(stimulationPulseFunction);
+        IStimulationFunction* stimulationPulseFunction;
+        for (int i = 0; i < 10; i++)
+        {
+            // Randomize amplitude calculations
+            int randomAmplitudeSize = rand() % 5 + 5;
+            int pulseAmpPos = randomAmplitudeSize * 100;
+            int pulseAmpNeg = randomAmplitudeSize * -25;
+
+            // Create stim pulses with randomized amplitudes
+            stimulationPulseFunction = theStimFactory->createStimulationFunction();
+            stimulationPulseFunction->setName("pulseFunction" + i);
+            stimulationPulseFunction->setRepetitions(1, 1);
+            std::set<uint32_t> sources = { 31 };
+            std::set<uint32_t> sinks = { };
+            stimulationPulseFunction->setVirtualStimulationElectrodes(sources, sinks, true);
+            stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(pulseAmpPos, 0, 0, 0, 400)); // positive pulse
+            stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, 10)); // generate atoms --dz0
+            stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(pulseAmpNeg, 0, 0, 0, 1600)); // charge balance
+            stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, 10)); // generate atoms --dz0
+            stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, 10)); // generate atoms --dz1
+            stimulationCommand->append(stimulationPulseFunction);
+        }
 
         // enable stim time streaming
         std::chrono::duration<double> elapsed_sec;
