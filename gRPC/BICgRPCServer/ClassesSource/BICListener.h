@@ -93,9 +93,14 @@ namespace BICGRPCHelperNamespace
 
         std::vector<double> bpFiltData = { 0, 0, 0 };
         std::vector<double> bpPrevData = { 0, 0 };
+        std::vector<double> lpfFiltData = { 0, 0 };
+        std::vector<double> lpfPrevData = { 0, 0 };
         int processingChannel = 0;
         double betaBandPassIIR_B[3] = { 0.0305, 0, -0.0305 };
         double betaBandPassIIR_A[3] = { 1, -1.9247, 0.9391 };
+        double lpfIIR_B[3] = { 0.000944691843840153, 0.00188938368768031, 0.000944691843840153 };
+        double lpfIIR_A[3] = { 1, -1.91119706742607, 0.914975834801434 };
+        bool stimToggleControl = false;
 
         // ************************* Private Stream Coordination Objects *************************
         // Pointers for gRPC-managed streaming interfaces. Set by the BICDeviceServiceImpl class, null when not in use.

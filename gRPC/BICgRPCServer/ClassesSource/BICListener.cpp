@@ -688,17 +688,32 @@ namespace BICGRPCHelperNamespace
     double BICListener::processingHelper(double newData)
     {   
         // Band pass filter for beta activity
-        double filtSamp = filterIIR(newData, &bpPrevData, &bpFiltData, betaBandPassIIR_B, betaBandPassIIR_A);
+        double bpfiltSamp = filterIIR(newData, &bpPrevData, &bpFiltData, betaBandPassIIR_B, betaBandPassIIR_A);
 
-        // if at a local maxima above an arbitrary threshold and closed loop stim is enabled, send stimulation
-        if (isCLStimEn && detectLocalMaxima(bpFiltData) && bpFiltData[1] > 100)
+
+        // Calculate absolute for envelope calculation
+        if (bpfiltSamp < 0)
+            bpfiltSamp = -bpfiltSamp;
+
+        // LPF for envelope
+        double lpffiltSamp = filterIIR(bpfiltSamp, &lpfPrevData, &lpfFiltData, lpfIIR_B, lpfIIR_A);
+
+        // if closed-loop stim is enabled and envelope exceeds threshold, trigger stimulation
+        if (isCLStimEn && !stimToggleControl && lpffiltSamp > 200)
         {
+            // Toggle the stim control to indicate that stim is delivered 
+            stimToggleControl = true;
+
             // start thread to execute stim command
             stimTrigger->notify_all();
         }
+        else if(isCLStimEn && stimToggleControl && lpffiltSamp < 200)
+        {
+            stimToggleControl = false;
+        }
 
         // Return the filtered sample for visualization purposes
-        return filtSamp;
+        return lpffiltSamp;
     }
 
     /// <summary>
