@@ -597,30 +597,21 @@ namespace BICGRPCHelperNamespace
         std::unique_ptr<IStimulationCommandFactory> theStimFactory(createStimulationCommandFactory());
         IStimulationCommand* stimulationCommand = theStimFactory->createStimulationCommand();
         stimulationCommand->setName("TestPulse");
+        stimulationCommand->setRepetitions(1);
 
         // Create stimulation waveform
-        IStimulationFunction* stimulationPulseFunction;
-        for (int i = 0; i < 10; i++)
-        {
-            // Randomize amplitude calculations
-            int randomAmplitudeSize = rand() % 5 + 5;
-            int pulseAmpPos = randomAmplitudeSize * 100;
-            int pulseAmpNeg = randomAmplitudeSize * -25;
-
-            // Create stim pulses with randomized amplitudes
-            stimulationPulseFunction = theStimFactory->createStimulationFunction();
-            stimulationPulseFunction->setName("pulseFunction" + i);
-            stimulationPulseFunction->setRepetitions(1, 1);
-            std::set<uint32_t> sources = { 31 };
-            std::set<uint32_t> sinks = { };
-            stimulationPulseFunction->setVirtualStimulationElectrodes(sources, sinks, true);
-            stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(pulseAmpPos, 0, 0, 0, 400)); // positive pulse
-            stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, 10)); // generate atoms --dz0
-            stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(pulseAmpNeg, 0, 0, 0, 1600)); // charge balance
-            stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, 10)); // generate atoms --dz0
-            stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, 10)); // generate atoms --dz1
-            stimulationCommand->append(stimulationPulseFunction);
-        }
+        IStimulationFunction* stimulationPulseFunction = theStimFactory->createStimulationFunction();
+        stimulationPulseFunction->setName("pulseFunction");
+        stimulationPulseFunction->setRepetitions(50, 1);
+        std::set<uint32_t> sources = { 31 };
+        std::set<uint32_t> sinks = { };
+        stimulationPulseFunction->setVirtualStimulationElectrodes(sources, sinks, true);
+        stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(1000, 0, 0, 0, 400)); // positive pulse
+        stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, 10)); // generate atoms --dz0
+        stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(250, 0, 0, 0, 1600)); // charge balance
+        stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, 10)); // generate atoms --dz0
+        stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, 5123)); // generate atoms --dz1
+        stimulationCommand->append(stimulationPulseFunction);
 
         // enable stim time streaming
         std::chrono::duration<double> elapsed_sec;
@@ -637,36 +628,42 @@ namespace BICGRPCHelperNamespace
             // Send a stim command
             try
             {
-                // Start a timer to measure the time that it takes to send a stimulation command
-                chronoStart = std::chrono::system_clock::now();
+                if (stimToggleControl)
+                {
+                    // Start a timer to measure the time that it takes to send a stimulation command
+                    chronoStart = std::chrono::system_clock::now();
 
-                // Execute the stimulation command
-                theImplantedDevice->startStimulation(stimulationCommand);
+                    // Execute the stimulation command
+                    theImplantedDevice->startStimulation(stimulationCommand);
 
-                // Measure the t
-                chronoStop = std::chrono::system_clock::now();
-                elapsed_sec = chronoStop - chronoStart;
+                    // Measure the t
+                    chronoStop = std::chrono::system_clock::now();
+                    elapsed_sec = chronoStop - chronoStart;
 
 #ifdef DEBUG_CONSOLE_ENABLE
-                std::cout << "DEBUG: finished stim in " << elapsed_sec.count() << "s\n";
+                    std::cout << "DEBUG: finished stim in " << elapsed_sec.count() << "s\n";
 #endif
 
-                // Add latest received data packet to the buffer if there is room
-                if (stimTimeSampleQueue.size() < 1000)
-                {
-                    // Lock the stim time buffer, add data, unlock
-                    this->m_stimTimeBufferLock.lock();
-                    stimTimeSampleQueue.push(elapsed_sec.count()); // add stimTime at the end of the queue
-                    this->m_stimTimeBufferLock.unlock();
+                    // Add latest received data packet to the buffer if there is room
+                    if (stimTimeSampleQueue.size() < 1000)
+                    {
+                        // Lock the stim time buffer, add data, unlock
+                        this->m_stimTimeBufferLock.lock();
+                        stimTimeSampleQueue.push(elapsed_sec.count()); // add stimTime at the end of the queue
+                        this->m_stimTimeBufferLock.unlock();
 
-                    // Notify the streaming function that new data exists
-                    stimTimeDataNotify->notify_all();
+                        // Notify the streaming function that new data exists
+                        stimTimeDataNotify->notify_all();
+                    }
+                    else
+                    {
+                        std::cout << "WARNING: GRPC Stim Time Queue Size Overflow, streaming data skipped" << std::endl;
+                    }
                 }
                 else
                 {
-                    std::cout << "WARNING: GRPC Stim Time Queue Size Overflow, streaming data skipped" << std::endl;
+                    theImplantedDevice->stopStimulation();
                 }
-
             }
             catch (std::exception& anyException)
             {
@@ -710,17 +707,21 @@ namespace BICGRPCHelperNamespace
         double lpffiltSamp = filterIIR(bpfiltSamp, &lpfPrevData, &lpfFiltData, lpfIIR_B, lpfIIR_A);
 
         // if closed-loop stim is enabled and envelope exceeds threshold, trigger stimulation
-        if (isCLStimEn && !stimToggleControl && lpffiltSamp > 200)
+        if (isCLStimEn && !stimToggleControl && lpffiltSamp > 50)
         {
             // Toggle the stim control to indicate that stim is delivered 
             stimToggleControl = true;
 
-            // start thread to execute stim command
+            // Notify stim thread to update output
             stimTrigger->notify_all();
         }
-        else if(isCLStimEn && stimToggleControl && lpffiltSamp < 200)
+        else if(isCLStimEn && stimToggleControl && lpffiltSamp < 50)
         {
+            // Toggle the stim control to indicate that stim is to be stopped
             stimToggleControl = false;
+
+            // Notify stim thread to update output
+            stimTrigger->notify_all();
         }
 
         // Return the filtered sample for visualization purposes
