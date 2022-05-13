@@ -690,10 +690,9 @@ namespace BICGRPCHelperNamespace
         // Band pass filter for beta activity
         double filtSamp = filterIIR(newData, &bpPrevData, &bpFiltData, betaBandPassIIR_B, betaBandPassIIR_A);
 
-        // if at a negative zero crossing and closed loop stim is enabled, send stimulation
+        // if at a local maxima above an arbitrary threshold and closed loop stim is enabled, send stimulation
         if (isCLStimEn && detectLocalMaxima(bpFiltData) && bpFiltData[1] > 100)
         {
-            // TODO: check if previous wave is above a certain threshold
             // start thread to execute stim command
             stimTrigger->notify_all();
         }
