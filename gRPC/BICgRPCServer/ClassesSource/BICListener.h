@@ -66,6 +66,7 @@ namespace BICGRPCHelperNamespace
         void triggeredSendStimThread(void);
         double filterIIR(double currSamp, std::vector<double>* prevFiltOut, std::vector<double>* prevInput, double b[], double a[]);
         bool isZeroCrossing(std::vector<double> dataArray);
+        bool detectLocalMaxima(std::vector<double> dataArray);
 
         // Stim Logging Functions
         void logStimTimeStreamThread(void);
@@ -90,7 +91,7 @@ namespace BICGRPCHelperNamespace
         uint32_t lastNeuroCount = 0;            // Used to determine the number of samples required for interpolation
         double latestData[32] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
 
-        std::vector<double> bpFiltData = { 0, 0 };
+        std::vector<double> bpFiltData = { 0, 0, 0 };
         std::vector<double> bpPrevData = { 0, 0 };
         int processingChannel = 0;
         double betaBandPassIIR_B[3] = { 0.0305, 0, -0.0305 };

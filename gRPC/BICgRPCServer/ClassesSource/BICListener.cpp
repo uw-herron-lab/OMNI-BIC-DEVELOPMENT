@@ -691,7 +691,7 @@ namespace BICGRPCHelperNamespace
         double filtSamp = filterIIR(newData, &bpPrevData, &bpFiltData, betaBandPassIIR_B, betaBandPassIIR_A);
 
         // if at a negative zero crossing and closed loop stim is enabled, send stimulation
-        if (isCLStimEn && isZeroCrossing(bpFiltData))
+        if (isCLStimEn && detectLocalMaxima(bpFiltData) && bpFiltData[1] > 100)
         {
             // TODO: check if previous wave is above a certain threshold
             // start thread to execute stim command
@@ -730,11 +730,11 @@ namespace BICGRPCHelperNamespace
     /// <summary>
     /// Helper function for identifying if the latest point is a negative zero crossing
     /// </summary>
-    /// <param name="filtData">vector of sensing data to assess for zero crossing</param>
+    /// <param name="dataArray">vector of sensing data to assess for zero crossing</param>
     /// <returns>Boolean indicating if the latest point is a negative zero crossing</returns>
     bool BICListener::isZeroCrossing(std::vector<double> dataArray)
     {
-        bool sendStim = false;
+        bool isZeroCrossing = false;
 
         // check if most recent filtered sample is negative
         if (dataArray[0] < 0)
@@ -742,10 +742,26 @@ namespace BICGRPCHelperNamespace
             // then check if older filtered sample was positive
             if (dataArray[1] > 0)
             {
-                sendStim = true;
+                isZeroCrossing = true;
             }
         }
-        return sendStim;
+        return isZeroCrossing;
+    }
+
+    /// <summary>
+    /// Helper function for identifying if the latest point indicates if a local maxima was found.
+    /// </summary>
+    /// <param name="dataArray">vector of sensing data to assess for local maxima</param>
+    /// <returns>Boolean indicating if the latest point indicates that the previous point was a local maxima</returns>
+    bool BICListener::detectLocalMaxima(std::vector<double> dataArray)
+    {
+        bool wasLocalMaxima = false;
+
+        if (dataArray[0] < dataArray[1] && dataArray[1] > dataArray[2])
+        {
+            wasLocalMaxima = true;
+        }
+        return wasLocalMaxima;
     }
 
     /// <summary>
