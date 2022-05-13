@@ -412,7 +412,7 @@ namespace BICGRPCHelperNamespace
                 newSample->set_stimulationactive(samples->at(i).isStimulationActive());
                 newSample->set_samplecounter(sampleCounter);
                 newSample->set_isinterpolated(false);
-                newSample->set_filtchannel(iirChannel);
+                newSample->set_filtchannel(processingChannel);
 
                 // Check if we've lost packets, if so interpolate
                 if (lastNeuroCount + 1 != sampleCounter)
@@ -467,26 +467,17 @@ namespace BICGRPCHelperNamespace
                                 newInterpolatedSample->set_stimulationactive(newSample->stimulationactive());
                                 newInterpolatedSample->set_samplecounter(lastNeuroCount + interpolatedPointNum);
                                 newInterpolatedSample->set_isinterpolated(true);
-                                newInterpolatedSample->set_filtchannel(iirChannel);
+                                newInterpolatedSample->set_filtchannel(processingChannel);
 
                                 // Copy in the time domain data in
                                 for (int interChannelPoint = 0; interChannelPoint < sampleNum; interChannelPoint++)
                                 {
                                     double interpolatedSample = latestData[interChannelPoint] + (interpolationSlopes[interChannelPoint] * interpolatedPointNum);
                                     newInterpolatedSample->add_measurements(interpolatedSample);
-                                    if (interChannelPoint == iirChannel)
+                                    if (interChannelPoint == processingChannel)
                                     {
-                                        // when interpolating the sample for a specific channel, also apply an IIR filter for that sample
-                                        double filtSamp = filterIIR(interpolatedSample, iirB, iirA);
-                                        newInterpolatedSample->set_filtsample(filtSamp); // set the filtered sample in the neural sample 
-
-                                        // if at a negative zero crossing, send stimulation
-                                        if (isCLStimEn && isZeroCrossing())
-                                        {
-                                            // TODO: check if previous wave above a certain threshold
-                                            // start thread to execute stim command
-                                            stimTrigger->notify_all();
-                                        }
+                                        // call the processing helper, take output and send to client
+                                        newInterpolatedSample->set_filtsample(processingHelper(interpolatedSample)); // set the filtered sample in the neural sample 
                                     }
                                 }
                                 // Add it to the buffer if there is room
@@ -520,19 +511,10 @@ namespace BICGRPCHelperNamespace
                 {
                     newSample->add_measurements(theData[j]);
                     latestData[j] = theData[j];
-                    if (j == iirChannel)
+                    if (j == processingChannel)
                     {
-                        // filter data for particular channel and set it in newSample
-                        double filtSamp = filterIIR(theData[j], iirB, iirA);
-                        newSample->set_filtsample(filtSamp);
-                        
-                        // if at a negative zero crossing and closed loop stim is enabled, send stimulation
-                        if (isCLStimEn && isZeroCrossing())
-                        {
-                            // TODO: check if previous wave is above a certain threshold
-                            // start thread to execute stim command
-                            stimTrigger->notify_all();
-                        }
+                        // Call Processing Helper, take output and send to client
+                        newSample->set_filtsample(processingHelper(theData[j]));
                     }
                 }
                 delete theData;
@@ -565,12 +547,12 @@ namespace BICGRPCHelperNamespace
     /// TODO: add stim parameters?
     /// TODO: add to protobuf
     /// </summary>
-    /// <param name="enableClosedLoop">A boolean indicating if phasic stim should be enabled or disabled</param>
+    /// <param name="enableDistributed">A boolean indicating if phasic stim should be enabled or disabled</param>
     /// <param name="phaseSensingChannel">The channel to sense phase on</param>
     /// <param name="phaseStimChannel">The channel to stimulate after negative zero crossings of phase sensing channel</param>
-    void BICListener::enablePhasicStim(bool enableClosedLoop, int phaseSensingChannel, int phaseStimChannel)
+    void BICListener::enableDistributedStim(bool enableDistributed, int phaseSensingChannel, int phaseStimChannel)
     {
-        if (enableClosedLoop && !isCLStimEn)
+        if (enableDistributed && !isCLStimEn)
         {
             // Enable Closed Loop since it is not enabled and request is to enable
             // Instantiate the conditional variable for thread notification
@@ -580,9 +562,9 @@ namespace BICGRPCHelperNamespace
             isCLStimEn = true;
 
             // Start thread up
-            betaStimThread = new std::thread(&BICListener::phaseTriggeredSendStimThread, this);
+            betaStimThread = new std::thread(&BICListener::triggeredSendStimThread, this);
         }
-        else if (!enableClosedLoop && isCLStimEn)
+        else if (!enableDistributed && isCLStimEn)
         {
             // Update state tracking variable
             isCLStimEn = false;
@@ -605,7 +587,7 @@ namespace BICGRPCHelperNamespace
     /// Thread to be started up when phase-triggered stimulation functionality is enabled.
     /// Delivers a specific stimulation pattern whe
     /// </summary>
-    void BICListener::phaseTriggeredSendStimThread()
+    void BICListener::triggeredSendStimThread()
     {
         // Create a mutex to make the conditional 'wait' functionality
         std::mutex stimLock;
@@ -699,26 +681,47 @@ namespace BICGRPCHelperNamespace
     }
 
     /// <summary>
+    /// Handles the time-domain processing to be performed on each new datapoint
+    /// </summary>
+    /// <param name="newData">latest datapoint to be processed for potential triggering of stimulation</param>
+    /// <returns></returns>
+    double BICListener::processingHelper(double newData)
+    {   
+        // Band pass filter for beta activity
+        double filtSamp = filterIIR(newData, &bpPrevData, &bpFiltData, betaBandPassIIR_B, betaBandPassIIR_A);
+
+        // if at a local maxima above an arbitrary threshold and closed loop stim is enabled, send stimulation
+        if (isCLStimEn && detectLocalMaxima(bpFiltData) && bpFiltData[1] > 100)
+        {
+            // start thread to execute stim command
+            stimTrigger->notify_all();
+        }
+
+        // Return the filtered sample for visualization purposes
+        return filtSamp;
+    }
+
+    /// <summary>
     /// Private function that applies an IIR filter to incoming neural data
     /// </summary>
     /// <param name="currSamp">latest neural sample</param>
     /// <param name="b">b-array for IIR constants</param>
     /// <param name="a">a-array for IIR constants</param>
     /// <returns>current filtered output</returns>
-    double BICListener::filterIIR(double currSamp, double b[], double a[])
+    double BICListener::filterIIR(double currSamp, std::vector<double>* prevFiltOut, std::vector<double>* prevInput, double b[], double a[])
     {
         double filtTemp;
 
         // check if n-1 is negative, then n-2 would also be negative
-        filtTemp = b[0] * currSamp + b[1] * prevData[0] + b[2] * prevData[1] - a[1] * filtData[0] - a[2] * filtData[1];
+        filtTemp = b[0] * currSamp + b[1] * prevInput->at(0) + b[2] * prevInput->at(1) - a[1] * prevFiltOut->at(0) - a[2] * prevFiltOut->at(1);
 
         // remove the last sample and insert the most recent sample to the front of the vector
-        filtData.insert(filtData.begin(), filtTemp);
-        filtData.pop_back();
+        prevFiltOut->insert(prevFiltOut->begin(), filtTemp);
+        prevFiltOut->pop_back();
 
         // prevData[0] holds the most recent sample while prevData[1] keeps older sample
-        prevData.insert(prevData.begin(), currSamp);
-        prevData.pop_back();
+        prevInput->insert(prevInput->begin(), currSamp);
+        prevInput->pop_back();
 
         return filtTemp;
     }
@@ -726,22 +729,38 @@ namespace BICGRPCHelperNamespace
     /// <summary>
     /// Helper function for identifying if the latest point is a negative zero crossing
     /// </summary>
-    /// <param name="filtData">vector of sensing data to assess for zero crossing</param>
+    /// <param name="dataArray">vector of sensing data to assess for zero crossing</param>
     /// <returns>Boolean indicating if the latest point is a negative zero crossing</returns>
-    bool BICListener::isZeroCrossing()
+    bool BICListener::isZeroCrossing(std::vector<double> dataArray)
     {
-        bool sendStim = false;
+        bool isZeroCrossing = false;
 
         // check if most recent filtered sample is negative
-        if (filtData[0] < 0)
+        if (dataArray[0] < 0)
         {
             // then check if older filtered sample was positive
-            if (filtData[1] > 0)
+            if (dataArray[1] > 0)
             {
-                sendStim = true;
+                isZeroCrossing = true;
             }
         }
-        return sendStim;
+        return isZeroCrossing;
+    }
+
+    /// <summary>
+    /// Helper function for identifying if the latest point indicates if a local maxima was found.
+    /// </summary>
+    /// <param name="dataArray">vector of sensing data to assess for local maxima</param>
+    /// <returns>Boolean indicating if the latest point indicates that the previous point was a local maxima</returns>
+    bool BICListener::detectLocalMaxima(std::vector<double> dataArray)
+    {
+        bool wasLocalMaxima = false;
+
+        if (dataArray[0] < dataArray[1] && dataArray[1] > dataArray[2])
+        {
+            wasLocalMaxima = true;
+        }
+        return wasLocalMaxima;
     }
 
     /// <summary>

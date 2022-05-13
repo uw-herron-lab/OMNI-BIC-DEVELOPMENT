@@ -21,6 +21,6 @@
                 </wfdv:Chart.ChartAreas>
             </wfdv:Chart>
         </WindowsFormsHost>
-        <Button Content="Toggle Phasic Stim" Margin="10,0,669,10" Height="20" VerticalAlignment="Bottom" Click="PhasicToggle_Click" Name="PhasicToggle"/>
+        <Button Content="Toggle CL Stim" Margin="10,0,669,10" Height="20" VerticalAlignment="Bottom" Click="PhasicToggle_Click" Name="PhasicToggle"/>
     </Grid>
 </Window>

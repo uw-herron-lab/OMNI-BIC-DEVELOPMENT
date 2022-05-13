@@ -705,7 +705,7 @@ namespace BICGRPCHelperNamespace
         return grpc::Status::OK;
     }
 
-    grpc::Status BICDeviceGRPCService::enablePhasicStimulation(grpc::ServerContext* context, const BICgRPC::phasicStimEnableRequest* request, BICgRPC::bicSuccessReply* reply)
+    grpc::Status BICDeviceGRPCService::enableDistributedStimulation(grpc::ServerContext* context, const BICgRPC::distributedStimEnableRequest* request, BICgRPC::bicSuccessReply* reply)
     {
         // Check if already initialized
         if (deviceDirectory.find(request->deviceaddress()) == deviceDirectory.end())
@@ -714,7 +714,7 @@ namespace BICGRPCHelperNamespace
         }
 
         // Perform the operation
-        deviceDirectory[request->deviceaddress()]->listener->enablePhasicStim(request->enable(), request->phasesensingchannel(), request->phasestimchannel());
+        deviceDirectory[request->deviceaddress()]->listener->enableDistributedStim(request->enable(), request->phasesensingchannel(), request->phasestimchannel());
 
         // Respond to client
         return grpc::Status::OK;
