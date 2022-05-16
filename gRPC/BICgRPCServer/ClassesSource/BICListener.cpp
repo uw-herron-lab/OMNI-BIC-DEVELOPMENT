@@ -615,7 +615,7 @@ namespace BICGRPCHelperNamespace
         std::chrono::duration<double> elapsed_sec;
         std::chrono::system_clock::time_point chronoStart;
         std::chrono::system_clock::time_point chronoStop;
-        enableStimTimeStreaming(true);
+        enableStimTimeLogging(true);
 
         // Wait for a zero crossing
         stimTrigger->wait(stimTriggerWait);
@@ -766,7 +766,7 @@ namespace BICGRPCHelperNamespace
     /// <summary>
     /// Private function that reads stimulation time data from queue and record to a file
     /// </summary>
-    void BICListener::logStimTimeStreamThread()
+    void BICListener::logStimTimeThread()
     {
         std::mutex stimTimeDataLock;
         std::unique_lock<std::mutex> stimTimeDataWait(stimTimeDataLock);
@@ -775,7 +775,7 @@ namespace BICGRPCHelperNamespace
         std::ofstream myFile;
 
         // Loop while streaming is active
-        while (stimTimeStreamingState)
+        while (stimTimeLoggingState)
         {
             if (stimTimeSampleQueue.empty())
             {
@@ -812,29 +812,29 @@ namespace BICGRPCHelperNamespace
     /// Function that enables logging of the time needed to perform stimulation
     /// </summary>
     /// <param name="enableSensing">Boolean to determine whether logging of stimulation time is enabled or not</param>
-    void BICListener::enableStimTimeStreaming(bool enableSensing)
+    void BICListener::enableStimTimeLogging(bool enableSensing)
     {
         // Determine action to be taken. Only take action if requested action matches potential actions based on current state.
-        if (enableSensing && stimTimeStreamingState == false)
+        if (enableSensing && stimTimeLoggingState == false)
         {
             // Update state tracking variable
-            stimTimeStreamingState = true;
+            stimTimeLoggingState = true;
             // Conditional variable for thread notification
             stimTimeDataNotify = new std::condition_variable();
             // Start thread
-            stimTimeProcessingThread = new std::thread(&BICListener::logStimTimeStreamThread, this);
+            stimTimeLoggingThread = new std::thread(&BICListener::logStimTimeThread, this);
         }
-        else if (!enableSensing && stimTimeStreamingState == true)
+        else if (!enableSensing && stimTimeLoggingState == true)
         {
             // Shut down streaming. First notify and wait for streaming handling thread to stop.
-            stimTimeStreamingState = false;
+            stimTimeLoggingState = false;
             stimTimeDataNotify->notify_all();
-            stimTimeProcessingThread->join();
+            stimTimeLoggingThread->join();
 
             // Delete generated resources to free memory
-            stimTimeProcessingThread->~thread();
-            delete stimTimeProcessingThread;
-            stimTimeProcessingThread = NULL;
+            stimTimeLoggingThread->~thread();
+            delete stimTimeLoggingThread;
+            stimTimeLoggingThread = NULL;
 
             stimTimeDataNotify->~condition_variable();
             delete stimTimeDataNotify;
