@@ -653,7 +653,7 @@ namespace BICGRPCHelperNamespace
                 }
                 else
                 {
-                    std::cout << "WARNING: GRPC Stim Time Queue Size Overflow, streaming data skipped" << std::endl;
+                    std::cout << "WARNING: Stim Time Log Queue Size Overflow, streaming data skipped" << std::endl;
                 }
 
             }
