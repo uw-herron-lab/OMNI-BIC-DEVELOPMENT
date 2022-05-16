@@ -1,6 +1,5 @@
 #pragma once
 #include <cppapi/bicapi.h>
-#include <cppapi/bic3232constants.h>
 
 #include <grpcpp/grpcpp.h>
 

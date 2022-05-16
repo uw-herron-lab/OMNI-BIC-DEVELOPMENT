@@ -47,18 +47,16 @@ service BICDeviceService{
 	rpc bicGetImpedance (bicGetImpedanceRequest) returns (bicGetImpedanceReply) {}
 	rpc bicGetTemperature (RequestDeviceAddress) returns (bicGetTemperatureReply) {}
 	rpc bicGetHumidity (RequestDeviceAddress) returns (bicGetHumidityReply) {}
-	//rpc bicIsStimulating (google.protobuf.Empty) returns 
-	//rpc bicIsMeasuring (google.protobuf.Empty) returns 
 
 	// Set Functions
-	//rpc bicSetSensingEnable (bicSetSensingEnableRequest) returns (bicSuccessReply) {} // Depreciated
 	rpc bicSetImplantPower (bicSetImplantPowerRequest) returns (bicSuccessReply) {}
 
 	// Stim Functions
 	rpc bicStartStimulation (bicStartStimulationRequest) returns (bicSuccessReply) {}
 	rpc bicStopStimulation (RequestDeviceAddress) returns (bicSuccessReply) {}
 	rpc bicDefineStimulationWaveform (bicStimulationFunctionDefinitionRequest) returns (bicSuccessReply) {}
-	
+	rpc enableDistributedStimulation (distributedStimEnableRequest) returns (bicSuccessReply) {}
+
 	// Streaming endpoints
 	rpc bicNeuralStream (bicNeuralSetStreamingEnable) returns (stream NeuralUpdate) {}
 	rpc bicTemperatureStream (bicSetStreamEnable) returns (stream TemperatureUpdate) {}
@@ -172,8 +170,17 @@ message bicNeuralSetStreamingEnable{
 	string deviceAddress = 1;
 	bool enable = 2;
 	repeated uint32 refChannels = 3;
-	uint32 bufferSize = 4;
-	uint32 maxInterpolationPoints = 5;
+	bool useGroundReference = 4;
+	RecordingAmplificationFactor amplificationFactor = 5;
+	uint32 bufferSize = 6;
+	uint32 maxInterpolationPoints = 7;
+}
+
+enum RecordingAmplificationFactor{
+	AMPLIFICATION_57_5dB = 0;
+    AMPLIFICATION_51_5dB = 1;
+    AMPLIFICATION_45_5dB = 2;
+    AMPLIFICATION_39_5dB = 3;
 }
 
 // bicSetImplantPower Messages
@@ -208,13 +215,22 @@ message stimPulseFunction{
 	uint64 pulseWidth = 2;
 	uint64 dZ0duration = 3;
 	uint64 dZ1duration = 4;
-	uint32 repetitions = 5;
-	repeated uint32 sourceElectrodes = 6;
-	repeated uint32 sinkElectrodes = 7;
+	uint32 pulseRepetitions = 5;
+	uint32 burstRepetitions = 6;
+	repeated uint32 sourceElectrodes = 7;
+	repeated uint32 sinkElectrodes = 8;
+	bool useGround = 9;
 }
 
 message pauseFunction{
 	uint64 duration = 1;
+}
+
+message distributedStimEnableRequest{
+	string deviceAddress = 1;
+	bool enable = 2;
+	uint32 phaseSensingChannel = 3;
+	uint32 phaseStimChannel = 4;
 }
 
 // *************************** Device Streaming Service Messages ***************************
@@ -241,6 +257,8 @@ message NeuralSample{
 	bool stimulationActive = 6;
 	uint32 sampleCounter = 7;
 	bool isInterpolated = 8;
+	double filtSample = 9;
+	uint32 filtChannel = 10;
 }
 
 message ConnectionUpdate{
@@ -272,7 +290,7 @@ message Bridge {
    * Additional platform specific details. These are defined in a separate
    * protobuf files, one per device manufacturer.
    */
-  string implantType = 2;
+  string deviceType = 2;
   string deviceId = 3;
   string firmwareVersion = 4;
 }

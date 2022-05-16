@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 using System.Diagnostics;
-
+using System.IO;
 using Grpc.Core;
 using BICgRPC;
 
@@ -12,16 +13,29 @@ namespace RealtimeGraphing
 {
     class BICManager : IDisposable
     {
+        // Private class objects
         private Channel aGRPChannel;
         private BICBridgeService.BICBridgeServiceClient bridgeClient;
         private BICDeviceService.BICDeviceServiceClient deviceClient;
         private BICInfoService.BICInfoServiceClient infoClient;
         private string DeviceName;
         private List<double>[] dataBuffer;
+        private List<double>[] filtDataBuffer;
         private const int numSensingChannelsDef = 32;
-        public int DataBufferMaxSampleNumber { get; set; }
-
         private object dataBufferLock = new object();
+
+        // Logging Objects
+        FileStream logFileStream;
+        StreamWriter logFileWriter;
+        string filePath = "./filterLog.csv";
+        Queue<string> logLineQueue = new Queue<string>();
+        Thread newLoggingThread;
+        bool loggingNotDisposed = true;
+
+        // Public Class Properties
+        public int DataBufferMaxSampleNumber { get; set; }
+        
+        
 
         // Task pointers for streaming methods
         private Task neuroMonitor = null;
@@ -35,10 +49,21 @@ namespace RealtimeGraphing
             // Set up variables for visualization: instantiate data buffers and length variables.
             DataBufferMaxSampleNumber = definedDataBufferLength;
             dataBuffer = new List<double>[numSensingChannelsDef];
+            filtDataBuffer = new List<double>[1];
             for(int i = 0; i < numSensingChannelsDef; i++)
             {
                 dataBuffer[i] = new List<double>();
             }
+            filtDataBuffer[0] = new List<double>();
+
+            // Set up the logging interface
+            if(File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
+            logFileStream = new FileStream("./filterLog.csv", FileMode.Create, FileAccess.Write, FileShare.None, 4096, FileOptions.Asynchronous);
+            logFileWriter = new StreamWriter(logFileStream);
+            logFileWriter.WriteLine("PacketNum, FilteredChannelNum, RawChannelData, FilteredChannelData, boolInterpolated, StimChannelData");
         }
         public bool BICConnect()
         {
@@ -73,7 +98,7 @@ namespace RealtimeGraphing
                 Console.WriteLine("\tBridge.Address: " + scanBridgesReply.Bridges[i].Name);
                 Console.WriteLine("\tBridge.DeviceId: " + scanBridgesReply.Bridges[i].DeviceId);
                 Console.WriteLine("\tBridge.FirmwareVersion: " + scanBridgesReply.Bridges[i].FirmwareVersion);
-                Console.WriteLine("\tBridge.ImplantType: " + scanBridgesReply.Bridges[i].ImplantType);
+                Console.WriteLine("\tBridge.DeviceType: " + scanBridgesReply.Bridges[i].DeviceType);
                 Console.WriteLine();
             }
 
@@ -127,25 +152,65 @@ namespace RealtimeGraphing
             var disposeReply = deviceClient.bicDispose(new RequestDeviceAddress() { DeviceAddress = DeviceName });
             Console.WriteLine("Dispose BIC Response: " + disposeReply.ToString());
             aGRPChannel.ShutdownAsync().Wait();
+
+            // Tell logging we want to close
+            loggingNotDisposed = false;
+            logFileWriter.Flush();
+            logFileWriter.Dispose();
+            logFileStream.Dispose();
+        }
+
+        public void enableDistributedStim(bool closedStimEn)
+        {
+            deviceClient.enableDistributedStimulation(new distributedStimEnableRequest() { DeviceAddress = DeviceName, Enable = closedStimEn });
         }
 
         /// <summary>
         /// Provide a copy of the current data buffers
         /// </summary>
         /// <returns>A list of double-arrays, each array is composed of the latest time domain data from each BIC channel. index 0 is the oldest data. </returns>
-        public List<double>[] getData()
+        public List<double>[] getData() // need to modify this section in order to get filtered data
         {
-            List<double>[] outputBuffer = new List<double>[dataBuffer.Length];
+            List<double>[] outputBuffer = new List<double>[dataBuffer.Length + filtDataBuffer.Length];
 
             lock(dataBufferLock)
             {
-                for(int i = 0; i < dataBuffer.Length; i++)
+                for (int i = 0; i < dataBuffer.Length; i++)
                 {
                     outputBuffer[i] = new List<double>(dataBuffer[i]);
                 }
+                for (int j = 0; j < filtDataBuffer.Length; j++)
+                {
+                    outputBuffer[dataBuffer.Length + j] = new List<double>(filtDataBuffer[j]);
+                }
+
             }
+            // have something similar for filtered data buffer
 
             return outputBuffer;
+        }
+
+        private void loggingThread()
+        {
+            while(loggingNotDisposed)
+            {
+                try
+                {
+                    if(logLineQueue.Count > 1)
+                    {
+                        logFileWriter.WriteLine(logLineQueue.Dequeue());
+                    }
+                    else
+                    {
+                        Thread.Sleep(1);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("logging exception occured: " + e.Message);
+                }
+
+            }
         }
 
         /// <summary>
@@ -154,12 +219,14 @@ namespace RealtimeGraphing
         /// <returns>Task completion information</returns>
         async Task neuralMonitorTaskAsync()
         {
-            var stream = deviceClient.bicNeuralStream(new bicNeuralSetStreamingEnable() { DeviceAddress = DeviceName, Enable = true, BufferSize = 100, MaxInterpolationPoints = 10 });
+            var stream = deviceClient.bicNeuralStream(new bicNeuralSetStreamingEnable() { DeviceAddress = DeviceName, Enable = true, BufferSize = 100, MaxInterpolationPoints = 10, AmplificationFactor = RecordingAmplificationFactor.Amplification575DB, UseGroundReference = true});
         
             // Create performance-tracking interpacket variables
             Stopwatch aStopwatch = new Stopwatch();
-            uint latestPacketNum = 0;
+            newLoggingThread = new Thread(loggingThread);
+            newLoggingThread.Start();
             
+            uint latestPacketNum = 0;
             while (await stream.ResponseStream.MoveNext())
             {
                 // Missing packet handling
@@ -197,6 +264,9 @@ namespace RealtimeGraphing
                         {
                             dataBuffer[channelNum].AddRange(nanBuffer);
                         }
+
+                        // do the same for the filtered data buffer
+                        filtDataBuffer[0].AddRange(nanBuffer);
                     }
                 }
 
@@ -206,6 +276,7 @@ namespace RealtimeGraphing
                 // Create local copy buffers and loop variables
                 int numSamples = stream.ResponseStream.Current.Samples.Count;
                 double[] copyBuffer = new double[numSamples];
+                double[] filtBuffer = new double [numSamples];
 
                 // Lock dataBuffer access to ensure no mid-update copy.
                 lock (dataBufferLock)
@@ -229,6 +300,34 @@ namespace RealtimeGraphing
                             // Too long, remove the difference
                             dataBuffer[channelNum].RemoveRange(0, diffLength);
                         }
+                    }
+
+                    // Update the filter data buffer
+                    for (int sampleNum = 0; sampleNum < numSamples; sampleNum++)
+                    {
+                        filtBuffer[sampleNum] = stream.ResponseStream.Current.Samples[sampleNum].FiltSample;
+
+                        // Log the latest info out to the CSV
+                        int filteredIndex = (int)stream.ResponseStream.Current.Samples[sampleNum].FiltChannel;
+                        logLineQueue.Enqueue(
+                            stream.ResponseStream.Current.Samples[sampleNum].SampleCounter.ToString() + ", " +
+                            filteredIndex.ToString() + ", " +
+                            stream.ResponseStream.Current.Samples[sampleNum].Measurements[filteredIndex].ToString() + ", " +
+                            stream.ResponseStream.Current.Samples[sampleNum].FiltSample.ToString() + ", " +
+                            stream.ResponseStream.Current.Samples[sampleNum].IsInterpolated.ToString() + ", " +
+                            stream.ResponseStream.Current.Samples[sampleNum].Measurements[5].ToString()
+                        ); ;
+
+                    }
+                    // Add new data to filtered data buffer
+                    filtDataBuffer[0].AddRange(filtBuffer);
+
+                    // Check if filtered data buffer is too long
+                    int filtDiffLength = filtDataBuffer[0].Count - DataBufferMaxSampleNumber;
+                    if (filtDiffLength > 0)
+                    {
+                        // if too long, remove the difference
+                        filtDataBuffer[0].RemoveRange(0, filtDiffLength);
                     }
                 }
 

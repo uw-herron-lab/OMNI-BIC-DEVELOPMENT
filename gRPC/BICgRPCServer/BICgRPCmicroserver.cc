@@ -21,7 +21,6 @@
 #include <memory>
 #include <string>
 #include <unordered_map>
-#include <cppapi/bic3232constants.h>
 
 #include "BICgRPC.grpc.pb.h"
 #include "ClassesSource/BICListener.h"
@@ -105,7 +104,7 @@ void RunServer() {
     // ******************* Build up BIC Services *******************
     // Create implant factory for cross-service usage
     std::unique_ptr <IImplantFactory> theImplantFactory;
-    theImplantFactory.reset(createImplantFactory(false, ""));
+    theImplantFactory.reset(createImplantFactory(true, "D:\\apiLog.txt"));
     bridgeService.passFactory(theImplantFactory.get());
     deviceService.passFactory(theImplantFactory.get());
     infoService.addRepository(&deviceService.theImplants);

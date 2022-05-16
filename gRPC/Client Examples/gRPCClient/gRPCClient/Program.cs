@@ -37,7 +37,7 @@ namespace BICgRPC_ConsoleTest
                 Console.WriteLine("\tBridge.Address: " + scanBridgesReply.Bridges[i].Name);
                 Console.WriteLine("\tBridge.DeviceId: " + scanBridgesReply.Bridges[i].DeviceId);
                 Console.WriteLine("\tBridge.FirmwareVersion: " + scanBridgesReply.Bridges[i].FirmwareVersion);
-                Console.WriteLine("\tBridge.ImplantType: " + scanBridgesReply.Bridges[i].ImplantType);
+                Console.WriteLine("\tBridge.DeviceType: " + scanBridgesReply.Bridges[i].DeviceType);
                 Console.WriteLine();
             }
 
@@ -92,6 +92,7 @@ namespace BICgRPC_ConsoleTest
             // Done initializing, start user controlled loop
             writeCommandMenu();
             Random randomNumGen = new Random();
+            bool phasicStimEn = false;
             ConsoleKeyInfo userCommand;
             
             do
@@ -217,6 +218,19 @@ namespace BICgRPC_ConsoleTest
                             deviceClient.bicNeuralStream(new bicNeuralSetStreamingEnable() { DeviceAddress = DeviceName, Enable = false });
                         }
                         break;
+                    case ConsoleKey.R:
+                        if (!phasicStimEn)
+                        {
+                            // Start up the stream
+                            deviceClient.enableDistributedStimulation(new distributedStimEnableRequest() { DeviceAddress = DeviceName, Enable = true });
+                            phasicStimEn = true;
+                        }
+                        else
+                        {
+                            deviceClient.enableDistributedStimulation(new distributedStimEnableRequest() { DeviceAddress = DeviceName, Enable = false });
+                            phasicStimEn = false;
+                        }
+                        break;
                     case ConsoleKey.P:
                         Console.WriteLine("Implant Power On Command Result: " + deviceClient.bicSetImplantPower(new bicSetImplantPowerRequest() { DeviceAddress = DeviceName, PowerEnabled = true }));
                         break;
@@ -228,7 +242,7 @@ namespace BICgRPC_ConsoleTest
                         bicStimulationFunctionDefinitionRequest aNewWaveform = new bicStimulationFunctionDefinitionRequest() { DeviceAddress = DeviceName };
                         // Create a pulse function
                         StimulationFunctionDefinition pulseFunction = new StimulationFunctionDefinition() { FunctionName = "pulseFunction", 
-                            StimPulse = new stimPulseFunction() { Amplitude = { 1000, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 2550, PulseWidth = 400, Repetitions = (uint)randomNumGen.Next(1,10), SourceElectrodes = { 0 }, SinkElectrodes = { 32 } } };
+                            StimPulse = new stimPulseFunction() { Amplitude = { 1000, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 2550, PulseWidth = 400, PulseRepetitions = (uint)randomNumGen.Next(1,10), SourceElectrodes = { 5 }, SinkElectrodes = { }, UseGround = true, BurstRepetitions = 1 } };
                         // Create a pause function
                         StimulationFunctionDefinition pauseFunction = new StimulationFunctionDefinition() { FunctionName = "pauseFunction",
                             Pause = new pauseFunction() { Duration = 30000 } };
@@ -310,7 +324,7 @@ namespace BICgRPC_ConsoleTest
 
         static async Task neuralMonitorTaskAsync()
         {
-            var stream = deviceClient.bicNeuralStream(new bicNeuralSetStreamingEnable() { DeviceAddress = DeviceName, Enable = true, BufferSize = 100 });
+            var stream = deviceClient.bicNeuralStream(new bicNeuralSetStreamingEnable() { DeviceAddress = DeviceName, Enable = true, BufferSize = 100, AmplificationFactor = RecordingAmplificationFactor.Amplification575DB, UseGroundReference = true });
             while (await stream.ResponseStream.MoveNext())
             {
                 Console.WriteLine("Implant Stream Neural Samples Received: " + stream.ResponseStream.Current.Samples.Count);
@@ -330,6 +344,7 @@ namespace BICgRPC_ConsoleTest
             Console.WriteLine("\tc : Toggle Connection Streaming");
             Console.WriteLine("\tl : Toggle Power State Streaming");
             Console.WriteLine("\ts : Toggle Neural Sense Streaming");
+            Console.WriteLine("\tr : Toggle Phase Responsive Stim Functionality");
             Console.WriteLine("\tp : Enable Power to Implant (enabled by default)");
             Console.WriteLine("\to : Disable Power to Implant (enabled by default)");
             Console.WriteLine("\t1 : Start Stimulation - random number (1-9) 1mA pulses");

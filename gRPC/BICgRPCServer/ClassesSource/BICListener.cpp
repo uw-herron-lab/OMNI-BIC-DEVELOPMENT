@@ -1,9 +1,15 @@
 #include "BICListener.h"
 #include <thread>
+#include <iostream>
+#include <chrono>
+#include <ctime>
+#include <fstream>
+
+// #define to enable onData console events
+//#define DEBUG_CONSOLE_ENABLE;
 
 // BIC Usings
 using namespace cortec::implantapi;
-
 
 // GRPC Usings
 using BICgRPC::TemperatureUpdate;
@@ -16,6 +22,7 @@ using BICgRPC::NeuralSample;
 
 namespace BICGRPCHelperNamespace
 {
+    //*************************************************** Device State Event Handlers ***************************************************
     /// <summary>
     /// Event Handler for Brain Interchange stimulation state change events
     /// </summary>
@@ -23,7 +30,7 @@ namespace BICGRPCHelperNamespace
     void BICListener::onStimulationStateChanged(const bool isStimulating)
     {
         // Write Event Information to Console
-        std::cout << "\tDEBUG: Stimulation state changed: " << isStimulating << std::endl;
+        std::cout << "\tSTATE CHANGE: Stimulation state changed: " << isStimulating << std::endl;
 
         // Grab a local-scoped lock before updating multi-threaded accessable state variables
         std::lock_guard<std::mutex> lock(m_mutex);
@@ -44,7 +51,7 @@ namespace BICGRPCHelperNamespace
         // Return the value, local-scoped locked is released at end of function
         return m_isStimulating;
     }
-
+    
     /// <summary>
     /// Event Handler for Brain Interchange measurement/sensing state change events
     /// </summary>
@@ -52,7 +59,7 @@ namespace BICGRPCHelperNamespace
     void BICListener::onMeasurementStateChanged(const bool isMeasuring)
     {
         // Write Event Information to Console
-        std::cout << "\tDEBUG: Measurement state changed: " << isMeasuring << std::endl;
+        std::cout << "\tSTATE CHANGE: Measurement state changed: " << isMeasuring << std::endl;
 
         // Grab a local-scoped lock before updating multi-threaded accessable state variables
         std::lock_guard<std::mutex> lock(m_mutex);
@@ -72,6 +79,27 @@ namespace BICGRPCHelperNamespace
 
         // Return the value, local-scoped locked is released at end of functione
         return m_isMeasuring;
+    }
+
+    /// <summary>
+    /// Event handler that indicates when a stimulation function has finished executing
+    /// </summary>
+    /// <param name="numFinishedFunctions">The number of functions that have finished</param>
+    void BICListener::onStimulationFunctionFinished(const uint64_t numFinishedFunctions)
+    {
+        // Write Event Information to Console
+        std::cout << "\tSTATE CHANGE: Stimulation Function Completed: " << numFinishedFunctions << " Finished Functions." << std::endl;
+    }
+
+    /// <summary>
+    /// Event handler that indicates when the RF connection between implant and external unit updates
+    /// </summary>
+    /// <param name="antennaQualitydBm">Antenna connection quality measure measured in dBm</param>
+    /// <param name="packagePercentage">Percentage of successful packets</param>
+    void BICListener::onRfQualityUpdate(const int8_t antennaQualitydBm, const uint8_t packagePercentage)
+    {
+        // Write Event Information to Console
+        std::cout << "\tSTATE CHANGE: Rf Quality Update: " << antennaQualitydBm << "dBm" << packagePercentage << "% packets successful" << std::endl;
     }
 
     //*************************************************** Connection Streaming Functions ***************************************************
@@ -246,7 +274,7 @@ namespace BICGRPCHelperNamespace
         }
     }
 
-    //*************************************************** Neural Data Streaming Functions ***************************************************
+    //*************************************************** Neural Data Streaming ***************************************************
     /// <summary>
     /// Enable or disable neural streaming to a gRPC client. 
     /// Function instructs BIC to start streaming, resulting in data being received by "onData" event handler function.  
@@ -384,6 +412,7 @@ namespace BICGRPCHelperNamespace
                 newSample->set_stimulationactive(samples->at(i).isStimulationActive());
                 newSample->set_samplecounter(sampleCounter);
                 newSample->set_isinterpolated(false);
+                newSample->set_filtchannel(processingChannel);
 
                 // Check if we've lost packets, if so interpolate
                 if (lastNeuroCount + 1 != sampleCounter)
@@ -392,7 +421,7 @@ namespace BICGRPCHelperNamespace
                     {
                         // Repeated Packet Count! 
                         // Write error message to server console
-                        std::cout << ">>> Repeated packet counter value! <<<" << std::endl;
+                        std::cout << "WARNING: Repeated packet counter value in sensing packets!" << std::endl;
                     }
                     else
                     {
@@ -404,18 +433,27 @@ namespace BICGRPCHelperNamespace
                             diff = (uint32_t)sampleCounter + (UINT32_MAX - lastNeuroCount + 1);
                         }
 
+#ifdef DEBUG_CONSOLE_ENABLE
                         // Write error message to server console
-                        std::cout << "** Missed Neural Datapoints: " << diff << "! **";
+                        std::cout << "DEBUG: Missed Neural Datapoints: " << diff << "! **";
+#endif
 
                         // Ensure interpolation is a reasonable amount
                         if (diff <= neuroInterplationThreshold)
                         {
                             // Continue the error
-                            std::cout << "Interpolating " << diff << " points..." << std::endl;
+#ifdef DEBUG_CONSOLE_ENABLE
+                            std::cout << "DEBUG: Interpolating " << diff << " points..." << std::endl;
+#endif
+
+                            // Determine the interpolation slopes
+                            double interpolationSlopes[32] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
+                            for (int index = 0; index < 32; index++)
+                            {
+                                interpolationSlopes[index] = (theData[index] - latestData[index]) / diff;
+                            }
 
                             // Interpolate and mark data as interpolated in NeuralSample message
-                            double interpolationSlopes[32] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
-
                             for (uint32_t interpolatedPointNum = 1; interpolatedPointNum <= diff; interpolatedPointNum++)
                             {
                                 // Create a new sample data buffer
@@ -429,14 +467,19 @@ namespace BICGRPCHelperNamespace
                                 newInterpolatedSample->set_stimulationactive(newSample->stimulationactive());
                                 newInterpolatedSample->set_samplecounter(lastNeuroCount + interpolatedPointNum);
                                 newInterpolatedSample->set_isinterpolated(true);
+                                newInterpolatedSample->set_filtchannel(processingChannel);
 
                                 // Copy in the time domain data in
                                 for (int interChannelPoint = 0; interChannelPoint < sampleNum; interChannelPoint++)
                                 {
                                     double interpolatedSample = latestData[interChannelPoint] + (interpolationSlopes[interChannelPoint] * interpolatedPointNum);
                                     newInterpolatedSample->add_measurements(interpolatedSample);
+                                    if (interChannelPoint == processingChannel)
+                                    {
+                                        // call the processing helper, take output and send to client
+                                        newInterpolatedSample->set_filtsample(processingHelper(interpolatedSample)); // set the filtered sample in the neural sample 
+                                    }
                                 }
-
                                 // Add it to the buffer if there is room
                                 if (neuralSampleQueue.size() < 1000)
                                 {
@@ -448,14 +491,14 @@ namespace BICGRPCHelperNamespace
                                 else
                                 {
                                     delete newInterpolatedSample;
-                                    std::cout << "GRPC Neural Queue Size Overflow, streaming data skipped" << std::endl;
+                                    std::cout << "WARNING: GRPC Neural Queue Size Overflow, streaming data skipped" << std::endl;
                                 }
                             }
                         }
                         else
                         {
                             // Continue the error
-                            std::cout << "Exceeded Interpolation limit. Data loss indicated by dropout in sample count" << std::endl;
+                            std::cout << "WARNING: Exceeded Interpolation limit. Data loss indicated by dropout in sample count" << std::endl;
                         }
                     }
                 }
@@ -468,6 +511,11 @@ namespace BICGRPCHelperNamespace
                 {
                     newSample->add_measurements(theData[j]);
                     latestData[j] = theData[j];
+                    if (j == processingChannel)
+                    {
+                        // Call Processing Helper, take output and send to client
+                        newSample->set_filtsample(processingHelper(theData[j]));
+                    }
                 }
                 delete theData;
 
@@ -485,13 +533,313 @@ namespace BICGRPCHelperNamespace
                 else
                 {
                     delete newSample;
-                    std::cout << "GRPC Neural Queue Size Overflow, streaming data skipped" << std::endl;
+                    std::cout << "WARNING: GRPC Neural Queue Size Overflow, streaming data skipped" << std::endl;
                 }
             }
         }
-
         // No matter what, delete samples
         delete samples;
+    }
+
+    //*************************************************** Closed-Loop Phasic Stim Functions ***************************************************
+    /// <summary>
+    /// Function that enables phase-locked stimulation functionality on a output channel based on an input channel's sensed neural activity
+    /// TODO: add stim parameters?
+    /// TODO: add to protobuf
+    /// </summary>
+    /// <param name="enableDistributed">A boolean indicating if phasic stim should be enabled or disabled</param>
+    /// <param name="phaseSensingChannel">The channel to sense phase on</param>
+    /// <param name="phaseStimChannel">The channel to stimulate after negative zero crossings of phase sensing channel</param>
+    void BICListener::enableDistributedStim(bool enableDistributed, int phaseSensingChannel, int phaseStimChannel)
+    {
+        if (enableDistributed && !isCLStimEn)
+        {
+            // Enable Closed Loop since it is not enabled and request is to enable
+            // Instantiate the conditional variable for thread notification
+            stimTrigger = new std::condition_variable();
+
+            // Update state tracking variable
+            isCLStimEn = true;
+
+            // Start thread up
+            betaStimThread = new std::thread(&BICListener::triggeredSendStimThread, this);
+        }
+        else if (!enableDistributed && isCLStimEn)
+        {
+            // Update state tracking variable
+            isCLStimEn = false;
+            stimTrigger->notify_all();
+
+            // Disable Closed Loop since it is enabled and request is to disable
+            betaStimThread->join();
+            betaStimThread->~thread();
+            delete betaStimThread;
+            betaStimThread = NULL;
+
+            // Clean up the conditional variable
+            stimTrigger->~condition_variable();
+            delete stimTrigger;
+            stimTrigger = NULL;
+        }
+    }
+    
+    /// <summary>
+    /// Thread to be started up when phase-triggered stimulation functionality is enabled.
+    /// Delivers a specific stimulation pattern whe
+    /// </summary>
+    void BICListener::triggeredSendStimThread()
+    {
+        // Create a mutex to make the conditional 'wait' functionality
+        std::mutex stimLock;
+        std::unique_lock<std::mutex> stimTriggerWait(stimLock);
+
+        // Create stimulation command "factory"
+        std::unique_ptr<IStimulationCommandFactory> theStimFactory(createStimulationCommandFactory());
+        IStimulationCommand* stimulationCommand = theStimFactory->createStimulationCommand();
+
+        // Create stimulation waveform
+        IStimulationFunction* stimulationPulseFunction = theStimFactory->createStimulationFunction();
+        stimulationPulseFunction->setName("pulseFunction");
+        stimulationPulseFunction->setRepetitions(1,1);
+        std::set<uint32_t> sources = { 31 };
+        std::set<uint32_t> sinks = { };
+        stimulationPulseFunction->setVirtualStimulationElectrodes(sources, sinks, true);
+        stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(1000, 0, 0, 0, 400)); // positive pulse
+        stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, 10)); // generate atoms --dz0
+        stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(-250, 0, 0, 0, 1600)); // charge balance
+        stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, 10)); // generate atoms --dz0
+        stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, 10)); // generate atoms --dz1
+        stimulationCommand->append(stimulationPulseFunction);
+
+        // enable stim time streaming
+        std::chrono::duration<double> elapsed_sec;
+        std::chrono::system_clock::time_point chronoStart;
+        std::chrono::system_clock::time_point chronoStop;
+        enableStimTimeLogging(true);
+
+        // Wait for a zero crossing
+        stimTrigger->wait(stimTriggerWait);
+
+        // Loop while streaming is active
+        while (isCLStimEn)
+        {
+            // Send a stim command
+            try
+            {
+                // Start a timer to measure the time that it takes to send a stimulation command
+                chronoStart = std::chrono::system_clock::now();
+
+                // Execute the stimulation command
+                theImplantedDevice->startStimulation(stimulationCommand);
+
+                // Measure the t
+                chronoStop = std::chrono::system_clock::now();
+                elapsed_sec = chronoStop - chronoStart;
+
+#ifdef DEBUG_CONSOLE_ENABLE
+                std::cout << "DEBUG: finished stim in " << elapsed_sec.count() << "s\n";
+#endif
+
+                // Add latest received data packet to the buffer if there is room
+                if (stimTimeSampleQueue.size() < 1000)
+                {
+                    // Lock the stim time buffer, add data, unlock
+                    this->m_stimTimeBufferLock.lock();
+                    stimTimeSampleQueue.push(elapsed_sec.count()); // add stimTime at the end of the queue
+                    this->m_stimTimeBufferLock.unlock();
+
+                    // Notify the streaming function that new data exists
+                    stimTimeDataNotify->notify_all();
+                }
+                else
+                {
+                    std::cout << "WARNING: Stim Time Log Queue Size Overflow, streaming data skipped" << std::endl;
+                }
+
+            }
+            catch (std::exception& anyException)
+            {
+                std::cout << "ERROR: Stimulation exception encountered: " << anyException.what() << std::endl;
+            }
+            catch (...)
+            {
+                std::cout << "ERROR: Stimulation exception encountered. No reason" << std::endl;
+            }
+
+            // Wait for a zero crossing
+            stimTrigger->wait(stimTriggerWait);
+        }
+    }
+
+    /// <summary>
+    /// Adds a pointer to the implanted device interface to the BICListener, required for phase-locked stim functionality
+    /// </summary>
+    /// <param name="anImplantedDevice">the active impalnted device</param>
+    void BICListener::addImplantPointer(cortec::implantapi::IImplant* anImplantedDevice)
+    {
+        theImplantedDevice = anImplantedDevice;
+    }
+
+    /// <summary>
+    /// Handles the time-domain processing to be performed on each new datapoint
+    /// </summary>
+    /// <param name="newData">latest datapoint to be processed for potential triggering of stimulation</param>
+    /// <returns></returns>
+    double BICListener::processingHelper(double newData)
+    {   
+        // Band pass filter for beta activity
+        double filtSamp = filterIIR(newData, &bpPrevData, &bpFiltData, betaBandPassIIR_B, betaBandPassIIR_A);
+
+        // if at a local maxima above an arbitrary threshold and closed loop stim is enabled, send stimulation
+        if (isCLStimEn && detectLocalMaxima(bpFiltData) && bpFiltData[1] > 100)
+        {
+            // start thread to execute stim command
+            stimTrigger->notify_all();
+        }
+
+        // Return the filtered sample for visualization purposes
+        return filtSamp;
+    }
+
+    /// <summary>
+    /// Private function that applies an IIR filter to incoming neural data
+    /// </summary>
+    /// <param name="currSamp">latest neural sample</param>
+    /// <param name="b">b-array for IIR constants</param>
+    /// <param name="a">a-array for IIR constants</param>
+    /// <returns>current filtered output</returns>
+    double BICListener::filterIIR(double currSamp, std::vector<double>* prevFiltOut, std::vector<double>* prevInput, double b[], double a[])
+    {
+        double filtTemp;
+
+        // check if n-1 is negative, then n-2 would also be negative
+        filtTemp = b[0] * currSamp + b[1] * prevInput->at(0) + b[2] * prevInput->at(1) - a[1] * prevFiltOut->at(0) - a[2] * prevFiltOut->at(1);
+
+        // remove the last sample and insert the most recent sample to the front of the vector
+        prevFiltOut->insert(prevFiltOut->begin(), filtTemp);
+        prevFiltOut->pop_back();
+
+        // prevData[0] holds the most recent sample while prevData[1] keeps older sample
+        prevInput->insert(prevInput->begin(), currSamp);
+        prevInput->pop_back();
+
+        return filtTemp;
+    }
+
+    /// <summary>
+    /// Helper function for identifying if the latest point is a negative zero crossing
+    /// </summary>
+    /// <param name="dataArray">vector of sensing data to assess for zero crossing</param>
+    /// <returns>Boolean indicating if the latest point is a negative zero crossing</returns>
+    bool BICListener::isZeroCrossing(std::vector<double> dataArray)
+    {
+        bool isZeroCrossing = false;
+
+        // check if most recent filtered sample is negative
+        if (dataArray[0] < 0)
+        {
+            // then check if older filtered sample was positive
+            if (dataArray[1] > 0)
+            {
+                isZeroCrossing = true;
+            }
+        }
+        return isZeroCrossing;
+    }
+
+    /// <summary>
+    /// Helper function for identifying if the latest point indicates if a local maxima was found.
+    /// </summary>
+    /// <param name="dataArray">vector of sensing data to assess for local maxima</param>
+    /// <returns>Boolean indicating if the latest point indicates that the previous point was a local maxima</returns>
+    bool BICListener::detectLocalMaxima(std::vector<double> dataArray)
+    {
+        bool wasLocalMaxima = false;
+
+        if (dataArray[0] < dataArray[1] && dataArray[1] > dataArray[2])
+        {
+            wasLocalMaxima = true;
+        }
+        return wasLocalMaxima;
+    }
+
+    /// <summary>
+    /// Private function that reads stimulation time data from queue and record to a file
+    /// </summary>
+    void BICListener::logStimTimeThread()
+    {
+        std::mutex stimTimeDataLock;
+        std::unique_lock<std::mutex> stimTimeDataWait(stimTimeDataLock);
+
+        // Open File
+        std::ofstream myFile;
+
+        // Loop while streaming is active
+        while (stimTimeLoggingState)
+        {
+            if (stimTimeSampleQueue.empty())
+            {
+                stimTimeDataNotify->wait(stimTimeDataWait);
+            }
+            else
+            {
+                try {
+                    // Lock the buffer
+                    this->m_stimTimeBufferLock.lock();
+                    // Write out new line to file
+                    myFile.open("stimTimeLog.csv", std::ios_base::app);
+                    myFile << stimTimeSampleQueue.front();
+                    myFile << "\n";
+                    myFile.close();
+                    // Clean up the current sample from the list
+                    stimTimeSampleQueue.pop(); // take out first sample of queue
+                    // Unlock the neurobuffer
+                    this->m_stimTimeBufferLock.unlock();
+                }
+                catch (std::exception& anyException)
+                {
+                    std::cout << "ERROR: Stim Time Logging Failed: " << anyException.what() << std::endl;
+                }
+                catch (...)
+                {
+                    std::cout << "ERROR: Stim Time Logging Failed. No reason." << std::endl;
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Function that enables logging of the time needed to perform stimulation
+    /// </summary>
+    /// <param name="enableSensing">Boolean to determine whether logging of stimulation time is enabled or not</param>
+    void BICListener::enableStimTimeLogging(bool enableSensing)
+    {
+        // Determine action to be taken. Only take action if requested action matches potential actions based on current state.
+        if (enableSensing && stimTimeLoggingState == false)
+        {
+            // Update state tracking variable
+            stimTimeLoggingState = true;
+            // Conditional variable for thread notification
+            stimTimeDataNotify = new std::condition_variable();
+            // Start thread
+            stimTimeLoggingThread = new std::thread(&BICListener::logStimTimeThread, this);
+        }
+        else if (!enableSensing && stimTimeLoggingState == true)
+        {
+            // Shut down streaming. First notify and wait for streaming handling thread to stop.
+            stimTimeLoggingState = false;
+            stimTimeDataNotify->notify_all();
+            stimTimeLoggingThread->join();
+
+            // Delete generated resources to free memory
+            stimTimeLoggingThread->~thread();
+            delete stimTimeLoggingThread;
+            stimTimeLoggingThread = NULL;
+
+            stimTimeDataNotify->~condition_variable();
+            delete stimTimeDataNotify;
+            stimTimeDataNotify = NULL;
+        }
     }
 
     //*************************************************** Power Data Streaming Functions ***************************************************
@@ -501,7 +849,7 @@ namespace BICGRPCHelperNamespace
     /// Events puts data in a queue for independent transmission to client by thread utilizing "grpcPowerStreamThread" function.
     /// </summary>
     /// <param name="enableSensing">True if streaming is being requested to be enabled, false otherwise</param>
-    /// <param name="aWriter">gRPC client writing inteface.</param>
+    /// <param name="aWriter">gRPC client writing interface.</param>
     void BICListener::enablePowerStreaming(bool enableSensing, grpc::ServerWriter<BICgRPC::PowerUpdate>* aWriter)
     {
         // Accessing streaming state objects, grab the mutex for protection against multi-threaded race conditions
@@ -562,11 +910,11 @@ namespace BICGRPCHelperNamespace
                 }
                 catch (std::exception& anyException)
                 {
-                    std::cout << "GRPC Write Failed. Reason: " << anyException.what() << std::endl;
+                    std::cout << "ERROR: GRPC Write Failed: " << anyException.what() << std::endl;
                 }
                 catch (...)
                 {
-                    std::cout << "GRPC Write Buffer Failed. No reason." << std::endl;
+                    std::cout << "ERROR: GRPC Write Buffer Failed. No reason." << std::endl;
                 }
             }
         }
@@ -595,7 +943,7 @@ namespace BICGRPCHelperNamespace
             else
             {
                 delete powerMessage;
-                std::cout << "GRPC Power Queue Size Overflow, streaming data skipped" << std::endl;
+                std::cout << "WARNING: GRPC Power Queue Size Overflow, streaming data skipped" << std::endl;
             }
         }
     }
@@ -623,7 +971,7 @@ namespace BICGRPCHelperNamespace
             else
             {
                 delete powerMessage;
-                std::cout << "GRPC Power Queue Size Overflow, streaming data skipped" << std::endl;
+                std::cout << "WARNING: GRPC Power Queue Size Overflow, streaming data skipped" << std::endl;
             }
         }
     }
@@ -651,7 +999,7 @@ namespace BICGRPCHelperNamespace
             else
             {
                 delete powerMessage;
-                std::cout << "GRPC Power Queue Size Overflow, streaming data skipped" << std::endl;
+                std::cout << "WARNING: GRPC Power Queue Size Overflow, streaming data skipped" << std::endl;
             }
         }
     }
@@ -724,11 +1072,11 @@ namespace BICGRPCHelperNamespace
                 }
                 catch (std::exception& anyException)
                 {
-                    std::cout << "GRPC Write Failed. Reason: " << anyException.what() << std::endl;
+                    std::cout << "ERROR: GRPC Write Failed: " << anyException.what() << std::endl;
                 }
                 catch (...)
                 {
-                    std::cout << "GRPC Write Buffer Failed. No reason." << std::endl;
+                    std::cout << "ERROR: GRPC Write Buffer Failed. No reason." << std::endl;
                 }
             }
         }
@@ -756,7 +1104,7 @@ namespace BICGRPCHelperNamespace
             else
             {
                 delete temperatureMessage;
-                std::cout << "GRPC Temperature Queue Size Overflow, streaming data skipped" << std::endl;
+                std::cout << "WARNING: GRPC Temperature Queue Size Overflow, streaming data skipped" << std::endl;
             }
         }
     }
@@ -829,11 +1177,11 @@ namespace BICGRPCHelperNamespace
                 }
                 catch (std::exception& anyException)
                 {
-                    std::cout << "GRPC Write Failed. Reason: " << anyException.what() << std::endl;
+                    std::cout << "ERROR: GRPC Write Failed: " << anyException.what() << std::endl;
                 }
                 catch (...)
                 {
-                    std::cout << "GRPC Write Buffer Failed. No reason." << std::endl;
+                    std::cout << "ERROR: GRPC Write Buffer Failed. No reason." << std::endl;
                 }
             }
         }
@@ -861,7 +1209,7 @@ namespace BICGRPCHelperNamespace
             else
             {
                 delete humidityMessage;
-                std::cout << "GRPC Humidity Queue Size Overflow, streaming data skipped" << std::endl;
+                std::cout << "WARNING: GRPC Humidity Queue Size Overflow, streaming data skipped" << std::endl;
             }
         }
     }
@@ -934,11 +1282,11 @@ namespace BICGRPCHelperNamespace
                 }
                 catch (std::exception& anyException)
                 {
-                    std::cout << "GRPC Write Failed. Reason: " << anyException.what() << std::endl;
+                    std::cout << "ERROR: GRPC Write Failed. Reason: " << anyException.what() << std::endl;
                 }
                 catch (...)
                 {
-                    std::cout << "GRPC Write Buffer Failed. No reason." << std::endl;
+                    std::cout << "ERROR: GRPC Write Buffer Failed. No reason." << std::endl;
                 }
             }
         }
@@ -965,7 +1313,7 @@ namespace BICGRPCHelperNamespace
             else
             {
                 delete errorMessage;
-                std::cout << "GRPC Error Queue Size Overflow, streaming data skipped" << std::endl;
+                std::cout << "WARNING: GRPC Error Queue Size Overflow, streaming data skipped" << std::endl;
             }
         }
     }
@@ -976,13 +1324,13 @@ namespace BICGRPCHelperNamespace
     void BICListener::onDataProcessingTooSlow()
     {
         // Important event, write it out to the console
-        std::cout << "*** Warning: Data processing too slow" << std::endl;
+        std::cout << "CRITICAL WARNING: Data processing too slow" << std::endl;
         
         // If gRPC error streaming is enabled, write out the update
         if (errorStreamingState)
         {
             ErrorUpdate* errorMessage = new ErrorUpdate();
-            errorMessage->set_message("Warning: Data processing too slow");
+            errorMessage->set_message("CRITICAL WARNING: Data processing too slow");
 
             // Add it to the buffer if there is room
             if (errorSampleQueue.size() < 100)
@@ -993,7 +1341,7 @@ namespace BICGRPCHelperNamespace
             else
             {
                 delete errorMessage;
-                std::cout << "GRPC Error Queue Size Overflow, streaming data skipped" << std::endl;
+                std::cout << "WARNING: GRPC Error Queue Size Overflow, streaming data skipped" << std::endl;
             }
         }
     }
