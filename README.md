@@ -36,10 +36,8 @@ Setting up the Protobuf build instructions:
 4) use "cmake -DCMAKE_PREFIX_PATH=$MY_INSTALL_DIR ../.."
 5) Open the BICgRPCdev.sln in the base BrainInterchange-Development/gRPC directory
 6) Open the BICgRPCmicroserver properties
-7) add BIC API cpp include folder to project C/C++ Additional Include Directories
-	a) C:\Program Files\Cortec\Bicapi\cppapi\include
-8) add BIC Libs to Linker General Additional Libary Directories
-	b) C:\Program Files\Cortec\Bicapi\cppapi\lib64
+7) add BIC API cpp include folder to project C/C++ Additional Include Directories -> "C:\Program Files\Cortec\Bicapi\cppapi\include"
+8) add BIC Libs to Linker General Additional Libary Directories -> "C:\Program Files\Cortec\Bicapi\cppapi\lib64"
 9) add "bicapid.lib;" to Additional Dependencies on Linker Input Properties
 10) right click on the BICgRPCmicroserver project and selected Add->Add Existing
 11) select all source files in BICgRPCServer\ClassesSource\ and add to the project
