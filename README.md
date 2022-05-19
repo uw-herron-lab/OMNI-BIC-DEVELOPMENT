@@ -1,4 +1,4 @@
-# BrainInterchange gRPC Microservice Source (C++)
+# BrainInterchange gRPC Microservice Source (C++) - Setup and Compilation Instructions
 
 First follow general instructions for C++ gRPC Installation
 https://grpc.io/docs/languages/cpp/quickstart/
