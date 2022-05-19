@@ -654,6 +654,9 @@ namespace BICGRPCHelperNamespace
 
                         // Notify the streaming function that new data exists
                         stimTimeDataNotify->notify_all();
+
+                        // Wait for next notification
+                        stimTrigger->wait(stimTriggerWait);
                     }
                     else
                     {
@@ -663,6 +666,9 @@ namespace BICGRPCHelperNamespace
                 else
                 {
                     theImplantedDevice->stopStimulation();
+
+                    // Wait for next notification
+                    stimTrigger->wait(stimTriggerWait);
                 }
             }
             catch (std::exception& anyException)
@@ -673,9 +679,6 @@ namespace BICGRPCHelperNamespace
             {
                 std::cout << "ERROR: Stimulation exception encountered. No reason" << std::endl;
             }
-
-            // Wait for a zero crossing
-            stimTrigger->wait(stimTriggerWait);
         }
     }
 
