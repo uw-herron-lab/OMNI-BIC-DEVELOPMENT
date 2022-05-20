@@ -22,7 +22,7 @@ namespace BICGRPCHelperNamespace
         // ************************* Public Research Stim *************************
         void enableDistributedStim(bool enableDistributed, int phaseSensingChannel, int phaseStimChannel);
         void addImplantPointer(cortec::implantapi::IImplant* theImplantedDevice);
-        void enableStimTimeStreaming(bool enableSensing);
+        void enableStimTimeLogging(bool enableSensing);
         double processingHelper(double newData);
 
         // ************************* Public Event Handlers *************************
@@ -50,7 +50,7 @@ namespace BICGRPCHelperNamespace
         bool connectionStreamingState = false;
         bool errorStreamingState = false;
         bool powerStreamingState = false;
-        bool stimTimeStreamingState = false;
+        bool stimTimeLoggingState = false;
        
     private:
         // ************************* Private Stream Functions *************************
@@ -69,7 +69,7 @@ namespace BICGRPCHelperNamespace
         bool detectLocalMaxima(std::vector<double> dataArray);
 
         // Stim Logging Functions
-        void logStimTimeStreamThread(void);
+        void logStimTimeThread(void);
 
         // ************************* Private State Objects *************************
         // Generic state variables.
@@ -127,7 +127,7 @@ namespace BICGRPCHelperNamespace
         std::thread* connectionProcessingThread;
         std::thread* errorProcessingThread;
         std::thread* powerProcessingThread;
-        std::thread* stimTimeProcessingThread;
+        std::thread* stimTimeLoggingThread;
         // for beta- based stim
         std::thread* betaStimThread;
 
