@@ -104,7 +104,7 @@ void RunServer() {
     // ******************* Build up BIC Services *******************
     // Create implant factory for cross-service usage
     std::unique_ptr <IImplantFactory> theImplantFactory;
-    theImplantFactory.reset(createImplantFactory(true, "D:\\apiLog.txt"));
+    theImplantFactory.reset(createImplantFactory(true, "./apiLog.txt"));
     bridgeService.passFactory(theImplantFactory.get());
     deviceService.passFactory(theImplantFactory.get());
     infoService.addRepository(&deviceService.theImplants);
