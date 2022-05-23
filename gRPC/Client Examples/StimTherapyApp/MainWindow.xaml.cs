@@ -28,8 +28,8 @@ namespace StimTherapyApp
         private RealtimeGraphing.BICManager aBICManager;
         //private bool phasicStimState = false;
         //private bool openStimState = false;
-        private int userStimChannel;
-        private int userSenseChannel;
+        private uint userStimChannel;
+        private uint userSenseChannel;
         public class Channel
         {
             public string Name { get; set; }
@@ -120,9 +120,9 @@ namespace StimTherapyApp
                 // check that the file exists
                 if (File.Exists(fileName))
                 {
-                    int stimChannelIndex = 1;
-                    int senseChannelIndex = 2;
-                    
+                    int senseChannelIndex = 1;
+                    int stimChannelIndex = 2;
+
                     String[] lines = File.ReadAllLines(fileName);
                     // skip the header/labels of each column
                     lines = lines.Skip(1).ToArray();
@@ -130,18 +130,14 @@ namespace StimTherapyApp
                     string test = lines[0];
                     string[] testlist = test.Split(','); // split based off commas
                     // save stimulation and sensing info
-                    userStimChannel = Int32.Parse(testlist[stimChannelIndex]);
-                    userSenseChannel = Int32.Parse(testlist[senseChannelIndex]);
+                    userStimChannel = UInt32.Parse(testlist[stimChannelIndex]);
+                    userSenseChannel = UInt32.Parse(testlist[senseChannelIndex]);
 
                     // read in CSV file and get the type of stim and stimulation and sensing channel of choice
-                    // let user know a file has been loaded
+                    // let user know a file has been loaded and what the chosen stimulation and sensing channels are
                     OutputConsole.Inlines.Add("Loaded " + fileName + "\n");
-                    OutputConsole.Inlines.Add(testlist[0] + "\n");
-                    OutputConsole.Inlines.Add(testlist[1] + "\n");
-                    OutputConsole.Inlines.Add(testlist[2] + "\n");
-                    OutputConsole.Inlines.Add(testlist[3] + "\n");
                     OutputConsole.Inlines.Add("Stim Channel: " + userStimChannel + "\n");
-                    OutputConsole.Inlines.Add("Sense Channel: " + userStimChannel + "\n");
+                    OutputConsole.Inlines.Add("Sense Channel: " + userSenseChannel + "\n");
                     Scroller.ScrollToEnd();
                 }
             }
@@ -151,7 +147,7 @@ namespace StimTherapyApp
             ThreadPool.QueueUserWorkItem(a =>
             {
                 // start phase triggered stim and update status
-                aBICManager.enableDistributedStim(true, 31, 0);
+                aBICManager.enableDistributedStim(true, userStimChannel, userSenseChannel);
                 //phasicStimState = true;
 
                 neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
@@ -198,7 +194,7 @@ namespace StimTherapyApp
             ThreadPool.QueueUserWorkItem(a =>
             {
                 // disable beta and open loop stim
-                aBICManager.enableDistributedStim(false, 31, 0);
+                aBICManager.enableDistributedStim(false, userStimChannel, userSenseChannel);
 
                 // update stim statuses
                 //phasicStimState = false;
