@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,8 +26,10 @@ namespace StimTherapyApp
     public partial class MainWindow : Window
     {
         private RealtimeGraphing.BICManager aBICManager;
-        private bool phasicStimState = false;
-        private bool openStimState = false;
+        //private bool phasicStimState = false;
+        //private bool openStimState = false;
+        private int userStimChannel;
+        private int userSenseChannel;
         public class Channel
         {
             public string Name { get; set; }
@@ -68,7 +71,6 @@ namespace StimTherapyApp
                 // when loading window, make legend invisible
                 neuroStreamChart.Series[i-1].IsVisibleInLegend = false;
             }
-
             // Start update timer
             neuroChartUpdateTimer = new System.Timers.Timer(200);
             neuroChartUpdateTimer.Elapsed += neuroChartUpdateTimer_Elapsed;
@@ -93,16 +95,6 @@ namespace StimTherapyApp
             foreach (String item in selected)
                 selectedChannels.Add(Int32.Parse(item)); // create int list of selected channels
 
-            //neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
-            //delegate
-            //{
-            //    foreach (var series in neuroStreamChart.Series)
-            //    {
-            //        series.IsVisibleInLegend = false;
-            //        series.Enabled = false;
-            //    }
-            //}));
-
             // update plot with newest data for selected channels
             for (int i = 0; i < selectedChannels.Count; i++)
             {
@@ -111,33 +103,56 @@ namespace StimTherapyApp
                 delegate
                 {
                     neuroStreamChart.Series[chanString].Points.DataBindY(neuroData[selectedChannels[i] - 1]);
-                    //neuroStreamChart.Series[chanString].IsVisibleInLegend = true;
-                    //neuroStreamChart.Series[chanString].Enabled = true;
                 }));
             }
         }
 
         private void btn_load_Click(object sender, RoutedEventArgs e)
         {
+            
             // open dialog box to select file with patient-specific settings
             var fileD = new Microsoft.Win32.OpenFileDialog();
             bool? loadFile = fileD.ShowDialog();
             if (loadFile == true)
             {
-                // let user know a file has been loaded
+                // grab the path of the selected file
                 string fileName = fileD.FileName;
-                OutputConsole.Inlines.Add("Loaded " + fileName + "\n");
-                Scroller.ScrollToEnd();
-            }
+                // check that the file exists
+                if (File.Exists(fileName))
+                {
+                    int stimChannelIndex = 1;
+                    int senseChannelIndex = 2;
+                    
+                    String[] lines = File.ReadAllLines(fileName);
+                    // skip the header/labels of each column
+                    lines = lines.Skip(1).ToArray();
+                    // grab first string- corresponding to first row of info (i.e. stim type,stim channel,sense channel,amplitude,frequency)
+                    string test = lines[0];
+                    string[] testlist = test.Split(','); // split based off commas
+                    // save stimulation and sensing info
+                    userStimChannel = Int32.Parse(testlist[stimChannelIndex]);
+                    userSenseChannel = Int32.Parse(testlist[senseChannelIndex]);
 
+                    // read in CSV file and get the type of stim and stimulation and sensing channel of choice
+                    // let user know a file has been loaded
+                    OutputConsole.Inlines.Add("Loaded " + fileName + "\n");
+                    OutputConsole.Inlines.Add(testlist[0] + "\n");
+                    OutputConsole.Inlines.Add(testlist[1] + "\n");
+                    OutputConsole.Inlines.Add(testlist[2] + "\n");
+                    OutputConsole.Inlines.Add(testlist[3] + "\n");
+                    OutputConsole.Inlines.Add("Stim Channel: " + userStimChannel + "\n");
+                    OutputConsole.Inlines.Add("Sense Channel: " + userStimChannel + "\n");
+                    Scroller.ScrollToEnd();
+                }
+            }
         }
         private void btn_beta_Click(object sender, RoutedEventArgs e)
         {
             ThreadPool.QueueUserWorkItem(a =>
             {
                 // start phase triggered stim and update status
-                aBICManager.enableDistributedStim(true, 30, 0);
-                phasicStimState = true;
+                aBICManager.enableDistributedStim(true, 31, 0);
+                //phasicStimState = true;
 
                 neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
                 delegate
@@ -160,7 +175,7 @@ namespace StimTherapyApp
             ThreadPool.QueueUserWorkItem(a =>
             {
                 // start phase triggered stim and update status
-                openStimState = true;
+                //openStimState = true;
 
                 neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
                 delegate
@@ -183,11 +198,11 @@ namespace StimTherapyApp
             ThreadPool.QueueUserWorkItem(a =>
             {
                 // disable beta and open loop stim
-                aBICManager.enableDistributedStim(false, 30, 0);
+                aBICManager.enableDistributedStim(false, 31, 0);
 
                 // update stim statuses
-                phasicStimState = false;
-                openStimState = false;
+                //phasicStimState = false;
+                //openStimState = false;
             });
 
             // enable previously disabled buttons
@@ -222,6 +237,7 @@ namespace StimTherapyApp
             // look for the selected items in the listbox
             List<int> selectedChannels = new List<int>();
             string chanString = "";
+
             // get a list of selected channels
             var selected = from item in channelList
                            where item.IsSelected == true
@@ -254,7 +270,6 @@ namespace StimTherapyApp
                 }));
             }
         }
-
         private void MainWindow_Closed(object sender, EventArgs e)
         {
             neuroChartUpdateTimer.Dispose();
@@ -266,6 +281,7 @@ namespace StimTherapyApp
             // look for the selected items in the listbox
             List<int> selectedChannels = new List<int>();
             string chanString = "";
+
             // get a list of selected channels
             var selected = from item in channelList
                            where item.IsSelected == true
@@ -285,7 +301,8 @@ namespace StimTherapyApp
                     series.Enabled = false;
                 }
             }));
-            // update plot with newest data for selected channels
+
+            // update legend for newest selection of channels
             for (int i = 0; i < selectedChannels.Count; i++)
             {
                 chanString = "Channel " + selectedChannels[i].ToString();
