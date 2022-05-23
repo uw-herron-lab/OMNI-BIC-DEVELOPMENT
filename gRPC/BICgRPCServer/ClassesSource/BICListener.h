@@ -93,7 +93,8 @@ namespace BICGRPCHelperNamespace
 
         std::vector<double> bpFiltData = { 0, 0, 0 };
         std::vector<double> bpPrevData = { 0, 0 };
-        int processingChannel = 0;
+        uint32_t processingChannel = 0; 
+        uint32_t stimChannel = 31;
         double betaBandPassIIR_B[3] = { 0.0305, 0, -0.0305 };
         double betaBandPassIIR_A[3] = { 1, -1.9247, 0.9391 };
 

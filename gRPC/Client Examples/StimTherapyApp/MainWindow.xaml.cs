@@ -65,10 +65,12 @@ namespace StimTherapyApp
                     //Color = System.Drawing.Color.Blue,
                     ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastLine
                 });
+
+                neuroStreamChart.Series[i].IsVisibleInLegend = false;
             }
 
             // Start update timer
-            neuroChartUpdateTimer = new System.Timers.Timer(100);
+            neuroChartUpdateTimer = new System.Timers.Timer(200);
             neuroChartUpdateTimer.Elapsed += neuroChartUpdateTimer_Elapsed;
             neuroChartUpdateTimer.Start();
         }
@@ -89,15 +91,17 @@ namespace StimTherapyApp
             foreach (String item in selected)
                 selectedChannels.Add(Int32.Parse(item)); // create int list of selected channels
 
-            neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
-            delegate
-            {
-                foreach (var series in neuroStreamChart.Series)
-                {
-                    series.IsVisibleInLegend = false;
-                    series.Enabled = false;
-                }
-            }));
+            //neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
+            //delegate
+            //{
+            //    foreach (var series in neuroStreamChart.Series)
+            //    {
+            //        series.IsVisibleInLegend = false;
+            //        series.Enabled = false;
+            //    }
+            //}));
+            Console.WriteLine(selectedChannels.Count.ToString());
+            // update plot with newest data for selected channels
             for (int i = 0; i < selectedChannels.Count; i++)
             {
                 chanString = "Channel " + selectedChannels[i].ToString();
@@ -105,7 +109,7 @@ namespace StimTherapyApp
                 delegate
                 {
                     neuroStreamChart.Series[chanString].Points.DataBindY(neuroData[selectedChannels[i] - 1]);
-                    neuroStreamChart.Series[chanString].IsVisibleInLegend = true;
+                    //neuroStreamChart.Series[chanString].IsVisibleInLegend = true;
                     neuroStreamChart.Series[chanString].Enabled = true;
                 }));
             }
@@ -130,7 +134,7 @@ namespace StimTherapyApp
             ThreadPool.QueueUserWorkItem(a =>
             {
                 // start phase triggered stim and update status
-                aBICManager.enableDistributedStim(true);
+                aBICManager.enableDistributedStim(true, 30, 0);
                 phasicStimState = true;
 
                 neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
@@ -177,22 +181,23 @@ namespace StimTherapyApp
             ThreadPool.QueueUserWorkItem(a =>
             {
                 // disable beta and open loop stim
-                aBICManager.enableDistributedStim(false);
+                aBICManager.enableDistributedStim(false, 30, 0);
 
                 // update stim statuses
                 phasicStimState = false;
                 openStimState = false;
+            });
 
-                neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
+            // enable previously disabled buttons
+            neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
                 delegate
                 {
-                    // enable previously disabled buttons
                     btn_beta.IsEnabled = true;
                     btn_openloop.IsEnabled = true;
                     btn_load.IsEnabled = true;
                     btn_diagnostic.IsEnabled = true;
                 }));
-            });
+
             string timeStamp = DateTime.Now.ToString("h:mm:ss tt");
             OutputConsole.Inlines.Add("All stimulation stopped: " + timeStamp + "\n");
             Scroller.ScrollToEnd();
@@ -203,6 +208,49 @@ namespace StimTherapyApp
             // start diagnostic pattern
             OutputConsole.Inlines.Add("Performing diagnostics...\n");
             Scroller.ScrollToEnd();
+        }
+
+        private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            OutputConsole.Inlines.Add("Channel was selected/de-selected"); // not going through this function.. selecting doesn't invoke this function 
+            Scroller.ScrollToEnd();
+            // grab the most recent data
+            List<double>[] neuroData = aBICManager.getData();
+
+            // look for the selected items in the listbox
+            List<int> selectedChannels = new List<int>();
+            string chanString = "";
+            // get a list of selected channels
+            var selected = from item in channelList
+                           where item.IsSelected == true
+                           select item.Name.ToString();
+
+            // get list of selected channels and convert from string to int type
+            foreach (String item in selected)
+                selectedChannels.Add(Int32.Parse(item)); // create int list of selected channels
+
+            // clear the current legend
+            neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
+            delegate
+            {
+                foreach (var series in neuroStreamChart.Series)
+                {
+                    series.IsVisibleInLegend = false;
+                    series.Enabled = false;
+                }
+            }));
+            // Plot newly selected channels and show new legend
+            for (int i = 0; i < selectedChannels.Count; i++)
+            {
+                chanString = "Channel " + selectedChannels[i].ToString();
+                neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
+                delegate
+                {
+                    neuroStreamChart.Series[chanString].Points.DataBindY(neuroData[selectedChannels[i] - 1]);
+                    neuroStreamChart.Series[chanString].IsVisibleInLegend = true;
+                    neuroStreamChart.Series[chanString].Enabled = true;
+                }));
+            }
         }
     }
 }
