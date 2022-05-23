@@ -65,8 +65,8 @@ namespace StimTherapyApp
                     //Color = System.Drawing.Color.Blue,
                     ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastLine
                 });
-
-                neuroStreamChart.Series[i].IsVisibleInLegend = false;
+                // when loading window, make legend invisible
+                neuroStreamChart.Series[i-1].IsVisibleInLegend = false;
             }
 
             // Start update timer
@@ -77,11 +77,13 @@ namespace StimTherapyApp
 
         private void neuroChartUpdateTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
+            // grab latest data
             List<double>[] neuroData = aBICManager.getData();
 
             // look for the selected items in the listbox
             List<int> selectedChannels = new List<int>();
             string chanString = "";
+
             // get a list of selected channels
             var selected = from item in channelList
                            where item.IsSelected == true
@@ -100,7 +102,7 @@ namespace StimTherapyApp
             //        series.Enabled = false;
             //    }
             //}));
-            Console.WriteLine(selectedChannels.Count.ToString());
+
             // update plot with newest data for selected channels
             for (int i = 0; i < selectedChannels.Count; i++)
             {
@@ -110,7 +112,7 @@ namespace StimTherapyApp
                 {
                     neuroStreamChart.Series[chanString].Points.DataBindY(neuroData[selectedChannels[i] - 1]);
                     //neuroStreamChart.Series[chanString].IsVisibleInLegend = true;
-                    neuroStreamChart.Series[chanString].Enabled = true;
+                    //neuroStreamChart.Series[chanString].Enabled = true;
                 }));
             }
         }
@@ -247,6 +249,49 @@ namespace StimTherapyApp
                 delegate
                 {
                     neuroStreamChart.Series[chanString].Points.DataBindY(neuroData[selectedChannels[i] - 1]);
+                    neuroStreamChart.Series[chanString].IsVisibleInLegend = true;
+                    neuroStreamChart.Series[chanString].Enabled = true;
+                }));
+            }
+        }
+
+        private void MainWindow_Closed(object sender, EventArgs e)
+        {
+            neuroChartUpdateTimer.Dispose();
+            aBICManager.Dispose();
+        }
+
+        private void CheckBox_Changed(object sender, RoutedEventArgs e)
+        {
+            // look for the selected items in the listbox
+            List<int> selectedChannels = new List<int>();
+            string chanString = "";
+            // get a list of selected channels
+            var selected = from item in channelList
+                           where item.IsSelected == true
+                           select item.Name.ToString();
+
+            // convert from string to int type
+            foreach (String item in selected)
+                selectedChannels.Add(Int32.Parse(item)); // create int list of selected channels
+
+            // reset current legend
+            neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
+            delegate
+            {
+                foreach (var series in neuroStreamChart.Series)
+                {
+                    series.IsVisibleInLegend = false;
+                    series.Enabled = false;
+                }
+            }));
+            // update plot with newest data for selected channels
+            for (int i = 0; i < selectedChannels.Count; i++)
+            {
+                chanString = "Channel " + selectedChannels[i].ToString();
+                neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
+                delegate
+                {
                     neuroStreamChart.Series[chanString].IsVisibleInLegend = true;
                     neuroStreamChart.Series[chanString].Enabled = true;
                 }));
