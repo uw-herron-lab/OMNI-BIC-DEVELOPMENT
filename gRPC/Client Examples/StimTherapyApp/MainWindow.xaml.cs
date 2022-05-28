@@ -58,6 +58,42 @@ namespace StimTherapyApp
             aBICManager = new RealtimeGraphing.BICManager(neuroStreamChart.Width);
             aBICManager.BICConnect();
 
+            var colors_list = new System.Drawing.Color[]
+            {
+                System.Drawing.Color.Blue,
+                System.Drawing.Color.Red,
+                System.Drawing.Color.Green,
+                System.Drawing.Color.Aqua,
+                System.Drawing.Color.DarkOrchid,
+                System.Drawing.Color.DeepPink,
+                System.Drawing.Color.Orange,
+                System.Drawing.Color.Plum,
+                System.Drawing.Color.LightSteelBlue,
+                System.Drawing.Color.Maroon,
+                System.Drawing.Color.OrangeRed,
+                System.Drawing.Color.Gold,
+                System.Drawing.Color.LightCoral,
+                System.Drawing.Color.Gray, 
+                System.Drawing.Color.Navy, 
+                System.Drawing.Color.OliveDrab,
+                System.Drawing.Color.Salmon,
+                System.Drawing.Color.SandyBrown,
+                System.Drawing.Color.Magenta,
+                System.Drawing.Color.Purple,
+                System.Drawing.Color.RoyalBlue,
+                System.Drawing.Color.Black,
+                System.Drawing.Color.CadetBlue,
+                System.Drawing.Color.Crimson,
+                System.Drawing.Color.DarkCyan,
+                System.Drawing.Color.DarkMagenta,
+                System.Drawing.Color.Tan,
+                System.Drawing.Color.Tomato,
+                System.Drawing.Color.ForestGreen,
+                System.Drawing.Color.RosyBrown,
+                System.Drawing.Color.MediumPurple,
+                System.Drawing.Color.Sienna
+            };
+
             neuroStreamChart.Series.Clear();
             for (int i = 1; i < 33; i++)
             {
@@ -65,7 +101,7 @@ namespace StimTherapyApp
                 new System.Windows.Forms.DataVisualization.Charting.Series
                 {
                     Name = "Channel " + i.ToString(),
-                    //Color = System.Drawing.Color.Blue,
+                    Color = colors_list[i-1],
                     ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastLine
                 });
                 // when loading window, make legend invisible
@@ -147,7 +183,7 @@ namespace StimTherapyApp
             ThreadPool.QueueUserWorkItem(a =>
             {
                 // start phase triggered stim and update status
-                aBICManager.enableDistributedStim(true, userStimChannel, userSenseChannel);
+                aBICManager.enableDistributedStim(true, userStimChannel-1, userSenseChannel-1);
                 //phasicStimState = true;
 
                 neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
@@ -194,7 +230,7 @@ namespace StimTherapyApp
             ThreadPool.QueueUserWorkItem(a =>
             {
                 // disable beta and open loop stim
-                aBICManager.enableDistributedStim(false, userStimChannel, userSenseChannel);
+                aBICManager.enableDistributedStim(false, userStimChannel-1, userSenseChannel-1);
 
                 // update stim statuses
                 //phasicStimState = false;
