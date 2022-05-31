@@ -552,6 +552,9 @@ namespace BICGRPCHelperNamespace
     /// <param name="phaseStimChannel">The channel to stimulate after negative zero crossings of phase sensing channel</param>
     void BICListener::enableDistributedStim(bool enableDistributed, int phaseSensingChannel, int phaseStimChannel)
     {
+        processingChannel = phaseSensingChannel;
+        stimChannel = phaseStimChannel;
+
         if (enableDistributed && !isCLStimEn)
         {
             // Enable Closed Loop since it is not enabled and request is to enable
@@ -601,7 +604,7 @@ namespace BICGRPCHelperNamespace
         IStimulationFunction* stimulationPulseFunction = theStimFactory->createStimulationFunction();
         stimulationPulseFunction->setName("pulseFunction");
         stimulationPulseFunction->setRepetitions(1,1);
-        std::set<uint32_t> sources = { 31 };
+        std::set<uint32_t> sources = { stimChannel };
         std::set<uint32_t> sinks = { };
         stimulationPulseFunction->setVirtualStimulationElectrodes(sources, sinks, true);
         stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(1000, 0, 0, 0, 400)); // positive pulse
