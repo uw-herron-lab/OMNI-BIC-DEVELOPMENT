@@ -346,5 +346,28 @@ namespace StimTherapyApp
                 }));
             }
         }
+
+        private void y_min_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            double yMinVal = 0;
+            bool valEntry = double.TryParse(y_min.Text, out yMinVal);
+
+            Console.WriteLine(yMinVal);
+            if (yMinVal < neuroStreamChart.ChartAreas[0].AxisX.Maximum)
+            {
+                neuroStreamChart.ChartAreas[0].AxisY.Minimum = yMinVal;
+            }
+        }
+
+        private void y_max_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            double yMaxVal = 0;
+            bool valEntry = double.TryParse(y_max.Text, out yMaxVal);
+            Console.WriteLine(yMaxVal);
+            if (yMaxVal > neuroStreamChart.ChartAreas[0].AxisX.Minimum)
+            {
+                neuroStreamChart.ChartAreas[0].AxisY.Maximum = yMaxVal;
+            }
+        }
     }
 }
