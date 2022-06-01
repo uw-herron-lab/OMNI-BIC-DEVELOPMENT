@@ -550,10 +550,10 @@ namespace BICGRPCHelperNamespace
     /// <param name="enableDistributed">A boolean indicating if phasic stim should be enabled or disabled</param>
     /// <param name="phaseSensingChannel">The channel to sense phase on</param>
     /// <param name="phaseStimChannel">The channel to stimulate after negative zero crossings of phase sensing channel</param>
-    void BICListener::enableDistributedStim(bool enableDistributed, int phaseSensingChannel, int phaseStimChannel)
+    void BICListener::enableDistributedStim(bool enableDistributed, int sensingChannel, int stimChannel)
     {
-        processingChannel = phaseSensingChannel;
-        stimChannel = phaseStimChannel;
+        processingChannel = sensingChannel;
+        stimChannel = stimChannel;
 
         if (enableDistributed && !isCLStimEn)
         {

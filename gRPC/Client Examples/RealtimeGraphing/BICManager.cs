@@ -162,7 +162,7 @@ namespace RealtimeGraphing
 
         public void enableDistributedStim(bool closedStimEn, uint stimChannel, uint senseChannel)
         {
-            deviceClient.enableDistributedStimulation(new distributedStimEnableRequest() { DeviceAddress = DeviceName, Enable = closedStimEn, PhaseStimChannel = stimChannel, PhaseSensingChannel = senseChannel });
+            deviceClient.enableDistributedStimulation(new distributedStimEnableRequest() { DeviceAddress = DeviceName, Enable = closedStimEn, StimChannel = stimChannel, SensingChannel = senseChannel });
         }
 
         /// <summary>
