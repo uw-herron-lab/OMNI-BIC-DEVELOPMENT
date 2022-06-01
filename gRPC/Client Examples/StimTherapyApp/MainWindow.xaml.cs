@@ -30,6 +30,7 @@ namespace StimTherapyApp
         //private bool openStimState = false;
         private uint userStimChannel;
         private uint userSenseChannel;
+        private int numChannels = 34;
         public class Channel
         {
             public string Name { get; set; }
@@ -45,9 +46,16 @@ namespace StimTherapyApp
 
             // Add items to check list box
             channelList = new List<Channel>();
-            for (int i = 1; i < 33; i++)
+            for (int i = 1; i < numChannels; i++)
             {
-                channelList.Add(new Channel { IsSelected = false, Name = i.ToString() });
+                if ( i == 33)
+                {
+                    channelList.Add(new Channel { IsSelected = false, Name = "Filtered Channel" });
+                }
+                else
+                {
+                    channelList.Add(new Channel { IsSelected = false, Name = i.ToString() });
+                }
             }
             this.DataContext = this;
             OutputConsole.Inlines.Add("Application started...\n");
@@ -55,6 +63,7 @@ namespace StimTherapyApp
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            string seriesName;
             aBICManager = new RealtimeGraphing.BICManager(neuroStreamChart.Width);
             aBICManager.BICConnect();
 
@@ -91,19 +100,28 @@ namespace StimTherapyApp
                 System.Drawing.Color.ForestGreen,
                 System.Drawing.Color.RosyBrown,
                 System.Drawing.Color.MediumPurple,
-                System.Drawing.Color.Sienna
+                System.Drawing.Color.Sienna,
+                System.Drawing.Color.Indigo
             };
 
             neuroStreamChart.Series.Clear();
-            for (int i = 1; i < 33; i++)
+            for (int i = 1; i < numChannels; i++)
             {
+                if (i == 33)
+                {
+                    seriesName = "Filtered Channel";
+                }
+                else
+                {
+                    seriesName = "Channel " + i.ToString();
+                }
                 neuroStreamChart.Series.Add(
                 new System.Windows.Forms.DataVisualization.Charting.Series
                 {
-                    Name = "Channel " + i.ToString(),
+                    Name = seriesName,
                     Color = colors_list[i-1],
                     ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastLine
-                });
+                });;
                 // when loading window, make legend invisible
                 neuroStreamChart.Series[i-1].IsVisibleInLegend = false;
             }
@@ -129,12 +147,28 @@ namespace StimTherapyApp
 
             // convert from string to int type
             foreach (String item in selected)
-                selectedChannels.Add(Int32.Parse(item)); // create int list of selected channels
+            {
+                try
+                {
+                    selectedChannels.Add(Int32.Parse(item)); // create int list of selected channels
+                }
+                catch
+                {
+                    selectedChannels.Add(33); // add filtered channel
+                }
+            }
 
             // update plot with newest data for selected channels
             for (int i = 0; i < selectedChannels.Count; i++)
             {
-                chanString = "Channel " + selectedChannels[i].ToString();
+                if (selectedChannels[i] == 33)
+                {
+                    chanString = "Filtered Channel";
+                }
+                else
+                {
+                    chanString = "Channel " + selectedChannels[i].ToString();
+                }
                 neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
                 delegate
                 {
@@ -277,7 +311,17 @@ namespace StimTherapyApp
 
             // get list of selected channels and convert from string to int type
             foreach (String item in selected)
-                selectedChannels.Add(Int32.Parse(item)); // create int list of selected channels
+            {
+                try
+                {
+                    selectedChannels.Add(Int32.Parse(item)); // create int list of selected channels
+                }
+                catch
+                {
+                    selectedChannels.Add(33); // create int list of selected channels
+                }
+            }
+                
 
             // clear the current legend
             neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
@@ -321,7 +365,16 @@ namespace StimTherapyApp
 
             // convert from string to int type
             foreach (String item in selected)
-                selectedChannels.Add(Int32.Parse(item)); // create int list of selected channels
+            {
+                try
+                {
+                    selectedChannels.Add(Int32.Parse(item)); // create int list of selected channels
+                }
+                catch
+                {
+                    selectedChannels.Add(33); // create int list of selected channels
+                }
+            }
 
             // reset current legend
             neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
@@ -337,7 +390,14 @@ namespace StimTherapyApp
             // update legend for newest selection of channels
             for (int i = 0; i < selectedChannels.Count; i++)
             {
-                chanString = "Channel " + selectedChannels[i].ToString();
+                if (selectedChannels[i] == 33)
+                {
+                    chanString = "Filtered Channel";
+                }
+                else
+                {
+                    chanString = "Channel " + selectedChannels[i].ToString();
+                }
                 neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
                 delegate
                 {
