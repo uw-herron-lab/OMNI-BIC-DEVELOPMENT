@@ -229,8 +229,8 @@ message pauseFunction{
 message distributedStimEnableRequest{
 	string deviceAddress = 1;
 	bool enable = 2;
-	uint32 phaseSensingChannel = 3;
-	uint32 phaseStimChannel = 4;
+	uint32 sensingChannel = 3;
+	uint32 stimChannel = 4;
 }
 
 // *************************** Device Streaming Service Messages ***************************
