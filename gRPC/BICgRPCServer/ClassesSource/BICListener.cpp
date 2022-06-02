@@ -605,7 +605,7 @@ namespace BICGRPCHelperNamespace
         // Create stimulation waveform
         IStimulationFunction* stimulationPulseFunction = theStimFactory->createStimulationFunction();
         stimulationPulseFunction->setName("pulseFunction");
-        stimulationPulseFunction->setRepetitions(1,1);
+        stimulationPulseFunction->setRepetitions(50,1);
         std::set<uint32_t> sources = { stimChannel };
         std::set<uint32_t> sinks = { };
         stimulationPulseFunction->setVirtualStimulationElectrodes(sources, sinks, true);
