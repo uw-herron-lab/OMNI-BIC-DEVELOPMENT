@@ -216,10 +216,26 @@ namespace StimTherapyApp
         {
             ThreadPool.QueueUserWorkItem(a =>
             {
-                // start phase triggered stim and update status
-                aBICManager.enableDistributedStim(true, userStimChannel-1, userSenseChannel-1);
-                //phasicStimState = true;
+                // Keep the time for console output writring
+                string timeStamp = DateTime.Now.ToString("h:mm:ss tt");
 
+                // start phase triggered stim and update status
+                try
+                {
+                    aBICManager.enableDistributedStim(true, userStimChannel - 1, userSenseChannel - 1);
+                }
+                catch
+                {
+                    // Exception occured, gRPC command did not succeed, do not update UI button elements
+                    Application.Current.Dispatcher.Invoke(new Action(() =>
+                    {
+                        OutputConsole.Inlines.Add("Beta triggered stimulation NOT started: " + timeStamp + ", load new configuration\n");
+                        Scroller.ScrollToEnd();
+                    }));
+                    return;
+                }
+
+                // Succesfully enabled distributed, update UI elements
                 neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
                 delegate
                 {
@@ -229,11 +245,14 @@ namespace StimTherapyApp
                     btn_load.IsEnabled = false; // load config button
                     btn_diagnostic.IsEnabled = false; // diagnostics button
                 }));
+
+                // notify user of beta stimulation starting
+                Application.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    OutputConsole.Inlines.Add("Beta triggered stimulation started: " + timeStamp + "\n");
+                    Scroller.ScrollToEnd();
+                }));
             });
-            // notify user of beta stimulation starting
-            string timeStamp = DateTime.Now.ToString("h:mm:ss tt");
-            OutputConsole.Inlines.Add("Beta triggered stimulation started: " + timeStamp + "\n");
-            Scroller.ScrollToEnd();
         }
 
         private void btn_openloop_Click(object sender, RoutedEventArgs e)
@@ -253,6 +272,7 @@ namespace StimTherapyApp
                     btn_diagnostic.IsEnabled = false; // diagnostics button
                 }));
             });
+
             // notify user of open loop stim starting
             string timeStamp = DateTime.Now.ToString("h:mm:ss tt");
             OutputConsole.Inlines.Add("Open loop stimulation started: " + timeStamp + "\n");
