@@ -155,6 +155,8 @@ namespace StimTherapyApp
             // look for the selected items in the listbox
             List<int> selectedChannels = new List<int>();
             string chanString = "";
+            int chanVal;
+            bool valConvert = false;
 
             // get a list of selected channels
             var selected = from item in channelList
@@ -164,13 +166,14 @@ namespace StimTherapyApp
             // convert from string to int type
             foreach (String item in selected)
             {
-                try
+                valConvert = Int32.TryParse(item, out chanVal);
+                if (valConvert)
                 {
-                    selectedChannels.Add(Int32.Parse(item)); // create int list of selected channels
+                    selectedChannels.Add(chanVal);
                 }
-                catch
+                else
                 {
-                    selectedChannels.Add(33); // add filtered channel
+                    selectedChannels.Add(33);
                 }
             }
 
@@ -349,6 +352,8 @@ namespace StimTherapyApp
             // look for the selected items in the listbox
             List<int> selectedChannels = new List<int>();
             string chanString = "";
+            int chanVal;
+            bool valConvert = false;
 
             // get a list of selected channels
             var selected = from item in channelList
@@ -358,13 +363,14 @@ namespace StimTherapyApp
             // get list of selected channels and convert from string to int type
             foreach (String item in selected)
             {
-                try
+                valConvert = Int32.TryParse(item, out chanVal);
+                if (valConvert)
                 {
-                    selectedChannels.Add(Int32.Parse(item)); // create int list of selected channels
+                    selectedChannels.Add(chanVal);
                 }
-                catch
+                else
                 {
-                    selectedChannels.Add(33); // create int list of selected channels
+                    selectedChannels.Add(33);
                 }
             }
                 
@@ -403,6 +409,8 @@ namespace StimTherapyApp
             // look for the selected items in the listbox
             List<int> selectedChannels = new List<int>();
             string chanString = "";
+            int chanVal;
+            bool valConvert = false;
 
             // get a list of selected channels
             var selected = from item in channelList
@@ -412,13 +420,14 @@ namespace StimTherapyApp
             // convert from string to int type
             foreach (String item in selected)
             {
-                try
+                valConvert = Int32.TryParse(item, out chanVal);
+                if (valConvert)
                 {
-                    selectedChannels.Add(Int32.Parse(item)); // create int list of selected channels
+                    selectedChannels.Add(chanVal);
                 }
-                catch
+                else
                 {
-                    selectedChannels.Add(33); // create int list of selected channels
+                    selectedChannels.Add(33);
                 }
             }
 
