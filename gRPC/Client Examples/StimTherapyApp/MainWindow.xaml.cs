@@ -59,6 +59,7 @@ namespace StimTherapyApp
             }
             this.DataContext = this;
             OutputConsole.Inlines.Add("Application started...\n");
+
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -125,6 +126,21 @@ namespace StimTherapyApp
                 // when loading window, make legend invisible
                 neuroStreamChart.Series[i-1].IsVisibleInLegend = false;
             }
+
+            neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
+                delegate
+                {
+                    // disable buttons
+                    btn_beta.IsEnabled = false; // beta stim button; have to use method invoker
+                    btn_openloop.IsEnabled = false; // open loop stim button
+                    btn_diagnostic.IsEnabled = false; // diagnostics button
+                    btn_stop.IsEnabled = false; // stop stim button
+
+                    // temporary- hide open loop and diagnostic buttons
+                    btn_openloop.Visibility = Visibility.Hidden;
+                    btn_diagnostic.Visibility = Visibility.Hidden;
+                }));
+
             // Start update timer
             neuroChartUpdateTimer = new System.Timers.Timer(200);
             neuroChartUpdateTimer.Elapsed += neuroChartUpdateTimer_Elapsed;
@@ -210,6 +226,16 @@ namespace StimTherapyApp
                     OutputConsole.Inlines.Add("Sense Channel: " + userSenseChannel + "\n");
                     Scroller.ScrollToEnd();
                 }
+                neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
+                delegate
+                {
+                    // enable buttons after a config has been successfully loaded
+                    btn_beta.IsEnabled = true; // beta stim button; have to use method invoker
+                    btn_openloop.IsEnabled = true; // open loop stim button
+                    btn_load.IsEnabled = true; // load config button
+                    btn_diagnostic.IsEnabled = true; // diagnostics button
+                    btn_stop.IsEnabled = true; // stop stim button
+                }));
             }
         }
         private void btn_beta_Click(object sender, RoutedEventArgs e)
