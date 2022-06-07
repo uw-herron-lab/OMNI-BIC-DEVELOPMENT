@@ -713,8 +713,14 @@ namespace BICGRPCHelperNamespace
             return grpc::Status(grpc::StatusCode::FAILED_PRECONDITION, "Not Initialized");
         }
 
+        // Check if parameters are valid
+        if (request->sensingchannel() < 0 || request->sensingchannel() > 31 || request->stimchannel() < 0 || request->stimchannel() > 31)
+        {
+            return grpc::Status(grpc::StatusCode::INVALID_ARGUMENT, "Arguments out of range");
+        }
+
         // Perform the operation
-        deviceDirectory[request->deviceaddress()]->listener->enableDistributedStim(request->enable(), request->phasesensingchannel(), request->phasestimchannel());
+        deviceDirectory[request->deviceaddress()]->listener->enableDistributedStim(request->enable(), request->sensingchannel(), request->stimchannel());
 
         // Respond to client
         return grpc::Status::OK;
