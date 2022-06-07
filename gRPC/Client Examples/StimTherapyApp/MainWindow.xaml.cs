@@ -30,6 +30,7 @@ namespace StimTherapyApp
         //private bool openStimState = false;
         private uint userStimChannel;
         private uint userSenseChannel;
+        private int numChannels = 34;
         public class Channel
         {
             public string Name { get; set; }
@@ -45,16 +46,25 @@ namespace StimTherapyApp
 
             // Add items to check list box
             channelList = new List<Channel>();
-            for (int i = 1; i < 33; i++)
+            for (int i = 1; i < numChannels; i++)
             {
-                channelList.Add(new Channel { IsSelected = false, Name = i.ToString() });
+                if ( i == 33)
+                {
+                    channelList.Add(new Channel { IsSelected = false, Name = "Filtered Channel" });
+                }
+                else
+                {
+                    channelList.Add(new Channel { IsSelected = false, Name = i.ToString() });
+                }
             }
             this.DataContext = this;
             OutputConsole.Inlines.Add("Application started...\n");
+
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            string seriesName;
             aBICManager = new RealtimeGraphing.BICManager(neuroStreamChart.Width);
             aBICManager.BICConnect();
 
@@ -91,22 +101,46 @@ namespace StimTherapyApp
                 System.Drawing.Color.ForestGreen,
                 System.Drawing.Color.RosyBrown,
                 System.Drawing.Color.MediumPurple,
-                System.Drawing.Color.Sienna
+                System.Drawing.Color.Sienna,
+                System.Drawing.Color.Indigo
             };
 
             neuroStreamChart.Series.Clear();
-            for (int i = 1; i < 33; i++)
+            for (int i = 1; i < numChannels; i++)
             {
+                if (i == 33)
+                {
+                    seriesName = "Filtered Channel";
+                }
+                else
+                {
+                    seriesName = "Channel " + i.ToString();
+                }
                 neuroStreamChart.Series.Add(
                 new System.Windows.Forms.DataVisualization.Charting.Series
                 {
-                    Name = "Channel " + i.ToString(),
+                    Name = seriesName,
                     Color = colors_list[i-1],
                     ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastLine
-                });
+                });;
                 // when loading window, make legend invisible
                 neuroStreamChart.Series[i-1].IsVisibleInLegend = false;
             }
+
+            neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
+                delegate
+                {
+                    // disable buttons
+                    btn_beta.IsEnabled = false; // beta stim button; have to use method invoker
+                    btn_openloop.IsEnabled = false; // open loop stim button
+                    btn_diagnostic.IsEnabled = false; // diagnostics button
+                    btn_stop.IsEnabled = false; // stop stim button
+
+                    // temporary- hide open loop and diagnostic buttons
+                    btn_openloop.Visibility = Visibility.Hidden;
+                    btn_diagnostic.Visibility = Visibility.Hidden;
+                }));
+
             // Start update timer
             neuroChartUpdateTimer = new System.Timers.Timer(200);
             neuroChartUpdateTimer.Elapsed += neuroChartUpdateTimer_Elapsed;
@@ -121,6 +155,8 @@ namespace StimTherapyApp
             // look for the selected items in the listbox
             List<int> selectedChannels = new List<int>();
             string chanString = "";
+            int chanVal;
+            bool valConvert = false;
 
             // get a list of selected channels
             var selected = from item in channelList
@@ -129,12 +165,29 @@ namespace StimTherapyApp
 
             // convert from string to int type
             foreach (String item in selected)
-                selectedChannels.Add(Int32.Parse(item)); // create int list of selected channels
+            {
+                valConvert = Int32.TryParse(item, out chanVal);
+                if (valConvert)
+                {
+                    selectedChannels.Add(chanVal);
+                }
+                else
+                {
+                    selectedChannels.Add(33);
+                }
+            }
 
             // update plot with newest data for selected channels
             for (int i = 0; i < selectedChannels.Count; i++)
             {
-                chanString = "Channel " + selectedChannels[i].ToString();
+                if (selectedChannels[i] == 33)
+                {
+                    chanString = "Filtered Channel";
+                }
+                else
+                {
+                    chanString = "Channel " + selectedChannels[i].ToString();
+                }
                 neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
                 delegate
                 {
@@ -176,16 +229,42 @@ namespace StimTherapyApp
                     OutputConsole.Inlines.Add("Sense Channel: " + userSenseChannel + "\n");
                     Scroller.ScrollToEnd();
                 }
+                neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
+                delegate
+                {
+                    // enable buttons after a config has been successfully loaded
+                    btn_beta.IsEnabled = true; // beta stim button; have to use method invoker
+                    btn_openloop.IsEnabled = true; // open loop stim button
+                    btn_load.IsEnabled = true; // load config button
+                    btn_diagnostic.IsEnabled = true; // diagnostics button
+                    btn_stop.IsEnabled = true; // stop stim button
+                }));
             }
         }
         private void btn_beta_Click(object sender, RoutedEventArgs e)
         {
             ThreadPool.QueueUserWorkItem(a =>
             {
-                // start phase triggered stim and update status
-                aBICManager.enableDistributedStim(true, userStimChannel-1, userSenseChannel-1);
-                //phasicStimState = true;
+                // Keep the time for console output writring
+                string timeStamp = DateTime.Now.ToString("h:mm:ss tt");
 
+                // start phase triggered stim and update status
+                try
+                {
+                    aBICManager.enableDistributedStim(true, userStimChannel - 1, userSenseChannel - 1);
+                }
+                catch
+                {
+                    // Exception occured, gRPC command did not succeed, do not update UI button elements
+                    Application.Current.Dispatcher.Invoke(new Action(() =>
+                    {
+                        OutputConsole.Inlines.Add("Beta triggered stimulation NOT started: " + timeStamp + ", load new configuration\n");
+                        Scroller.ScrollToEnd();
+                    }));
+                    return;
+                }
+
+                // Succesfully enabled distributed, update UI elements
                 neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
                 delegate
                 {
@@ -195,11 +274,14 @@ namespace StimTherapyApp
                     btn_load.IsEnabled = false; // load config button
                     btn_diagnostic.IsEnabled = false; // diagnostics button
                 }));
+
+                // notify user of beta stimulation starting
+                Application.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    OutputConsole.Inlines.Add("Beta triggered stimulation started: " + timeStamp + "\n");
+                    Scroller.ScrollToEnd();
+                }));
             });
-            // notify user of beta stimulation starting
-            string timeStamp = DateTime.Now.ToString("h:mm:ss tt");
-            OutputConsole.Inlines.Add("Beta triggered stimulation started: " + timeStamp + "\n");
-            Scroller.ScrollToEnd();
         }
 
         private void btn_openloop_Click(object sender, RoutedEventArgs e)
@@ -219,6 +301,7 @@ namespace StimTherapyApp
                     btn_diagnostic.IsEnabled = false; // diagnostics button
                 }));
             });
+
             // notify user of open loop stim starting
             string timeStamp = DateTime.Now.ToString("h:mm:ss tt");
             OutputConsole.Inlines.Add("Open loop stimulation started: " + timeStamp + "\n");
@@ -269,6 +352,8 @@ namespace StimTherapyApp
             // look for the selected items in the listbox
             List<int> selectedChannels = new List<int>();
             string chanString = "";
+            int chanVal;
+            bool valConvert = false;
 
             // get a list of selected channels
             var selected = from item in channelList
@@ -277,7 +362,18 @@ namespace StimTherapyApp
 
             // get list of selected channels and convert from string to int type
             foreach (String item in selected)
-                selectedChannels.Add(Int32.Parse(item)); // create int list of selected channels
+            {
+                valConvert = Int32.TryParse(item, out chanVal);
+                if (valConvert)
+                {
+                    selectedChannels.Add(chanVal);
+                }
+                else
+                {
+                    selectedChannels.Add(33);
+                }
+            }
+                
 
             // clear the current legend
             neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
@@ -313,6 +409,8 @@ namespace StimTherapyApp
             // look for the selected items in the listbox
             List<int> selectedChannels = new List<int>();
             string chanString = "";
+            int chanVal;
+            bool valConvert = false;
 
             // get a list of selected channels
             var selected = from item in channelList
@@ -321,7 +419,17 @@ namespace StimTherapyApp
 
             // convert from string to int type
             foreach (String item in selected)
-                selectedChannels.Add(Int32.Parse(item)); // create int list of selected channels
+            {
+                valConvert = Int32.TryParse(item, out chanVal);
+                if (valConvert)
+                {
+                    selectedChannels.Add(chanVal);
+                }
+                else
+                {
+                    selectedChannels.Add(33);
+                }
+            }
 
             // reset current legend
             neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
@@ -337,7 +445,14 @@ namespace StimTherapyApp
             // update legend for newest selection of channels
             for (int i = 0; i < selectedChannels.Count; i++)
             {
-                chanString = "Channel " + selectedChannels[i].ToString();
+                if (selectedChannels[i] == 33)
+                {
+                    chanString = "Filtered Channel";
+                }
+                else
+                {
+                    chanString = "Channel " + selectedChannels[i].ToString();
+                }
                 neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
                 delegate
                 {

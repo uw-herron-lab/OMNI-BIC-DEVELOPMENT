@@ -412,7 +412,7 @@ namespace BICGRPCHelperNamespace
                 newSample->set_stimulationactive(samples->at(i).isStimulationActive());
                 newSample->set_samplecounter(sampleCounter);
                 newSample->set_isinterpolated(false);
-                newSample->set_filtchannel(processingChannel);
+                newSample->set_filtchannel(distributedInputChannel);
 
                 // Check if we've lost packets, if so interpolate
                 if (lastNeuroCount + 1 != sampleCounter)
@@ -467,14 +467,14 @@ namespace BICGRPCHelperNamespace
                                 newInterpolatedSample->set_stimulationactive(newSample->stimulationactive());
                                 newInterpolatedSample->set_samplecounter(lastNeuroCount + interpolatedPointNum);
                                 newInterpolatedSample->set_isinterpolated(true);
-                                newInterpolatedSample->set_filtchannel(processingChannel);
+                                newInterpolatedSample->set_filtchannel(distributedInputChannel);
 
                                 // Copy in the time domain data in
                                 for (int interChannelPoint = 0; interChannelPoint < sampleNum; interChannelPoint++)
                                 {
                                     double interpolatedSample = latestData[interChannelPoint] + (interpolationSlopes[interChannelPoint] * interpolatedPointNum);
                                     newInterpolatedSample->add_measurements(interpolatedSample);
-                                    if (interChannelPoint == processingChannel)
+                                    if (interChannelPoint == distributedInputChannel)
                                     {
                                         // call the processing helper, take output and send to client
                                         newInterpolatedSample->set_filtsample(processingHelper(interpolatedSample)); // set the filtered sample in the neural sample 
@@ -511,7 +511,7 @@ namespace BICGRPCHelperNamespace
                 {
                     newSample->add_measurements(theData[j]);
                     latestData[j] = theData[j];
-                    if (j == processingChannel)
+                    if (j == distributedInputChannel)
                     {
                         // Call Processing Helper, take output and send to client
                         newSample->set_filtsample(processingHelper(theData[j]));
@@ -552,8 +552,8 @@ namespace BICGRPCHelperNamespace
     /// <param name="phaseStimChannel">The channel to stimulate after negative zero crossings of phase sensing channel</param>
     void BICListener::enableDistributedStim(bool enableDistributed, int sensingChannel, int stimChannel)
     {
-        processingChannel = sensingChannel;
-        stimChannel = stimChannel;
+        distributedInputChannel = sensingChannel;
+        distributedOutputChannel = stimChannel;
 
         if (enableDistributed && !isCLStimEn)
         {
@@ -606,7 +606,7 @@ namespace BICGRPCHelperNamespace
         IStimulationFunction* stimulationPulseFunction = theStimFactory->createStimulationFunction();
         stimulationPulseFunction->setName("pulseFunction");
         stimulationPulseFunction->setRepetitions(50,1);
-        std::set<uint32_t> sources = { stimChannel };
+        std::set<uint32_t> sources = { distributedOutputChannel };
         std::set<uint32_t> sinks = { };
         stimulationPulseFunction->setVirtualStimulationElectrodes(sources, sinks, true);
         stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(1000, 0, 0, 0, 400)); // positive pulse
