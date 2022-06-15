@@ -565,7 +565,7 @@ namespace BICGRPCHelperNamespace
             isCLStimEn = true;
 
             // Start thread up
-            betaStimThread = new std::thread(&BICListener::triggeredSendStimThread, this);
+            distributedStimThread = new std::thread(&BICListener::triggeredSendStimThread, this);
         }
         else if (!enableDistributed && isCLStimEn)
         {
@@ -574,10 +574,10 @@ namespace BICGRPCHelperNamespace
             stimTrigger->notify_all();
 
             // Disable Closed Loop since it is enabled and request is to disable
-            betaStimThread->join();
-            betaStimThread->~thread();
-            delete betaStimThread;
-            betaStimThread = NULL;
+            distributedStimThread->join();
+            distributedStimThread->~thread();
+            delete distributedStimThread;
+            distributedStimThread = NULL;
 
             // Clean up the conditional variable
             stimTrigger->~condition_variable();

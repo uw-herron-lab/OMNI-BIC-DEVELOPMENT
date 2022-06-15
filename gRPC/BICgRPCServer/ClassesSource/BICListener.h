@@ -107,7 +107,7 @@ namespace BICGRPCHelperNamespace
         std::thread* errorProcessingThread;
         std::thread* powerProcessingThread;
         std::thread* stimTimeLoggingThread;
-        std::thread* betaStimThread;
+        std::thread* distributedStimThread;
 
         // Stream data ready signals
         std::condition_variable* neuralDataNotify;
