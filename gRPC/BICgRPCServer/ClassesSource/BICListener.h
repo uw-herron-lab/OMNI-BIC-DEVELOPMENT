@@ -97,7 +97,8 @@ namespace BICGRPCHelperNamespace
         std::queue<BICgRPC::ConnectionUpdate*> connectionSampleQueue;
         std::queue<BICgRPC::ErrorUpdate*> errorSampleQueue;
         std::queue<BICgRPC::PowerUpdate*> powerSampleQueue;
-        std::queue<double> stimTimeSampleQueue;
+        std::queue<uint64_t> beforeStimTimeSampleQueue;
+        std::queue<uint64_t> afterStimTimeSampleQueue;
 
         // Stream processing threads
         std::thread* neuralProcessingThread;

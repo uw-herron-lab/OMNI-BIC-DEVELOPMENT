@@ -614,10 +614,7 @@ namespace BICGRPCHelperNamespace
         stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, 10)); // generate atoms --dz1
         stimulationCommand->append(stimulationPulseFunction);
 
-        // enable stim time streaming
-        std::chrono::duration<double> elapsed_sec;
-        std::chrono::system_clock::time_point chronoStart;
-        std::chrono::system_clock::time_point chronoStop;
+        // enable stim time logging
         enableStimTimeLogging(true);
 
         // Wait for a zero crossing
@@ -629,26 +626,28 @@ namespace BICGRPCHelperNamespace
             // Send a stim command
             try
             {
-                // Start a timer to measure the time that it takes to send a stimulation command
-                chronoStart = std::chrono::system_clock::now();
+                // Get time before start stimulation command
+                auto before = std::chrono::steady_clock::now();
+                auto beforeStimTime = before.time_since_epoch().count();
 
                 // Execute the stimulation command
                 theImplantedDevice->startStimulation(stimulationCommand);
 
-                // Measure the t
-                chronoStop = std::chrono::system_clock::now();
-                elapsed_sec = chronoStop - chronoStart;
+                // Get time after start stimulation command
+                auto after = std::chrono::steady_clock::now();
+                auto afterStimTime = after.time_since_epoch().count();
 
 #ifdef DEBUG_CONSOLE_ENABLE
                 std::cout << "DEBUG: finished stim in " << elapsed_sec.count() << "s\n";
 #endif
 
                 // Add latest received data packet to the buffer if there is room
-                if (stimTimeSampleQueue.size() < 1000)
+                if ((beforeStimTimeSampleQueue.size() < 1000) && (afterStimTimeSampleQueue.size() < 1000))
                 {
                     // Lock the stim time buffer, add data, unlock
                     this->m_stimTimeBufferLock.lock();
-                    stimTimeSampleQueue.push(elapsed_sec.count()); // add stimTime at the end of the queue
+                    beforeStimTimeSampleQueue.push(beforeStimTime); // add startStimTime at the end of the queue
+                    afterStimTimeSampleQueue.push(afterStimTime); // add stopStimTime at end of the queue
                     this->m_stimTimeBufferLock.unlock();
 
                     // Notify the streaming function that new data exists
@@ -656,7 +655,7 @@ namespace BICGRPCHelperNamespace
                 }
                 else
                 {
-                    std::cout << "WARNING: Stim Time Log Queue Size Overflow, streaming data skipped" << std::endl;
+                    std::cout << "WARNING: Before Stim Time Log Queue Size Overflow, streaming data skipped" << std::endl;
                 }
 
             }
@@ -780,7 +779,8 @@ namespace BICGRPCHelperNamespace
         // Loop while streaming is active
         while (stimTimeLoggingState)
         {
-            if (stimTimeSampleQueue.empty())
+            // if either are empty, wait
+            if (beforeStimTimeSampleQueue.empty() || afterStimTimeSampleQueue.empty())
             {
                 stimTimeDataNotify->wait(stimTimeDataWait);
             }
@@ -791,11 +791,12 @@ namespace BICGRPCHelperNamespace
                     this->m_stimTimeBufferLock.lock();
                     // Write out new line to file
                     myFile.open("stimTimeLog.csv", std::ios_base::app);
-                    myFile << stimTimeSampleQueue.front();
-                    myFile << "\n";
+                    // log two values: timestamp before and after stim command
+                    myFile << beforeStimTimeSampleQueue.front() << ", " << afterStimTimeSampleQueue.front() << "\n";
                     myFile.close();
                     // Clean up the current sample from the list
-                    stimTimeSampleQueue.pop(); // take out first sample of queue
+                    beforeStimTimeSampleQueue.pop(); // take out first sample of queue
+                    afterStimTimeSampleQueue.pop();
                     // Unlock the neurobuffer
                     this->m_stimTimeBufferLock.unlock();
                 }
