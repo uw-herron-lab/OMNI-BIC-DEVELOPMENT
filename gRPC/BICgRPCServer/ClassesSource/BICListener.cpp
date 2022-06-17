@@ -776,6 +776,20 @@ namespace BICGRPCHelperNamespace
         // Open File
         std::ofstream myFile;
 
+        // Get current date and time
+        time_t currTime;
+        char timeStampBuffer[100];
+        struct tm* curr_tm;
+        time(&currTime);
+        curr_tm = localtime(&currTime);
+
+        // Format date and time
+        strftime(timeStampBuffer, 100, "%m%d%Y_%I%M%S", curr_tm);
+        std::string timeStamp(timeStampBuffer);
+
+        // Append to the name of the stim logging file 
+        std::string fileName = "stimTimeLog_" + timeStamp + ".csv";
+
         // Loop while streaming is active
         while (stimTimeLoggingState)
         {
@@ -790,7 +804,7 @@ namespace BICGRPCHelperNamespace
                     // Lock the buffer
                     this->m_stimTimeBufferLock.lock();
                     // Write out new line to file
-                    myFile.open("stimTimeLog.csv", std::ios_base::app);
+                    myFile.open(fileName, std::ios_base::app);
                     // log two values: timestamp before and after stim command
                     myFile << beforeStimTimeSampleQueue.front() << ", " << afterStimTimeSampleQueue.front() << "\n";
                     myFile.close();
