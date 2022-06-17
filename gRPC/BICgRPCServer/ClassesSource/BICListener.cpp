@@ -626,14 +626,14 @@ namespace BICGRPCHelperNamespace
             // Send a stim command
             try
             {
-                // Get time before start stimulation command
+                // Get time before start stimulation command (in nanosec)
                 auto before = std::chrono::steady_clock::now();
                 auto beforeStimTime = before.time_since_epoch().count();
 
                 // Execute the stimulation command
                 theImplantedDevice->startStimulation(stimulationCommand);
 
-                // Get time after start stimulation command
+                // Get time after start stimulation command (in nanosec)
                 auto after = std::chrono::steady_clock::now();
                 auto afterStimTime = after.time_since_epoch().count();
 
