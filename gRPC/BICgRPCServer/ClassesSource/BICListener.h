@@ -5,6 +5,7 @@
 #include <thread>
 #include <grpcpp/grpcpp.h>
 #include "BICgRPC.grpc.pb.h"
+#include "stim_times.h"
 
 namespace BICGRPCHelperNamespace
 {
@@ -97,8 +98,7 @@ namespace BICGRPCHelperNamespace
         std::queue<BICgRPC::ConnectionUpdate*> connectionSampleQueue;
         std::queue<BICgRPC::ErrorUpdate*> errorSampleQueue;
         std::queue<BICgRPC::PowerUpdate*> powerSampleQueue;
-        std::queue<uint64_t> beforeStimTimeSampleQueue;
-        std::queue<uint64_t> afterStimTimeSampleQueue;
+        std::queue<StimTimes> stimTimeSampleQueue;
 
         // Stream processing threads
         std::thread* neuralProcessingThread;

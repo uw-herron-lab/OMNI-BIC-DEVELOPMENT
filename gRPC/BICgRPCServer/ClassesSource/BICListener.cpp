@@ -614,6 +614,9 @@ namespace BICGRPCHelperNamespace
         stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, 10)); // generate atoms --dz1
         stimulationCommand->append(stimulationPulseFunction);
 
+        // create instance of stimTimes to keep track of before and after stim timestamps
+        StimTimes startStimulationTimes;
+
         // enable stim time logging
         enableStimTimeLogging(true);
 
@@ -629,6 +632,7 @@ namespace BICGRPCHelperNamespace
                 // Get time before start stimulation command (in nanosec)
                 auto before = std::chrono::steady_clock::now();
                 auto beforeStimTime = before.time_since_epoch().count();
+                startStimulationTimes.beforeStimTimeStamp = beforeStimTime;
 
                 // Execute the stimulation command
                 theImplantedDevice->startStimulation(stimulationCommand);
@@ -636,18 +640,18 @@ namespace BICGRPCHelperNamespace
                 // Get time after start stimulation command (in nanosec)
                 auto after = std::chrono::steady_clock::now();
                 auto afterStimTime = after.time_since_epoch().count();
+                startStimulationTimes.afterStimTimeStamp = afterStimTime;
 
 #ifdef DEBUG_CONSOLE_ENABLE
                 std::cout << "DEBUG: finished stim in " << elapsed_sec.count() << "s\n";
 #endif
 
                 // Add latest received data packet to the buffer if there is room
-                if ((beforeStimTimeSampleQueue.size() < 1000) && (afterStimTimeSampleQueue.size() < 1000))
+                if (stimTimeSampleQueue.size() < 1000)
                 {
                     // Lock the stim time buffer, add data, unlock
                     this->m_stimTimeBufferLock.lock();
-                    beforeStimTimeSampleQueue.push(beforeStimTime); // add startStimTime at the end of the queue
-                    afterStimTimeSampleQueue.push(afterStimTime); // add stopStimTime at end of the queue
+                    stimTimeSampleQueue.push(startStimulationTimes); // add struct with before and after stim times to queue
                     this->m_stimTimeBufferLock.unlock();
 
                     // Notify the streaming function that new data exists
@@ -794,7 +798,7 @@ namespace BICGRPCHelperNamespace
         while (stimTimeLoggingState)
         {
             // if either are empty, wait
-            if (beforeStimTimeSampleQueue.empty() || afterStimTimeSampleQueue.empty())
+            if (stimTimeSampleQueue.empty())
             {
                 stimTimeDataNotify->wait(stimTimeDataWait);
             }
@@ -806,11 +810,10 @@ namespace BICGRPCHelperNamespace
                     // Write out new line to file
                     myFile.open(fileName, std::ios_base::app);
                     // log two values: timestamp before and after stim command
-                    myFile << beforeStimTimeSampleQueue.front() << ", " << afterStimTimeSampleQueue.front() << "\n";
+                    myFile << stimTimeSampleQueue.front().beforeStimTimeStamp << ", " << stimTimeSampleQueue.front().afterStimTimeStamp << "\n";
                     myFile.close();
                     // Clean up the current sample from the list
-                    beforeStimTimeSampleQueue.pop(); // take out first sample of queue
-                    afterStimTimeSampleQueue.pop();
+                    stimTimeSampleQueue.pop(); // take out first item of queue
                     // Unlock the neurobuffer
                     this->m_stimTimeBufferLock.unlock();
                 }
