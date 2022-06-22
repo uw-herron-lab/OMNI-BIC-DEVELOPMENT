@@ -554,6 +554,11 @@ namespace BICGRPCHelperNamespace
     {
         distributedInputChannel = sensingChannel;
         distributedOutputChannel = stimChannel;
+        distributedCathodeAmplitude = -1000;
+        distributedCathodeDuration = 500;
+        distributedAnodeAmplitude = 250;
+        distributedAnodeDuration = 2000;
+
 
         if (enableDistributed && !isCLStimEn)
         {
@@ -607,9 +612,9 @@ namespace BICGRPCHelperNamespace
         std::set<uint32_t> sources = { distributedOutputChannel };
         std::set<uint32_t> sinks = { };
         stimulationPulseFunction->setVirtualStimulationElectrodes(sources, sinks, true);
-        stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(1000, 0, 0, 0, 400)); // positive pulse
+        stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(distributedCathodeAmplitude, 0, 0, 0, distributedCathodeDuration)); // positive pulse
         stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, 10)); // generate atoms --dz0
-        stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(-250, 0, 0, 0, 1600)); // charge balance
+        stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(distributedAnodeAmplitude, 0, 0, 0, distributedAnodeDuration)); // charge balance
         stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, 10)); // generate atoms --dz0
         stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, 10)); // generate atoms --dz1
         stimulationCommand->append(stimulationPulseFunction);

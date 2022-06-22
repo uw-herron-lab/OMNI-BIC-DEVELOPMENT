@@ -143,6 +143,10 @@ namespace BICGRPCHelperNamespace
         bool isCLStimEn = false;                    // State tracking boolean indicates whether distributed stim is active or not
         uint32_t distributedInputChannel = 0;       // Distributed algorithm sensing channel (input)
         uint32_t distributedOutputChannel = 31;     // Distributed algorithm stimulation channel (output)
+        double distributedCathodeAmplitude = -1000;
+        uint64_t distributedCathodeDuration = 400;
+        double distributedAnodeAmplitude = 250;
+        uint64_t distributedAnodeDuration = 1600;
 
         // Signal Processing Variables
         std::vector<double> bpFiltData = { 0, 0, 0 };           // IIR filter output history
