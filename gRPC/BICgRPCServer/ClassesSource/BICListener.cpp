@@ -558,8 +558,7 @@ namespace BICGRPCHelperNamespace
         distributedCathodeDuration = cathodeDuration;
         distributedAnodeAmplitude = anodeAmplitude;
         distributedAnodeDuration = anodeDuration;
-        // works when values are assigned here.. now to see what happens if parameters are assigned...
-        // WORKS WHEN PARAMETERS ARE PASSED!
+
         if (enableDistributed && !isCLStimEn)
         {
             // Enable Closed Loop since it is not enabled and request is to enable
