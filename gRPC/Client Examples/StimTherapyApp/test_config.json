@@ -1,0 +1,9 @@
+{
+  "stimType": "beta",
+  "senseChannel": 1,
+  "stimChannel": 32,
+  "cathodeAmplitude": -500,
+  "cathodeDuration": 1000,
+  "anodeAmplitude": -2000,
+  "anodeDuration": 250
+}

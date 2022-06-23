@@ -26,7 +26,7 @@ namespace BICGRPCHelperNamespace
         void enablePowerStreaming(bool enableSensing, grpc::ServerWriter<BICgRPC::PowerUpdate>* aWriter);
 
         // ************************* Public Distributed Algorithm Stimulation Management *************************
-        void enableDistributedStim(bool enableDistributed, int phaseSensingChannel, int phaseStimChannel);
+        void enableDistributedStim(bool enableDistributed, int phaseSensingChannel, int phaseStimChannel, double cathodeStimAmplitude, uint64_t cathodeStimDuration, double anodeStimAmplitude, uint64_t anodeStimDuration);
         void addImplantPointer(cortec::implantapi::IImplant* theImplantedDevice);
         void enableStimTimeLogging(bool enableSensing);
         double processingHelper(double newData);

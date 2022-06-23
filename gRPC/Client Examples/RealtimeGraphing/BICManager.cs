@@ -160,9 +160,10 @@ namespace RealtimeGraphing
             logFileStream.Dispose();
         }
 
-        public void enableDistributedStim(bool closedStimEn, uint stimChannel, uint senseChannel)
+        public void enableDistributedStim(bool closedStimEn, uint stimChannel, uint senseChannel, double cathodeAmplitude, uint cathodeDuration, double anodeAmplitude, uint anodeDuration)
         {
-            deviceClient.enableDistributedStimulation(new distributedStimEnableRequest() { DeviceAddress = DeviceName, Enable = closedStimEn, StimChannel = stimChannel, SensingChannel = senseChannel });
+            deviceClient.enableDistributedStimulation(new distributedStimEnableRequest() { DeviceAddress = DeviceName, Enable = closedStimEn, StimChannel = stimChannel, SensingChannel = senseChannel, 
+                CathodeAmplitude = cathodeAmplitude, CathodeDuration = cathodeDuration, AnodeAmplitude = anodeAmplitude, AnodeDuration = anodeDuration});
         }
 
         /// <summary>

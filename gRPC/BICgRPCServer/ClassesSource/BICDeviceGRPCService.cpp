@@ -720,7 +720,7 @@ namespace BICGRPCHelperNamespace
         }
 
         // Perform the operation
-        deviceDirectory[request->deviceaddress()]->listener->enableDistributedStim(request->enable(), request->sensingchannel(), request->stimchannel());
+        deviceDirectory[request->deviceaddress()]->listener->enableDistributedStim(request->enable(), request->sensingchannel(), request->stimchannel(), request->cathodeamplitude(), request->cathodeduration(), request->anodeamplitude(), request->anodeduration());
 
         // Respond to client
         return grpc::Status::OK;

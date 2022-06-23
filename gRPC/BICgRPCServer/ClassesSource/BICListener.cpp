@@ -550,16 +550,16 @@ namespace BICGRPCHelperNamespace
     /// <param name="enableDistributed">A boolean indicating if phasic stim should be enabled or disabled</param>
     /// <param name="phaseSensingChannel">The channel to sense phase on</param>
     /// <param name="phaseStimChannel">The channel to stimulate after negative zero crossings of phase sensing channel</param>
-    void BICListener::enableDistributedStim(bool enableDistributed, int sensingChannel, int stimChannel)
+    void BICListener::enableDistributedStim(bool enableDistributed, int sensingChannel, int stimChannel, double cathodeAmplitude, uint64_t cathodeDuration, double anodeAmplitude, uint64_t anodeDuration)
     {
         distributedInputChannel = sensingChannel;
         distributedOutputChannel = stimChannel;
-        distributedCathodeAmplitude = -1000;
-        distributedCathodeDuration = 500;
-        distributedAnodeAmplitude = 250;
-        distributedAnodeDuration = 2000;
-
-
+        distributedCathodeAmplitude = cathodeAmplitude;
+        distributedCathodeDuration = cathodeDuration;
+        distributedAnodeAmplitude = anodeAmplitude;
+        distributedAnodeDuration = anodeDuration;
+        // works when values are assigned here.. now to see what happens if parameters are assigned...
+        // WORKS WHEN PARAMETERS ARE PASSED!
         if (enableDistributed && !isCLStimEn)
         {
             // Enable Closed Loop since it is not enabled and request is to enable
