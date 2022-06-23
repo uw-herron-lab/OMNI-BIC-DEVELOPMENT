@@ -413,6 +413,12 @@ namespace BICGRPCHelperNamespace
                 newSample->set_samplecounter(sampleCounter);
                 newSample->set_isinterpolated(false);
                 newSample->set_filtchannel(distributedInputChannel);
+                newSample->add_filtcoeff_b(betaBandPassIIR_B[0]);
+                newSample->add_filtcoeff_b(betaBandPassIIR_B[1]);
+                newSample->add_filtcoeff_b(betaBandPassIIR_B[2]);
+                newSample->add_filtcoeff_a(betaBandPassIIR_A[0]);
+                newSample->add_filtcoeff_a(betaBandPassIIR_A[1]);
+                newSample->add_filtcoeff_a(betaBandPassIIR_A[2]);
 
                 // Check if we've lost packets, if so interpolate
                 if (lastNeuroCount + 1 != sampleCounter)
@@ -468,6 +474,12 @@ namespace BICGRPCHelperNamespace
                                 newInterpolatedSample->set_samplecounter(lastNeuroCount + interpolatedPointNum);
                                 newInterpolatedSample->set_isinterpolated(true);
                                 newInterpolatedSample->set_filtchannel(distributedInputChannel);
+                                newInterpolatedSample->add_filtcoeff_b(betaBandPassIIR_B[0]);
+                                newInterpolatedSample->add_filtcoeff_b(betaBandPassIIR_B[1]);
+                                newInterpolatedSample->add_filtcoeff_b(betaBandPassIIR_B[2]);
+                                newInterpolatedSample->add_filtcoeff_a(betaBandPassIIR_A[0]);
+                                newInterpolatedSample->add_filtcoeff_a(betaBandPassIIR_A[1]);
+                                newInterpolatedSample->add_filtcoeff_a(betaBandPassIIR_A[2]);
 
                                 // Copy in the time domain data in
                                 for (int interChannelPoint = 0; interChannelPoint < sampleNum; interChannelPoint++)
@@ -477,7 +489,7 @@ namespace BICGRPCHelperNamespace
                                     if (interChannelPoint == distributedInputChannel)
                                     {
                                         // call the processing helper, take output and send to client
-                                        newInterpolatedSample->set_filtsample(processingHelper(interpolatedSample)); // set the filtered sample in the neural sample 
+                                        newInterpolatedSample->set_filtsample(processingHelper(interpolatedSample, betaBandPassIIR_B, betaBandPassIIR_A)); // set the filtered sample in the neural sample 
                                     }
                                 }
                                 // Add it to the buffer if there is room
@@ -514,7 +526,7 @@ namespace BICGRPCHelperNamespace
                     if (j == distributedInputChannel)
                     {
                         // Call Processing Helper, take output and send to client
-                        newSample->set_filtsample(processingHelper(theData[j]));
+                        newSample->set_filtsample(processingHelper(theData[j], betaBandPassIIR_B, betaBandPassIIR_A));
                     }
                 }
                 delete theData;
@@ -552,6 +564,7 @@ namespace BICGRPCHelperNamespace
     /// <param name="phaseStimChannel">The channel to stimulate after negative zero crossings of phase sensing channel</param>
     void BICListener::enableDistributedStim(bool enableDistributed, int sensingChannel, int stimChannel, double cathodeAmplitude, uint64_t cathodeDuration, double anodeAmplitude, uint64_t anodeDuration)
     {
+        // could potentially add filter coefficients to be updated here..?
         distributedInputChannel = sensingChannel;
         distributedOutputChannel = stimChannel;
         distributedCathodeAmplitude = cathodeAmplitude;
@@ -697,10 +710,11 @@ namespace BICGRPCHelperNamespace
     /// </summary>
     /// <param name="newData">latest datapoint to be processed for potential triggering of stimulation</param>
     /// <returns></returns>
-    double BICListener::processingHelper(double newData)
+    double BICListener::processingHelper(double newData, double filtCoeff_B[3], double filtCoeff_A[3])
     {   
         // Band pass filter for beta activity
-        double filtSamp = filterIIR(newData, &bpPrevData, &bpFiltData, betaBandPassIIR_B, betaBandPassIIR_A);
+        //double filtSamp = filterIIR(newData, &bpPrevData, &bpFiltData, betaBandPassIIR_B, betaBandPassIIR_A);
+        double filtSamp = filterIIR(newData, &bpPrevData, &bpFiltData, filtCoeff_B, filtCoeff_A);
 
         // if at a local maxima above an arbitrary threshold and closed loop stim is enabled, send stimulation
         if (isCLStimEn && detectLocalMaxima(bpFiltData) && bpFiltData[1] > 100)
@@ -722,6 +736,10 @@ namespace BICGRPCHelperNamespace
     /// <returns>current filtered output</returns>
     double BICListener::filterIIR(double currSamp, std::vector<double>* prevFiltOut, std::vector<double>* prevInput, double b[], double a[])
     {
+        // set arguments equal to global variables to update
+        betaBandPassIIR_B[0] = b[0];
+
+
         double filtTemp;
 
         // check if n-1 is negative, then n-2 would also be negative
