@@ -620,6 +620,10 @@ namespace BICGRPCHelperNamespace
         // enable stim time logging
         enableStimTimeLogging(true);
 
+        // initialize before and after timestamps
+        std::chrono::system_clock::time_point before;
+        std::chrono::system_clock::time_point after;
+
         // Wait for a zero crossing
         stimTrigger->wait(stimTriggerWait);
 
@@ -629,18 +633,16 @@ namespace BICGRPCHelperNamespace
             // Send a stim command
             try
             {
-                // Get time before start stimulation command (in nanosec)
-                auto before = std::chrono::steady_clock::now();
-                auto beforeStimTime = before.time_since_epoch().count();
-                startStimulationTimes.beforeStimTimeStamp = beforeStimTime;
+                // Get time before start stimulation command (UTC)
+                before = std::chrono::system_clock::now();
+                startStimulationTimes.beforeStimTimeStamp = before.time_since_epoch().count();
 
                 // Execute the stimulation command
                 theImplantedDevice->startStimulation(stimulationCommand);
 
-                // Get time after start stimulation command (in nanosec)
-                auto after = std::chrono::steady_clock::now();
-                auto afterStimTime = after.time_since_epoch().count();
-                startStimulationTimes.afterStimTimeStamp = afterStimTime;
+                // Get time after start stimulation command (UTC)
+                after = std::chrono::system_clock::now();
+                startStimulationTimes.afterStimTimeStamp = after.time_since_epoch().count();
 
 #ifdef DEBUG_CONSOLE_ENABLE
                 std::cout << "DEBUG: finished stim in " << elapsed_sec.count() << "s\n";
