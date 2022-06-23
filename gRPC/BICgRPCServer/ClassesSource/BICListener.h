@@ -5,10 +5,15 @@
 #include <thread>
 #include <grpcpp/grpcpp.h>
 #include "BICgRPC.grpc.pb.h"
-#include "stim_times.h"
 
 namespace BICGRPCHelperNamespace
 {
+    struct StimTimes
+    {
+        uint64_t beforeStimTimeStamp;
+        uint64_t afterStimTimeStamp;
+    };
+
     class BICListener : public cortec::implantapi::IImplantListener
     {
     public:
