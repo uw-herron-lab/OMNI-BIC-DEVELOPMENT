@@ -103,7 +103,6 @@ namespace BICGRPCHelperNamespace
         std::queue<BICgRPC::ConnectionUpdate*> connectionSampleQueue;
         std::queue<BICgRPC::ErrorUpdate*> errorSampleQueue;
         std::queue<BICgRPC::PowerUpdate*> powerSampleQueue;
-        std::queue<StimTimes> stimTimeSampleQueue;
 
         // Stream processing threads
         std::thread* neuralProcessingThread;
@@ -112,7 +111,6 @@ namespace BICGRPCHelperNamespace
         std::thread* connectionProcessingThread;
         std::thread* errorProcessingThread;
         std::thread* powerProcessingThread;
-        std::thread* stimTimeLoggingThread;
         std::thread* distributedStimThread;
 
         // Stream data ready signals
@@ -123,6 +121,15 @@ namespace BICGRPCHelperNamespace
         std::condition_variable* errorDataNotify;
         std::condition_variable* powerDataNotify;
         std::condition_variable* stimTrigger;
+
+        // ************************* Private Logging Objects and Methods *************************
+        // Logging data queues
+        std::queue<StimTimes> stimTimeSampleQueue;
+
+        // Logging threads
+        std::thread* stimTimeLoggingThread;
+
+        // Logging ready signals
         std::condition_variable* stimTimeDataNotify;
 
         // ************************* Private Distributed Algorithm Objects and Methods *************************
