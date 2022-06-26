@@ -614,11 +614,15 @@ namespace BICGRPCHelperNamespace
         stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, 10)); // generate atoms --dz1
         stimulationCommand->append(stimulationPulseFunction);
 
-        // enable stim time streaming
-        std::chrono::duration<double> elapsed_sec;
-        std::chrono::system_clock::time_point chronoStart;
-        std::chrono::system_clock::time_point chronoStop;
+        // create instance of stimTimes to keep track of before and after stim timestamps
+        StimTimes startStimulationTimes;
+
+        // enable stim time logging
         enableStimTimeLogging(true);
+
+        // initialize before and after timestamps
+        std::chrono::system_clock::time_point before;
+        std::chrono::system_clock::time_point after;
 
         // Wait for a zero crossing
         stimTrigger->wait(stimTriggerWait);
@@ -629,15 +633,16 @@ namespace BICGRPCHelperNamespace
             // Send a stim command
             try
             {
-                // Start a timer to measure the time that it takes to send a stimulation command
-                chronoStart = std::chrono::system_clock::now();
+                // Get time before start stimulation command (UTC)
+                before = std::chrono::system_clock::now();
+                startStimulationTimes.beforeStimTimeStamp = before.time_since_epoch().count();
 
                 // Execute the stimulation command
                 theImplantedDevice->startStimulation(stimulationCommand);
 
-                // Measure the t
-                chronoStop = std::chrono::system_clock::now();
-                elapsed_sec = chronoStop - chronoStart;
+                // Get time after start stimulation command (UTC)
+                after = std::chrono::system_clock::now();
+                startStimulationTimes.afterStimTimeStamp = after.time_since_epoch().count();
 
 #ifdef DEBUG_CONSOLE_ENABLE
                 std::cout << "DEBUG: finished stim in " << elapsed_sec.count() << "s\n";
@@ -648,7 +653,7 @@ namespace BICGRPCHelperNamespace
                 {
                     // Lock the stim time buffer, add data, unlock
                     this->m_stimTimeBufferLock.lock();
-                    stimTimeSampleQueue.push(elapsed_sec.count()); // add stimTime at the end of the queue
+                    stimTimeSampleQueue.push(startStimulationTimes); // add struct with before and after stim times to queue
                     this->m_stimTimeBufferLock.unlock();
 
                     // Notify the streaming function that new data exists
@@ -656,7 +661,7 @@ namespace BICGRPCHelperNamespace
                 }
                 else
                 {
-                    std::cout << "WARNING: Stim Time Log Queue Size Overflow, streaming data skipped" << std::endl;
+                    std::cout << "WARNING: Before Stim Time Log Queue Size Overflow, streaming data skipped" << std::endl;
                 }
 
             }
@@ -777,9 +782,24 @@ namespace BICGRPCHelperNamespace
         // Open File
         std::ofstream myFile;
 
+        // Get current date and time
+        time_t currTime;
+        char timeStampBuffer[100];
+        struct tm* curr_tm;
+        time(&currTime);
+        curr_tm = localtime(&currTime);
+
+        // Format date and time
+        strftime(timeStampBuffer, 100, "%m%d%Y_%I%M%S", curr_tm);
+        std::string timeStamp(timeStampBuffer);
+
+        // Append to the name of the stim logging file 
+        std::string fileName = "stimTimeLog_" + timeStamp + ".csv";
+
         // Loop while streaming is active
         while (stimTimeLoggingState)
         {
+            // if either are empty, wait
             if (stimTimeSampleQueue.empty())
             {
                 stimTimeDataNotify->wait(stimTimeDataWait);
@@ -790,12 +810,12 @@ namespace BICGRPCHelperNamespace
                     // Lock the buffer
                     this->m_stimTimeBufferLock.lock();
                     // Write out new line to file
-                    myFile.open("stimTimeLog.csv", std::ios_base::app);
-                    myFile << stimTimeSampleQueue.front();
-                    myFile << "\n";
+                    myFile.open(fileName, std::ios_base::app);
+                    // log two values: timestamp before and after stim command
+                    myFile << stimTimeSampleQueue.front().beforeStimTimeStamp << ", " << stimTimeSampleQueue.front().afterStimTimeStamp << "\n";
                     myFile.close();
                     // Clean up the current sample from the list
-                    stimTimeSampleQueue.pop(); // take out first sample of queue
+                    stimTimeSampleQueue.pop(); // take out first item of queue
                     // Unlock the neurobuffer
                     this->m_stimTimeBufferLock.unlock();
                 }
