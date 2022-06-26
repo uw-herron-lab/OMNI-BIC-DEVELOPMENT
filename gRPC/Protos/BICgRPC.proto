@@ -235,6 +235,8 @@ message distributedStimEnableRequest{
 	uint64 cathodeDuration = 6;
 	double anodeAmplitude = 7;
 	uint64 anodeDuration = 8;
+	repeated double filterCoefficients_B = 9;
+	repeated double filterCoefficients_A = 10;
 }
 
 // *************************** Device Streaming Service Messages ***************************
@@ -263,8 +265,6 @@ message NeuralSample{
 	bool isInterpolated = 8;
 	double filtSample = 9;
 	uint32 filtChannel = 10;
-	repeated double filtCoeff_B = 11;
-	repeated double filtCoeff_A = 12;
 }
 
 message ConnectionUpdate{
