@@ -703,7 +703,7 @@ namespace BICGRPCHelperNamespace
     double BICListener::processingHelper(double newData)
     {   
         // Band pass filter for beta activity
-        double filtSamp = filterIIR(newData, &bpPrevData, &bpFiltData, betaBandPassIIR_B, betaBandPassIIR_A);
+        double filtSamp = filterIIR(newData, &bpPrevData, &bpFiltData, &betaBandPassIIR_B, &betaBandPassIIR_A);
 
         // if at a local maxima above an arbitrary threshold and closed loop stim is enabled, send stimulation
         if (isCLStimEn && detectLocalMaxima(bpFiltData) && bpFiltData[1] > 100)
@@ -723,16 +723,12 @@ namespace BICGRPCHelperNamespace
     /// <param name="b">b-array for IIR constants</param>
     /// <param name="a">a-array for IIR constants</param>
     /// <returns>current filtered output</returns>
-    double BICListener::filterIIR(double currSamp, std::vector<double>* prevFiltOut, std::vector<double>* prevInput, std::vector<double> b, std::vector<double> a)
+    double BICListener::filterIIR(double currSamp, std::vector<double>* prevFiltOut, std::vector<double>* prevInput, std::vector<double>* b, std::vector<double>* a)
     {
-        // set arguments equal to global variables to update
-        betaBandPassIIR_B[0] = b[0];
-
-
-        double filtTemp;
+       double filtTemp;
 
         // check if n-1 is negative, then n-2 would also be negative
-        filtTemp = b[0] * currSamp + b[1] * prevInput->at(0) + b[2] * prevInput->at(1) - a[1] * prevFiltOut->at(0) - a[2] * prevFiltOut->at(1);
+        filtTemp = b->at(0) * currSamp + b->at(1) * prevInput->at(0) + b->at(2) * prevInput->at(1) - a->at(1) * prevFiltOut->at(0) - a->at(2) * prevFiltOut->at(1);
 
         // remove the last sample and insert the most recent sample to the front of the vector
         prevFiltOut->insert(prevFiltOut->begin(), filtTemp);

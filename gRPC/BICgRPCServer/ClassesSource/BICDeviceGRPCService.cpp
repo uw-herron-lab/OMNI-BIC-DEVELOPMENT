@@ -719,8 +719,20 @@ namespace BICGRPCHelperNamespace
             return grpc::Status(grpc::StatusCode::INVALID_ARGUMENT, "Arguments out of range");
         }
 
+        // Grab all coefficient values and store in a vector
+        std::vector<double> coefficients_B;
+        std::vector<double> coefficients_A;
+        for (int i = 0; i < request->filtercoefficients_b_size(); i++)
+        {
+            coefficients_B.push_back(request->filtercoefficients_b()[i]);
+        }
+        for (int i = 0; i < request->filtercoefficients_a_size(); i++)
+        {
+            coefficients_A.push_back(request->filtercoefficients_a()[i]);
+        }
+
         // Perform the operation
-        deviceDirectory[request->deviceaddress()]->listener->enableDistributedStim(request->enable(), request->sensingchannel(), request->stimchannel(), request->cathodeamplitude(), request->cathodeduration(), request->anodeamplitude(), request->anodeduration());
+        deviceDirectory[request->deviceaddress()]->listener->enableDistributedStim(request->enable(), request->sensingchannel(), request->stimchannel(), request->cathodeamplitude(), request->cathodeduration(), request->anodeamplitude(), request->anodeduration(), coefficients_B, coefficients_A);
 
         // Respond to client
         return grpc::Status::OK;

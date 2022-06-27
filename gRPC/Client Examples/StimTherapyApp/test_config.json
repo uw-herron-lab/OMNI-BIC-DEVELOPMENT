@@ -6,5 +6,6 @@
   "cathodeDuration": 1000,
   "anodeAmplitude": -2000,
   "anodeDuration": 250,
-  "filterCoefficients": [ 0.0305, 0, -0.0305, 1, -1.9247, 0.9391 ]
+  "filterCoefficients_B": [ 0.0305, 0, -0.0305 ],
+  "filterCoefficients_A": [ 1, -1.9247, 0.9391 ]
 }

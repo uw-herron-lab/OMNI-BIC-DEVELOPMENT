@@ -88,16 +88,25 @@ namespace RealtimeGraphing
 
         private void PhasicToggle_Click(object sender, RoutedEventArgs e)
         {
+            List<double> filter_B = new List<double>();
+            List<double> filter_A = new List<double>();
+            filter_B.Add(0.0305);
+            filter_B.Add(0);
+            filter_B.Add(-0.0305);
+            filter_A.Add(1);
+            filter_A.Add(-1.9247);
+            filter_A.Add(0.9391);
+            
             ThreadPool.QueueUserWorkItem(a =>
            {
                if (!phasicStimState)
                {
-                   aBICManager.enableDistributedStim(true, 31, 0, -1000, 400, 250, 1600);
+                   aBICManager.enableDistributedStim(true, 31, 0, -1000, 400, 250, 1600, filter_B, filter_A);
                    phasicStimState = true;
                }
                else
                {
-                   aBICManager.enableDistributedStim(false, 31, 0, -1000, 400, 250, 1600);
+                   aBICManager.enableDistributedStim(false, 31, 0, -1000, 400, 250, 1600, filter_B, filter_A);
                    phasicStimState = false;
                }
            });

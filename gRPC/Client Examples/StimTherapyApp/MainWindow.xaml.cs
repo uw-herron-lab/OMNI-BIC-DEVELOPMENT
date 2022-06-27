@@ -35,6 +35,8 @@ namespace StimTherapyApp
         private uint userCathodeDuration;
         private double userAnodeAmplitude;
         private uint userAnodeDuration;
+        private List<double> userFilterCoefficients_B;
+        private List<double> userFilterCoefficients_A;
         private int numChannels = 34;
         public class Channel
         {
@@ -54,7 +56,8 @@ namespace StimTherapyApp
             public uint cathodeDuration { get; set; }
             public double anodeAmplitude { get; set; }
             public uint anodeDuration { get; set; }
-            public double[] filterCoefficients { get; set; }
+            public List<double> filterCoefficients_B { get; set; }
+            public List<double> filterCoefficients_A { get; set; }
         }
 
         public MainWindow()
@@ -239,8 +242,17 @@ namespace StimTherapyApp
                     OutputConsole.Inlines.Add("Cathode Duration: " + configInfo.cathodeDuration + " us\n");
                     OutputConsole.Inlines.Add("Anode Amplitude: " + configInfo.anodeAmplitude + " uA\n");
                     OutputConsole.Inlines.Add("Anode Duration: " + configInfo.anodeDuration + " us\n");
-                    OutputConsole.Inlines.Add("Filter Coefficient [B]: " + configInfo.filterCoefficients[0] + ", " + configInfo.filterCoefficients[1] + ", " + configInfo.filterCoefficients[2] + "\n");
-                    OutputConsole.Inlines.Add("Filter Coefficient [A]: " + configInfo.filterCoefficients[3] + ", " + configInfo.filterCoefficients[4] + ", " + configInfo.filterCoefficients[5] + "\n");
+                    OutputConsole.Inlines.Add("Filter Coefficient [B]: ");
+                    for (int i = 0; i < configInfo.filterCoefficients_B.Count; i++)
+                    {
+                        OutputConsole.Inlines.Add(configInfo.filterCoefficients_B[i] + " ");
+                    }
+                    OutputConsole.Inlines.Add("\nFilter Coefficients [A]: ");
+                    for (int i = 0; i < configInfo.filterCoefficients_A.Count; i++)
+                    {
+                        OutputConsole.Inlines.Add(configInfo.filterCoefficients_A[i] + " ");
+                    }
+                    OutputConsole.Inlines.Add("\n");
                     Scroller.ScrollToEnd();
 
                     userSenseChannel = (uint)configInfo.senseChannel;
@@ -249,6 +261,8 @@ namespace StimTherapyApp
                     userCathodeDuration = configInfo.cathodeDuration;
                     userAnodeAmplitude = configInfo.anodeAmplitude;
                     userAnodeDuration = configInfo.anodeDuration;
+                    userFilterCoefficients_B = configInfo.filterCoefficients_B;
+                    userFilterCoefficients_A = configInfo.filterCoefficients_A;
 
                     neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
                     delegate
@@ -273,7 +287,7 @@ namespace StimTherapyApp
                 // start phase triggered stim and update status
                 try
                 {
-                    aBICManager.enableDistributedStim(true, userStimChannel - 1, userSenseChannel - 1, userCathodeAmplitude, userCathodeDuration, userAnodeAmplitude, userAnodeDuration);
+                    aBICManager.enableDistributedStim(true, userStimChannel - 1, userSenseChannel - 1, userCathodeAmplitude, userCathodeDuration, userAnodeAmplitude, userAnodeDuration, userFilterCoefficients_B, userFilterCoefficients_A);
                 }
                 catch
                 {
@@ -335,7 +349,7 @@ namespace StimTherapyApp
             ThreadPool.QueueUserWorkItem(a =>
             {
                 // disable beta and open loop stim
-                aBICManager.enableDistributedStim(false, userStimChannel-1, userSenseChannel-1, userCathodeAmplitude, userCathodeDuration, userAnodeAmplitude, userAnodeDuration);
+                aBICManager.enableDistributedStim(false, userStimChannel-1, userSenseChannel-1, userCathodeAmplitude, userCathodeDuration, userAnodeAmplitude, userAnodeDuration, userFilterCoefficients_B, userFilterCoefficients_A);
 
                 // update stim statuses
                 //phasicStimState = false;

@@ -135,7 +135,7 @@ namespace BICGRPCHelperNamespace
         // ************************* Private Distributed Algorithm Objects and Methods *************************
         // Distributed Stim Functions
         void triggeredSendStimThread(void);
-        double filterIIR(double currSamp, std::vector<double>* prevFiltOut, std::vector<double>* prevInput, std::vector<double> b, std::vector<double> a);
+        double filterIIR(double currSamp, std::vector<double>* prevFiltOut, std::vector<double>* prevInput, std::vector<double>* b, std::vector<double>* a);
         bool isZeroCrossing(std::vector<double> dataArray);
         bool detectLocalMaxima(std::vector<double> dataArray);
 
