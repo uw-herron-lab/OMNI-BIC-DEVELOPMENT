@@ -16,7 +16,8 @@ using System.Windows.Shapes;
 using System.Windows.Forms.DataVisualization;
 using System.Timers;
 using System.Threading;
-using Newtonsoft.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace StimTherapyApp
 {
@@ -227,42 +228,44 @@ namespace StimTherapyApp
                 string fileName = fileD.FileName;
                 if (File.Exists(fileName))
                 {
-                    Configuration configInfo = new Configuration();
                     // load in .json file and read in stimulation parameters
                     using (StreamReader fileReader = new StreamReader(fileName))
                     {
                         string configJson = fileReader.ReadToEnd();
-                        configInfo = JsonConvert.DeserializeObject<Configuration>(configJson);
-                    }
-                    OutputConsole.Inlines.Add("Loaded " + fileName + "\n");
-                    OutputConsole.Inlines.Add("Stimulation type: " + configInfo.stimType + "\n");
-                    OutputConsole.Inlines.Add("Sense channel: " + configInfo.senseChannel + "\n");
-                    OutputConsole.Inlines.Add("Stim channel: " + configInfo.stimChannel + "\n");
-                    OutputConsole.Inlines.Add("Cathode Amplitude: " + configInfo.cathodeAmplitude + " uA\n");
-                    OutputConsole.Inlines.Add("Cathode Duration: " + configInfo.cathodeDuration + " us\n");
-                    OutputConsole.Inlines.Add("Anode Amplitude: " + configInfo.anodeAmplitude + " uA\n");
-                    OutputConsole.Inlines.Add("Anode Duration: " + configInfo.anodeDuration + " us\n");
-                    OutputConsole.Inlines.Add("Filter Coefficient [B]: ");
-                    for (int i = 0; i < configInfo.filterCoefficients_B.Count; i++)
-                    {
-                        OutputConsole.Inlines.Add(configInfo.filterCoefficients_B[i] + " ");
-                    }
-                    OutputConsole.Inlines.Add("\nFilter Coefficients [A]: ");
-                    for (int i = 0; i < configInfo.filterCoefficients_A.Count; i++)
-                    {
-                        OutputConsole.Inlines.Add(configInfo.filterCoefficients_A[i] + " ");
-                    }
-                    OutputConsole.Inlines.Add("\n");
-                    Scroller.ScrollToEnd();
+                        Configuration configInfo = System.Text.Json.JsonSerializer.Deserialize<Configuration>(configJson);
 
-                    userSenseChannel = (uint)configInfo.senseChannel;
-                    userStimChannel = (uint)configInfo.stimChannel;
-                    userCathodeAmplitude = configInfo.cathodeAmplitude;
-                    userCathodeDuration = configInfo.cathodeDuration;
-                    userAnodeAmplitude = configInfo.anodeAmplitude;
-                    userAnodeDuration = configInfo.anodeDuration;
-                    userFilterCoefficients_B = configInfo.filterCoefficients_B;
-                    userFilterCoefficients_A = configInfo.filterCoefficients_A;
+                        OutputConsole.Inlines.Add("Loaded " + fileName + "\n");
+                        OutputConsole.Inlines.Add("Stimulation type: " + configInfo.stimType + "\n");
+                        OutputConsole.Inlines.Add("Sense channel: " + configInfo.senseChannel + "\n");
+                        OutputConsole.Inlines.Add("Stim channel: " + configInfo.stimChannel + "\n");
+                        OutputConsole.Inlines.Add("Cathode Amplitude: " + configInfo.cathodeAmplitude + " uA\n");
+                        OutputConsole.Inlines.Add("Cathode Duration: " + configInfo.cathodeDuration + " us\n");
+                        OutputConsole.Inlines.Add("Anode Amplitude: " + configInfo.anodeAmplitude + " uA\n");
+                        OutputConsole.Inlines.Add("Anode Duration: " + configInfo.anodeDuration + " us\n");
+                        OutputConsole.Inlines.Add("Filter Coefficient [B]: ");
+                        for (int i = 0; i < configInfo.filterCoefficients_B.Count; i++)
+                        {
+                            OutputConsole.Inlines.Add(configInfo.filterCoefficients_B[i] + " ");
+                        }
+                        OutputConsole.Inlines.Add("\nFilter Coefficients [A]: ");
+                        for (int i = 0; i < configInfo.filterCoefficients_A.Count; i++)
+                        {
+                            OutputConsole.Inlines.Add(configInfo.filterCoefficients_A[i] + " ");
+                        }
+                        OutputConsole.Inlines.Add("\n");
+                        Scroller.ScrollToEnd();
+
+                        userSenseChannel = (uint)configInfo.senseChannel;
+                        userStimChannel = (uint)configInfo.stimChannel;
+                        userCathodeAmplitude = configInfo.cathodeAmplitude;
+                        userCathodeDuration = configInfo.cathodeDuration;
+                        userAnodeAmplitude = configInfo.anodeAmplitude;
+                        userAnodeDuration = configInfo.anodeDuration;
+                        userFilterCoefficients_B = configInfo.filterCoefficients_B;
+                        userFilterCoefficients_A = configInfo.filterCoefficients_A;
+                    }
+                    
+                    
 
                     neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
                     delegate
