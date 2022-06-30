@@ -163,7 +163,7 @@ namespace RealtimeGraphing
         public void enableDistributedStim(bool closedStimEn, uint stimChannel, uint senseChannel, double cathodeAmplitude, uint cathodeDuration, double anodeAmplitude, uint anodeDuration, List<double> filterCoefficients_B, List<double> filterCoefficients_A)
         {
             deviceClient.enableDistributedStimulation(new distributedStimEnableRequest() { DeviceAddress = DeviceName, Enable = closedStimEn, StimChannel = stimChannel, SensingChannel = senseChannel, 
-                CathodeAmplitude = cathodeAmplitude, CathodeDuration = cathodeDuration, AnodeAmplitude = anodeAmplitude, AnodeDuration = anodeDuration, FilterCoefficientsB = { filterCoefficients_B }, FilterCoefficientsA = { filterCoefficients_A }}); //  FilterCoefficientsB = filterCoefficients_B, FilterCoefficientsA = filterCoefficients_B
+                CathodeAmplitude = cathodeAmplitude, CathodeDuration = cathodeDuration, AnodeAmplitude = anodeAmplitude, AnodeDuration = anodeDuration, FilterCoefficientsB = { filterCoefficients_B }, FilterCoefficientsA = { filterCoefficients_A }}); 
         }
 
         /// <summary>
