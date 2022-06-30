@@ -96,10 +96,18 @@ namespace BICGRPCHelperNamespace
     /// </summary>
     /// <param name="antennaQualitydBm">Antenna connection quality measure measured in dBm</param>
     /// <param name="packagePercentage">Percentage of successful packets</param>
-    void BICListener::onRfQualityUpdate(const int8_t antennaQualitydBm, const uint8_t packagePercentage)
+    void BICListener::onRfQualityUpdate(const int8_t antennaQualitydBm,
+        const uint16_t validFramesReceived, const uint16_t invalidHandshake,
+        const uint16_t radioCrcErrors, const uint16_t otherRxErrors,
+        const uint32_t rxQueueOverflows, const uint32_t txQueueOverflows)
     {
         // Write Event Information to Console
-        std::cout << "\tSTATE CHANGE: Rf Quality Update: " << antennaQualitydBm << "dBm" << packagePercentage << "% packets successful" << std::endl;
+        //std::cout << "\tSTATE CHANGE: Rf Quality Update: " << antennaQualitydBm << "dBm" << packagePercentage << "% packets successful" << std::endl;
+    }
+
+    void BICListener::onChannelUpdate(const uint8_t rfChannel)
+    {
+
     }
 
     //*************************************************** Connection Streaming Functions ***************************************************
@@ -613,7 +621,7 @@ namespace BICGRPCHelperNamespace
         stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, 10)); // generate atoms --dz0
         stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, 10)); // generate atoms --dz1
         stimulationCommand->append(stimulationPulseFunction);
-
+        theImplantedDevice->enqueueStimulationCommand(stimulationCommand, StimulationMode::STIM_MODE_PERSISTENT_CMD_PRELOADING);
         // create instance of stimTimes to keep track of before and after stim timestamps
         StimTimes startStimulationTimes;
 
@@ -638,7 +646,7 @@ namespace BICGRPCHelperNamespace
                 startStimulationTimes.beforeStimTimeStamp = before.time_since_epoch().count();
 
                 // Execute the stimulation command
-                theImplantedDevice->startStimulation(stimulationCommand);
+                theImplantedDevice->startStimulation();
 
                 // Get time after start stimulation command (UTC)
                 after = std::chrono::system_clock::now();

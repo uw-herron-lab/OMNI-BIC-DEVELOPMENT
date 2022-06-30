@@ -576,7 +576,7 @@ namespace BICGRPCHelperNamespace
         // Perform the operation
         try
         {
-            deviceDirectory[request->deviceaddress()]->theImplant->startStimulation(deviceDirectory[request->deviceaddress()]->theStimulationCommand);
+            deviceDirectory[request->deviceaddress()]->theImplant->startStimulation();
         }
         catch (const std::exception theExeption)
         {
