@@ -719,6 +719,12 @@ namespace BICGRPCHelperNamespace
             return grpc::Status(grpc::StatusCode::INVALID_ARGUMENT, "Arguments out of range");
         }
 
+        // Check that there are at least three coefficients for filtering
+        if (request->filtercoefficients_b_size() < 3 || request->filtercoefficients_a_size() < 3)
+        {
+            return grpc::Status(grpc::StatusCode::INVALID_ARGUMENT, "Need at least 3 values for filter coefficients");
+        }
+
         // Grab all coefficient values and store in a vector
         std::vector<double> coefficients_B;
         std::vector<double> coefficients_A;
