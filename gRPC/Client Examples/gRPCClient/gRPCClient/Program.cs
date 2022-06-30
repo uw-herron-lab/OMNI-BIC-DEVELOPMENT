@@ -239,10 +239,10 @@ namespace BICgRPC_ConsoleTest
                         break;
                     case ConsoleKey.D1:
                         // Create a waveform defintion request 
-                        bicStimulationFunctionDefinitionRequest aNewWaveform = new bicStimulationFunctionDefinitionRequest() { DeviceAddress = DeviceName };
+                        bicEnqueueStimulationRequest aNewWaveform = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.VolatileWaveform };
                         // Create a pulse function
                         StimulationFunctionDefinition pulseFunction = new StimulationFunctionDefinition() { FunctionName = "pulseFunction", 
-                            StimPulse = new stimPulseFunction() { Amplitude = { 1000, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 2550, PulseWidth = 400, PulseRepetitions = (uint)randomNumGen.Next(1,10), SourceElectrodes = { 5 }, SinkElectrodes = { }, UseGround = true, BurstRepetitions = 1 } };
+                            StimPulse = new stimPulseFunction() { Amplitude = { 1000, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 2550, PulseWidth = 400, PulseRepetitions = (uint)randomNumGen.Next(1,10), SourceElectrodes = { 31 }, SinkElectrodes = { }, UseGround = true, BurstRepetitions = 1 } };
                         // Create a pause function
                         StimulationFunctionDefinition pauseFunction = new StimulationFunctionDefinition() { FunctionName = "pauseFunction",
                             Pause = new pauseFunction() { Duration = 30000 } };
@@ -250,8 +250,8 @@ namespace BICgRPC_ConsoleTest
                         // Load functions into waveform, then into command
                         aNewWaveform.Functions.Add(pulseFunction);
                         aNewWaveform.Functions.Add(pauseFunction);
-                        deviceClient.bicDefineStimulationWaveform(aNewWaveform);
-                        deviceClient.bicStartStimulation(new bicStartStimulationRequest() { DeviceAddress = DeviceName, FunctionName = "aWaveForm" });
+                        deviceClient.bicEnqueueStimulation(aNewWaveform);
+                        deviceClient.bicStartStimulation(new bicStartStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.VolatileWaveform });
                         break;
                     case ConsoleKey.D0:
                         Console.WriteLine("Stim Off Not Implemented");

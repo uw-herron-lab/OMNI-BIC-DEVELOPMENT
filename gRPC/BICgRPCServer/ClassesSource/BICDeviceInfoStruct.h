@@ -17,7 +17,6 @@ namespace BICGRPCHelperNamespace {
         std::unique_ptr <cortec::implantapi::IImplant> theImplant;
         std::unique_ptr <cortec::implantapi::CImplantInfo> theImplantInfo;                  // Cached Implant Info
         std::unique_ptr <BICListener> listener;
-        cortec::implantapi::IStimulationCommand* theStimulationCommand;
 
         // Stream Mutexs
         std::mutex tempStreamLock;
