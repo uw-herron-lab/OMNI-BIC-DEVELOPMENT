@@ -26,7 +26,7 @@ using BICgRPC::bicGetHumidityReply;
 using BICgRPC::bicNeuralSetStreamingEnable;
 using BICgRPC::bicSetImplantPowerRequest;
 using BICgRPC::bicStartStimulationRequest;
-using BICgRPC::bicStimulationFunctionDefinitionRequest;
+using BICgRPC::bicEnqueueStimulationRequest;
 using BICgRPC::StimulationFunctionDefinition;
 using BICgRPC::TemperatureUpdate;
 using BICgRPC::HumidityUpdate;
@@ -576,7 +576,7 @@ namespace BICGRPCHelperNamespace
         // Perform the operation
         try
         {
-            deviceDirectory[request->deviceaddress()]->theImplant->startStimulation(deviceDirectory[request->deviceaddress()]->theStimulationCommand);
+            deviceDirectory[request->deviceaddress()]->theImplant->startStimulation();
         }
         catch (const std::exception theExeption)
         {
@@ -611,7 +611,7 @@ namespace BICGRPCHelperNamespace
         return grpc::Status::OK;
     }
 
-    grpc::Status BICDeviceGRPCService::bicDefineStimulationWaveform(grpc::ServerContext* context, const BICgRPC::bicStimulationFunctionDefinitionRequest* request, BICgRPC::bicSuccessReply* reply)
+    grpc::Status BICDeviceGRPCService::bicEnqueueStimulation(grpc::ServerContext* context, const BICgRPC::bicEnqueueStimulationRequest* request, BICgRPC::bicSuccessReply* reply)
     {
         // Check if already initialized
         if (deviceDirectory.find(request->deviceaddress()) == deviceDirectory.end())
@@ -621,7 +621,7 @@ namespace BICGRPCHelperNamespace
 
         // Create objects required for 
         std::unique_ptr<IStimulationCommandFactory> theFactory(createStimulationCommandFactory());
-        deviceDirectory[request->deviceaddress()]->theStimulationCommand = theFactory->createStimulationCommand();
+        IStimulationCommand* theStimulationCommand = theFactory->createStimulationCommand();
 
         // Iterate through provided functions and add them to the command 
         try
@@ -679,7 +679,7 @@ namespace BICGRPCHelperNamespace
                     theFunction->append(theFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, request->functions().at(i).stimpulse().dz1duration()));
 
                     // Add the function to the command
-                    deviceDirectory[request->deviceaddress()]->theStimulationCommand->append(theFunction);
+                    theStimulationCommand->append(theFunction);
                 }
                 else if (request->functions().at(i).has_pause())
                 {
@@ -687,13 +687,17 @@ namespace BICGRPCHelperNamespace
                     theFunction->append(theFactory->createStimulationPauseAtom(request->functions().at(i).pause().duration()));
 
                     // Add the function to the command
-                    deviceDirectory[request->deviceaddress()]->theStimulationCommand->append(theFunction);
+                    theStimulationCommand->append(theFunction);
                 }
                 else
                 {
                     // No atoms?
                 }
             }
+
+            // Stimulation Command created, now enqueue
+            deviceDirectory[request->deviceaddress()]->theImplant->enqueueStimulationCommand(theStimulationCommand, (StimulationMode)request->mode());
+            delete theStimulationCommand;
         }
         catch (const std::exception theExeption)
         {
@@ -719,8 +723,26 @@ namespace BICGRPCHelperNamespace
             return grpc::Status(grpc::StatusCode::INVALID_ARGUMENT, "Arguments out of range");
         }
 
+        // Check that there are at least three coefficients for filtering
+        if (request->filtercoefficients_b_size() < 3 || request->filtercoefficients_a_size() < 3)
+        {
+            return grpc::Status(grpc::StatusCode::INVALID_ARGUMENT, "Need at least 3 values for filter coefficients");
+        }
+
+        // Grab all coefficient values and store in a vector
+        std::vector<double> coefficients_B;
+        std::vector<double> coefficients_A;
+        for (int i = 0; i < request->filtercoefficients_b_size(); i++)
+        {
+            coefficients_B.push_back(request->filtercoefficients_b()[i]);
+        }
+        for (int i = 0; i < request->filtercoefficients_a_size(); i++)
+        {
+            coefficients_A.push_back(request->filtercoefficients_a()[i]);
+        }
+
         // Perform the operation
-        deviceDirectory[request->deviceaddress()]->listener->enableDistributedStim(request->enable(), request->sensingchannel(), request->stimchannel());
+        deviceDirectory[request->deviceaddress()]->listener->enableDistributedStim(request->enable(), request->sensingchannel(), request->stimchannel(), request->cathodeamplitude(), request->cathodeduration(), request->anodeamplitude(), request->anodeduration(), coefficients_B, coefficients_A);
 
         // Respond to client
         return grpc::Status::OK;

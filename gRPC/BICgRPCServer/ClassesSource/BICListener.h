@@ -8,6 +8,12 @@
 
 namespace BICGRPCHelperNamespace
 {
+    struct StimTimes
+    {
+        uint64_t beforeStimTimeStamp;
+        uint64_t afterStimTimeStamp;
+    };
+
     class BICListener : public cortec::implantapi::IImplantListener
     {
     public:
@@ -19,8 +25,8 @@ namespace BICGRPCHelperNamespace
         void enableErrorStreaming(bool enableSensing, grpc::ServerWriter<BICgRPC::ErrorUpdate>* aWriter);
         void enablePowerStreaming(bool enableSensing, grpc::ServerWriter<BICgRPC::PowerUpdate>* aWriter);
 
-        // ************************* Public Research Stim *************************
-        void enableDistributedStim(bool enableDistributed, int phaseSensingChannel, int phaseStimChannel);
+        // ************************* Public Distributed Algorithm Stimulation Management *************************
+        void enableDistributedStim(bool enableDistributed, int phaseSensingChannel, int phaseStimChannel, double cathodeStimAmplitude, uint64_t cathodeStimDuration, double anodeStimAmplitude, uint64_t anodeStimDuration, std::vector<double> filtCoeff_B, std::vector<double> filtCoeff_A);
         void addImplantPointer(cortec::implantapi::IImplant* theImplantedDevice);
         void enableStimTimeLogging(bool enableSensing);
         double processingHelper(double newData);
@@ -39,7 +45,11 @@ namespace BICGRPCHelperNamespace
         void onError(const std::exception& err);
         void onDataProcessingTooSlow();
         void onStimulationFunctionFinished(const uint64_t numFinishedFunctions);
-        void onRfQualityUpdate(const int8_t antennaQualitydBm, const uint8_t packagePercentage);
+        void onRfQualityUpdate(const int8_t antennaQualitydBm,
+            const uint16_t validFramesReceived, const uint16_t invalidHandshake,
+            const uint16_t radioCrcErrors, const uint16_t otherRxErrors,
+            const uint32_t rxQueueOverflows, const uint32_t txQueueOverflows);
+        void onChannelUpdate(const uint8_t rfChannel);
   
         // ************************* Public Boolean State Accessors *************************
         bool isStimulating();
@@ -53,8 +63,20 @@ namespace BICGRPCHelperNamespace
         bool stimTimeLoggingState = false;
        
     private:
-        // ************************* Private Stream Functions *************************
-        // Generic Functions
+        // ************************* Private General State Objects and Methods *************************
+        // Stim Logging Functions
+        void logStimTimeThread(void);
+        
+        // Generic state variables.
+        std::mutex m_mutex;                     // General purpose mutex used for protecting against multi-threaded state access.
+        std::mutex m_neuroBufferLock;           // General purpose mutex for protecting the neurobuffer against incomplete read/writes
+        std::mutex m_stimTimeBufferLock;        // General purpose mutex for protecting stimtimebuffer against incomplete read/writes
+        bool m_isStimulating;                   // State variable indicating latest stimulation state received from device.
+        bool m_isMeasuring;                     // State variable indicating latest measurement state received from device.
+        cortec::implantapi::IImplant* theImplantedDevice;   // Pointer to the implanted device that is generating BICListener events
+
+        // ************************* Private Stream Coordination Objects and Methods *************************
+        // gRPC Streaming Threads
         void grpcNeuralStreamThread(void);
         void grpcTemperatureStreamThread(void);
         void grpcHumidityStreamThread(void);
@@ -62,48 +84,14 @@ namespace BICGRPCHelperNamespace
         void grpcPowerStreamThread(void);
         void grpcErrorStreamThread(void);
 
-        // Phase Locked Stim Functions
-        void triggeredSendStimThread(void);
-        double filterIIR(double currSamp, std::vector<double>* prevFiltOut, std::vector<double>* prevInput, double b[], double a[]);
-        bool isZeroCrossing(std::vector<double> dataArray);
-        bool detectLocalMaxima(std::vector<double> dataArray);
-
-        // Stim Logging Functions
-        void logStimTimeThread(void);
-
-        // ************************* Private State Objects *************************
-        // Generic state variables.
-        std::mutex m_mutex;                     // General purpose mutex used for protecting against multi-threaded state access.
-        std::mutex m_neuroBufferLock;           // General purpose mutex for protecting the neurobuffer against incomplete read/writes
-        std::mutex m_stimTimeBufferLock;        // General purpose mutex for protecting stimtimebuffer against incomplete read/writes
-        bool m_isStimulating;                   // State variable indicating latest stimulation state received from device.
-        bool m_isMeasuring;                     // State variable indicating latest measurement state received from device.
-
-        // Phase Locked Stim Variables
-        bool isCLStimEn = false;
-        cortec::implantapi::IImplant* theImplantedDevice;
-
-        // ************************* Private Neural Streaming Objects *************************
-        // Neural streaming requires additional state variables because of data buffering and interpolation functionality.
-        // Other streams do not have data buffering and interpolation functionality.
+        // Neural streaming Objects
+            // Neural streaming requires additional state variables because of data buffering and interpolation functionality.
+            // Other streams do not have data buffering and interpolation functionality.
         int neuroDataBufferThreshold;      // Neural data tranmission buffer size, provided to Listener using enableNeuralSensing()
         uint32_t neuroInterplationThreshold;    // Neural interpolation length limit, provided to Listener using enableNeuralSensing()
         uint32_t lastNeuroCount = 0;            // Used to determine the number of samples required for interpolation
         double latestData[32] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
 
-        std::vector<double> bpFiltData = { 0, 0, 0 };
-        std::vector<double> bpPrevData = { 0, 0 };
-        std::vector<double> lpfFiltData = { 0, 0 };
-        std::vector<double> lpfPrevData = { 0, 0 };
-        uint32_t distributedInputChannel = 0; 
-        uint32_t distributedOutputChannel = 31;
-        double betaBandPassIIR_B[3] = { 0.0305, 0, -0.0305 };
-        double betaBandPassIIR_A[3] = { 1, -1.9247, 0.9391 };
-        double lpfIIR_B[3] = { 0.000944691843840153, 0.00188938368768031, 0.000944691843840153 };
-        double lpfIIR_A[3] = { 1, -1.91119706742607, 0.914975834801434 };
-        bool stimToggleControl = false;
-
-        // ************************* Private Stream Coordination Objects *************************
         // Pointers for gRPC-managed streaming interfaces. Set by the BICDeviceServiceImpl class, null when not in use.
         grpc::ServerWriter<BICgRPC::NeuralUpdate>* neuralWriter;
         grpc::ServerWriter<BICgRPC::TemperatureUpdate>* temperatureWriter = NULL;
@@ -119,7 +107,6 @@ namespace BICGRPCHelperNamespace
         std::queue<BICgRPC::ConnectionUpdate*> connectionSampleQueue;
         std::queue<BICgRPC::ErrorUpdate*> errorSampleQueue;
         std::queue<BICgRPC::PowerUpdate*> powerSampleQueue;
-        std::queue<double> stimTimeSampleQueue;
 
         // Stream processing threads
         std::thread* neuralProcessingThread;
@@ -128,9 +115,7 @@ namespace BICGRPCHelperNamespace
         std::thread* connectionProcessingThread;
         std::thread* errorProcessingThread;
         std::thread* powerProcessingThread;
-        std::thread* stimTimeLoggingThread;
-        // for beta- based stim
-        std::thread* betaStimThread;
+        std::thread* distributedStimThread;
 
         // Stream data ready signals
         std::condition_variable* neuralDataNotify;
@@ -140,6 +125,43 @@ namespace BICGRPCHelperNamespace
         std::condition_variable* errorDataNotify;
         std::condition_variable* powerDataNotify;
         std::condition_variable* stimTrigger;
+
+        // ************************* Private Logging Objects and Methods *************************
+        // Logging data queues
+        std::queue<StimTimes> stimTimeSampleQueue;
+
+        // Logging threads
+        std::thread* stimTimeLoggingThread;
+
+        // Logging ready signals
         std::condition_variable* stimTimeDataNotify;
+
+        // ************************* Private Distributed Algorithm Objects and Methods *************************
+        // Distributed Stim Functions
+        void triggeredSendStimThread(void);
+        double filterIIR(double currSamp, std::vector<double>* prevFiltOut, std::vector<double>* prevInput, std::vector<double>* b, std::vector<double>* a);
+        bool isZeroCrossing(std::vector<double> dataArray);
+        bool detectLocalMaxima(std::vector<double> dataArray);
+
+        // Generic Distributed Variables
+        bool isCLStimEn = false;                    // State tracking boolean indicates whether distributed stim is active or not
+        uint32_t distributedInputChannel = 0;       // Distributed algorithm sensing channel (input)
+        uint32_t distributedOutputChannel = 31;     // Distributed algorithm stimulation channel (output)
+        double distributedCathodeAmplitude = -1000; // Distributed algorithm cathode (negative pulse) amplitude (input)
+        uint64_t distributedCathodeDuration = 400;  // Distributed algorithm cathode (negative pulse) duration (input)
+        double distributedAnodeAmplitude = 250;     // Distributed algorithm anode (positive pulse) amplitude (input)
+        uint64_t distributedAnodeDuration = 1600;   // Distributed algorithm anode (positive pulse) duration (input)
+
+        // Signal Processing Variables
+        std::vector<double> bpFiltData = { 0, 0, 0 };                   // IIR BP filter output history
+        std::vector<double> bpPrevData = { 0, 0 };                      // Data history for IIR BP filtering
+        std::vector<double> betaBandPassIIR_B = { 0.0305, 0, -0.0305 }; // IIR BP "B" filter coefficients for a beta-range band-pass
+        std::vector<double> betaBandPassIIR_A = { 1, -1.9247, 0.9391 }; // IIR BP "A" filter coefficients for a beta-range band-pass
+                 
+        std::vector<double> lpfFiltData = { 0, 0 };                     // IIR LPF filter output history
+        std::vector<double> lpfPrevData = { 0, 0 };                     // Data history for IIR LPF filtering
+        double lpfIIR_B[3] = { 0.000944691843840153, 0.00188938368768031, 0.000944691843840153 };   // IIR LPF "B" filter coefficients for a beta-range band-pass
+        double lpfIIR_A[3] = { 1, -1.91119706742607, 0.914975834801434 };                           // IIR LPF "A" filter coefficients for a beta-range band-pass
+        bool stimToggleControl = false;
     };
 }

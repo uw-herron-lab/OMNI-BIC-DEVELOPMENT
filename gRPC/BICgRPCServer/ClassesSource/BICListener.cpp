@@ -95,11 +95,29 @@ namespace BICGRPCHelperNamespace
     /// Event handler that indicates when the RF connection between implant and external unit updates
     /// </summary>
     /// <param name="antennaQualitydBm">Antenna connection quality measure measured in dBm</param>
-    /// <param name="packagePercentage">Percentage of successful packets</param>
-    void BICListener::onRfQualityUpdate(const int8_t antennaQualitydBm, const uint8_t packagePercentage)
+    /// <param name="validFramesReceived">Integer indicating the number of valid frames received</param>
+    /// <param name="invalidHandshake">Integer indicating invalid handshakes</param>
+    /// <param name="radioCrcErrors">Integer indicating CRC errors</param>
+    /// <param name="otherRxErrors">Integer indicating other RX errors</param>
+    /// <param name="rxQueueOverflows">Integer indicating number of RX queue overflows</param>
+    /// <param name="txQueueOverflows">Integer indicating number of TX queue overflows</param>
+    void BICListener::onRfQualityUpdate(const int8_t antennaQualitydBm,
+        const uint16_t validFramesReceived, const uint16_t invalidHandshake,
+        const uint16_t radioCrcErrors, const uint16_t otherRxErrors,
+        const uint32_t rxQueueOverflows, const uint32_t txQueueOverflows)
     {
         // Write Event Information to Console
-        std::cout << "\tSTATE CHANGE: Rf Quality Update: " << antennaQualitydBm << "dBm" << packagePercentage << "% packets successful" << std::endl;
+        std::cout << "\tSTATE CHANGE: Rf Quality Update: " << antennaQualitydBm << "dBm" << std::endl;
+    }
+
+    /// <summary>
+    /// Event handler that indicates when the RF channel is updated
+    /// </summary>
+    /// <param name="rfChannel"></param>
+    void BICListener::onChannelUpdate(const uint8_t rfChannel)
+    {
+        // Write Event Information to Console
+        std::cout << "\tSTATE CHANGE: Rf Channel Update: " << rfChannel << std::endl;
     }
 
     //*************************************************** Connection Streaming Functions ***************************************************
@@ -550,10 +568,17 @@ namespace BICGRPCHelperNamespace
     /// <param name="enableDistributed">A boolean indicating if phasic stim should be enabled or disabled</param>
     /// <param name="phaseSensingChannel">The channel to sense phase on</param>
     /// <param name="phaseStimChannel">The channel to stimulate after negative zero crossings of phase sensing channel</param>
-    void BICListener::enableDistributedStim(bool enableDistributed, int sensingChannel, int stimChannel)
+    void BICListener::enableDistributedStim(bool enableDistributed, int sensingChannel, int stimChannel, double cathodeAmplitude, uint64_t cathodeDuration, double anodeAmplitude, uint64_t anodeDuration, std::vector<double> filtCoeff_B, std::vector<double> filtCoeff_A)
     {
+        // could potentially add filter coefficients to be updated here..?
         distributedInputChannel = sensingChannel;
         distributedOutputChannel = stimChannel;
+        distributedCathodeAmplitude = cathodeAmplitude;
+        distributedCathodeDuration = cathodeDuration;
+        distributedAnodeAmplitude = anodeAmplitude;
+        distributedAnodeDuration = anodeDuration;
+        betaBandPassIIR_B = filtCoeff_B;
+        betaBandPassIIR_A = filtCoeff_A;        
 
         if (enableDistributed && !isCLStimEn)
         {
@@ -565,7 +590,7 @@ namespace BICGRPCHelperNamespace
             isCLStimEn = true;
 
             // Start thread up
-            betaStimThread = new std::thread(&BICListener::triggeredSendStimThread, this);
+            distributedStimThread = new std::thread(&BICListener::triggeredSendStimThread, this);
         }
         else if (!enableDistributed && isCLStimEn)
         {
@@ -574,10 +599,10 @@ namespace BICGRPCHelperNamespace
             stimTrigger->notify_all();
 
             // Disable Closed Loop since it is enabled and request is to disable
-            betaStimThread->join();
-            betaStimThread->~thread();
-            delete betaStimThread;
-            betaStimThread = NULL;
+            distributedStimThread->join();
+            distributedStimThread->~thread();
+            delete distributedStimThread;
+            distributedStimThread = NULL;
 
             // Clean up the conditional variable
             stimTrigger->~condition_variable();
@@ -615,12 +640,16 @@ namespace BICGRPCHelperNamespace
         stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, 10)); // generate atoms --dz0
         stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, 5123)); // generate atoms --dz1
         stimulationCommand->append(stimulationPulseFunction);
+        theImplantedDevice->enqueueStimulationCommand(stimulationCommand, StimulationMode::STIM_MODE_PERSISTENT_CMD_PRELOADING);
+        // create instance of stimTimes to keep track of before and after stim timestamps
+        StimTimes startStimulationTimes;
 
-        // enable stim time streaming
-        std::chrono::duration<double> elapsed_sec;
-        std::chrono::system_clock::time_point chronoStart;
-        std::chrono::system_clock::time_point chronoStop;
+        // enable stim time logging
         enableStimTimeLogging(true);
+
+        // initialize before and after timestamps
+        std::chrono::system_clock::time_point before;
+        std::chrono::system_clock::time_point after;
 
         // Wait for a zero crossing
         stimTrigger->wait(stimTriggerWait);
@@ -631,29 +660,28 @@ namespace BICGRPCHelperNamespace
             // Send a stim command
             try
             {
-                if (stimToggleControl)
-                {
-                    // Start a timer to measure the time that it takes to send a stimulation command
-                    chronoStart = std::chrono::system_clock::now();
+                // Get time before start stimulation command (UTC)
+                before = std::chrono::system_clock::now();
+                startStimulationTimes.beforeStimTimeStamp = before.time_since_epoch().count();
 
-                    // Execute the stimulation command
-                    theImplantedDevice->startStimulation(stimulationCommand);
+                // Execute the stimulation command
+                theImplantedDevice->startStimulation();
 
-                    // Measure the t
-                    chronoStop = std::chrono::system_clock::now();
-                    elapsed_sec = chronoStop - chronoStart;
+                // Get time after start stimulation command (UTC)
+                after = std::chrono::system_clock::now();
+                startStimulationTimes.afterStimTimeStamp = after.time_since_epoch().count();
 
 #ifdef DEBUG_CONSOLE_ENABLE
                     std::cout << "DEBUG: finished stim in " << elapsed_sec.count() << "s\n";
 #endif
 
-                    // Add latest received data packet to the buffer if there is room
-                    if (stimTimeSampleQueue.size() < 1000)
-                    {
-                        // Lock the stim time buffer, add data, unlock
-                        this->m_stimTimeBufferLock.lock();
-                        stimTimeSampleQueue.push(elapsed_sec.count()); // add stimTime at the end of the queue
-                        this->m_stimTimeBufferLock.unlock();
+                // Add latest received data packet to the buffer if there is room
+                if (stimTimeSampleQueue.size() < 1000)
+                {
+                    // Lock the stim time buffer, add data, unlock
+                    this->m_stimTimeBufferLock.lock();
+                    stimTimeSampleQueue.push(startStimulationTimes); // add struct with before and after stim times to queue
+                    this->m_stimTimeBufferLock.unlock();
 
                         // Notify the streaming function that new data exists
                         stimTimeDataNotify->notify_all();
@@ -670,9 +698,6 @@ namespace BICGRPCHelperNamespace
                 {
                     // Stop the stimulation
                     theImplantedDevice->stopStimulation();
-
-                    // Wait for next notification
-                    stimTrigger->wait(stimTriggerWait);
                 }
             }
             catch (std::exception& anyException)
@@ -683,6 +708,9 @@ namespace BICGRPCHelperNamespace
             {
                 std::cout << "ERROR: Stimulation exception encountered. No reason" << std::endl;
             }
+
+            // Wait for a zero crossing
+            stimTrigger->wait(stimTriggerWait);
         }
     }
 
@@ -703,7 +731,7 @@ namespace BICGRPCHelperNamespace
     double BICListener::processingHelper(double newData)
     {   
         // Band pass filter for beta activity
-        double bpfiltSamp = filterIIR(newData, &bpPrevData, &bpFiltData, betaBandPassIIR_B, betaBandPassIIR_A);
+        double bpfiltSamp = filterIIR(newData, &bpPrevData, &bpFiltData, &betaBandPassIIR_B, &betaBandPassIIR_A);
 
 
         // Calculate absolute for envelope calculation
@@ -742,12 +770,12 @@ namespace BICGRPCHelperNamespace
     /// <param name="b">b-array for IIR constants</param>
     /// <param name="a">a-array for IIR constants</param>
     /// <returns>current filtered output</returns>
-    double BICListener::filterIIR(double currSamp, std::vector<double>* prevFiltOut, std::vector<double>* prevInput, double b[], double a[])
+    double BICListener::filterIIR(double currSamp, std::vector<double>* prevFiltOut, std::vector<double>* prevInput, std::vector<double>* b, std::vector<double>* a)
     {
-        double filtTemp;
+       double filtTemp;
 
         // check if n-1 is negative, then n-2 would also be negative
-        filtTemp = b[0] * currSamp + b[1] * prevInput->at(0) + b[2] * prevInput->at(1) - a[1] * prevFiltOut->at(0) - a[2] * prevFiltOut->at(1);
+        filtTemp = b->at(0) * currSamp + b->at(1) * prevInput->at(0) + b->at(2) * prevInput->at(1) - a->at(1) * prevFiltOut->at(0) - a->at(2) * prevFiltOut->at(1);
 
         // remove the last sample and insert the most recent sample to the front of the vector
         prevFiltOut->insert(prevFiltOut->begin(), filtTemp);
@@ -808,9 +836,24 @@ namespace BICGRPCHelperNamespace
         // Open File
         std::ofstream myFile;
 
+        // Get current date and time
+        time_t currTime;
+        char timeStampBuffer[100];
+        struct tm* curr_tm;
+        time(&currTime);
+        curr_tm = localtime(&currTime);
+
+        // Format date and time
+        strftime(timeStampBuffer, 100, "%m%d%Y_%I%M%S", curr_tm);
+        std::string timeStamp(timeStampBuffer);
+
+        // Append to the name of the stim logging file 
+        std::string fileName = "stimTimeLog_" + timeStamp + ".csv";
+
         // Loop while streaming is active
         while (stimTimeLoggingState)
         {
+            // if either are empty, wait
             if (stimTimeSampleQueue.empty())
             {
                 stimTimeDataNotify->wait(stimTimeDataWait);
@@ -821,12 +864,12 @@ namespace BICGRPCHelperNamespace
                     // Lock the buffer
                     this->m_stimTimeBufferLock.lock();
                     // Write out new line to file
-                    myFile.open("stimTimeLog.csv", std::ios_base::app);
-                    myFile << stimTimeSampleQueue.front();
-                    myFile << "\n";
+                    myFile.open(fileName, std::ios_base::app);
+                    // log two values: timestamp before and after stim command
+                    myFile << stimTimeSampleQueue.front().beforeStimTimeStamp << ", " << stimTimeSampleQueue.front().afterStimTimeStamp << "\n";
                     myFile.close();
                     // Clean up the current sample from the list
-                    stimTimeSampleQueue.pop(); // take out first sample of queue
+                    stimTimeSampleQueue.pop(); // take out first item of queue
                     // Unlock the neurobuffer
                     this->m_stimTimeBufferLock.unlock();
                 }

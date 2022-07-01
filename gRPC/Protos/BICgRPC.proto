@@ -53,8 +53,8 @@ service BICDeviceService{
 
 	// Stim Functions
 	rpc bicStartStimulation (bicStartStimulationRequest) returns (bicSuccessReply) {}
+	rpc bicEnqueueStimulation (bicEnqueueStimulationRequest) returns (bicSuccessReply) {}
 	rpc bicStopStimulation (RequestDeviceAddress) returns (bicSuccessReply) {}
-	rpc bicDefineStimulationWaveform (bicStimulationFunctionDefinitionRequest) returns (bicSuccessReply) {}
 	rpc enableDistributedStimulation (distributedStimEnableRequest) returns (bicSuccessReply) {}
 
 	// Streaming endpoints
@@ -190,15 +190,22 @@ message bicSetImplantPowerRequest{
 }
 
 // *************************** Device Stimulation Service Messages ***************************
-// bicStartStimulation Messages
 message bicStartStimulationRequest{
 	string deviceAddress = 1;
-	string functionName = 2;
+	EnqueueStimulationMode mode = 2;
+	uint32 functionModeIndex = 3;
 }
 
-message bicStimulationFunctionDefinitionRequest{
+message bicEnqueueStimulationRequest{
 	string deviceAddress = 1;
-	repeated StimulationFunctionDefinition functions = 2;
+	EnqueueStimulationMode mode = 2;
+	repeated StimulationFunctionDefinition functions = 3;
+}
+
+enum EnqueueStimulationMode{
+	VOLATILE_WAVEFORM = 0;
+	PERSISTENT_WAVEFORM = 1;
+	PERSISTENT_SUBFUNCTIONS = 2;
 }
 
 message StimulationFunctionDefinition{
@@ -231,6 +238,12 @@ message distributedStimEnableRequest{
 	bool enable = 2;
 	uint32 sensingChannel = 3;
 	uint32 stimChannel = 4;
+	double cathodeAmplitude = 5;
+	uint64 cathodeDuration = 6;
+	double anodeAmplitude = 7;
+	uint64 anodeDuration = 8;
+	repeated double filterCoefficients_B = 9;
+	repeated double filterCoefficients_A = 10;
 }
 
 // *************************** Device Streaming Service Messages ***************************
