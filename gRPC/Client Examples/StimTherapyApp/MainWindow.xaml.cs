@@ -16,6 +16,8 @@ using System.Windows.Shapes;
 using System.Windows.Forms.DataVisualization;
 using System.Timers;
 using System.Threading;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace StimTherapyApp
 {
@@ -30,6 +32,12 @@ namespace StimTherapyApp
         //private bool openStimState = false;
         private uint userStimChannel;
         private uint userSenseChannel;
+        private double userCathodeAmplitude;
+        private uint userCathodeDuration;
+        private double userAnodeAmplitude;
+        private uint userAnodeDuration;
+        private List<double> userFilterCoefficients_B;
+        private List<double> userFilterCoefficients_A;
         private int numChannels = 34;
         public class Channel
         {
@@ -39,6 +47,19 @@ namespace StimTherapyApp
 
         private System.Timers.Timer neuroChartUpdateTimer;
         public List<Channel> channelList { get; set; }
+
+        public class Configuration
+        {
+            public string stimType { get; set; }
+            public int senseChannel { get; set; }
+            public int stimChannel { get; set; }
+            public double cathodeAmplitude { get; set; }
+            public uint cathodeDuration { get; set; }
+            public double anodeAmplitude { get; set; }
+            public uint anodeDuration { get; set; }
+            public List<double> filterCoefficients_B { get; set; }
+            public List<double> filterCoefficients_A { get; set; }
+        }
 
         public MainWindow()
         {
@@ -204,41 +225,59 @@ namespace StimTherapyApp
             bool? loadFile = fileD.ShowDialog();
             if (loadFile == true)
             {
-                // grab the path of the selected file
                 string fileName = fileD.FileName;
-                // check that the file exists
                 if (File.Exists(fileName))
                 {
-                    int senseChannelIndex = 1;
-                    int stimChannelIndex = 2;
+                    // load in .json file and read in stimulation parameters
+                    using (StreamReader fileReader = new StreamReader(fileName))
+                    {
+                        string configJson = fileReader.ReadToEnd();
+                        Configuration configInfo = System.Text.Json.JsonSerializer.Deserialize<Configuration>(configJson);
 
-                    String[] lines = File.ReadAllLines(fileName);
-                    // skip the header/labels of each column
-                    lines = lines.Skip(1).ToArray();
-                    // grab first string- corresponding to first row of info (i.e. stim type,stim channel,sense channel,amplitude,frequency)
-                    string test = lines[0];
-                    string[] testlist = test.Split(','); // split based off commas
-                    // save stimulation and sensing info
-                    userStimChannel = UInt32.Parse(testlist[stimChannelIndex]);
-                    userSenseChannel = UInt32.Parse(testlist[senseChannelIndex]);
+                        OutputConsole.Inlines.Add("Loaded " + fileName + "\n");
+                        OutputConsole.Inlines.Add("Stimulation type: " + configInfo.stimType + "\n");
+                        OutputConsole.Inlines.Add("Sense channel: " + configInfo.senseChannel + "\n");
+                        OutputConsole.Inlines.Add("Stim channel: " + configInfo.stimChannel + "\n");
+                        OutputConsole.Inlines.Add("Cathode Amplitude: " + configInfo.cathodeAmplitude + " uA\n");
+                        OutputConsole.Inlines.Add("Cathode Duration: " + configInfo.cathodeDuration + " us\n");
+                        OutputConsole.Inlines.Add("Anode Amplitude: " + configInfo.anodeAmplitude + " uA\n");
+                        OutputConsole.Inlines.Add("Anode Duration: " + configInfo.anodeDuration + " us\n");
+                        OutputConsole.Inlines.Add("Filter Coefficient [B]: ");
+                        for (int i = 0; i < configInfo.filterCoefficients_B.Count; i++)
+                        {
+                            OutputConsole.Inlines.Add(configInfo.filterCoefficients_B[i] + " ");
+                        }
+                        OutputConsole.Inlines.Add("\nFilter Coefficients [A]: ");
+                        for (int i = 0; i < configInfo.filterCoefficients_A.Count; i++)
+                        {
+                            OutputConsole.Inlines.Add(configInfo.filterCoefficients_A[i] + " ");
+                        }
+                        OutputConsole.Inlines.Add("\n");
+                        Scroller.ScrollToEnd();
 
-                    // read in CSV file and get the type of stim and stimulation and sensing channel of choice
-                    // let user know a file has been loaded and what the chosen stimulation and sensing channels are
-                    OutputConsole.Inlines.Add("Loaded " + fileName + "\n");
-                    OutputConsole.Inlines.Add("Stim Channel: " + userStimChannel + "\n");
-                    OutputConsole.Inlines.Add("Sense Channel: " + userSenseChannel + "\n");
-                    Scroller.ScrollToEnd();
+                        userSenseChannel = (uint)configInfo.senseChannel;
+                        userStimChannel = (uint)configInfo.stimChannel;
+                        userCathodeAmplitude = configInfo.cathodeAmplitude;
+                        userCathodeDuration = configInfo.cathodeDuration;
+                        userAnodeAmplitude = configInfo.anodeAmplitude;
+                        userAnodeDuration = configInfo.anodeDuration;
+                        userFilterCoefficients_B = configInfo.filterCoefficients_B;
+                        userFilterCoefficients_A = configInfo.filterCoefficients_A;
+                    }
+                    
+                    
+
+                    neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
+                    delegate
+                    {
+                        // enable buttons after a config has been successfully loaded
+                        btn_beta.IsEnabled = true; // beta stim button; have to use method invoker
+                        btn_openloop.IsEnabled = true; // open loop stim button
+                        btn_load.IsEnabled = true; // load config button
+                        btn_diagnostic.IsEnabled = true; // diagnostics button
+                        btn_stop.IsEnabled = true; // stop stim button
+                    }));
                 }
-                neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
-                delegate
-                {
-                    // enable buttons after a config has been successfully loaded
-                    btn_beta.IsEnabled = true; // beta stim button; have to use method invoker
-                    btn_openloop.IsEnabled = true; // open loop stim button
-                    btn_load.IsEnabled = true; // load config button
-                    btn_diagnostic.IsEnabled = true; // diagnostics button
-                    btn_stop.IsEnabled = true; // stop stim button
-                }));
             }
         }
         private void btn_beta_Click(object sender, RoutedEventArgs e)
@@ -251,7 +290,7 @@ namespace StimTherapyApp
                 // start phase triggered stim and update status
                 try
                 {
-                    aBICManager.enableDistributedStim(true, userStimChannel - 1, userSenseChannel - 1);
+                    aBICManager.enableDistributedStim(true, userStimChannel - 1, userSenseChannel - 1, userCathodeAmplitude, userCathodeDuration, userAnodeAmplitude, userAnodeDuration, userFilterCoefficients_B, userFilterCoefficients_A);
                 }
                 catch
                 {
@@ -313,7 +352,7 @@ namespace StimTherapyApp
             ThreadPool.QueueUserWorkItem(a =>
             {
                 // disable beta and open loop stim
-                aBICManager.enableDistributedStim(false, userStimChannel-1, userSenseChannel-1);
+                aBICManager.enableDistributedStim(false, userStimChannel-1, userSenseChannel-1, userCathodeAmplitude, userCathodeDuration, userAnodeAmplitude, userAnodeDuration, userFilterCoefficients_B, userFilterCoefficients_A);
 
                 // update stim statuses
                 //phasicStimState = false;

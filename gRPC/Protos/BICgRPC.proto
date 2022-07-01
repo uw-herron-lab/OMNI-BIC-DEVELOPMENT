@@ -238,6 +238,12 @@ message distributedStimEnableRequest{
 	bool enable = 2;
 	uint32 sensingChannel = 3;
 	uint32 stimChannel = 4;
+	double cathodeAmplitude = 5;
+	uint64 cathodeDuration = 6;
+	double anodeAmplitude = 7;
+	uint64 anodeDuration = 8;
+	repeated double filterCoefficients_B = 9;
+	repeated double filterCoefficients_A = 10;
 }
 
 // *************************** Device Streaming Service Messages ***************************

@@ -26,7 +26,7 @@ namespace BICGRPCHelperNamespace
         void enablePowerStreaming(bool enableSensing, grpc::ServerWriter<BICgRPC::PowerUpdate>* aWriter);
 
         // ************************* Public Distributed Algorithm Stimulation Management *************************
-        void enableDistributedStim(bool enableDistributed, int phaseSensingChannel, int phaseStimChannel);
+        void enableDistributedStim(bool enableDistributed, int phaseSensingChannel, int phaseStimChannel, double cathodeStimAmplitude, uint64_t cathodeStimDuration, double anodeStimAmplitude, uint64_t anodeStimDuration, std::vector<double> filtCoeff_B, std::vector<double> filtCoeff_A);
         void addImplantPointer(cortec::implantapi::IImplant* theImplantedDevice);
         void enableStimTimeLogging(bool enableSensing);
         double processingHelper(double newData);
@@ -139,7 +139,7 @@ namespace BICGRPCHelperNamespace
         // ************************* Private Distributed Algorithm Objects and Methods *************************
         // Distributed Stim Functions
         void triggeredSendStimThread(void);
-        double filterIIR(double currSamp, std::vector<double>* prevFiltOut, std::vector<double>* prevInput, double b[], double a[]);
+        double filterIIR(double currSamp, std::vector<double>* prevFiltOut, std::vector<double>* prevInput, std::vector<double>* b, std::vector<double>* a);
         bool isZeroCrossing(std::vector<double> dataArray);
         bool detectLocalMaxima(std::vector<double> dataArray);
 
@@ -147,11 +147,15 @@ namespace BICGRPCHelperNamespace
         bool isCLStimEn = false;                    // State tracking boolean indicates whether distributed stim is active or not
         uint32_t distributedInputChannel = 0;       // Distributed algorithm sensing channel (input)
         uint32_t distributedOutputChannel = 31;     // Distributed algorithm stimulation channel (output)
+        double distributedCathodeAmplitude = -1000; // Distributed algorithm cathode (negative pulse) amplitude (input)
+        uint64_t distributedCathodeDuration = 400;  // Distributed algorithm cathode (negative pulse) duration (input)
+        double distributedAnodeAmplitude = 250;     // Distributed algorithm anode (positive pulse) amplitude (input)
+        uint64_t distributedAnodeDuration = 1600;   // Distributed algorithm anode (positive pulse) duration (input)
 
         // Signal Processing Variables
-        std::vector<double> bpFiltData = { 0, 0, 0 };           // IIR filter output history
-        std::vector<double> bpPrevData = { 0, 0 };              // Data history for IIR filtering
-        double betaBandPassIIR_B[3] = { 0.0305, 0, -0.0305 };   // IIR "B" filter coefficients for a beta-range band-pass
-        double betaBandPassIIR_A[3] = { 1, -1.9247, 0.9391 };   // IIR "A" filter coefficients for a beta-range band-pass
+        std::vector<double> bpFiltData = { 0, 0, 0 };                   // IIR filter output history
+        std::vector<double> bpPrevData = { 0, 0 };                      // Data history for IIR filtering
+        std::vector<double> betaBandPassIIR_B = { 0.0305, 0, -0.0305 }; // IIR "B" filter coefficients for a beta-range band-pass
+        std::vector<double> betaBandPassIIR_A = { 1, -1.9247, 0.9391 }; // IIR "A" filter coefficients for a beta-range band-pass
     };
 }
