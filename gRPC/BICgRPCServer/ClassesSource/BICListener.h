@@ -45,7 +45,11 @@ namespace BICGRPCHelperNamespace
         void onError(const std::exception& err);
         void onDataProcessingTooSlow();
         void onStimulationFunctionFinished(const uint64_t numFinishedFunctions);
-        void onRfQualityUpdate(const int8_t antennaQualitydBm, const uint8_t packagePercentage);
+        void onRfQualityUpdate(const int8_t antennaQualitydBm,
+            const uint16_t validFramesReceived, const uint16_t invalidHandshake,
+            const uint16_t radioCrcErrors, const uint16_t otherRxErrors,
+            const uint32_t rxQueueOverflows, const uint32_t txQueueOverflows);
+        void onChannelUpdate(const uint8_t rfChannel);
   
         // ************************* Public Boolean State Accessors *************************
         bool isStimulating();

@@ -62,7 +62,7 @@ namespace BICGRPCHelperNamespace
 
         grpc::Status bicStopStimulation(grpc::ServerContext* context, const BICgRPC::RequestDeviceAddress* request, BICgRPC::bicSuccessReply* reply) override;
 
-        grpc::Status bicDefineStimulationWaveform(grpc::ServerContext* context, const BICgRPC::bicStimulationFunctionDefinitionRequest* request, BICgRPC::bicSuccessReply* reply) override;
+        grpc::Status bicEnqueueStimulation(grpc::ServerContext* context, const BICgRPC::bicEnqueueStimulationRequest* request, BICgRPC::bicSuccessReply* reply) override;
 
         grpc::Status enableDistributedStimulation(grpc::ServerContext* context, const BICgRPC::distributedStimEnableRequest* request, BICgRPC::bicSuccessReply* reply) override;
     };

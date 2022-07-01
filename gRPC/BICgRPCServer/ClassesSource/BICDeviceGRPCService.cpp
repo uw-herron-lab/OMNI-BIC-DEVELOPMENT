@@ -26,7 +26,7 @@ using BICgRPC::bicGetHumidityReply;
 using BICgRPC::bicNeuralSetStreamingEnable;
 using BICgRPC::bicSetImplantPowerRequest;
 using BICgRPC::bicStartStimulationRequest;
-using BICgRPC::bicStimulationFunctionDefinitionRequest;
+using BICgRPC::bicEnqueueStimulationRequest;
 using BICgRPC::StimulationFunctionDefinition;
 using BICgRPC::TemperatureUpdate;
 using BICgRPC::HumidityUpdate;
@@ -576,7 +576,7 @@ namespace BICGRPCHelperNamespace
         // Perform the operation
         try
         {
-            deviceDirectory[request->deviceaddress()]->theImplant->startStimulation(deviceDirectory[request->deviceaddress()]->theStimulationCommand);
+            deviceDirectory[request->deviceaddress()]->theImplant->startStimulation();
         }
         catch (const std::exception theExeption)
         {
@@ -611,7 +611,7 @@ namespace BICGRPCHelperNamespace
         return grpc::Status::OK;
     }
 
-    grpc::Status BICDeviceGRPCService::bicDefineStimulationWaveform(grpc::ServerContext* context, const BICgRPC::bicStimulationFunctionDefinitionRequest* request, BICgRPC::bicSuccessReply* reply)
+    grpc::Status BICDeviceGRPCService::bicEnqueueStimulation(grpc::ServerContext* context, const BICgRPC::bicEnqueueStimulationRequest* request, BICgRPC::bicSuccessReply* reply)
     {
         // Check if already initialized
         if (deviceDirectory.find(request->deviceaddress()) == deviceDirectory.end())
@@ -621,7 +621,7 @@ namespace BICGRPCHelperNamespace
 
         // Create objects required for 
         std::unique_ptr<IStimulationCommandFactory> theFactory(createStimulationCommandFactory());
-        deviceDirectory[request->deviceaddress()]->theStimulationCommand = theFactory->createStimulationCommand();
+        IStimulationCommand* theStimulationCommand = theFactory->createStimulationCommand();
 
         // Iterate through provided functions and add them to the command 
         try
@@ -679,7 +679,7 @@ namespace BICGRPCHelperNamespace
                     theFunction->append(theFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, request->functions().at(i).stimpulse().dz1duration()));
 
                     // Add the function to the command
-                    deviceDirectory[request->deviceaddress()]->theStimulationCommand->append(theFunction);
+                    theStimulationCommand->append(theFunction);
                 }
                 else if (request->functions().at(i).has_pause())
                 {
@@ -687,13 +687,17 @@ namespace BICGRPCHelperNamespace
                     theFunction->append(theFactory->createStimulationPauseAtom(request->functions().at(i).pause().duration()));
 
                     // Add the function to the command
-                    deviceDirectory[request->deviceaddress()]->theStimulationCommand->append(theFunction);
+                    theStimulationCommand->append(theFunction);
                 }
                 else
                 {
                     // No atoms?
                 }
             }
+
+            // Stimulation Command created, now enqueue
+            deviceDirectory[request->deviceaddress()]->theImplant->enqueueStimulationCommand(theStimulationCommand, (StimulationMode)request->mode());
+            delete theStimulationCommand;
         }
         catch (const std::exception theExeption)
         {
