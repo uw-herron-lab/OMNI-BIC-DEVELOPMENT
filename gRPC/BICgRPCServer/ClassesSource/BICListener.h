@@ -160,8 +160,8 @@ namespace BICGRPCHelperNamespace
                  
         std::vector<double> lpfFiltData = { 0, 0 };                     // IIR LPF filter output history
         std::vector<double> lpfPrevData = { 0, 0 };                     // Data history for IIR LPF filtering
-        double lpfIIR_B[3] = { 0.000944691843840153, 0.00188938368768031, 0.000944691843840153 };   // IIR LPF "B" filter coefficients for a beta-range band-pass
-        double lpfIIR_A[3] = { 1, -1.91119706742607, 0.914975834801434 };                           // IIR LPF "A" filter coefficients for a beta-range band-pass
+        std::vector<double> lpfIIR_B = { 0.000944691843840153, 0.00188938368768031, 0.000944691843840153 };   // IIR LPF "B" filter coefficients for a beta-range band-pass
+        std::vector<double> lpfIIR_A = { 1, -1.91119706742607, 0.914975834801434 };                           // IIR LPF "A" filter coefficients for a beta-range band-pass
         bool stimToggleControl = false;
     };
 }

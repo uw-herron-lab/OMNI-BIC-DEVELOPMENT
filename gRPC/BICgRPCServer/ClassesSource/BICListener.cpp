@@ -660,34 +660,33 @@ namespace BICGRPCHelperNamespace
             // Send a stim command
             try
             {
-                // Get time before start stimulation command (UTC)
-                before = std::chrono::system_clock::now();
-                startStimulationTimes.beforeStimTimeStamp = before.time_since_epoch().count();
+                if (stimToggleControl)
+                {
+                    // Get time before start stimulation command (UTC)
+                    before = std::chrono::system_clock::now();
+                    startStimulationTimes.beforeStimTimeStamp = before.time_since_epoch().count();
 
-                // Execute the stimulation command
-                theImplantedDevice->startStimulation();
+                    // Execute the stimulation command
+                    theImplantedDevice->startStimulation();
 
-                // Get time after start stimulation command (UTC)
-                after = std::chrono::system_clock::now();
-                startStimulationTimes.afterStimTimeStamp = after.time_since_epoch().count();
+                    // Get time after start stimulation command (UTC)
+                    after = std::chrono::system_clock::now();
+                    startStimulationTimes.afterStimTimeStamp = after.time_since_epoch().count();
 
 #ifdef DEBUG_CONSOLE_ENABLE
                     std::cout << "DEBUG: finished stim in " << elapsed_sec.count() << "s\n";
 #endif
 
-                // Add latest received data packet to the buffer if there is room
-                if (stimTimeSampleQueue.size() < 1000)
-                {
-                    // Lock the stim time buffer, add data, unlock
-                    this->m_stimTimeBufferLock.lock();
-                    stimTimeSampleQueue.push(startStimulationTimes); // add struct with before and after stim times to queue
-                    this->m_stimTimeBufferLock.unlock();
+                    // Add latest received data packet to the buffer if there is room
+                    if (stimTimeSampleQueue.size() < 1000)
+                    {
+                        // Lock the stim time buffer, add data, unlock
+                        this->m_stimTimeBufferLock.lock();
+                        stimTimeSampleQueue.push(startStimulationTimes); // add struct with before and after stim times to queue
+                        this->m_stimTimeBufferLock.unlock();
 
                         // Notify the streaming function that new data exists
                         stimTimeDataNotify->notify_all();
-
-                        // Wait for next notification
-                        stimTrigger->wait(stimTriggerWait);
                     }
                     else
                     {
@@ -739,7 +738,7 @@ namespace BICGRPCHelperNamespace
             bpfiltSamp = -bpfiltSamp;
 
         // LPF for envelope
-        double lpffiltSamp = filterIIR(bpfiltSamp, &lpfPrevData, &lpfFiltData, lpfIIR_B, lpfIIR_A);
+        double lpffiltSamp = filterIIR(bpfiltSamp, &lpfPrevData, &lpfFiltData, &lpfIIR_B, &lpfIIR_A);
 
         // if closed-loop stim is enabled and envelope exceeds threshold, trigger stimulation
         if (isCLStimEn && !stimToggleControl && lpffiltSamp > 50)
