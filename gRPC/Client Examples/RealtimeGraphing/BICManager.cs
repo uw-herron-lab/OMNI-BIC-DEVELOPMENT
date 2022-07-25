@@ -214,6 +214,20 @@ namespace RealtimeGraphing
             }
         }
 
+        private bool validBufferOrderCheck(Google.Protobuf.Collections.RepeatedField<NeuralSample> sampleBuffer)
+        {
+            uint prevPacketNum = sampleBuffer[0].SampleCounter;
+            for (int i = 1; i < sampleBuffer.Count; i++)
+            {
+                if (sampleBuffer[i].SampleCounter != prevPacketNum + 1) // check if the sequential packet number is less than the previous packet number
+                {
+                    Console.WriteLine("ERROR: Packet numbers are not in order");
+                    return false;
+                }
+            }
+            return true;
+        }
+
         /// <summary>
         /// Monitor the neural stream for new data
         /// </summary>
@@ -230,6 +244,9 @@ namespace RealtimeGraphing
             uint latestPacketNum = 0;
             while (await stream.ResponseStream.MoveNext())
             {
+                // Check if buffer has out of order packet numbers
+                validBufferOrderCheck(stream.ResponseStream.Current.Samples);
+
                 // Missing packet handling
                 if (stream.ResponseStream.Current.Samples[0].SampleCounter != (latestPacketNum + 1) )
                 {
