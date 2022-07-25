@@ -221,9 +221,11 @@ namespace RealtimeGraphing
             {
                 if (sampleBuffer[i].SampleCounter != prevPacketNum + 1) // check if the sequential packet number is less than the previous packet number
                 {
-                    Console.WriteLine("ERROR: Packet numbers are not in order");
+                    Console.WriteLine("ERROR: Packet numbers are not in order! Sample (prev, next): " + prevPacketNum.ToString() + ", " + sampleBuffer[i].ToString());
                     return false;
                 }
+                prevPacketNum = sampleBuffer[i].SampleCounter; // update the prevPacketNum value
+                // print out packet number difference 
             }
             return true;
         }
