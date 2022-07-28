@@ -222,13 +222,14 @@ namespace RealtimeGraphing
             uint prevPacketNum = sampleBuffer[0].SampleCounter;
             for (int i = 1; i < sampleBuffer.Count; i++)
             {
-                if (sampleBuffer[i].SampleCounter != prevPacketNum + 1) // check if the sequential packet number is less than the previous packet number
+                // check if the sequential packet number is less than the previous packet number
+                if (sampleBuffer[i].SampleCounter < prevPacketNum + 1) 
                 {
                     Console.WriteLine("ERROR: Packet numbers are not in order! Sample (prev, next): " + prevPacketNum.ToString() + ", " + sampleBuffer[i].SampleCounter.ToString());
                     return false;
                 }
-                prevPacketNum = sampleBuffer[i].SampleCounter; // update the prevPacketNum value
-                // print out packet number difference 
+                // update the prevPacketNum value
+                prevPacketNum = sampleBuffer[i].SampleCounter;
             }
             return true;
         }
