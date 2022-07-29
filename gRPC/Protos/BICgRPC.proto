@@ -275,6 +275,7 @@ message NeuralSample{
 	bool isInterpolated = 8;
 	double filtSample = 9;
 	uint32 filtChannel = 10;
+	uint64 timeStamp = 11;
 }
 
 message ConnectionUpdate{

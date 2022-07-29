@@ -412,6 +412,8 @@ namespace BICGRPCHelperNamespace
     /// <param name="samples">BIC sensed LFP samples</param>
     void BICListener::onData(const std::vector<CSample>* samples)
     {
+        uint64_t timeSinceStart;
+        std::chrono::system_clock::time_point startUp = std::chrono::system_clock::now();
         // Ensure samples is not empty before working with it.
         if (!samples->empty())
         {
@@ -431,7 +433,8 @@ namespace BICGRPCHelperNamespace
                 newSample->set_samplecounter(sampleCounter);
                 newSample->set_isinterpolated(false);
                 newSample->set_filtchannel(distributedInputChannel);
-
+                timeSinceStart = startUp.time_since_epoch().count();
+                newSample->set_timestamp(timeSinceStart);
                 // Check if we've lost packets, if so interpolate
                 if (lastNeuroCount + 1 != sampleCounter)
                 {
@@ -486,6 +489,8 @@ namespace BICGRPCHelperNamespace
                                 newInterpolatedSample->set_samplecounter(lastNeuroCount + interpolatedPointNum);
                                 newInterpolatedSample->set_isinterpolated(true);
                                 newInterpolatedSample->set_filtchannel(distributedInputChannel);
+                                timeSinceStart = startUp.time_since_epoch().count();
+                                newInterpolatedSample->set_timestamp(timeSinceStart);
 
                                 // Copy in the time domain data in
                                 for (int interChannelPoint = 0; interChannelPoint < sampleNum; interChannelPoint++)
