@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,7 +29,7 @@ namespace RealtimeGraphing
         FileStream logFileStream;
         StreamWriter logFileWriter;
         string filePath = "./filterLog.csv";
-        Queue<string> logLineQueue = new Queue<string>();
+        ConcurrentQueue<string> logLineQueue = new ConcurrentQueue<string>();
         Thread newLoggingThread;
         bool loggingNotDisposed = true;
 
@@ -193,20 +194,21 @@ namespace RealtimeGraphing
 
         private void loggingThread()
         {
+            // Declare output from concurrent queue
+            string dequeuedString;
+
+            // Loop until quit
             while(loggingNotDisposed)
             {
                 try
                 {
-                    lock(dataBufferLock)
+                    if (logLineQueue.TryDequeue(out dequeuedString))
                     {
-                        if (logLineQueue.Count > 1)
-                        {
-                            logFileWriter.WriteLine(logLineQueue.Dequeue());
-                        }
-                        else
-                        {
-                            Thread.Sleep(1);
-                        }
+                        logFileWriter.WriteLine(dequeuedString);
+                    }
+                    else
+                    {
+                        Thread.Sleep(50);
                     }
                 }
                 catch (Exception e)
@@ -333,15 +335,15 @@ namespace RealtimeGraphing
 
                         // Log the latest info out to the CSV
                         int filteredIndex = (int)stream.ResponseStream.Current.Samples[sampleNum].FiltChannel;
-                        logLineQueue.Enqueue(
-                            stream.ResponseStream.Current.Samples[sampleNum].SampleCounter.ToString() + ", " +
+
+                        // Enqueue the data for the logging thread
+                        string logString = stream.ResponseStream.Current.Samples[sampleNum].SampleCounter.ToString() + ", " +
                             filteredIndex.ToString() + ", " +
                             stream.ResponseStream.Current.Samples[sampleNum].Measurements[filteredIndex].ToString() + ", " +
                             stream.ResponseStream.Current.Samples[sampleNum].FiltSample.ToString() + ", " +
                             stream.ResponseStream.Current.Samples[sampleNum].IsInterpolated.ToString() + ", " +
-                            stream.ResponseStream.Current.Samples[sampleNum].Measurements[5].ToString()
-                        ); ;
-
+                            stream.ResponseStream.Current.Samples[sampleNum].Measurements[5].ToString();
+                        logLineQueue.Enqueue(logString);
                     }
                     // Add new data to filtered data buffer
                     filtDataBuffer[0].AddRange(filtBuffer);
