@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,7 +29,7 @@ namespace RealtimeGraphing
         FileStream logFileStream;
         StreamWriter logFileWriter;
         string filePath = "./filterLog.csv";
-        Queue<string> logLineQueue = new Queue<string>();
+        ConcurrentQueue<string> logLineQueue = new ConcurrentQueue<string>();
         Thread newLoggingThread;
         bool loggingNotDisposed = true;
 
@@ -193,17 +194,21 @@ namespace RealtimeGraphing
 
         private void loggingThread()
         {
+            // Declare output from concurrent queue
+            string dequeuedString;
+
+            // Loop until quit
             while(loggingNotDisposed)
             {
                 try
                 {
-                    if(logLineQueue.Count > 1)
+                    if (logLineQueue.TryDequeue(out dequeuedString))
                     {
-                        logFileWriter.WriteLine(logLineQueue.Dequeue());
+                        logFileWriter.WriteLine(dequeuedString);
                     }
                     else
                     {
-                        Thread.Sleep(1);
+                        Thread.Sleep(50);
                     }
                 }
                 catch (Exception e)
@@ -212,6 +217,23 @@ namespace RealtimeGraphing
                 }
 
             }
+        }
+
+        private bool validBufferOrderCheck(Google.Protobuf.Collections.RepeatedField<NeuralSample> sampleBuffer)
+        {
+            uint prevPacketNum = sampleBuffer[0].SampleCounter;
+            for (int i = 1; i < sampleBuffer.Count; i++)
+            {
+                // check if the sequential packet number is less than the previous packet number
+                if (sampleBuffer[i].SampleCounter < prevPacketNum + 1) 
+                {
+                    Console.WriteLine("ERROR: Packet numbers are not in order! Sample (prev, next): " + prevPacketNum.ToString() + ", " + sampleBuffer[i].SampleCounter.ToString());
+                    return false;
+                }
+                // update the prevPacketNum value
+                prevPacketNum = sampleBuffer[i].SampleCounter;
+            }
+            return true;
         }
 
         /// <summary>
@@ -230,6 +252,9 @@ namespace RealtimeGraphing
             uint latestPacketNum = 0;
             while (await stream.ResponseStream.MoveNext())
             {
+                // Check if buffer has out of order packet numbers
+                validBufferOrderCheck(stream.ResponseStream.Current.Samples);
+
                 // Missing packet handling
                 if (stream.ResponseStream.Current.Samples[0].SampleCounter != (latestPacketNum + 1) )
                 {
@@ -310,15 +335,15 @@ namespace RealtimeGraphing
 
                         // Log the latest info out to the CSV
                         int filteredIndex = (int)stream.ResponseStream.Current.Samples[sampleNum].FiltChannel;
-                        logLineQueue.Enqueue(
-                            stream.ResponseStream.Current.Samples[sampleNum].SampleCounter.ToString() + ", " +
+
+                        // Enqueue the data for the logging thread
+                        string logString = stream.ResponseStream.Current.Samples[sampleNum].SampleCounter.ToString() + ", " +
                             filteredIndex.ToString() + ", " +
                             stream.ResponseStream.Current.Samples[sampleNum].Measurements[filteredIndex].ToString() + ", " +
                             stream.ResponseStream.Current.Samples[sampleNum].FiltSample.ToString() + ", " +
                             stream.ResponseStream.Current.Samples[sampleNum].IsInterpolated.ToString() + ", " +
-                            stream.ResponseStream.Current.Samples[sampleNum].Measurements[5].ToString()
-                        ); ;
-
+                            stream.ResponseStream.Current.Samples[sampleNum].Measurements[5].ToString();
+                        logLineQueue.Enqueue(logString);
                     }
                     // Add new data to filtered data buffer
                     filtDataBuffer[0].AddRange(filtBuffer);
