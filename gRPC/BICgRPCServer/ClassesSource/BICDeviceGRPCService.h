@@ -65,5 +65,7 @@ namespace BICGRPCHelperNamespace
         grpc::Status bicEnqueueStimulation(grpc::ServerContext* context, const BICgRPC::bicEnqueueStimulationRequest* request, BICgRPC::bicSuccessReply* reply) override;
 
         grpc::Status enableDistributedStimulation(grpc::ServerContext* context, const BICgRPC::distributedStimEnableRequest* request, BICgRPC::bicSuccessReply* reply) override;
+
+        grpc::Status enableOpenLoopStimulation(grpc::ServerContext* context, const BICgRPC::openLoopStimEnableRequest* request, BICgRPC::bicSuccessReply* reply) override;
     };
 }
