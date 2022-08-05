@@ -36,8 +36,6 @@ namespace RealtimeGraphing
         // Public Class Properties
         public int DataBufferMaxSampleNumber { get; set; }
         
-        
-
         // Task pointers for streaming methods
         private Task neuroMonitor = null;
 
@@ -161,10 +159,52 @@ namespace RealtimeGraphing
             logFileStream.Dispose();
         }
 
-        public void enableDistributedStim(bool closedStimEn, uint stimChannel, uint senseChannel, double cathodeAmplitude, uint cathodeDuration, double anodeAmplitude, uint anodeDuration, List<double> filterCoefficients_B, List<double> filterCoefficients_A)
+        public void enableOpenLoopStimulation(bool openStimEn, uint stimChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interpulseInterval)
         {
-            deviceClient.enableDistributedStimulation(new distributedStimEnableRequest() { DeviceAddress = DeviceName, Enable = closedStimEn, StimChannel = stimChannel, SensingChannel = senseChannel, 
-                CathodeAmplitude = cathodeAmplitude, CathodeDuration = cathodeDuration, AnodeAmplitude = anodeAmplitude, AnodeDuration = anodeDuration, FilterCoefficientsB = { filterCoefficients_B }, FilterCoefficientsA = { filterCoefficients_A }}); 
+            if (openStimEn)
+            {
+                // Create a waveform defintion request 
+                bicEnqueueStimulationRequest aNewWaveformRequest = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.PersistentWaveform };
+                // Create a pulse function
+                StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
+                {
+                    FunctionName = "openLoopPulse",
+                    StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = interpulseInterval, PulseWidth = stimDuration, ChargeBalancePulseWidthRatio = chargeBalancePWRatio, PulseRepetitions = 255, SourceElectrodes = { stimChannel }, SinkElectrodes = { }, UseGround = true, BurstRepetitions = 1 }
+                };
+                aNewWaveformRequest.Functions.Add(pulseFunction0);
+
+                // Enqueue the stimulation waveform
+                deviceClient.bicEnqueueStimulation(aNewWaveformRequest);
+                deviceClient.enableOpenLoopStimulation(new openLoopStimEnableRequest() { DeviceAddress = DeviceName, Enable = true, WatchdogInterval = 5000 });
+            }
+            else
+            {
+                // Stop the stim
+                deviceClient.enableOpenLoopStimulation(new openLoopStimEnableRequest() { DeviceAddress = DeviceName, Enable = false});
+            }
+        }
+
+        public void enableDistributedStim(bool closedStimEn, uint stimChannel, uint senseChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, List<double> filterCoefficients_B, List<double> filterCoefficients_A)
+        {
+            if (closedStimEn)
+            {
+                // Create a waveform defintion request 
+                bicEnqueueStimulationRequest aNewWaveformRequest = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.PersistentWaveform };
+                // Create a pulse function
+                StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
+                {
+                    FunctionName = "betaPulseFunction",
+                    StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 10, PulseWidth = stimDuration, ChargeBalancePulseWidthRatio = chargeBalancePWRatio, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { }, UseGround = true, BurstRepetitions = 1 }
+                };
+                aNewWaveformRequest.Functions.Add(pulseFunction0);
+
+                // Enqueue the stimulation waveform
+                deviceClient.bicEnqueueStimulation(aNewWaveformRequest);
+            }
+
+            // Start the distributed stimulation function
+            deviceClient.enableDistributedStimulation(new distributedStimEnableRequest() { DeviceAddress = DeviceName, Enable = closedStimEn, SensingChannel = senseChannel, 
+                FilterCoefficientsB = { filterCoefficients_B }, FilterCoefficientsA = { filterCoefficients_A }}); 
         }
 
         /// <summary>

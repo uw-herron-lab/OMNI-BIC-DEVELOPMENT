@@ -26,7 +26,8 @@ namespace BICGRPCHelperNamespace
         void enablePowerStreaming(bool enableSensing, grpc::ServerWriter<BICgRPC::PowerUpdate>* aWriter);
 
         // ************************* Public Distributed Algorithm Stimulation Management *************************
-        void enableDistributedStim(bool enableDistributed, int phaseSensingChannel, int phaseStimChannel, double cathodeStimAmplitude, uint64_t cathodeStimDuration, double anodeStimAmplitude, uint64_t anodeStimDuration, std::vector<double> filtCoeff_B, std::vector<double> filtCoeff_A);
+        void enableOpenLoopStim(bool enableOpenLoop, uint32_t watchdogInterval);
+        void enableDistributedStim(bool enableDistributed, int phaseSensingChannel, std::vector<double> filtCoeff_B, std::vector<double> filtCoeff_A, uint32_t triggeredFunctionIndex);
         void addImplantPointer(cortec::implantapi::IImplant* theImplantedDevice);
         void enableStimTimeLogging(bool enableSensing);
         double processingHelper(double newData);
@@ -54,6 +55,7 @@ namespace BICGRPCHelperNamespace
         // ************************* Public Boolean State Accessors *************************
         bool isStimulating();
         bool isMeasuring();
+        bool isTriggeringStimulation();
         bool neuralStreamingState = false;
         bool temperatureStreamingState = false;
         bool humidityStreamingState = false;
@@ -116,6 +118,7 @@ namespace BICGRPCHelperNamespace
         std::thread* errorProcessingThread;
         std::thread* powerProcessingThread;
         std::thread* distributedStimThread;
+        std::thread* openLoopStimThread;
 
         // Stream data ready signals
         std::condition_variable* neuralDataNotify;
@@ -139,12 +142,16 @@ namespace BICGRPCHelperNamespace
         // ************************* Private Distributed Algorithm Objects and Methods *************************
         // Distributed Stim Functions
         void triggeredSendStimThread(void);
+        void openLoopStimLoopThread(void);
         double filterIIR(double currSamp, std::vector<double>* prevFiltOut, std::vector<double>* prevInput, std::vector<double>* b, std::vector<double>* a);
         bool isZeroCrossing(std::vector<double> dataArray);
         bool detectLocalMaxima(std::vector<double> dataArray);
 
         // Generic Distributed Variables
         bool isCLStimEn = false;                    // State tracking boolean indicates whether distributed stim is active or not
+        bool isOLStimEn = false;                    // State tracking boolean indicates whether open loop stim is active or not
+        uint32_t openLoopSleepTimeDuration;
+        UINT_PTR openLoopTimerPointer;
         uint32_t distributedInputChannel = 0;       // Distributed algorithm sensing channel (input)
         uint32_t distributedOutputChannel = 31;     // Distributed algorithm stimulation channel (output)
         double distributedCathodeAmplitude = -1000; // Distributed algorithm cathode (negative pulse) amplitude (input)

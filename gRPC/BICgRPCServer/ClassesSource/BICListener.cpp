@@ -559,7 +559,7 @@ namespace BICGRPCHelperNamespace
         delete samples;
     }
 
-    //*************************************************** Closed-Loop Phasic Stim Functions ***************************************************
+    //*************************************************** Microservice Triggered Stimulation Functions ***************************************************
     /// <summary>
     /// Function that enables phase-locked stimulation functionality on a output channel based on an input channel's sensed neural activity
     /// TODO: add stim parameters?
@@ -568,19 +568,14 @@ namespace BICGRPCHelperNamespace
     /// <param name="enableDistributed">A boolean indicating if phasic stim should be enabled or disabled</param>
     /// <param name="phaseSensingChannel">The channel to sense phase on</param>
     /// <param name="phaseStimChannel">The channel to stimulate after negative zero crossings of phase sensing channel</param>
-    void BICListener::enableDistributedStim(bool enableDistributed, int sensingChannel, int stimChannel, double cathodeAmplitude, uint64_t cathodeDuration, double anodeAmplitude, uint64_t anodeDuration, std::vector<double> filtCoeff_B, std::vector<double> filtCoeff_A)
+    void BICListener::enableDistributedStim(bool enableDistributed, int sensingChannel, std::vector<double> filtCoeff_B, std::vector<double> filtCoeff_A, uint32_t triggeredFunctionIndex)
     {
         // could potentially add filter coefficients to be updated here..?
         distributedInputChannel = sensingChannel;
-        distributedOutputChannel = stimChannel;
-        distributedCathodeAmplitude = cathodeAmplitude;
-        distributedCathodeDuration = cathodeDuration;
-        distributedAnodeAmplitude = anodeAmplitude;
-        distributedAnodeDuration = anodeDuration;
         betaBandPassIIR_B = filtCoeff_B;
-        betaBandPassIIR_A = filtCoeff_A;        
+        betaBandPassIIR_A = filtCoeff_A;
 
-        if (enableDistributed && !isCLStimEn)
+        if (enableDistributed && !isTriggeringStimulation() && !isStimulating())
         {
             // Enable Closed Loop since it is not enabled and request is to enable
             // Instantiate the conditional variable for thread notification
@@ -604,6 +599,9 @@ namespace BICGRPCHelperNamespace
             delete distributedStimThread;
             distributedStimThread = NULL;
 
+            // Ensure stimulation is stopped
+            theImplantedDevice->stopStimulation();
+
             // Clean up the conditional variable
             stimTrigger->~condition_variable();
             delete stimTrigger;
@@ -621,24 +619,6 @@ namespace BICGRPCHelperNamespace
         std::mutex stimLock;
         std::unique_lock<std::mutex> stimTriggerWait(stimLock);
 
-        // Create stimulation command "factory"
-        std::unique_ptr<IStimulationCommandFactory> theStimFactory(createStimulationCommandFactory());
-        IStimulationCommand* stimulationCommand = theStimFactory->createStimulationCommand();
-
-        // Create stimulation waveform
-        IStimulationFunction* stimulationPulseFunction = theStimFactory->createStimulationFunction();
-        stimulationPulseFunction->setName("pulseFunction");
-        stimulationPulseFunction->setRepetitions(1,1);
-        std::set<uint32_t> sources = { distributedOutputChannel };
-        std::set<uint32_t> sinks = { };
-        stimulationPulseFunction->setVirtualStimulationElectrodes(sources, sinks, true);
-        stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(distributedCathodeAmplitude, 0, 0, 0, distributedCathodeDuration)); // positive pulse
-        stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, 10)); // generate atoms --dz0
-        stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(distributedAnodeAmplitude, 0, 0, 0, distributedAnodeDuration)); // charge balance
-        stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, 10)); // generate atoms --dz0
-        stimulationPulseFunction->append(theStimFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, 10)); // generate atoms --dz1
-        stimulationCommand->append(stimulationPulseFunction);
-        theImplantedDevice->enqueueStimulationCommand(stimulationCommand, StimulationMode::STIM_MODE_PERSISTENT_CMD_PRELOADING);
         // create instance of stimTimes to keep track of before and after stim timestamps
         StimTimes startStimulationTimes;
 
@@ -888,6 +868,82 @@ namespace BICGRPCHelperNamespace
             delete stimTimeDataNotify;
             stimTimeDataNotify = NULL;
         }
+    }
+
+    /// <summary>
+    /// Function that enables the delivery of open-loop stimulation by continually re-triggering stimulation at a defined interval
+    /// </summary>
+    /// <param name="enableOpenLoop">Boolean indicating if open-loop stimulation should be enabled or disabled</param>
+    /// <param name="watchdogInterval">Interval that the stimulation should be stopped and restarted in milliseconds</param>
+    void BICListener::enableOpenLoopStim(bool enableOpenLoop, uint32_t watchdogInterval)
+    {
+        if (enableOpenLoop && !isTriggeringStimulation() && !isStimulating())
+        {
+            // Update state tracking variable
+            isOLStimEn = true;
+            if (watchdogInterval > 10)
+            {
+                openLoopSleepTimeDuration = watchdogInterval;
+            }
+            else
+            {
+                openLoopSleepTimeDuration = 10;
+            }
+
+            // Start thread up
+            openLoopStimThread = new std::thread(&BICListener::openLoopStimLoopThread, this);
+        }
+        else if (!enableOpenLoop && isOLStimEn)
+        {
+            // Update state tracking variable
+            isOLStimEn = false;
+            
+            // Ensure stimulation is stopped
+            theImplantedDevice->stopStimulation();
+
+            // Disable Closed Loop since it is enabled and request is to disable
+            openLoopStimThread->join();
+            openLoopStimThread->~thread();
+            delete openLoopStimThread;
+            openLoopStimThread = NULL;
+        }
+    }
+
+    void BICListener::openLoopStimLoopThread(void)
+    {
+        while (isOLStimEn)
+        {
+            try {
+                // Check if stimulation is already occuring. Stop it if so
+                if (isStimulating())
+                {
+                    theImplantedDevice->stopStimulation();
+                }
+
+                // Re-trigger stimulation
+                theImplantedDevice->startStimulation();
+
+                // Sleep for the triggering duration
+                std::this_thread::sleep_for(std::chrono::milliseconds(openLoopSleepTimeDuration));
+            }
+            catch (std::exception& anyException)
+            {
+                std::cout << "ERROR: Open Loop Management Exception Encountered. Reason: " << anyException.what() << std::endl;
+            }
+            catch (...)
+            {
+                std::cout << "ERROR: Open Loop Management Exception Encountered. No reason." << std::endl;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Status variable indicating if triggering stimulation is already ongoing.
+    /// </summary>
+    /// <returns>Boolean if open-loop or closed-loop stimulation is enabled.</returns>
+    bool BICListener::isTriggeringStimulation()
+    {
+        return isCLStimEn || isOLStimEn;
     }
 
     //*************************************************** Power Data Streaming Functions ***************************************************

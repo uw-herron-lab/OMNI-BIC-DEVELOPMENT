@@ -55,6 +55,7 @@ service BICDeviceService{
 	rpc bicStartStimulation (bicStartStimulationRequest) returns (bicSuccessReply) {}
 	rpc bicEnqueueStimulation (bicEnqueueStimulationRequest) returns (bicSuccessReply) {}
 	rpc bicStopStimulation (RequestDeviceAddress) returns (bicSuccessReply) {}
+	rpc enableOpenLoopStimulation (openLoopStimEnableRequest) returns (bicSuccessReply) {}
 	rpc enableDistributedStimulation (distributedStimEnableRequest) returns (bicSuccessReply) {}
 
 	// Streaming endpoints
@@ -192,8 +193,7 @@ message bicSetImplantPowerRequest{
 // *************************** Device Stimulation Service Messages ***************************
 message bicStartStimulationRequest{
 	string deviceAddress = 1;
-	EnqueueStimulationMode mode = 2;
-	uint32 functionModeIndex = 3;
+	uint32 functionIndex = 2;
 }
 
 message bicEnqueueStimulationRequest{
@@ -220,30 +220,33 @@ message StimulationFunctionDefinition{
 message stimPulseFunction{
 	repeated double amplitude = 1;
 	uint64 pulseWidth = 2;
-	uint64 dZ0duration = 3;
-	uint64 dZ1duration = 4;
-	uint32 pulseRepetitions = 5;
-	uint32 burstRepetitions = 6;
-	repeated uint32 sourceElectrodes = 7;
-	repeated uint32 sinkElectrodes = 8;
-	bool useGround = 9;
+	uint32 chargeBalancePulseWidthRatio = 3;
+	uint64 dZ0duration = 4;
+	uint64 dZ1duration = 5;
+	uint32 pulseRepetitions = 6;
+	uint32 burstRepetitions = 7;
+	repeated uint32 sourceElectrodes = 8;
+	repeated uint32 sinkElectrodes = 9;
+	bool useGround = 10;
 }
 
 message pauseFunction{
 	uint64 duration = 1;
 }
 
+message openLoopStimEnableRequest{
+	string deviceAddress = 1;
+	bool enable = 2;
+	uint32 watchdogInterval = 3;
+}
+
 message distributedStimEnableRequest{
 	string deviceAddress = 1;
 	bool enable = 2;
 	uint32 sensingChannel = 3;
-	uint32 stimChannel = 4;
-	double cathodeAmplitude = 5;
-	uint64 cathodeDuration = 6;
-	double anodeAmplitude = 7;
-	uint64 anodeDuration = 8;
-	repeated double filterCoefficients_B = 9;
-	repeated double filterCoefficients_A = 10;
+	repeated double filterCoefficients_B = 4;
+	repeated double filterCoefficients_A = 5;
+	uint32 triggeredFunctionIndex = 6;
 }
 
 // *************************** Device Streaming Service Messages ***************************

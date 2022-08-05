@@ -576,7 +576,14 @@ namespace BICGRPCHelperNamespace
         // Perform the operation
         try
         {
-            deviceDirectory[request->deviceaddress()]->theImplant->startStimulation();
+            if (deviceDirectory[request->deviceaddress()]->lastEnqueueType == StimulationMode::STIM_MODE_PERSISTENT_FUNC_PRELOADING)
+            {
+                deviceDirectory[request->deviceaddress()]->theImplant->startStimulation(request->functionindex());
+            }
+            else
+            {
+                deviceDirectory[request->deviceaddress()]->theImplant->startStimulation();
+            }
         }
         catch (const std::exception theExeption)
         {
@@ -597,14 +604,17 @@ namespace BICGRPCHelperNamespace
         }
 
         // Perform the operation
-        try
+        if (deviceDirectory[request->deviceaddress()]->listener->isStimulating())
         {
-            deviceDirectory[request->deviceaddress()]->theImplant->stopStimulation();
-        }
-        catch (const std::exception&)
-        {
-            // TODO Exception Handling
-            return grpc::Status::OK;
+            try
+            {
+                deviceDirectory[request->deviceaddress()]->theImplant->stopStimulation();
+            }
+            catch (const std::exception&)
+            {
+                // TODO Exception Handling
+                return grpc::Status::OK;
+            }
         }
 
         // Respond to client
@@ -663,13 +673,13 @@ namespace BICGRPCHelperNamespace
                     // Generate atoms -- DZ0
                     theFunction->append(theFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, request->functions().at(i).stimpulse().dz0duration()));
 
-                    // Genmerate atoms -- charge balance ( 1/4 amplitude, 4 x pulsewidth of main pulse)
+                    // Genmerate atoms -- charge balance ( based on charge balance ratio - does this have to be 4?)
                     theFunction->append(theFactory->createRect4AmplitudeStimulationAtom(
-                        request->functions().at(i).stimpulse().amplitude()[0] / -4,
-                        request->functions().at(i).stimpulse().amplitude()[1] / -4,
-                        request->functions().at(i).stimpulse().amplitude()[2] / -4,
-                        request->functions().at(i).stimpulse().amplitude()[3] / -4,
-                        request->functions().at(i).stimpulse().pulsewidth() * 4));
+                        request->functions().at(i).stimpulse().amplitude()[0] / -request->functions().at(i).stimpulse().chargebalancepulsewidthratio(),
+                        request->functions().at(i).stimpulse().amplitude()[1] / -request->functions().at(i).stimpulse().chargebalancepulsewidthratio(),
+                        request->functions().at(i).stimpulse().amplitude()[2] / -request->functions().at(i).stimpulse().chargebalancepulsewidthratio(),
+                        request->functions().at(i).stimpulse().amplitude()[3] / -request->functions().at(i).stimpulse().chargebalancepulsewidthratio(),
+                        request->functions().at(i).stimpulse().pulsewidth() * request->functions().at(i).stimpulse().chargebalancepulsewidthratio()));
 
                     // Generate atoms -- DZ0
                     // TODO - SHOULD THIS BE HERE?
@@ -697,6 +707,7 @@ namespace BICGRPCHelperNamespace
 
             // Stimulation Command created, now enqueue
             deviceDirectory[request->deviceaddress()]->theImplant->enqueueStimulationCommand(theStimulationCommand, (StimulationMode)request->mode());
+            deviceDirectory[request->deviceaddress()]->lastEnqueueType = (StimulationMode)request->mode();
             delete theStimulationCommand;
         }
         catch (const std::exception theExeption)
@@ -718,7 +729,7 @@ namespace BICGRPCHelperNamespace
         }
 
         // Check if parameters are valid
-        if (request->sensingchannel() < 0 || request->sensingchannel() > 31 || request->stimchannel() < 0 || request->stimchannel() > 31)
+        if (request->sensingchannel() < 0 || request->sensingchannel() > 31)
         {
             return grpc::Status(grpc::StatusCode::INVALID_ARGUMENT, "Arguments out of range");
         }
@@ -742,7 +753,21 @@ namespace BICGRPCHelperNamespace
         }
 
         // Perform the operation
-        deviceDirectory[request->deviceaddress()]->listener->enableDistributedStim(request->enable(), request->sensingchannel(), request->stimchannel(), request->cathodeamplitude(), request->cathodeduration(), request->anodeamplitude(), request->anodeduration(), coefficients_B, coefficients_A);
+        deviceDirectory[request->deviceaddress()]->listener->enableDistributedStim(request->enable(), request->sensingchannel(), coefficients_B, coefficients_A, request->triggeredfunctionindex());
+
+        // Respond to client
+        return grpc::Status::OK;
+    }
+
+    grpc::Status BICDeviceGRPCService::enableOpenLoopStimulation(grpc::ServerContext* context, const BICgRPC::openLoopStimEnableRequest* request, BICgRPC::bicSuccessReply* reply) {
+        // Check if already initialized
+        if (deviceDirectory.find(request->deviceaddress()) == deviceDirectory.end())
+        {
+            return grpc::Status(grpc::StatusCode::FAILED_PRECONDITION, "Not Initialized");
+        }
+
+        // Perform the operation
+        deviceDirectory[request->deviceaddress()]->listener->enableOpenLoopStim(request->enable(), request->watchdoginterval());
 
         // Respond to client
         return grpc::Status::OK;
