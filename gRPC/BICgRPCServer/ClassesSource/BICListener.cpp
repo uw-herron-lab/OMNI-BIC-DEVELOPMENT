@@ -913,13 +913,27 @@ namespace BICGRPCHelperNamespace
     {
         while (isOLStimEn)
         {
-            if (isStimulating())
-            {
-                theImplantedDevice->stopStimulation();
-            }
-            theImplantedDevice->startStimulation();
+            try {
+                // Check if stimulation is already occuring. Stop it if so
+                if (isStimulating())
+                {
+                    theImplantedDevice->stopStimulation();
+                }
 
-            std::this_thread::sleep_for(std::chrono::milliseconds(openLoopSleepTimeDuration));
+                // Re-trigger stimulation
+                theImplantedDevice->startStimulation();
+
+                // Sleep for the triggering duration
+                std::this_thread::sleep_for(std::chrono::milliseconds(openLoopSleepTimeDuration));
+            }
+            catch (std::exception& anyException)
+            {
+                std::cout << "ERROR: Open Loop Management Exception Encountered. Reason: " << anyException.what() << std::endl;
+            }
+            catch (...)
+            {
+                std::cout << "ERROR: Open Loop Management Exception Encountered. No reason." << std::endl;
+            }
         }
     }
 
