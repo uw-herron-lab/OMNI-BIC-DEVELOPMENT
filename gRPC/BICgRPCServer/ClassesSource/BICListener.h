@@ -161,7 +161,7 @@ namespace BICGRPCHelperNamespace
 
         // Signal Processing Variables
         std::vector<double> bpFiltData = { 0, 0, 0 };                   // IIR filter output history
-        std::vector<double> bpPrevData = { 0, 0 };                      // Data history for IIR filtering
+        std::vector<double> rawPrevData = { 0, 0 };                     // Data history for raw input samples
         std::vector<double> betaBandPassIIR_B = { 0.0305, 0, -0.0305 }; // IIR "B" filter coefficients for a beta-range band-pass
         std::vector<double> betaBandPassIIR_A = { 1, -1.9247, 0.9391 }; // IIR "A" filter coefficients for a beta-range band-pass
     };
