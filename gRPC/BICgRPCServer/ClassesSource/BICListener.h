@@ -93,6 +93,7 @@ namespace BICGRPCHelperNamespace
         uint32_t neuroInterplationThreshold;    // Neural interpolation length limit, provided to Listener using enableNeuralSensing()
         uint32_t lastNeuroCount = 0;            // Used to determine the number of samples required for interpolation
         double latestData[32] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
+        double latestTimeStamp;                   // Keep track of latest timestamp for interpolation samples
 
         // Pointers for gRPC-managed streaming interfaces. Set by the BICDeviceServiceImpl class, null when not in use.
         grpc::ServerWriter<BICgRPC::NeuralUpdate>* neuralWriter;

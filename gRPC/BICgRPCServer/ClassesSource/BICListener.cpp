@@ -412,7 +412,7 @@ namespace BICGRPCHelperNamespace
     /// <param name="samples">BIC sensed LFP samples</param>
     void BICListener::onData(const std::vector<CSample>* samples)
     {
-        std::chrono::system_clock::time_point startUp = std::chrono::system_clock::now();
+        std::chrono::system_clock::time_point packetReceived = std::chrono::system_clock::now();
         // Ensure samples is not empty before working with it.
         if (!samples->empty())
         {
@@ -423,6 +423,7 @@ namespace BICGRPCHelperNamespace
                 int32_t sampleCounter = samples->at(i).getMeasurementCounter();
                 int16_t sampleNum = samples->at(i).getNumberOfMeasurements();
                 double* theData = samples->at(i).getMeasurements();
+                uint64_t sampleTime = packetReceived.time_since_epoch().count();
                 NeuralSample* newSample = new NeuralSample();
                 newSample->set_numberofmeasurements(sampleNum);
                 newSample->set_supplyvoltage(samples->at(i).getSupplyVoltage());
@@ -432,7 +433,7 @@ namespace BICGRPCHelperNamespace
                 newSample->set_samplecounter(sampleCounter);
                 newSample->set_isinterpolated(false);
                 newSample->set_filtchannel(distributedInputChannel);
-                newSample->set_timestamp(startUp.time_since_epoch().count());
+                newSample->set_timestamp(sampleTime);
                 // Check if we've lost packets, if so interpolate
                 if (lastNeuroCount + 1 != sampleCounter)
                 {
@@ -487,7 +488,7 @@ namespace BICGRPCHelperNamespace
                                 newInterpolatedSample->set_samplecounter(lastNeuroCount + interpolatedPointNum);
                                 newInterpolatedSample->set_isinterpolated(true);
                                 newInterpolatedSample->set_filtchannel(distributedInputChannel);
-                                newInterpolatedSample->set_timestamp(startUp.time_since_epoch().count());
+                                newInterpolatedSample->set_timestamp(latestTimeStamp);
 
                                 // Copy in the time domain data in
                                 for (int interChannelPoint = 0; interChannelPoint < sampleNum; interChannelPoint++)
@@ -525,6 +526,9 @@ namespace BICGRPCHelperNamespace
 
                 // Update Interpolation Info for future use
                 lastNeuroCount = sampleCounter;
+
+                // Update time value for interpolated sample
+                latestTimeStamp = sampleTime;
 
                 // Copy in the data to both the newSample and the latest data buffer (for future interpolation). Delete it when done
                 for (int j = 0; j < sampleNum; j++)
