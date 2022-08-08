@@ -701,7 +701,7 @@ namespace BICGRPCHelperNamespace
     double BICListener::processingHelper(double newData)
     {   
         // Band pass filter for beta activity
-        double filtSamp = filterIIR(newData, &bpPrevData, &bpFiltData, &betaBandPassIIR_B, &betaBandPassIIR_A);
+        double filtSamp = filterIIR(newData, &bpFiltData, &rawPrevData, &betaBandPassIIR_B, &betaBandPassIIR_A);
 
         // if at a local maxima above an arbitrary threshold and closed loop stim is enabled, send stimulation
         if (isCLStimEn && detectLocalMaxima(bpFiltData) && bpFiltData[1] > 100)
@@ -718,6 +718,8 @@ namespace BICGRPCHelperNamespace
     /// Private function that applies an IIR filter to incoming neural data
     /// </summary>
     /// <param name="currSamp">latest neural sample</param>
+    /// <param name="prevFiltOut">history of filtered data samples</param>
+    /// <param name="prevInput">history of raw data samples</param>
     /// <param name="b">b-array for IIR constants</param>
     /// <param name="a">a-array for IIR constants</param>
     /// <returns>current filtered output</returns>
