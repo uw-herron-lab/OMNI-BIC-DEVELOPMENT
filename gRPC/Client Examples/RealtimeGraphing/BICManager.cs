@@ -62,7 +62,7 @@ namespace RealtimeGraphing
             }
             logFileStream = new FileStream("./filterLog.csv", FileMode.Create, FileAccess.Write, FileShare.None, 4096, FileOptions.Asynchronous);
             logFileWriter = new StreamWriter(logFileStream);
-            logFileWriter.WriteLine("PacketNum, FilteredChannelNum, RawChannelData, FilteredChannelData, boolInterpolated, StimChannelData");
+            logFileWriter.WriteLine("PacketNum, TimeStamp, FilteredChannelNum, RawChannelData, FilteredChannelData, boolInterpolated, StimChannelData");
         }
         public bool BICConnect()
         {
@@ -378,6 +378,7 @@ namespace RealtimeGraphing
 
                         // Enqueue the data for the logging thread
                         string logString = stream.ResponseStream.Current.Samples[sampleNum].SampleCounter.ToString() + ", " +
+                            stream.ResponseStream.Current.Samples[sampleNum].TimeStamp.ToString() + ", " + 
                             filteredIndex.ToString() + ", " +
                             stream.ResponseStream.Current.Samples[sampleNum].Measurements[filteredIndex].ToString() + ", " +
                             stream.ResponseStream.Current.Samples[sampleNum].FiltSample.ToString() + ", " +
