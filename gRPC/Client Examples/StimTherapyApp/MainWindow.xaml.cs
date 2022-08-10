@@ -147,7 +147,8 @@ namespace StimTherapyApp
                 {
                     // disable buttons
                     btn_beta.IsEnabled = false; // beta stim button; have to use method invoker
-                    btn_openloop.IsEnabled = false; // open loop stim button
+                    btn_20OL.IsEnabled = false; // 20 Hz open loop stim button
+                    btn_50OL.IsEnabled = false; // 50 Hz open loop stim button
                     btn_diagnostic.IsEnabled = false; // diagnostics button
                     btn_stop.IsEnabled = false; // stop stim button
 
@@ -255,7 +256,8 @@ namespace StimTherapyApp
                         {
                         // enable buttons after a config has been successfully loaded
                             btn_beta.IsEnabled = true; // beta stim button; have to use method invoker
-                            btn_openloop.IsEnabled = true; // open loop stim button
+                            btn_20OL.IsEnabled = true; // 20 Hz open loop stim button
+                            btn_50OL.IsEnabled = true; // 50 Hz open loop stim button
                             btn_load.IsEnabled = true; // load config button
                             btn_diagnostic.IsEnabled = true; // diagnostics button
                             btn_stop.IsEnabled = true; // stop stim button
@@ -302,7 +304,8 @@ namespace StimTherapyApp
                 {
                     // disable buttons
                     btn_beta.IsEnabled = false; // beta stim button; have to use method invoker
-                    btn_openloop.IsEnabled = false; // open loop stim button
+                    btn_20OL.IsEnabled = false; // 20 Hz open loop stim button
+                    btn_50OL.IsEnabled = false; // 50 Hz open loop stim button
                     btn_load.IsEnabled = false; // load config button
                     btn_diagnostic.IsEnabled = false; // diagnostics button
                 }));
@@ -316,24 +319,24 @@ namespace StimTherapyApp
             });
         }
 
-        private void btn_openloop_Click(object sender, RoutedEventArgs e)
+        private void btn_20OL_Click(object sender, RoutedEventArgs e)
         {
             ThreadPool.QueueUserWorkItem(a =>
             {
                 // Keep the time for console output writring
                 string timeStamp = DateTime.Now.ToString("h:mm:ss tt");
-                
+
                 // start phase triggered stim and update status
                 try
                 {
-                    aBICManager.enableOpenLoopStimulation(true, (uint)configInfo.stimChannel-1, configInfo.anodeAmplitude, configInfo.anodeDuration, 4, 20000 - (5 * configInfo.anodeDuration) - 40);
+                    aBICManager.enableOpenLoopStimulation(true, (uint)configInfo.stimChannel - 1, configInfo.anodeAmplitude, configInfo.anodeDuration, 4, 50000 - (5 * configInfo.anodeDuration) - 3500);
                 }
                 catch
                 {
                     // Exception occured, gRPC command did not succeed, do not update UI button elements
                     Application.Current.Dispatcher.Invoke(new Action(() =>
                     {
-                        OutputConsole.Inlines.Add("Open loop stimulation NOT started: " + timeStamp + ", load new configuration\n");
+                        OutputConsole.Inlines.Add("20 Hz Open loop stimulation NOT started: " + timeStamp + ", load new configuration\n");
                         Scroller.ScrollToEnd();
                     }));
                     return;
@@ -347,7 +350,8 @@ namespace StimTherapyApp
                 {
                     // disable buttons
                     btn_beta.IsEnabled = false; // beta stim button; have to use method invoker
-                    btn_openloop.IsEnabled = false; // open loop stim button
+                    btn_20OL.IsEnabled = false; // 20 Hz open loop stim button
+                    btn_50OL.IsEnabled = false; // 50 Hz open loop stim button
                     btn_load.IsEnabled = false; // load config button
                     btn_diagnostic.IsEnabled = false; // diagnostics button
                 }));
@@ -355,7 +359,53 @@ namespace StimTherapyApp
                 // notify user of beta stimulation starting
                 Application.Current.Dispatcher.Invoke(new Action(() =>
                 {
-                    OutputConsole.Inlines.Add("Open loop stimulation started: " + timeStamp + "\n");
+                    OutputConsole.Inlines.Add("20 Hz Open loop stimulation started: " + timeStamp + "\n");
+                    Scroller.ScrollToEnd();
+                }));
+            });
+        }
+
+        private void btn_50OL_Click(object sender, RoutedEventArgs e)
+        {
+            ThreadPool.QueueUserWorkItem(a =>
+            {
+                // Keep the time for console output writring
+                string timeStamp = DateTime.Now.ToString("h:mm:ss tt");
+
+                // start phase triggered stim and update status
+                try
+                {
+                    aBICManager.enableOpenLoopStimulation(true, (uint)configInfo.stimChannel - 1, configInfo.anodeAmplitude, configInfo.anodeDuration, 4, 20000 - (5 * configInfo.anodeDuration) - 3500);
+                }
+                catch
+                {
+                    // Exception occured, gRPC command did not succeed, do not update UI button elements
+                    Application.Current.Dispatcher.Invoke(new Action(() =>
+                    {
+                        OutputConsole.Inlines.Add("50 Hz Open loop stimulation NOT started: " + timeStamp + ", load new configuration\n");
+                        Scroller.ScrollToEnd();
+                    }));
+                    return;
+                }
+
+                openStimState = true;
+
+                // Succesfully enabled distributed, update UI elements
+                neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
+                delegate
+                {
+                    // disable buttons
+                    btn_beta.IsEnabled = false; // beta stim button; have to use method invoker
+                    btn_20OL.IsEnabled = false; // 20 Hz open loop stim button
+                    btn_50OL.IsEnabled = false; // 50 Hz open loop stim button
+                    btn_load.IsEnabled = false; // load config button
+                    btn_diagnostic.IsEnabled = false; // diagnostics button
+                }));
+
+                // notify user of beta stimulation starting
+                Application.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    OutputConsole.Inlines.Add("50 Hz Open loop stimulation started: " + timeStamp + "\n");
                     Scroller.ScrollToEnd();
                 }));
             });
@@ -383,7 +433,8 @@ namespace StimTherapyApp
                 delegate
                 {
                     btn_beta.IsEnabled = true;
-                    btn_openloop.IsEnabled = true;
+                    btn_20OL.IsEnabled = true; // 20 Hz open loop stim button
+                    btn_50OL.IsEnabled = true; // 50 Hz open loop stim button
                     btn_load.IsEnabled = true;
                     btn_diagnostic.IsEnabled = true;
                 }));
