@@ -200,6 +200,7 @@ message bicEnqueueStimulationRequest{
 	string deviceAddress = 1;
 	EnqueueStimulationMode mode = 2;
 	repeated StimulationFunctionDefinition functions = 3;
+	uint32 WaveformRepititions = 4;
 }
 
 enum EnqueueStimulationMode{

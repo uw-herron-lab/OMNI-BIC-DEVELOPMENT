@@ -326,7 +326,7 @@ namespace StimTherapyApp
                 // start phase triggered stim and update status
                 try
                 {
-                    aBICManager.enableOpenLoopStimulation(true, (uint)configInfo.stimChannel-1, configInfo.anodeAmplitude, configInfo.anodeDuration, 4, 20000 - (5 * configInfo.anodeDuration) - 20);
+                    aBICManager.enableOpenLoopStimulation(true, (uint)configInfo.stimChannel-1, configInfo.anodeAmplitude, configInfo.anodeDuration, 4, 20000 - (5 * configInfo.anodeDuration) - 40);
                 }
                 catch
                 {

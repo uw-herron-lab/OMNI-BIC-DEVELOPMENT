@@ -632,6 +632,7 @@ namespace BICGRPCHelperNamespace
         // Create objects required for 
         std::unique_ptr<IStimulationCommandFactory> theFactory(createStimulationCommandFactory());
         IStimulationCommand* theStimulationCommand = theFactory->createStimulationCommand();
+        theStimulationCommand->setRepetitions(request->waveformrepititions());
 
         // Iterate through provided functions and add them to the command 
         try
