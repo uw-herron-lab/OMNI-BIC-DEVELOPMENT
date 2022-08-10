@@ -2,10 +2,10 @@
   "stimType": "beta",
   "senseChannel": 1,
   "stimChannel": 32,
-  "cathodeAmplitude": 250,
-  "cathodeDuration": 1000,
-  "anodeAmplitude": -1000,
-  "anodeDuration": 250,
+  "firstPulseAmplitude": -1000,
+  "firstPulseDuration": 250,
+  "secondPulseAmplitude": 250,
+  "secondPulseDuration": 1000,
   "filterCoefficients_B": [ 0.0305, 0, -0.0305 ],
   "filterCoefficients_A": [ 1, -1.9247, 0.9391 ]
 }
