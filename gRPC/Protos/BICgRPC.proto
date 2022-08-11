@@ -221,14 +221,13 @@ message StimulationFunctionDefinition{
 message stimPulseFunction{
 	repeated double amplitude = 1;
 	uint64 pulseWidth = 2;
-	uint32 chargeBalancePulseWidthRatio = 3;
-	uint64 dZ0duration = 4;
-	uint64 dZ1duration = 5;
-	uint32 pulseRepetitions = 6;
-	uint32 burstRepetitions = 7;
-	repeated uint32 sourceElectrodes = 8;
-	repeated uint32 sinkElectrodes = 9;
-	bool useGround = 10;
+	uint64 dZ0duration = 3;
+	uint64 dZ1duration = 4;
+	uint32 pulseRepetitions = 5;
+	uint32 burstRepetitions = 6;
+	repeated uint32 sourceElectrodes = 7;
+	repeated uint32 sinkElectrodes = 8;
+	bool useGround = 9;
 }
 
 message pauseFunction{

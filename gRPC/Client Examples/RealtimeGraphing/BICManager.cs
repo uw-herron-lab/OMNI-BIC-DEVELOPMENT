@@ -169,7 +169,7 @@ namespace RealtimeGraphing
                 StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
                 {
                     FunctionName = "openLoopPulse",
-                    StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 10, PulseWidth = stimDuration, ChargeBalancePulseWidthRatio = chargeBalancePWRatio, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { }, UseGround = true, BurstRepetitions = 1 }
+                    StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 10, PulseWidth = stimDuration, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { }, UseGround = true, BurstRepetitions = 1 }
 
                 };
                 aNewWaveformRequest.Functions.Add(pulseFunction0);
@@ -203,7 +203,7 @@ namespace RealtimeGraphing
                 StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
                 {
                     FunctionName = "betaPulseFunction",
-                    StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 10, PulseWidth = stimDuration, ChargeBalancePulseWidthRatio = chargeBalancePWRatio, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { }, UseGround = true, BurstRepetitions = 1 }
+                    StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 10, PulseWidth = stimDuration, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { }, UseGround = true, BurstRepetitions = 1 }
                 };
                 aNewWaveformRequest.Functions.Add(pulseFunction0);
 
