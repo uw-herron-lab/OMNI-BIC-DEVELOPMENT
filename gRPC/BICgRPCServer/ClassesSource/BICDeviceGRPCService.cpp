@@ -632,6 +632,7 @@ namespace BICGRPCHelperNamespace
         // Create objects required for 
         std::unique_ptr<IStimulationCommandFactory> theFactory(createStimulationCommandFactory());
         IStimulationCommand* theStimulationCommand = theFactory->createStimulationCommand();
+        theStimulationCommand->setRepetitions(request->waveformrepititions());
 
         // Iterate through provided functions and add them to the command 
         try
@@ -675,11 +676,11 @@ namespace BICGRPCHelperNamespace
 
                     // Genmerate atoms -- charge balance ( based on charge balance ratio - does this have to be 4?)
                     theFunction->append(theFactory->createRect4AmplitudeStimulationAtom(
-                        request->functions().at(i).stimpulse().amplitude()[0] / -request->functions().at(i).stimpulse().chargebalancepulsewidthratio(),
-                        request->functions().at(i).stimpulse().amplitude()[1] / -request->functions().at(i).stimpulse().chargebalancepulsewidthratio(),
-                        request->functions().at(i).stimpulse().amplitude()[2] / -request->functions().at(i).stimpulse().chargebalancepulsewidthratio(),
-                        request->functions().at(i).stimpulse().amplitude()[3] / -request->functions().at(i).stimpulse().chargebalancepulsewidthratio(),
-                        request->functions().at(i).stimpulse().pulsewidth() * request->functions().at(i).stimpulse().chargebalancepulsewidthratio()));
+                        request->functions().at(i).stimpulse().amplitude()[0] / -4,
+                        request->functions().at(i).stimpulse().amplitude()[1] / -4,
+                        request->functions().at(i).stimpulse().amplitude()[2] / -4,
+                        request->functions().at(i).stimpulse().amplitude()[3] / -4,
+                        request->functions().at(i).stimpulse().pulsewidth() * 4));
 
                     // Generate atoms -- DZ0
                     // TODO - SHOULD THIS BE HERE?

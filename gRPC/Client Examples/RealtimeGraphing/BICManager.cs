@@ -164,14 +164,23 @@ namespace RealtimeGraphing
             if (openStimEn)
             {
                 // Create a waveform defintion request 
-                bicEnqueueStimulationRequest aNewWaveformRequest = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.PersistentWaveform };
+                bicEnqueueStimulationRequest aNewWaveformRequest = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.PersistentWaveform, WaveformRepititions = 255 };
                 // Create a pulse function
                 StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
                 {
                     FunctionName = "openLoopPulse",
-                    StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = interpulseInterval, PulseWidth = stimDuration, ChargeBalancePulseWidthRatio = chargeBalancePWRatio, PulseRepetitions = 255, SourceElectrodes = { stimChannel }, SinkElectrodes = { }, UseGround = true, BurstRepetitions = 1 }
+                    StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 10, PulseWidth = stimDuration, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { }, UseGround = true, BurstRepetitions = 1 }
+
                 };
                 aNewWaveformRequest.Functions.Add(pulseFunction0);
+
+                // Create the interpulse pause
+                StimulationFunctionDefinition interpulsePause = new StimulationFunctionDefinition()
+                {
+                    FunctionName = "pausePulse",
+                    Pause = new pauseFunction() { Duration = interpulseInterval }
+                };
+                aNewWaveformRequest.Functions.Add(interpulsePause);
 
                 // Enqueue the stimulation waveform
                 deviceClient.bicEnqueueStimulation(aNewWaveformRequest);
@@ -189,12 +198,12 @@ namespace RealtimeGraphing
             if (closedStimEn)
             {
                 // Create a waveform defintion request 
-                bicEnqueueStimulationRequest aNewWaveformRequest = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.PersistentWaveform };
+                bicEnqueueStimulationRequest aNewWaveformRequest = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.PersistentWaveform, WaveformRepititions = 1 };
                 // Create a pulse function
                 StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
                 {
                     FunctionName = "betaPulseFunction",
-                    StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 10, PulseWidth = stimDuration, ChargeBalancePulseWidthRatio = chargeBalancePWRatio, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { }, UseGround = true, BurstRepetitions = 1 }
+                    StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 10, PulseWidth = stimDuration, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { }, UseGround = true, BurstRepetitions = 1 }
                 };
                 aNewWaveformRequest.Functions.Add(pulseFunction0);
 
