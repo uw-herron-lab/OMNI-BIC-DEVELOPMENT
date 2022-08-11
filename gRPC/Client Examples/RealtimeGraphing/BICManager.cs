@@ -198,7 +198,7 @@ namespace RealtimeGraphing
             if (closedStimEn)
             {
                 // Create a waveform defintion request 
-                bicEnqueueStimulationRequest aNewWaveformRequest = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.PersistentWaveform };
+                bicEnqueueStimulationRequest aNewWaveformRequest = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.PersistentWaveform, WaveformRepititions = 1 };
                 // Create a pulse function
                 StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
                 {
