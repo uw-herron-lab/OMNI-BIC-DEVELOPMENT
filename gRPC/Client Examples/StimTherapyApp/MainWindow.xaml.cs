@@ -47,8 +47,10 @@ namespace StimTherapyApp
             public string stimType { get; set; }
             public int senseChannel { get; set; }
             public int stimChannel { get; set; }
-            public double stimAmplitude { get; set; }
+            public double stimFrequency { get; set; }
+            public uint stimAmplitude { get; set; }
             public uint stimDuration { get; set; }
+            public double filterThreshold { get; set; }
             public List<double> filterCoefficients_B { get; set; }
             public List<double> filterCoefficients_A { get; set; }
         }
@@ -231,8 +233,10 @@ namespace StimTherapyApp
                             OutputConsole.Inlines.Add("Stimulation type: " + configInfo.stimType + "\n");
                             OutputConsole.Inlines.Add("Sense channel: " + configInfo.senseChannel + "\n");
                             OutputConsole.Inlines.Add("Stim channel: " + configInfo.stimChannel + "\n");
+                            OutputConsole.Inlines.Add("Stim frequency: " + configInfo.stimFrequency + " Hz\n");
                             OutputConsole.Inlines.Add("Stim Pulse Amplitude: " + configInfo.stimAmplitude + " uA\n");
                             OutputConsole.Inlines.Add("Stim Pulse Duration: " + configInfo.stimDuration + " us\n");
+                            OutputConsole.Inlines.Add("Stim Trigger Threshold: " + configInfo.filterThreshold + " uV\n");
                             OutputConsole.Inlines.Add("Filter Coefficient [B]: ");
                             for (int i = 0; i < configInfo.filterCoefficients_B.Count; i++)
                             {
@@ -321,7 +325,44 @@ namespace StimTherapyApp
             {
                 // Keep the time for console output writring
                 string timeStamp = DateTime.Now.ToString("h:mm:ss tt");
+                uint stimPeriod = (uint)(1 / configInfo.stimFrequency)*1000000;
 
+                if (stimPeriod <= 20400)
+                {
+                    // start phase triggered stim and update status
+                    try
+                    {
+                        aBICManager.enableOpenLoopStimulation(true, (uint)configInfo.stimChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, 50000 - (5 * configInfo.stimDuration) - 3500);
+                    }
+                    catch
+                    {
+                        // Exception occured, gRPC command did not succeed, do not update UI button elements
+                        Application.Current.Dispatcher.Invoke(new Action(() =>
+                        {
+                            OutputConsole.Inlines.Add(configInfo.stimFrequency + " Hz Open loop stimulation NOT started: " + timeStamp + ", load new configuration\n");
+                            Scroller.ScrollToEnd();
+                        }));
+                        return;
+                    }
+                }
+                else
+                {
+                    // start phase triggered stim and update status
+                    try
+                    {
+                        aBICManager.enableOpenLoopStimulation(true, (uint)configInfo.stimChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, stimPeriod - (5 * configInfo.stimDuration) - 3500);
+                    }
+                    catch
+                    {
+                        // Exception occured, gRPC command did not succeed, do not update UI button elements
+                        Application.Current.Dispatcher.Invoke(new Action(() =>
+                        {
+                            OutputConsole.Inlines.Add(configInfo.stimFrequency + " Hz Open loop stimulation NOT started: " + timeStamp + ", load new configuration\n");
+                            Scroller.ScrollToEnd();
+                        }));
+                        return;
+                    }
+                }
                 // start phase triggered stim and update status
                 try
                 {
