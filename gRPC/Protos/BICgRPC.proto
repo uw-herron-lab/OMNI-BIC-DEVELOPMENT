@@ -238,6 +238,7 @@ message openLoopStimEnableRequest{
 	string deviceAddress = 1;
 	bool enable = 2;
 	uint32 watchdogInterval = 3;
+	double triggerStimThreshold = 4;
 }
 
 message distributedStimEnableRequest{
@@ -247,6 +248,7 @@ message distributedStimEnableRequest{
 	repeated double filterCoefficients_B = 4;
 	repeated double filterCoefficients_A = 5;
 	uint32 triggeredFunctionIndex = 6;
+	double triggerStimThreshold = 7;
 }
 
 // *************************** Device Streaming Service Messages ***************************
