@@ -48,7 +48,7 @@ namespace StimTherapyApp
             public int senseChannel { get; set; }
             public int stimChannel { get; set; }
             public double stimFrequency { get; set; }
-            public uint stimAmplitude { get; set; }
+            public int stimAmplitude { get; set; }
             public uint stimDuration { get; set; }
             public double stimThreshold { get; set; }
             public List<double> filterCoefficients_B { get; set; }
@@ -281,7 +281,7 @@ namespace StimTherapyApp
                 // start phase triggered stim and update status
                 try
                 {
-                    aBICManager.enableDistributedStim(true, (uint)configInfo.stimChannel - 1, (uint)configInfo.senseChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, configInfo.filterCoefficients_B, configInfo.filterCoefficients_A);
+                    aBICManager.enableDistributedStim(true, (uint)configInfo.stimChannel - 1, (uint)configInfo.senseChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, configInfo.filterCoefficients_B, configInfo.filterCoefficients_A, configInfo.stimThreshold);
                 }
                 catch
                 {
@@ -315,20 +315,60 @@ namespace StimTherapyApp
                 }));
             });
         }
-
-        private void btn_20OL_Click(object sender, RoutedEventArgs e)
+        private void btn_open_Click(object sender, RoutedEventArgs e)
         {
-            
+            ThreadPool.QueueUserWorkItem(a =>
+            {
+                // Keep the time for console output writring
+                string timeStamp = DateTime.Now.ToString("h:mm:ss tt");
+                uint stimPeriod = (uint)((1 / configInfo.stimFrequency) * 1000000);
+
+                // start phase triggered stim and update status
+                try
+                {
+                    aBICManager.enableOpenLoopStimulation(true, (uint)configInfo.stimChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, stimPeriod - (5 * configInfo.stimDuration) - 3500, configInfo.stimThreshold);
+                }
+                catch
+                {
+                    // Exception occured, gRPC command did not succeed, do not update UI button elements
+                    Application.Current.Dispatcher.Invoke(new Action(() =>
+                    {
+                        OutputConsole.Inlines.Add(configInfo.stimFrequency + " Hz Open loop stimulation NOT started: " + timeStamp + ", load new configuration\n");
+                        Scroller.ScrollToEnd();
+                    }));
+                    return;
+                }
+
+                openStimState = true;
+
+                // Succesfully enabled distributed, update UI elements
+                neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
+                delegate
+                {
+                    // disable buttons
+                    btn_beta.IsEnabled = false; // beta stim button; have to use method invoker
+                    btn_open.IsEnabled = false; // 20 Hz open loop stim button
+                    btn_load.IsEnabled = false; // load config button
+                    btn_diagnostic.IsEnabled = false; // diagnostics button
+                }));
+
+                // notify user of beta stimulation starting
+                Application.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    OutputConsole.Inlines.Add(configInfo.stimFrequency + " Hz Open loop stimulation started: " + timeStamp + "\n");
+                    Scroller.ScrollToEnd();
+                }));
+            });
         }
 
-            private void btn_stop_Click(object sender, RoutedEventArgs e)
+        private void btn_stop_Click(object sender, RoutedEventArgs e)
         {
             ThreadPool.QueueUserWorkItem(a =>
             {
                 if (phasicStimState)
                 {
                     // disable beta and open loop stim
-                    aBICManager.enableDistributedStim(false, (uint)configInfo.stimChannel - 1, (uint)configInfo.senseChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, configInfo.filterCoefficients_B, configInfo.filterCoefficients_A);
+                    aBICManager.enableDistributedStim(false, (uint)configInfo.stimChannel - 1, (uint)configInfo.senseChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, configInfo.filterCoefficients_B, configInfo.filterCoefficients_A, configInfo.stimThreshold);
                     phasicStimState = false;
                 }
                 if (openStimState)
@@ -501,52 +541,6 @@ namespace StimTherapyApp
             {
                 neuroStreamChart.ChartAreas[0].AxisY.Maximum = yMaxVal;
             }
-        }
-
-        private void btn_open_Click(object sender, RoutedEventArgs e)
-        {
-            ThreadPool.QueueUserWorkItem(a =>
-            {
-                // Keep the time for console output writring
-                string timeStamp = DateTime.Now.ToString("h:mm:ss tt");
-                uint stimPeriod = (uint)(1 / configInfo.stimFrequency) * 1000000;
-
-                // start phase triggered stim and update status
-                try
-                {
-                    aBICManager.enableOpenLoopStimulation(true, (uint)configInfo.stimChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, stimPeriod - (5 * configInfo.stimDuration) - 3500, configInfo.stimThreshold);
-                }
-                catch
-                {
-                    // Exception occured, gRPC command did not succeed, do not update UI button elements
-                    Application.Current.Dispatcher.Invoke(new Action(() =>
-                    {
-                        OutputConsole.Inlines.Add(configInfo.stimFrequency + " Hz Open loop stimulation NOT started: " + timeStamp + ", load new configuration\n");
-                        Scroller.ScrollToEnd();
-                    }));
-                    return;
-                }
-
-                openStimState = true;
-
-                // Succesfully enabled distributed, update UI elements
-                neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
-                delegate
-                {
-                    // disable buttons
-                    btn_beta.IsEnabled = false; // beta stim button; have to use method invoker
-                    btn_open.IsEnabled = false; // 20 Hz open loop stim button
-                    btn_load.IsEnabled = false; // load config button
-                    btn_diagnostic.IsEnabled = false; // diagnostics button
-                }));
-
-                // notify user of beta stimulation starting
-                Application.Current.Dispatcher.Invoke(new Action(() =>
-                {
-                    OutputConsole.Inlines.Add("20 Hz Open loop stimulation started: " + timeStamp + "\n");
-                    Scroller.ScrollToEnd();
-                }));
-            });
         }
     }
 }

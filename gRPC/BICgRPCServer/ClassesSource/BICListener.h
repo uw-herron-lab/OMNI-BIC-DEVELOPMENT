@@ -159,7 +159,7 @@ namespace BICGRPCHelperNamespace
         uint64_t distributedCathodeDuration = 400;  // Distributed algorithm cathode (negative pulse) duration (input)
         double distributedAnodeAmplitude = 250;     // Distributed algorithm anode (positive pulse) amplitude (input)
         uint64_t distributedAnodeDuration = 1600;   // Distributed algorithm anode (positive pulse) duration (input)
-        double distributedStimThreshold = 100;       // Distributed algorithm threshold to trigger stimulation (input)
+        double distributedStimThreshold = 10;       // Distributed algorithm threshold to trigger stimulation (input)
 
         // Signal Processing Variables
         std::vector<double> bpFiltData = { 0, 0, 0 };                   // IIR filter output history

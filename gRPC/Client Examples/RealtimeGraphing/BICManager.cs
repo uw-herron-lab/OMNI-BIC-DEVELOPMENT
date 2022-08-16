@@ -200,7 +200,7 @@ namespace RealtimeGraphing
 
                 // Enqueue the stimulation waveform
                 deviceClient.bicEnqueueStimulation(aNewWaveformRequest);
-                deviceClient.enableOpenLoopStimulation(new openLoopStimEnableRequest() { DeviceAddress = DeviceName, Enable = true, WatchdogInterval = 5000 });
+                deviceClient.enableOpenLoopStimulation(new openLoopStimEnableRequest() { DeviceAddress = DeviceName, Enable = true, WatchdogInterval = 5000, TriggerStimThreshold = stimThreshold });
             }
             else
             {
@@ -209,7 +209,7 @@ namespace RealtimeGraphing
             }
         }
 
-        public void enableDistributedStim(bool closedStimEn, uint stimChannel, uint senseChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, List<double> filterCoefficients_B, List<double> filterCoefficients_A)
+        public void enableDistributedStim(bool closedStimEn, uint stimChannel, uint senseChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, List<double> filterCoefficients_B, List<double> filterCoefficients_A, double stimThreshold)
         {
             if (closedStimEn)
             {
@@ -229,7 +229,7 @@ namespace RealtimeGraphing
 
             // Start the distributed stimulation function
             deviceClient.enableDistributedStimulation(new distributedStimEnableRequest() { DeviceAddress = DeviceName, Enable = closedStimEn, SensingChannel = senseChannel, 
-                FilterCoefficientsB = { filterCoefficients_B }, FilterCoefficientsA = { filterCoefficients_A }}); 
+                FilterCoefficientsB = { filterCoefficients_B }, FilterCoefficientsA = { filterCoefficients_A }, TriggerStimThreshold = stimThreshold}); 
         }
 
         /// <summary>
