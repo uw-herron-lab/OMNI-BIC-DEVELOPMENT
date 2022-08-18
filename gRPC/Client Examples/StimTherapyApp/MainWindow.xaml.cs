@@ -137,7 +137,8 @@ namespace StimTherapyApp
                     Name = seriesName,
                     Color = colors_list[i-1],
                     ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastLine
-                });;
+                });
+
                 // when loading window, make legend invisible
                 neuroStreamChart.Series[i-1].IsVisibleInLegend = false;
             }
@@ -147,7 +148,7 @@ namespace StimTherapyApp
                 {
                     // disable buttons
                     btn_beta.IsEnabled = false; // beta stim button; have to use method invoker
-                    btn_open.IsEnabled = false; // 20 Hz open loop stim button
+                    btn_open.IsEnabled = false; // open loop stim button
                     btn_diagnostic.IsEnabled = false; // diagnostics button
                     btn_stop.IsEnabled = false; // stop stim button
 
@@ -255,7 +256,7 @@ namespace StimTherapyApp
                         {
                         // enable buttons after a config has been successfully loaded
                             btn_beta.IsEnabled = true; // beta stim button; have to use method invoker
-                            btn_open.IsEnabled = true; // 20 Hz open loop stim button
+                            btn_open.IsEnabled = true; // open loop stim button
                             btn_load.IsEnabled = true; // load config button
                             btn_diagnostic.IsEnabled = true; // diagnostics button
                             btn_stop.IsEnabled = true; // stop stim button
@@ -302,7 +303,7 @@ namespace StimTherapyApp
                 {
                     // disable buttons
                     btn_beta.IsEnabled = false; // beta stim button; have to use method invoker
-                    btn_open.IsEnabled = false; // 20 Hz open loop stim button
+                    btn_open.IsEnabled = false; // open loop stim button
                     btn_load.IsEnabled = false; // load config button
                     btn_diagnostic.IsEnabled = false; // diagnostics button
                 }));
@@ -323,7 +324,7 @@ namespace StimTherapyApp
                 string timeStamp = DateTime.Now.ToString("h:mm:ss tt");
                 uint stimPeriod = (uint)((1 / configInfo.stimFrequency) * 1000000);
 
-                // start phase triggered stim and update status
+                // start open loop stim and update status
                 try
                 {
                     aBICManager.enableOpenLoopStimulation(true, (uint)configInfo.stimChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, stimPeriod - (5 * configInfo.stimDuration) - 3500, configInfo.stimThreshold);
@@ -341,18 +342,18 @@ namespace StimTherapyApp
 
                 openStimState = true;
 
-                // Succesfully enabled distributed, update UI elements
+                // Succesfully enabled open loop stim, update UI elements
                 neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
                 delegate
                 {
                     // disable buttons
                     btn_beta.IsEnabled = false; // beta stim button; have to use method invoker
-                    btn_open.IsEnabled = false; // 20 Hz open loop stim button
+                    btn_open.IsEnabled = false; // open loop stim button
                     btn_load.IsEnabled = false; // load config button
                     btn_diagnostic.IsEnabled = false; // diagnostics button
                 }));
 
-                // notify user of beta stimulation starting
+                // notify user of open loop stimulation starting
                 Application.Current.Dispatcher.Invoke(new Action(() =>
                 {
                     OutputConsole.Inlines.Add(configInfo.stimFrequency + " Hz Open loop stimulation started: " + timeStamp + "\n");
@@ -383,7 +384,7 @@ namespace StimTherapyApp
                 delegate
                 {
                     btn_beta.IsEnabled = true;
-                    btn_open.IsEnabled = true; // 20 Hz open loop stim button
+                    btn_open.IsEnabled = true; 
                     btn_load.IsEnabled = true;
                     btn_diagnostic.IsEnabled = true;
                 }));
@@ -404,6 +405,7 @@ namespace StimTherapyApp
         {
             OutputConsole.Inlines.Add("Channel was selected/de-selected"); // not going through this function.. selecting doesn't invoke this function 
             Scroller.ScrollToEnd();
+
             // grab the most recent data
             List<double>[] neuroData = aBICManager.getData();
 
@@ -431,7 +433,6 @@ namespace StimTherapyApp
                     selectedChannels.Add(33);
                 }
             }
-                
 
             // clear the current legend
             neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
@@ -443,6 +444,7 @@ namespace StimTherapyApp
                     series.Enabled = false;
                 }
             }));
+
             // Plot newly selected channels and show new legend
             for (int i = 0; i < selectedChannels.Count; i++)
             {
@@ -526,7 +528,7 @@ namespace StimTherapyApp
             bool valEntry = double.TryParse(y_min.Text, out yMinVal);
 
             Console.WriteLine(yMinVal);
-            if (yMinVal < neuroStreamChart.ChartAreas[0].AxisX.Maximum)
+            if (yMinVal < neuroStreamChart.ChartAreas[0].AxisY.Maximum)
             {
                 neuroStreamChart.ChartAreas[0].AxisY.Minimum = yMinVal;
             }
@@ -537,7 +539,7 @@ namespace StimTherapyApp
             double yMaxVal = 0;
             bool valEntry = double.TryParse(y_max.Text, out yMaxVal);
             Console.WriteLine(yMaxVal);
-            if (yMaxVal > neuroStreamChart.ChartAreas[0].AxisX.Minimum)
+            if (yMaxVal > neuroStreamChart.ChartAreas[0].AxisY.Minimum)
             {
                 neuroStreamChart.ChartAreas[0].AxisY.Maximum = yMaxVal;
             }
