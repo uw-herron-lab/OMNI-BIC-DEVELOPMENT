@@ -2,7 +2,6 @@
   "stimType": "beta",
   "senseChannel": 1,
   "stimChannel": 32,
-  "stimFrequency": 20,
   "stimAmplitude": -1000,
   "stimDuration": 250,
   "stimThreshold":  100,
