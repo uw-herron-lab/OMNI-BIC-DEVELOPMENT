@@ -884,9 +884,8 @@ namespace BICGRPCHelperNamespace
     /// </summary>
     /// <param name="enableOpenLoop">Boolean indicating if open-loop stimulation should be enabled or disabled</param>
     /// <param name="watchdogInterval">Interval that the stimulation should be stopped and restarted in milliseconds</param>
-    void BICListener::enableOpenLoopStim(bool enableOpenLoop, uint32_t watchdogInterval, double stimThreshold)
+    void BICListener::enableOpenLoopStim(bool enableOpenLoop, uint32_t watchdogInterval)
     {
-        distributedStimThreshold = stimThreshold;
         if (enableOpenLoop && !isTriggeringStimulation() && !isStimulating())
         {
             // Update state tracking variable
