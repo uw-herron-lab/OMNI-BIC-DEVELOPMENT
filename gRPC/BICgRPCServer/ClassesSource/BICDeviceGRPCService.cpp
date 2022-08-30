@@ -768,7 +768,7 @@ namespace BICGRPCHelperNamespace
         }
 
         // Perform the operation
-        deviceDirectory[request->deviceaddress()]->listener->enableOpenLoopStim(request->enable(), request->watchdoginterval(), request->triggerstimthreshold());
+        deviceDirectory[request->deviceaddress()]->listener->enableOpenLoopStim(request->enable(), request->watchdoginterval());
 
         // Respond to client
         return grpc::Status::OK;
