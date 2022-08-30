@@ -2,7 +2,7 @@
   "stimType": "open",
   "senseChannel": 1,
   "stimChannel": 32,
-  "stimFrequency": 50,
+  "stimPeriod": 50000,
   "stimAmplitude": -1000,
   "stimDuration": 250,
   "stimThreshold":  100,
