@@ -239,7 +239,7 @@ namespace BICgRPC_ConsoleTest
                         break;
                     case ConsoleKey.D1:
                         // Create a waveform defintion request 
-                        bicEnqueueStimulationRequest aNewWaveform = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.PersistentSubfunctions };
+                        bicEnqueueStimulationRequest aNewWaveform = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.PersistentSubfunctions, WaveformRepititions = 2 };
                         // Create a pulse function
                         StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition() { FunctionName = "pulseFunction0", 
                             StimPulse = new stimPulseFunction() { Amplitude = { 1000, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 2550, PulseWidth = 400, PulseRepetitions = 3, SourceElectrodes = { 31 }, SinkElectrodes = { }, UseGround = true, BurstRepetitions = 2 } };
