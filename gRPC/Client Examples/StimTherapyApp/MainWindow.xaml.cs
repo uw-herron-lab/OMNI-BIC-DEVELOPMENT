@@ -47,8 +47,10 @@ namespace StimTherapyApp
             public string stimType { get; set; }
             public int senseChannel { get; set; }
             public int stimChannel { get; set; }
-            public double stimAmplitude { get; set; }
+            public uint stimPeriod { get; set; }
+            public int stimAmplitude { get; set; }
             public uint stimDuration { get; set; }
+            public double stimThreshold { get; set; }
             public List<double> filterCoefficients_B { get; set; }
             public List<double> filterCoefficients_A { get; set; }
         }
@@ -135,7 +137,8 @@ namespace StimTherapyApp
                     Name = seriesName,
                     Color = colors_list[i-1],
                     ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastLine
-                });;
+                });
+
                 // when loading window, make legend invisible
                 neuroStreamChart.Series[i-1].IsVisibleInLegend = false;
             }
@@ -145,8 +148,7 @@ namespace StimTherapyApp
                 {
                     // disable buttons
                     btn_beta.IsEnabled = false; // beta stim button; have to use method invoker
-                    btn_20OL.IsEnabled = false; // 20 Hz open loop stim button
-                    btn_50OL.IsEnabled = false; // 50 Hz open loop stim button
+                    btn_open.IsEnabled = false; // open loop stim button
                     btn_diagnostic.IsEnabled = false; // diagnostics button
                     btn_stop.IsEnabled = false; // stop stim button
 
@@ -231,8 +233,10 @@ namespace StimTherapyApp
                             OutputConsole.Inlines.Add("Stimulation type: " + configInfo.stimType + "\n");
                             OutputConsole.Inlines.Add("Sense channel: " + configInfo.senseChannel + "\n");
                             OutputConsole.Inlines.Add("Stim channel: " + configInfo.stimChannel + "\n");
+                            OutputConsole.Inlines.Add("Stim period: " + (configInfo.stimPeriod) + " us\n");
                             OutputConsole.Inlines.Add("Stim Pulse Amplitude: " + configInfo.stimAmplitude + " uA\n");
                             OutputConsole.Inlines.Add("Stim Pulse Duration: " + configInfo.stimDuration + " us\n");
+                            OutputConsole.Inlines.Add("Stim Trigger Threshold: " + configInfo.stimThreshold + " uV\n");
                             OutputConsole.Inlines.Add("Filter Coefficient [B]: ");
                             for (int i = 0; i < configInfo.filterCoefficients_B.Count; i++)
                             {
@@ -252,8 +256,7 @@ namespace StimTherapyApp
                         {
                         // enable buttons after a config has been successfully loaded
                             btn_beta.IsEnabled = true; // beta stim button; have to use method invoker
-                            btn_20OL.IsEnabled = true; // 20 Hz open loop stim button
-                            btn_50OL.IsEnabled = true; // 50 Hz open loop stim button
+                            btn_open.IsEnabled = true; // open loop stim button
                             btn_load.IsEnabled = true; // load config button
                             btn_diagnostic.IsEnabled = true; // diagnostics button
                             btn_stop.IsEnabled = true; // stop stim button
@@ -279,7 +282,7 @@ namespace StimTherapyApp
                 // start phase triggered stim and update status
                 try
                 {
-                    aBICManager.enableDistributedStim(true, (uint)configInfo.stimChannel - 1, (uint)configInfo.senseChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, configInfo.filterCoefficients_B, configInfo.filterCoefficients_A);
+                    aBICManager.enableDistributedStim(true, (uint)configInfo.stimChannel - 1, (uint)configInfo.senseChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, configInfo.filterCoefficients_B, configInfo.filterCoefficients_A, configInfo.stimThreshold);
                 }
                 catch
                 {
@@ -300,8 +303,7 @@ namespace StimTherapyApp
                 {
                     // disable buttons
                     btn_beta.IsEnabled = false; // beta stim button; have to use method invoker
-                    btn_20OL.IsEnabled = false; // 20 Hz open loop stim button
-                    btn_50OL.IsEnabled = false; // 50 Hz open loop stim button
+                    btn_open.IsEnabled = false; // open loop stim button
                     btn_load.IsEnabled = false; // load config button
                     btn_diagnostic.IsEnabled = false; // diagnostics button
                 }));
@@ -314,25 +316,24 @@ namespace StimTherapyApp
                 }));
             });
         }
-
-        private void btn_20OL_Click(object sender, RoutedEventArgs e)
+        private void btn_open_Click(object sender, RoutedEventArgs e)
         {
             ThreadPool.QueueUserWorkItem(a =>
             {
                 // Keep the time for console output writring
                 string timeStamp = DateTime.Now.ToString("h:mm:ss tt");
 
-                // start phase triggered stim and update status
+                // start open loop stim and update status
                 try
                 {
-                    aBICManager.enableOpenLoopStimulation(true, (uint)configInfo.stimChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, 50000 - (5 * configInfo.stimDuration) - 3500);
+                    aBICManager.enableOpenLoopStimulation(true, (uint)configInfo.stimChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, configInfo.stimPeriod - (5 * configInfo.stimDuration) - 3500, configInfo.stimThreshold);
                 }
                 catch
                 {
                     // Exception occured, gRPC command did not succeed, do not update UI button elements
                     Application.Current.Dispatcher.Invoke(new Action(() =>
                     {
-                        OutputConsole.Inlines.Add("20 Hz Open loop stimulation NOT started: " + timeStamp + ", load new configuration\n");
+                        OutputConsole.Inlines.Add("Open loop stimulation NOT started: " + timeStamp + ", load new configuration\n");
                         Scroller.ScrollToEnd();
                     }));
                     return;
@@ -340,68 +341,21 @@ namespace StimTherapyApp
 
                 openStimState = true;
 
-                // Succesfully enabled distributed, update UI elements
+                // Succesfully enabled open loop stim, update UI elements
                 neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
                 delegate
                 {
                     // disable buttons
                     btn_beta.IsEnabled = false; // beta stim button; have to use method invoker
-                    btn_20OL.IsEnabled = false; // 20 Hz open loop stim button
-                    btn_50OL.IsEnabled = false; // 50 Hz open loop stim button
+                    btn_open.IsEnabled = false; // open loop stim button
                     btn_load.IsEnabled = false; // load config button
                     btn_diagnostic.IsEnabled = false; // diagnostics button
                 }));
 
-                // notify user of beta stimulation starting
+                // notify user of open loop stimulation starting
                 Application.Current.Dispatcher.Invoke(new Action(() =>
                 {
-                    OutputConsole.Inlines.Add("20 Hz Open loop stimulation started: " + timeStamp + "\n");
-                    Scroller.ScrollToEnd();
-                }));
-            });
-        }
-
-        private void btn_50OL_Click(object sender, RoutedEventArgs e)
-        {
-            ThreadPool.QueueUserWorkItem(a =>
-            {
-                // Keep the time for console output writring
-                string timeStamp = DateTime.Now.ToString("h:mm:ss tt");
-
-                // start phase triggered stim and update status
-                try
-                {
-                    aBICManager.enableOpenLoopStimulation(true, (uint)configInfo.stimChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, 20000 - (5 * configInfo.stimDuration) - 3500);
-                }
-                catch
-                {
-                    // Exception occured, gRPC command did not succeed, do not update UI button elements
-                    Application.Current.Dispatcher.Invoke(new Action(() =>
-                    {
-                        OutputConsole.Inlines.Add("50 Hz Open loop stimulation NOT started: " + timeStamp + ", load new configuration\n");
-                        Scroller.ScrollToEnd();
-                    }));
-                    return;
-                }
-
-                openStimState = true;
-
-                // Succesfully enabled distributed, update UI elements
-                neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
-                delegate
-                {
-                    // disable buttons
-                    btn_beta.IsEnabled = false; // beta stim button; have to use method invoker
-                    btn_20OL.IsEnabled = false; // 20 Hz open loop stim button
-                    btn_50OL.IsEnabled = false; // 50 Hz open loop stim button
-                    btn_load.IsEnabled = false; // load config button
-                    btn_diagnostic.IsEnabled = false; // diagnostics button
-                }));
-
-                // notify user of beta stimulation starting
-                Application.Current.Dispatcher.Invoke(new Action(() =>
-                {
-                    OutputConsole.Inlines.Add("50 Hz Open loop stimulation started: " + timeStamp + "\n");
+                    OutputConsole.Inlines.Add("Open loop stimulation started: " + timeStamp + "\n");
                     Scroller.ScrollToEnd();
                 }));
             });
@@ -414,12 +368,12 @@ namespace StimTherapyApp
                 if (phasicStimState)
                 {
                     // disable beta and open loop stim
-                    aBICManager.enableDistributedStim(false, (uint)configInfo.stimChannel - 1, (uint)configInfo.senseChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, configInfo.filterCoefficients_B, configInfo.filterCoefficients_A);
+                    aBICManager.enableDistributedStim(false, (uint)configInfo.stimChannel - 1, (uint)configInfo.senseChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, configInfo.filterCoefficients_B, configInfo.filterCoefficients_A, configInfo.stimThreshold);
                     phasicStimState = false;
                 }
                 if (openStimState)
                 {
-                    aBICManager.enableOpenLoopStimulation(false, (uint)configInfo.stimChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 1, 20000);
+                    aBICManager.enableOpenLoopStimulation(false, (uint)configInfo.stimChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 1, 20000, configInfo.stimThreshold);
                     openStimState = false;
                 }
             });
@@ -429,8 +383,7 @@ namespace StimTherapyApp
                 delegate
                 {
                     btn_beta.IsEnabled = true;
-                    btn_20OL.IsEnabled = true; // 20 Hz open loop stim button
-                    btn_50OL.IsEnabled = true; // 50 Hz open loop stim button
+                    btn_open.IsEnabled = true; 
                     btn_load.IsEnabled = true;
                     btn_diagnostic.IsEnabled = true;
                 }));
@@ -451,6 +404,7 @@ namespace StimTherapyApp
         {
             OutputConsole.Inlines.Add("Channel was selected/de-selected"); // not going through this function.. selecting doesn't invoke this function 
             Scroller.ScrollToEnd();
+
             // grab the most recent data
             List<double>[] neuroData = aBICManager.getData();
 
@@ -478,7 +432,6 @@ namespace StimTherapyApp
                     selectedChannels.Add(33);
                 }
             }
-                
 
             // clear the current legend
             neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
@@ -490,6 +443,7 @@ namespace StimTherapyApp
                     series.Enabled = false;
                 }
             }));
+
             // Plot newly selected channels and show new legend
             for (int i = 0; i < selectedChannels.Count; i++)
             {
@@ -573,7 +527,7 @@ namespace StimTherapyApp
             bool valEntry = double.TryParse(y_min.Text, out yMinVal);
 
             Console.WriteLine(yMinVal);
-            if (yMinVal < neuroStreamChart.ChartAreas[0].AxisX.Maximum)
+            if (yMinVal < neuroStreamChart.ChartAreas[0].AxisY.Maximum)
             {
                 neuroStreamChart.ChartAreas[0].AxisY.Minimum = yMinVal;
             }
@@ -584,7 +538,7 @@ namespace StimTherapyApp
             double yMaxVal = 0;
             bool valEntry = double.TryParse(y_max.Text, out yMaxVal);
             Console.WriteLine(yMaxVal);
-            if (yMaxVal > neuroStreamChart.ChartAreas[0].AxisX.Minimum)
+            if (yMaxVal > neuroStreamChart.ChartAreas[0].AxisY.Minimum)
             {
                 neuroStreamChart.ChartAreas[0].AxisY.Maximum = yMaxVal;
             }

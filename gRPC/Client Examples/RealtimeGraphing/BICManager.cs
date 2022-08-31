@@ -159,32 +159,48 @@ namespace RealtimeGraphing
             logFileStream.Dispose();
         }
 
-        public void enableOpenLoopStimulation(bool openStimEn, uint stimChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interpulseInterval)
+        public void enableOpenLoopStimulation(bool openStimEn, uint stimChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold)
         {
             if (openStimEn)
             {
                 // Create a waveform defintion request 
                 bicEnqueueStimulationRequest aNewWaveformRequest = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.PersistentWaveform, WaveformRepititions = 255 };
-                // Create a pulse function
-                StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
-                {
-                    FunctionName = "openLoopPulse",
-                    StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 10, PulseWidth = stimDuration, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { }, UseGround = true, BurstRepetitions = 1 }
 
-                };
-                aNewWaveformRequest.Functions.Add(pulseFunction0);
-
-                // Create the interpulse pause
-                StimulationFunctionDefinition interpulsePause = new StimulationFunctionDefinition()
+                // check if interPulseInterval is greater than 20400 us (DZ1 duration limit) to determine how to add inter pulse interval
+                if (interPulseInterval <= 20400)
                 {
-                    FunctionName = "pausePulse",
-                    Pause = new pauseFunction() { Duration = interpulseInterval }
-                };
-                aNewWaveformRequest.Functions.Add(interpulsePause);
+                    // Create a pulse function
+                    StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
+                    {
+                        FunctionName = "openLoopPulse",
+                        StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = interPulseInterval, PulseWidth = stimDuration, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { }, UseGround = true, BurstRepetitions = 1 }
+
+                    };
+                    aNewWaveformRequest.Functions.Add(pulseFunction0);
+                }
+                else
+                {
+                    // Create a pulse function
+                    StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
+                    {
+                        FunctionName = "openLoopPulse",
+                        StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 10, PulseWidth = stimDuration, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { }, UseGround = true, BurstRepetitions = 1 }
+
+                    };
+                    aNewWaveformRequest.Functions.Add(pulseFunction0);
+
+                    // Create the interpulse pause
+                    StimulationFunctionDefinition interpulsePause = new StimulationFunctionDefinition()
+                    {
+                        FunctionName = "pausePulse",
+                        Pause = new pauseFunction() { Duration = interPulseInterval }
+                    };
+                    aNewWaveformRequest.Functions.Add(interpulsePause);
+                }
 
                 // Enqueue the stimulation waveform
                 deviceClient.bicEnqueueStimulation(aNewWaveformRequest);
-                deviceClient.enableOpenLoopStimulation(new openLoopStimEnableRequest() { DeviceAddress = DeviceName, Enable = true, WatchdogInterval = 5000 });
+                deviceClient.enableOpenLoopStimulation(new openLoopStimEnableRequest() { DeviceAddress = DeviceName, Enable = true, WatchdogInterval = 5000, TriggerStimThreshold = stimThreshold });
             }
             else
             {
@@ -193,7 +209,7 @@ namespace RealtimeGraphing
             }
         }
 
-        public void enableDistributedStim(bool closedStimEn, uint stimChannel, uint senseChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, List<double> filterCoefficients_B, List<double> filterCoefficients_A)
+        public void enableDistributedStim(bool closedStimEn, uint stimChannel, uint senseChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, List<double> filterCoefficients_B, List<double> filterCoefficients_A, double stimThreshold)
         {
             if (closedStimEn)
             {
@@ -213,7 +229,7 @@ namespace RealtimeGraphing
 
             // Start the distributed stimulation function
             deviceClient.enableDistributedStimulation(new distributedStimEnableRequest() { DeviceAddress = DeviceName, Enable = closedStimEn, SensingChannel = senseChannel, 
-                FilterCoefficientsB = { filterCoefficients_B }, FilterCoefficientsA = { filterCoefficients_A }}); 
+                FilterCoefficientsB = { filterCoefficients_B }, FilterCoefficientsA = { filterCoefficients_A }, TriggerStimThreshold = stimThreshold}); 
         }
 
         /// <summary>

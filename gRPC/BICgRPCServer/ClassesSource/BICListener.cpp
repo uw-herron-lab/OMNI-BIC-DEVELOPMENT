@@ -574,12 +574,13 @@ namespace BICGRPCHelperNamespace
     /// <param name="enableDistributed">A boolean indicating if phasic stim should be enabled or disabled</param>
     /// <param name="phaseSensingChannel">The channel to sense phase on</param>
     /// <param name="phaseStimChannel">The channel to stimulate after negative zero crossings of phase sensing channel</param>
-    void BICListener::enableDistributedStim(bool enableDistributed, int sensingChannel, std::vector<double> filtCoeff_B, std::vector<double> filtCoeff_A, uint32_t triggeredFunctionIndex)
+    void BICListener::enableDistributedStim(bool enableDistributed, int sensingChannel, std::vector<double> filtCoeff_B, std::vector<double> filtCoeff_A, uint32_t triggeredFunctionIndex, double stimThreshold)
     {
         // could potentially add filter coefficients to be updated here..?
         distributedInputChannel = sensingChannel;
         betaBandPassIIR_B = filtCoeff_B;
         betaBandPassIIR_A = filtCoeff_A;
+        distributedStimThreshold = stimThreshold;
 
         if (enableDistributed && !isTriggeringStimulation() && !isStimulating())
         {
@@ -710,7 +711,7 @@ namespace BICGRPCHelperNamespace
         double filtSamp = filterIIR(newData, &bpFiltData, &rawPrevData, &betaBandPassIIR_B, &betaBandPassIIR_A);
 
         // if at a local maxima above an arbitrary threshold and closed loop stim is enabled, send stimulation
-        if (isCLStimEn && detectLocalMaxima(bpFiltData) && bpFiltData[1] > 100)
+        if (isCLStimEn && detectLocalMaxima(bpFiltData) && bpFiltData[1] > distributedStimThreshold)
         {
             // start thread to execute stim command
             stimTrigger->notify_all();

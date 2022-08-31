@@ -27,7 +27,7 @@ namespace BICGRPCHelperNamespace
 
         // ************************* Public Distributed Algorithm Stimulation Management *************************
         void enableOpenLoopStim(bool enableOpenLoop, uint32_t watchdogInterval);
-        void enableDistributedStim(bool enableDistributed, int phaseSensingChannel, std::vector<double> filtCoeff_B, std::vector<double> filtCoeff_A, uint32_t triggeredFunctionIndex);
+        void enableDistributedStim(bool enableDistributed, int phaseSensingChannel, std::vector<double> filtCoeff_B, std::vector<double> filtCoeff_A, uint32_t triggeredFunctionIndex, double stimThreshold);
         void addImplantPointer(cortec::implantapi::IImplant* theImplantedDevice);
         void enableStimTimeLogging(bool enableSensing);
         double processingHelper(double newData);
@@ -93,7 +93,7 @@ namespace BICGRPCHelperNamespace
         uint32_t neuroInterplationThreshold;    // Neural interpolation length limit, provided to Listener using enableNeuralSensing()
         uint32_t lastNeuroCount = 0;            // Used to determine the number of samples required for interpolation
         double latestData[32] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
-        double latestTimeStamp;                   // Keep track of latest timestamp for interpolation samples
+        uint64_t latestTimeStamp;                   // Keep track of latest timestamp for interpolation samples
 
         // Pointers for gRPC-managed streaming interfaces. Set by the BICDeviceServiceImpl class, null when not in use.
         grpc::ServerWriter<BICgRPC::NeuralUpdate>* neuralWriter;
@@ -159,6 +159,7 @@ namespace BICGRPCHelperNamespace
         uint64_t distributedCathodeDuration = 400;  // Distributed algorithm cathode (negative pulse) duration (input)
         double distributedAnodeAmplitude = 250;     // Distributed algorithm anode (positive pulse) amplitude (input)
         uint64_t distributedAnodeDuration = 1600;   // Distributed algorithm anode (positive pulse) duration (input)
+        double distributedStimThreshold = 10;       // Distributed algorithm threshold to trigger stimulation (input)
 
         // Signal Processing Variables
         std::vector<double> bpFiltData = { 0, 0, 0 };                   // IIR filter output history
