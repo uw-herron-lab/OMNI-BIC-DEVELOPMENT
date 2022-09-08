@@ -28,7 +28,7 @@ namespace RealtimeGraphing
         // Logging Objects
         FileStream logFileStream;
         StreamWriter logFileWriter;
-        string filePath = "./filterLog.csv";
+        string filePath = "./filterLog" + DateTime.Now.ToString("_MMMdyyy_HHmmss") + ".csv";
         ConcurrentQueue<string> logLineQueue = new ConcurrentQueue<string>();
         Thread newLoggingThread;
         bool loggingNotDisposed = true;
@@ -60,7 +60,7 @@ namespace RealtimeGraphing
             {
                 File.Delete(filePath);
             }
-            logFileStream = new FileStream("./filterLog.csv", FileMode.Create, FileAccess.Write, FileShare.None, 4096, FileOptions.Asynchronous);
+            logFileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, FileOptions.Asynchronous);
             logFileWriter = new StreamWriter(logFileStream);
             logFileWriter.WriteLine("PacketNum, TimeStamp, FilteredChannelNum, RawChannelData, FilteredChannelData, boolInterpolated, StimChannelData");
         }
@@ -166,7 +166,7 @@ namespace RealtimeGraphing
                 // Create a waveform defintion request 
                 bicEnqueueStimulationRequest aNewWaveformRequest = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.PersistentWaveform, WaveformRepititions = 255 };
 
-                // check if interPulseInterval is greater than 20400 us (DZ1 duration limit) to determine how to add inter pulse interval
+                // check if interPulseInterval is less than 20400 us (DZ1 duration limit) to determine how to add inter pulse interval
                 if (interPulseInterval <= 20400)
                 {
                     // Create a pulse function
