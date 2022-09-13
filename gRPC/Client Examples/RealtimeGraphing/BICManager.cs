@@ -318,7 +318,6 @@ namespace RealtimeGraphing
         {
             List<string> impedanceValues = new List<string>();
             bicGetImpedanceReply theImpedReply;
-            string impedValue;
             for (uint i = 0; i < 32; i ++)
             {
                 theImpedReply = deviceClient.bicGetImpedance(new bicGetImpedanceRequest() { DeviceAddress = DeviceName, Channel = i });
