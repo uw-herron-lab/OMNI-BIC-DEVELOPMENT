@@ -151,9 +151,6 @@ namespace StimTherapyApp
                     btn_open.IsEnabled = false; // open loop stim button
                     btn_diagnostic.IsEnabled = false; // diagnostics button
                     btn_stop.IsEnabled = false; // stop stim button
-
-                    // temporary- hide diagnostic buttons
-                    btn_diagnostic.Visibility = Visibility.Hidden;
                 }));
 
             // Start update timer
@@ -396,8 +393,25 @@ namespace StimTherapyApp
         private void btn_diagnostic_Click(object sender, RoutedEventArgs e)
         {
             // start diagnostic pattern
-            OutputConsole.Inlines.Add("Performing diagnostics...\n");
-            Scroller.ScrollToEnd();
+            diagWindow diagnostics = new diagWindow();
+            diagnostics.Show();
+            diagnostics.TempConsole.Text = aBICManager.getTemperature();
+            diagnostics.HumidityConsole.Text = aBICManager.getHumidity();
+            for (int i = 1; i < 33; i++)
+            {
+                if (i < 17)
+                {
+                    diagnostics.ImpedConsole.Inlines.Add("CH" + i + ": " + aBICManager.getImpedance()[i-1]);
+                    diagnostics.ImpedConsole.Inlines.Add("\n");
+                }
+                else
+                {
+                    diagnostics.ImpedConsole2.Inlines.Add("CH" + i + ": " + aBICManager.getImpedance()[i-1]);
+                    diagnostics.ImpedConsole2.Inlines.Add("\n");
+                }
+            }
+            //OutputConsole.Inlines.Add("Performing diagnostics...\n");
+            //Scroller.ScrollToEnd();
         }
 
         private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

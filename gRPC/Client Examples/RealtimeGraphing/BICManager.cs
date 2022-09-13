@@ -301,6 +301,32 @@ namespace RealtimeGraphing
             return true;
         }
 
+        public string getTemperature()
+        {
+            bicGetTemperatureReply theTempReply = deviceClient.bicGetTemperature(new RequestDeviceAddress() { DeviceAddress = DeviceName });
+            return theTempReply.Temperature.ToString() + " (" + theTempReply.Units + ")";
+            
+        }
+
+        public string getHumidity()
+        {
+            bicGetHumidityReply theHumidityReply = deviceClient.bicGetHumidity(new RequestDeviceAddress() { DeviceAddress = DeviceName });
+            return theHumidityReply.Humidity.ToString() + " (" + theHumidityReply.Units + ")";
+        }
+
+        public List<string> getImpedance()
+        {
+            List<string> impedanceValues = new List<string>();
+            bicGetImpedanceReply theImpedReply;
+            string impedValue;
+            for (uint i = 0; i < 32; i ++)
+            {
+                theImpedReply = deviceClient.bicGetImpedance(new bicGetImpedanceRequest() { DeviceAddress = DeviceName, Channel = i });
+                impedanceValues.Add(theImpedReply.ChannelImpedance.ToString() + " (" + theImpedReply.Units + ")");
+            }
+            return impedanceValues;
+        }
+
         /// <summary>
         /// Monitor the neural stream for new data
         /// </summary>
