@@ -55,6 +55,7 @@ service BICDeviceService{
 	rpc bicStartStimulation (bicStartStimulationRequest) returns (bicSuccessReply) {}
 	rpc bicEnqueueStimulation (bicEnqueueStimulationRequest) returns (bicSuccessReply) {}
 	rpc bicStopStimulation (RequestDeviceAddress) returns (bicSuccessReply) {}
+	rpc enableOpenLoopStimulation (openLoopStimEnableRequest) returns (bicSuccessReply) {}
 	rpc enableDistributedStimulation (distributedStimEnableRequest) returns (bicSuccessReply) {}
 
 	// Streaming endpoints
@@ -192,14 +193,14 @@ message bicSetImplantPowerRequest{
 // *************************** Device Stimulation Service Messages ***************************
 message bicStartStimulationRequest{
 	string deviceAddress = 1;
-	EnqueueStimulationMode mode = 2;
-	uint32 functionModeIndex = 3;
+	uint32 functionIndex = 2;
 }
 
 message bicEnqueueStimulationRequest{
 	string deviceAddress = 1;
 	EnqueueStimulationMode mode = 2;
 	repeated StimulationFunctionDefinition functions = 3;
+	uint32 WaveformRepititions = 4;
 }
 
 enum EnqueueStimulationMode{
@@ -233,17 +234,21 @@ message pauseFunction{
 	uint64 duration = 1;
 }
 
+message openLoopStimEnableRequest{
+	string deviceAddress = 1;
+	bool enable = 2;
+	uint32 watchdogInterval = 3;
+	double triggerStimThreshold = 4;
+}
+
 message distributedStimEnableRequest{
 	string deviceAddress = 1;
 	bool enable = 2;
 	uint32 sensingChannel = 3;
-	uint32 stimChannel = 4;
-	double cathodeAmplitude = 5;
-	uint64 cathodeDuration = 6;
-	double anodeAmplitude = 7;
-	uint64 anodeDuration = 8;
-	repeated double filterCoefficients_B = 9;
-	repeated double filterCoefficients_A = 10;
+	repeated double filterCoefficients_B = 4;
+	repeated double filterCoefficients_A = 5;
+	uint32 triggeredFunctionIndex = 6;
+	double triggerStimThreshold = 7;
 }
 
 // *************************** Device Streaming Service Messages ***************************
@@ -272,6 +277,7 @@ message NeuralSample{
 	bool isInterpolated = 8;
 	double filtSample = 9;
 	uint32 filtChannel = 10;
+	uint64 timeStamp = 11;
 }
 
 message ConnectionUpdate{

@@ -95,12 +95,12 @@ namespace RealtimeGraphing
            {
                if (!phasicStimState)
                {
-                   aBICManager.enableDistributedStim(true, 31, 0, -1000, 400, 250, 1600, filter_B, filter_A);
+                   aBICManager.enableDistributedStim(true, 31, 0, 1000, 250, 1, filter_B, filter_A, 100);
                    phasicStimState = true;
                }
                else
                {
-                   aBICManager.enableDistributedStim(false, 31, 0, -1000, 400, 250, 1600, filter_B, filter_A);
+                   aBICManager.enableDistributedStim(false, 31, 0, 1000, 250, 1, filter_B, filter_A, 100);
                    phasicStimState = false;
                }
            });

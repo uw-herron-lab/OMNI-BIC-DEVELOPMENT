@@ -12,6 +12,10 @@ namespace BICGRPCHelperNamespace {
         std::string deviceAddress;
         std::string bridgeId;
         std::string deviceId;
+        
+        // Stimulation-related objects
+        cortec::implantapi::StimulationMode lastEnqueueType;
+        std::uint32_t openLoopWatchdogInterval;
 
         // BIC Device-specific Objects
         std::unique_ptr <cortec::implantapi::IImplant> theImplant;

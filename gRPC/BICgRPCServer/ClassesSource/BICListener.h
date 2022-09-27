@@ -26,7 +26,8 @@ namespace BICGRPCHelperNamespace
         void enablePowerStreaming(bool enableSensing, grpc::ServerWriter<BICgRPC::PowerUpdate>* aWriter);
 
         // ************************* Public Distributed Algorithm Stimulation Management *************************
-        void enableDistributedStim(bool enableDistributed, int phaseSensingChannel, int phaseStimChannel, double cathodeStimAmplitude, uint64_t cathodeStimDuration, double anodeStimAmplitude, uint64_t anodeStimDuration, std::vector<double> filtCoeff_B, std::vector<double> filtCoeff_A);
+        void enableOpenLoopStim(bool enableOpenLoop, uint32_t watchdogInterval);
+        void enableDistributedStim(bool enableDistributed, int phaseSensingChannel, std::vector<double> filtCoeff_B, std::vector<double> filtCoeff_A, uint32_t triggeredFunctionIndex, double stimThreshold);
         void addImplantPointer(cortec::implantapi::IImplant* theImplantedDevice);
         void enableStimTimeLogging(bool enableSensing);
         double processingHelper(double newData);
@@ -54,6 +55,7 @@ namespace BICGRPCHelperNamespace
         // ************************* Public Boolean State Accessors *************************
         bool isStimulating();
         bool isMeasuring();
+        bool isTriggeringStimulation();
         bool neuralStreamingState = false;
         bool temperatureStreamingState = false;
         bool humidityStreamingState = false;
@@ -91,6 +93,7 @@ namespace BICGRPCHelperNamespace
         uint32_t neuroInterplationThreshold;    // Neural interpolation length limit, provided to Listener using enableNeuralSensing()
         uint32_t lastNeuroCount = 0;            // Used to determine the number of samples required for interpolation
         double latestData[32] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
+        uint64_t latestTimeStamp;                   // Keep track of latest timestamp for interpolation samples
 
         // Pointers for gRPC-managed streaming interfaces. Set by the BICDeviceServiceImpl class, null when not in use.
         grpc::ServerWriter<BICgRPC::NeuralUpdate>* neuralWriter;
@@ -116,6 +119,7 @@ namespace BICGRPCHelperNamespace
         std::thread* errorProcessingThread;
         std::thread* powerProcessingThread;
         std::thread* distributedStimThread;
+        std::thread* openLoopStimThread;
 
         // Stream data ready signals
         std::condition_variable* neuralDataNotify;
@@ -139,22 +143,27 @@ namespace BICGRPCHelperNamespace
         // ************************* Private Distributed Algorithm Objects and Methods *************************
         // Distributed Stim Functions
         void triggeredSendStimThread(void);
+        void openLoopStimLoopThread(void);
         double filterIIR(double currSamp, std::vector<double>* prevFiltOut, std::vector<double>* prevInput, std::vector<double>* b, std::vector<double>* a);
         bool isZeroCrossing(std::vector<double> dataArray);
         bool detectLocalMaxima(std::vector<double> dataArray);
 
         // Generic Distributed Variables
         bool isCLStimEn = false;                    // State tracking boolean indicates whether distributed stim is active or not
+        bool isOLStimEn = false;                    // State tracking boolean indicates whether open loop stim is active or not
+        uint32_t openLoopSleepTimeDuration;
+        UINT_PTR openLoopTimerPointer;
         uint32_t distributedInputChannel = 0;       // Distributed algorithm sensing channel (input)
         uint32_t distributedOutputChannel = 31;     // Distributed algorithm stimulation channel (output)
         double distributedCathodeAmplitude = -1000; // Distributed algorithm cathode (negative pulse) amplitude (input)
         uint64_t distributedCathodeDuration = 400;  // Distributed algorithm cathode (negative pulse) duration (input)
         double distributedAnodeAmplitude = 250;     // Distributed algorithm anode (positive pulse) amplitude (input)
         uint64_t distributedAnodeDuration = 1600;   // Distributed algorithm anode (positive pulse) duration (input)
+        double distributedStimThreshold = 10;       // Distributed algorithm threshold to trigger stimulation (input)
 
         // Signal Processing Variables
         std::vector<double> bpFiltData = { 0, 0, 0 };                   // IIR BP filter output history
-        std::vector<double> bpPrevData = { 0, 0 };                      // Data history for IIR BP filtering
+        std::vector<double> rawPrevData = { 0, 0 };                      // Data history for IIR BP filtering
         std::vector<double> betaBandPassIIR_B = { 0.0305, 0, -0.0305 }; // IIR BP "B" filter coefficients for a beta-range band-pass
         std::vector<double> betaBandPassIIR_A = { 1, -1.9247, 0.9391 }; // IIR BP "A" filter coefficients for a beta-range band-pass
                  

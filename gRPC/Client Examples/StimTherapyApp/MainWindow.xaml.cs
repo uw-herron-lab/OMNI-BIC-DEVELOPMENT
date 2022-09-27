@@ -28,17 +28,11 @@ namespace StimTherapyApp
     public partial class MainWindow : Window
     {
         private RealtimeGraphing.BICManager aBICManager;
-        //private bool phasicStimState = false;
-        //private bool openStimState = false;
-        private uint userStimChannel;
-        private uint userSenseChannel;
-        private double userCathodeAmplitude;
-        private uint userCathodeDuration;
-        private double userAnodeAmplitude;
-        private uint userAnodeDuration;
-        private List<double> userFilterCoefficients_B;
-        private List<double> userFilterCoefficients_A;
+        private bool phasicStimState = false;
+        private bool openStimState = false;
         private int numChannels = 34;
+        private Configuration configInfo;
+
         public class Channel
         {
             public string Name { get; set; }
@@ -53,10 +47,10 @@ namespace StimTherapyApp
             public string stimType { get; set; }
             public int senseChannel { get; set; }
             public int stimChannel { get; set; }
-            public double cathodeAmplitude { get; set; }
-            public uint cathodeDuration { get; set; }
-            public double anodeAmplitude { get; set; }
-            public uint anodeDuration { get; set; }
+            public uint stimPeriod { get; set; }
+            public int stimAmplitude { get; set; }
+            public uint stimDuration { get; set; }
+            public double stimThreshold { get; set; }
             public List<double> filterCoefficients_B { get; set; }
             public List<double> filterCoefficients_A { get; set; }
         }
@@ -143,7 +137,8 @@ namespace StimTherapyApp
                     Name = seriesName,
                     Color = colors_list[i-1],
                     ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastLine
-                });;
+                });
+
                 // when loading window, make legend invisible
                 neuroStreamChart.Series[i-1].IsVisibleInLegend = false;
             }
@@ -153,12 +148,11 @@ namespace StimTherapyApp
                 {
                     // disable buttons
                     btn_beta.IsEnabled = false; // beta stim button; have to use method invoker
-                    btn_openloop.IsEnabled = false; // open loop stim button
+                    btn_open.IsEnabled = false; // open loop stim button
                     btn_diagnostic.IsEnabled = false; // diagnostics button
                     btn_stop.IsEnabled = false; // stop stim button
 
-                    // temporary- hide open loop and diagnostic buttons
-                    btn_openloop.Visibility = Visibility.Hidden;
+                    // temporary- hide diagnostic buttons
                     btn_diagnostic.Visibility = Visibility.Hidden;
                 }));
 
@@ -219,65 +213,63 @@ namespace StimTherapyApp
 
         private void btn_load_Click(object sender, RoutedEventArgs e)
         {
-            
-            // open dialog box to select file with patient-specific settings
-            var fileD = new Microsoft.Win32.OpenFileDialog();
-            bool? loadFile = fileD.ShowDialog();
-            if (loadFile == true)
+            try
             {
-                string fileName = fileD.FileName;
-                if (File.Exists(fileName))
+                // open dialog box to select file with patient-specific settings
+                var fileD = new Microsoft.Win32.OpenFileDialog();
+                bool? loadFile = fileD.ShowDialog();
+                if (loadFile == true)
                 {
-                    // load in .json file and read in stimulation parameters
-                    using (StreamReader fileReader = new StreamReader(fileName))
+                    string fileName = fileD.FileName;
+                    if (File.Exists(fileName))
                     {
-                        string configJson = fileReader.ReadToEnd();
-                        Configuration configInfo = System.Text.Json.JsonSerializer.Deserialize<Configuration>(configJson);
-
-                        OutputConsole.Inlines.Add("Loaded " + fileName + "\n");
-                        OutputConsole.Inlines.Add("Stimulation type: " + configInfo.stimType + "\n");
-                        OutputConsole.Inlines.Add("Sense channel: " + configInfo.senseChannel + "\n");
-                        OutputConsole.Inlines.Add("Stim channel: " + configInfo.stimChannel + "\n");
-                        OutputConsole.Inlines.Add("Cathode Amplitude: " + configInfo.cathodeAmplitude + " uA\n");
-                        OutputConsole.Inlines.Add("Cathode Duration: " + configInfo.cathodeDuration + " us\n");
-                        OutputConsole.Inlines.Add("Anode Amplitude: " + configInfo.anodeAmplitude + " uA\n");
-                        OutputConsole.Inlines.Add("Anode Duration: " + configInfo.anodeDuration + " us\n");
-                        OutputConsole.Inlines.Add("Filter Coefficient [B]: ");
-                        for (int i = 0; i < configInfo.filterCoefficients_B.Count; i++)
+                        // load in .json file and read in stimulation parameters
+                        using (StreamReader fileReader = new StreamReader(fileName))
                         {
-                            OutputConsole.Inlines.Add(configInfo.filterCoefficients_B[i] + " ");
+                            string configJson = fileReader.ReadToEnd();
+                            configInfo = System.Text.Json.JsonSerializer.Deserialize<Configuration>(configJson);
+
+                            OutputConsole.Inlines.Add("Loaded " + fileName + "\n");
+                            OutputConsole.Inlines.Add("Stimulation type: " + configInfo.stimType + "\n");
+                            OutputConsole.Inlines.Add("Sense channel: " + configInfo.senseChannel + "\n");
+                            OutputConsole.Inlines.Add("Stim channel: " + configInfo.stimChannel + "\n");
+                            OutputConsole.Inlines.Add("Stim period: " + (configInfo.stimPeriod) + " us\n");
+                            OutputConsole.Inlines.Add("Stim Pulse Amplitude: " + configInfo.stimAmplitude + " uA\n");
+                            OutputConsole.Inlines.Add("Stim Pulse Duration: " + configInfo.stimDuration + " us\n");
+                            OutputConsole.Inlines.Add("Stim Trigger Threshold: " + configInfo.stimThreshold + " uV\n");
+                            OutputConsole.Inlines.Add("Filter Coefficient [B]: ");
+                            for (int i = 0; i < configInfo.filterCoefficients_B.Count; i++)
+                            {
+                                OutputConsole.Inlines.Add(configInfo.filterCoefficients_B[i] + " ");
+                            }
+                            OutputConsole.Inlines.Add("\nFilter Coefficients [A]: ");
+                            for (int i = 0; i < configInfo.filterCoefficients_A.Count; i++)
+                            {
+                                OutputConsole.Inlines.Add(configInfo.filterCoefficients_A[i] + " ");
+                            }
+                            OutputConsole.Inlines.Add("\n");
+                            Scroller.ScrollToEnd();
                         }
-                        OutputConsole.Inlines.Add("\nFilter Coefficients [A]: ");
-                        for (int i = 0; i < configInfo.filterCoefficients_A.Count; i++)
+
+                        neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
+                        delegate
                         {
-                            OutputConsole.Inlines.Add(configInfo.filterCoefficients_A[i] + " ");
-                        }
-                        OutputConsole.Inlines.Add("\n");
-                        Scroller.ScrollToEnd();
-
-                        userSenseChannel = (uint)configInfo.senseChannel;
-                        userStimChannel = (uint)configInfo.stimChannel;
-                        userCathodeAmplitude = configInfo.cathodeAmplitude;
-                        userCathodeDuration = configInfo.cathodeDuration;
-                        userAnodeAmplitude = configInfo.anodeAmplitude;
-                        userAnodeDuration = configInfo.anodeDuration;
-                        userFilterCoefficients_B = configInfo.filterCoefficients_B;
-                        userFilterCoefficients_A = configInfo.filterCoefficients_A;
-                    }
-                    
-                    
-
-                    neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
-                    delegate
-                    {
                         // enable buttons after a config has been successfully loaded
-                        btn_beta.IsEnabled = true; // beta stim button; have to use method invoker
-                        btn_openloop.IsEnabled = true; // open loop stim button
-                        btn_load.IsEnabled = true; // load config button
-                        btn_diagnostic.IsEnabled = true; // diagnostics button
-                        btn_stop.IsEnabled = true; // stop stim button
-                    }));
+                            btn_beta.IsEnabled = true; // beta stim button; have to use method invoker
+                            btn_open.IsEnabled = true; // open loop stim button
+                            btn_load.IsEnabled = true; // load config button
+                            btn_diagnostic.IsEnabled = true; // diagnostics button
+                            btn_stop.IsEnabled = true; // stop stim button
+                        }));
+                    }
                 }
+            }
+            catch ( Exception theException )
+            {
+                OutputConsole.Inlines.Add("Unable to load selected file\n");
+                OutputConsole.Inlines.Add("Error encoutnered: " + theException.Message + "\n");
+                OutputConsole.Inlines.Add("\n");
+                Scroller.ScrollToEnd();
             }
         }
         private void btn_beta_Click(object sender, RoutedEventArgs e)
@@ -290,7 +282,7 @@ namespace StimTherapyApp
                 // start phase triggered stim and update status
                 try
                 {
-                    aBICManager.enableDistributedStim(true, userStimChannel - 1, userSenseChannel - 1, userCathodeAmplitude, userCathodeDuration, userAnodeAmplitude, userAnodeDuration, userFilterCoefficients_B, userFilterCoefficients_A);
+                    aBICManager.enableDistributedStim(true, (uint)configInfo.stimChannel - 1, (uint)configInfo.senseChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, configInfo.filterCoefficients_B, configInfo.filterCoefficients_A, configInfo.stimThreshold);
                 }
                 catch
                 {
@@ -303,13 +295,15 @@ namespace StimTherapyApp
                     return;
                 }
 
+                phasicStimState = true;
+
                 // Succesfully enabled distributed, update UI elements
                 neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
                 delegate
                 {
                     // disable buttons
                     btn_beta.IsEnabled = false; // beta stim button; have to use method invoker
-                    btn_openloop.IsEnabled = false; // open loop stim button
+                    btn_open.IsEnabled = false; // open loop stim button
                     btn_load.IsEnabled = false; // load config button
                     btn_diagnostic.IsEnabled = false; // diagnostics button
                 }));
@@ -322,41 +316,66 @@ namespace StimTherapyApp
                 }));
             });
         }
-
-        private void btn_openloop_Click(object sender, RoutedEventArgs e)
+        private void btn_open_Click(object sender, RoutedEventArgs e)
         {
             ThreadPool.QueueUserWorkItem(a =>
             {
-                // start phase triggered stim and update status
-                //openStimState = true;
+                // Keep the time for console output writring
+                string timeStamp = DateTime.Now.ToString("h:mm:ss tt");
 
+                // start open loop stim and update status
+                try
+                {
+                    aBICManager.enableOpenLoopStimulation(true, (uint)configInfo.stimChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, configInfo.stimPeriod - (5 * configInfo.stimDuration) - 3500, configInfo.stimThreshold);
+                }
+                catch
+                {
+                    // Exception occured, gRPC command did not succeed, do not update UI button elements
+                    Application.Current.Dispatcher.Invoke(new Action(() =>
+                    {
+                        OutputConsole.Inlines.Add("Open loop stimulation NOT started: " + timeStamp + ", load new configuration\n");
+                        Scroller.ScrollToEnd();
+                    }));
+                    return;
+                }
+
+                openStimState = true;
+
+                // Succesfully enabled open loop stim, update UI elements
                 neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
                 delegate
                 {
                     // disable buttons
                     btn_beta.IsEnabled = false; // beta stim button; have to use method invoker
-                    btn_openloop.IsEnabled = false; // open loop stim button
+                    btn_open.IsEnabled = false; // open loop stim button
                     btn_load.IsEnabled = false; // load config button
                     btn_diagnostic.IsEnabled = false; // diagnostics button
                 }));
-            });
 
-            // notify user of open loop stim starting
-            string timeStamp = DateTime.Now.ToString("h:mm:ss tt");
-            OutputConsole.Inlines.Add("Open loop stimulation started: " + timeStamp + "\n");
-            Scroller.ScrollToEnd();
+                // notify user of open loop stimulation starting
+                Application.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    OutputConsole.Inlines.Add("Open loop stimulation started: " + timeStamp + "\n");
+                    Scroller.ScrollToEnd();
+                }));
+            });
         }
 
         private void btn_stop_Click(object sender, RoutedEventArgs e)
         {
             ThreadPool.QueueUserWorkItem(a =>
             {
-                // disable beta and open loop stim
-                aBICManager.enableDistributedStim(false, userStimChannel-1, userSenseChannel-1, userCathodeAmplitude, userCathodeDuration, userAnodeAmplitude, userAnodeDuration, userFilterCoefficients_B, userFilterCoefficients_A);
-
-                // update stim statuses
-                //phasicStimState = false;
-                //openStimState = false;
+                if (phasicStimState)
+                {
+                    // disable beta and open loop stim
+                    aBICManager.enableDistributedStim(false, (uint)configInfo.stimChannel - 1, (uint)configInfo.senseChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, configInfo.filterCoefficients_B, configInfo.filterCoefficients_A, configInfo.stimThreshold);
+                    phasicStimState = false;
+                }
+                if (openStimState)
+                {
+                    aBICManager.enableOpenLoopStimulation(false, (uint)configInfo.stimChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 1, 20000, configInfo.stimThreshold);
+                    openStimState = false;
+                }
             });
 
             // enable previously disabled buttons
@@ -364,7 +383,7 @@ namespace StimTherapyApp
                 delegate
                 {
                     btn_beta.IsEnabled = true;
-                    btn_openloop.IsEnabled = true;
+                    btn_open.IsEnabled = true; 
                     btn_load.IsEnabled = true;
                     btn_diagnostic.IsEnabled = true;
                 }));
@@ -385,6 +404,7 @@ namespace StimTherapyApp
         {
             OutputConsole.Inlines.Add("Channel was selected/de-selected"); // not going through this function.. selecting doesn't invoke this function 
             Scroller.ScrollToEnd();
+
             // grab the most recent data
             List<double>[] neuroData = aBICManager.getData();
 
@@ -412,7 +432,6 @@ namespace StimTherapyApp
                     selectedChannels.Add(33);
                 }
             }
-                
 
             // clear the current legend
             neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
@@ -424,6 +443,7 @@ namespace StimTherapyApp
                     series.Enabled = false;
                 }
             }));
+
             // Plot newly selected channels and show new legend
             for (int i = 0; i < selectedChannels.Count; i++)
             {
@@ -507,7 +527,7 @@ namespace StimTherapyApp
             bool valEntry = double.TryParse(y_min.Text, out yMinVal);
 
             Console.WriteLine(yMinVal);
-            if (yMinVal < neuroStreamChart.ChartAreas[0].AxisX.Maximum)
+            if (yMinVal < neuroStreamChart.ChartAreas[0].AxisY.Maximum)
             {
                 neuroStreamChart.ChartAreas[0].AxisY.Minimum = yMinVal;
             }
@@ -518,7 +538,7 @@ namespace StimTherapyApp
             double yMaxVal = 0;
             bool valEntry = double.TryParse(y_max.Text, out yMaxVal);
             Console.WriteLine(yMaxVal);
-            if (yMaxVal > neuroStreamChart.ChartAreas[0].AxisX.Minimum)
+            if (yMaxVal > neuroStreamChart.ChartAreas[0].AxisY.Minimum)
             {
                 neuroStreamChart.ChartAreas[0].AxisY.Maximum = yMaxVal;
             }

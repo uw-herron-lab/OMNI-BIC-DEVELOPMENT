@@ -1,0 +1,11 @@
+{
+  "stimType": "open",
+  "senseChannel": 1,
+  "stimChannel": 32,
+  "stimPeriod": 50000,
+  "stimAmplitude": -1000,
+  "stimDuration": 250,
+  "stimThreshold":  100,
+  "filterCoefficients_B": [ 0.0305, 0, -0.0305 ],
+  "filterCoefficients_A": [ 1, -1.9247, 0.9391 ]
+}

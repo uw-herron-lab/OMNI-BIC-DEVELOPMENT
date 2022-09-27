@@ -239,19 +239,22 @@ namespace BICgRPC_ConsoleTest
                         break;
                     case ConsoleKey.D1:
                         // Create a waveform defintion request 
-                        bicEnqueueStimulationRequest aNewWaveform = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.VolatileWaveform };
+                        bicEnqueueStimulationRequest aNewWaveform = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.PersistentSubfunctions, WaveformRepititions = 2 };
                         // Create a pulse function
-                        StimulationFunctionDefinition pulseFunction = new StimulationFunctionDefinition() { FunctionName = "pulseFunction", 
-                            StimPulse = new stimPulseFunction() { Amplitude = { 1000, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 2550, PulseWidth = 400, PulseRepetitions = (uint)randomNumGen.Next(1,10), SourceElectrodes = { 31 }, SinkElectrodes = { }, UseGround = true, BurstRepetitions = 1 } };
+                        StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition() { FunctionName = "pulseFunction0", 
+                            StimPulse = new stimPulseFunction() { Amplitude = { 1000, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 2550, PulseWidth = 400, PulseRepetitions = 3, SourceElectrodes = { 31 }, SinkElectrodes = { }, UseGround = true, BurstRepetitions = 2 } };
+                        StimulationFunctionDefinition pulseFunction1 = new StimulationFunctionDefinition() { FunctionName = "pulseFunction1", 
+                            StimPulse = new stimPulseFunction() { Amplitude = { 500, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 2550, PulseWidth = 400, PulseRepetitions = 5, SourceElectrodes = { 31 }, SinkElectrodes = { }, UseGround = true, BurstRepetitions = 4 } };
                         // Create a pause function
                         StimulationFunctionDefinition pauseFunction = new StimulationFunctionDefinition() { FunctionName = "pauseFunction",
                             Pause = new pauseFunction() { Duration = 30000 } };
                             
                         // Load functions into waveform, then into command
-                        aNewWaveform.Functions.Add(pulseFunction);
+                        aNewWaveform.Functions.Add(pulseFunction0);
+                        aNewWaveform.Functions.Add(pulseFunction1);
                         aNewWaveform.Functions.Add(pauseFunction);
                         deviceClient.bicEnqueueStimulation(aNewWaveform);
-                        deviceClient.bicStartStimulation(new bicStartStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.VolatileWaveform });
+                        deviceClient.bicStartStimulation(new bicStartStimulationRequest() { DeviceAddress = DeviceName, FunctionIndex = (uint)randomNumGen.Next(1, 4) });
                         break;
                     case ConsoleKey.D0:
                         Console.WriteLine("Stim Off Not Implemented");
