@@ -12,6 +12,7 @@ namespace BICGRPCHelperNamespace
     {
         uint64_t beforeStimTimeStamp;
         uint64_t afterStimTimeStamp;
+        std::string recordedException;
     };
 
     class BICListener : public cortec::implantapi::IImplantListener
@@ -51,7 +52,7 @@ namespace BICGRPCHelperNamespace
             const uint16_t radioCrcErrors, const uint16_t otherRxErrors,
             const uint32_t rxQueueOverflows, const uint32_t txQueueOverflows);
         void onChannelUpdate(const uint8_t rfChannel);
-  
+
         // ************************* Public Boolean State Accessors *************************
         bool isStimulating();
         bool isMeasuring();
@@ -63,12 +64,12 @@ namespace BICGRPCHelperNamespace
         bool errorStreamingState = false;
         bool powerStreamingState = false;
         bool stimTimeLoggingState = false;
-       
+
     private:
         // ************************* Private General State Objects and Methods *************************
         // Stim Logging Functions
         void logStimTimeThread(void);
-        
+
         // Generic state variables.
         std::mutex m_mutex;                     // General purpose mutex used for protecting against multi-threaded state access.
         std::mutex m_neuroBufferLock;           // General purpose mutex for protecting the neurobuffer against incomplete read/writes
@@ -162,11 +163,10 @@ namespace BICGRPCHelperNamespace
         double distributedStimThreshold = 10;       // Distributed algorithm threshold to trigger stimulation (input)
 
         // Signal Processing Variables
-        std::vector<double> bpFiltData = { 0, 0, 0 };                   // IIR BP filter output history
-        std::vector<double> rawPrevData = { 0, 0 };                      // Data history for IIR BP filtering
-        std::vector<double> betaBandPassIIR_B = { 0.0305, 0, -0.0305 }; // IIR BP "B" filter coefficients for a beta-range band-pass
-        std::vector<double> betaBandPassIIR_A = { 1, -1.9247, 0.9391 }; // IIR BP "A" filter coefficients for a beta-range band-pass
-                 
+        std::vector<double> bpFiltData = { 0, 0, 0 };                   // IIR filter output history
+        std::vector<double> rawPrevData = { 0, 0 };                     // Data history for raw input samples
+        std::vector<double> betaBandPassIIR_B = { 0.0305, 0, -0.0305 }; // IIR "B" filter coefficients for a beta-range band-pass
+        std::vector<double> betaBandPassIIR_A = { 1, -1.9247, 0.9391 }; // IIR "A" filter coefficients for a beta-range band-pass
         std::vector<double> lpfFiltData = { 0, 0 };                     // IIR LPF filter output history
         std::vector<double> lpfPrevData = { 0, 0 };                     // Data history for IIR LPF filtering
         std::vector<double> lpfIIR_B = { 0.000944691843840153, 0.00188938368768031, 0.000944691843840153 };   // IIR LPF "B" filter coefficients for a beta-range band-pass
