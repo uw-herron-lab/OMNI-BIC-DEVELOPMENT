@@ -470,7 +470,7 @@ namespace BICGRPCHelperNamespace
                             double interpolationSlopes[32] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
                             for (int index = 0; index < 32; index++)
                             {
-                                interpolationSlopes[index] = (theData[index] - latestData[index]) / diff;
+                                interpolationSlopes[index] = (theData[index] - latestData[index]) / (diff + 1);
                             }
 
                             // Interpolate and mark data as interpolated in NeuralSample message
