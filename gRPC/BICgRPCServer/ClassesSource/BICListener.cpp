@@ -628,7 +628,6 @@ namespace BICGRPCHelperNamespace
 
         // create instance of stimTimes to keep track of before and after stim timestamps
         StimTimes startStimulationTimes;
-
         // enable stim time logging
         enableStimTimeLogging(true);
 
@@ -642,13 +641,12 @@ namespace BICGRPCHelperNamespace
         // Loop while streaming is active
         while (isCLStimEn)
         {
-            // Send a stim command
+            // Get time before start stimulation command (UTC)
+            before = std::chrono::system_clock::now();
+            startStimulationTimes.beforeStimTimeStamp = before.time_since_epoch().count();
+
             try
             {
-                // Get time before start stimulation command (UTC)
-                before = std::chrono::system_clock::now();
-                startStimulationTimes.beforeStimTimeStamp = before.time_since_epoch().count();
-
                 // Execute the stimulation command
                 theImplantedDevice->startStimulation();
 
@@ -656,6 +654,8 @@ namespace BICGRPCHelperNamespace
                 after = std::chrono::system_clock::now();
                 startStimulationTimes.afterStimTimeStamp = after.time_since_epoch().count();
 
+                // No exception encountered, so label as "0"
+                startStimulationTimes.recordedException = "0";
 #ifdef DEBUG_CONSOLE_ENABLE
                 std::cout << "DEBUG: finished stim in " << elapsed_sec.count() << "s\n";
 #endif
@@ -665,7 +665,7 @@ namespace BICGRPCHelperNamespace
                 {
                     // Lock the stim time buffer, add data, unlock
                     this->m_stimTimeBufferLock.lock();
-                    stimTimeSampleQueue.push(startStimulationTimes); // add struct with before and after stim times to queue
+                    stimTimeSampleQueue.push(startStimulationTimes); // add struct with timestamps and exception to queue
                     this->m_stimTimeBufferLock.unlock();
 
                     // Notify the streaming function that new data exists
@@ -680,6 +680,27 @@ namespace BICGRPCHelperNamespace
             catch (std::exception& anyException)
             {
                 std::cout << "ERROR: Stimulation exception encountered: " << anyException.what() << std::endl;
+                
+                // If exception occurred, after is the timestamp when the exception occurred
+                after = std::chrono::system_clock::now();
+                startStimulationTimes.afterStimTimeStamp = after.time_since_epoch().count();
+                // Also keep track of exception encountered
+                startStimulationTimes.recordedException = anyException.what();
+
+                if (stimTimeSampleQueue.size() < 1000)
+                {
+                    // Lock the stim time buffer, add data, unlock
+                    this->m_stimTimeBufferLock.lock();
+                    stimTimeSampleQueue.push(startStimulationTimes); // add struct with timestamps and exception to queue
+                    this->m_stimTimeBufferLock.unlock();
+
+                    // Notify the streaming function that new data exists
+                    stimTimeDataNotify->notify_all();
+                }
+                else
+                {
+                    std::cout << "WARNING: Before Stim Time Log Queue Size Overflow, streaming data skipped" << std::endl;
+                }
             }
             catch (...)
             {
@@ -825,8 +846,8 @@ namespace BICGRPCHelperNamespace
                     this->m_stimTimeBufferLock.lock();
                     // Write out new line to file
                     myFile.open(fileName, std::ios_base::app);
-                    // log two values: timestamp before and after stim command
-                    myFile << stimTimeSampleQueue.front().beforeStimTimeStamp << ", " << stimTimeSampleQueue.front().afterStimTimeStamp << "\n";
+                    // log timestamp before and after stim command and exception
+                    myFile << stimTimeSampleQueue.front().beforeStimTimeStamp << ", " << stimTimeSampleQueue.front().afterStimTimeStamp << ", " << stimTimeSampleQueue.front().recordedException << "\n";
                     myFile.close();
                     // Clean up the current sample from the list
                     stimTimeSampleQueue.pop(); // take out first item of queue
@@ -920,8 +941,21 @@ namespace BICGRPCHelperNamespace
 
     void BICListener::openLoopStimLoopThread(void)
     {
+        // create instance of stimTimes to keep track of before and after stim timestamps
+        StimTimes startStimulationTimes;
+        // enable stim time logging
+        enableStimTimeLogging(true);
+
+        // initialize before and after timestamps
+        std::chrono::system_clock::time_point before;
+        std::chrono::system_clock::time_point after;
+
         while (isOLStimEn)
         {
+            // Get time before start stimulation command (UTC)
+            before = std::chrono::system_clock::now();
+            startStimulationTimes.beforeStimTimeStamp = before.time_since_epoch().count();
+
             try {
                 // Check if stimulation is already occuring. Stop it if so
                 if (isStimulating())
@@ -932,12 +966,54 @@ namespace BICGRPCHelperNamespace
                 // Re-trigger stimulation
                 theImplantedDevice->startStimulation();
 
+                //Get time after start stimulation command (UTC)
+                after = std::chrono::system_clock::now();
+                startStimulationTimes.afterStimTimeStamp = after.time_since_epoch().count();
+
+                // No exception encountered, so label as "0"
+                startStimulationTimes.recordedException = "0";
+
+                // Add latest received data packet to the buffer if there is room
+                if (stimTimeSampleQueue.size() < 1000)
+                {
+                    // Lock the stim time buffer, add data, unlock
+                    this->m_stimTimeBufferLock.lock();
+                    stimTimeSampleQueue.push(startStimulationTimes); // add struct with timestamps and exception to queue
+                    this->m_stimTimeBufferLock.unlock();
+
+                    // Notify the streaming function that new data exists
+                    stimTimeDataNotify->notify_all();
+                }
+                else
+                {
+                    std::cout << "WARNING: Before Stim Time Log Queue Size Overflow, streaming data skipped" << std::endl;
+                }
+
                 // Sleep for the triggering duration
                 std::this_thread::sleep_for(std::chrono::milliseconds(openLoopSleepTimeDuration));
             }
             catch (std::exception& anyException)
             {
                 std::cout << "ERROR: Open Loop Management Exception Encountered. Reason: " << anyException.what() << std::endl;
+
+                // If exception occurred, after is the time the exception occurred
+                after = std::chrono::system_clock::now();
+                startStimulationTimes.afterStimTimeStamp = after.time_since_epoch().count();
+
+                // Also keep track of exception encountered
+                startStimulationTimes.recordedException = anyException.what();
+
+                if (stimTimeSampleQueue.size() < 1000)
+                {
+                    // Lock the stim time buffer, add data, unlock
+                    this->m_stimTimeBufferLock.lock();
+                    stimTimeSampleQueue.push(startStimulationTimes); // add struct with timestamps and exception to queue
+                    this->m_stimTimeBufferLock.unlock();
+                }
+                else
+                {
+                    std::cout << "WARNING: Before Stim Time Log Queue Size Overflow, streaming data skipped" << std::endl;
+                }
             }
             catch (...)
             {

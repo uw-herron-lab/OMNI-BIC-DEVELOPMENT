@@ -12,6 +12,7 @@ namespace BICGRPCHelperNamespace
     {
         uint64_t beforeStimTimeStamp;
         uint64_t afterStimTimeStamp;
+        std::string recordedException;
     };
 
     class BICListener : public cortec::implantapi::IImplantListener
