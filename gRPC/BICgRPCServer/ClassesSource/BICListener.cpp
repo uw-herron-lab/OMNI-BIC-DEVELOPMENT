@@ -641,12 +641,12 @@ namespace BICGRPCHelperNamespace
         // Loop while streaming is active
         while (isCLStimEn)
         {
+            // Get time before start stimulation command (UTC)
+            before = std::chrono::system_clock::now();
+            startStimulationTimes.beforeStimTimeStamp = before.time_since_epoch().count();
+
             try
             {
-                // Get time before start stimulation command (UTC)
-                before = std::chrono::system_clock::now();
-                startStimulationTimes.beforeStimTimeStamp = before.time_since_epoch().count();
-
                 // Execute the stimulation command
                 theImplantedDevice->startStimulation();
 
@@ -681,10 +681,9 @@ namespace BICGRPCHelperNamespace
             {
                 std::cout << "ERROR: Stimulation exception encountered: " << anyException.what() << std::endl;
                 
-                // If exception occurred, before and after timestamps are the same
-                before = std::chrono::system_clock::now();
-                startStimulationTimes.beforeStimTimeStamp = before.time_since_epoch().count();
-                startStimulationTimes.afterStimTimeStamp = before.time_since_epoch().count();
+                // If exception occurred, after is the timestamp when the exception occurred
+                after = std::chrono::system_clock::now();
+                startStimulationTimes.afterStimTimeStamp = after.time_since_epoch().count();
                 // Also keep track of exception encountered
                 startStimulationTimes.recordedException = anyException.what();
 
@@ -953,15 +952,16 @@ namespace BICGRPCHelperNamespace
 
         while (isOLStimEn)
         {
+            // Get time before start stimulation command (UTC)
+            before = std::chrono::system_clock::now();
+            startStimulationTimes.beforeStimTimeStamp = before.time_since_epoch().count();
+
             try {
                 // Check if stimulation is already occuring. Stop it if so
                 if (isStimulating())
                 {
                     theImplantedDevice->stopStimulation();
                 }
-                // Get time before start stimulation command (UTC)
-                before = std::chrono::system_clock::now();
-                startStimulationTimes.beforeStimTimeStamp = before.time_since_epoch().count();
 
                 // Re-trigger stimulation
                 theImplantedDevice->startStimulation();
@@ -996,10 +996,10 @@ namespace BICGRPCHelperNamespace
             {
                 std::cout << "ERROR: Open Loop Management Exception Encountered. Reason: " << anyException.what() << std::endl;
 
-                // If exception occurred, before and after timestamps are the same
-                before = std::chrono::system_clock::now();
-                startStimulationTimes.beforeStimTimeStamp = before.time_since_epoch().count();
-                startStimulationTimes.afterStimTimeStamp = before.time_since_epoch().count();
+                // If exception occurred, after is the time the exception occurred
+                after = std::chrono::system_clock::now();
+                startStimulationTimes.afterStimTimeStamp = after.time_since_epoch().count();
+
                 // Also keep track of exception encountered
                 startStimulationTimes.recordedException = anyException.what();
 
