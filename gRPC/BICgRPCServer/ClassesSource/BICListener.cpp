@@ -647,8 +647,10 @@ namespace BICGRPCHelperNamespace
 
             try
             {
-                // Execute the stimulation command
-                theImplantedDevice->startStimulation();
+                if (stimToggleControl)
+                {
+                    // Execute the stimulation command
+                    theImplantedDevice->startStimulation();
 
                     // Get time after start stimulation command (UTC)
                     after = std::chrono::system_clock::now();
