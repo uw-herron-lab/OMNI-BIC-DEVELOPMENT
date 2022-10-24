@@ -1023,6 +1023,24 @@ namespace BICGRPCHelperNamespace
             catch (std::exception& anyException)
             {
                 std::cout << "ERROR: Open Loop Management Exception Encountered. Reason: " << anyException.what() << std::endl;
+
+                // If exception occurred, before and after timestamps are the same
+                after = std::chrono::system_clock::now();
+                startStimulationTimes.afterStimTimeStamp = after.time_since_epoch().count();
+                // Also keep track of exception encountered
+                startStimulationTimes.recordedException = anyException.what();
+
+                if (stimTimeSampleQueue.size() < 1000)
+                {
+                    // Lock the stim time buffer, add data, unlock
+                    this->m_stimTimeBufferLock.lock();
+                    stimTimeSampleQueue.push(startStimulationTimes); // add struct with timestamps and exception to queue
+                    this->m_stimTimeBufferLock.unlock();
+                }
+                else
+                {
+                    std::cout << "WARNING: Before Stim Time Log Queue Size Overflow, streaming data skipped" << std::endl;
+                }
             }
             catch (...)
             {
