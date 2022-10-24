@@ -470,7 +470,7 @@ namespace BICGRPCHelperNamespace
                             double interpolationSlopes[32] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
                             for (int index = 0; index < 32; index++)
                             {
-                                interpolationSlopes[index] = (theData[index] - latestData[index]) / diff;
+                                interpolationSlopes[index] = (theData[index] - latestData[index]) / (diff + 1);
                             }
 
                             // Interpolate and mark data as interpolated in NeuralSample message
@@ -641,16 +641,14 @@ namespace BICGRPCHelperNamespace
         // Loop while streaming is active
         while (isCLStimEn)
         {
+            // Get time before start stimulation command (UTC)
+            before = std::chrono::system_clock::now();
+            startStimulationTimes.beforeStimTimeStamp = before.time_since_epoch().count();
+
             try
             {
-                if (stimToggleControl)
-                {
-                    // Get time before start stimulation command (UTC)
-                    before = std::chrono::system_clock::now();
-                    startStimulationTimes.beforeStimTimeStamp = before.time_since_epoch().count();
-
-                    // Execute the stimulation command
-                    theImplantedDevice->startStimulation();
+                // Execute the stimulation command
+                theImplantedDevice->startStimulation();
 
                     // Get time after start stimulation command (UTC)
                     after = std::chrono::system_clock::now();
@@ -662,13 +660,13 @@ namespace BICGRPCHelperNamespace
                     std::cout << "DEBUG: finished stim in " << elapsed_sec.count() << "s\n";
 #endif
 
-                    // Add latest received data packet to the buffer if there is room
-                    if (stimTimeSampleQueue.size() < 1000)
-                    {
-                        // Lock the stim time buffer, add data, unlock
-                        this->m_stimTimeBufferLock.lock();
-                        stimTimeSampleQueue.push(startStimulationTimes); // add struct with timestamps and exception to queue
-                        this->m_stimTimeBufferLock.unlock();
+                // Add latest received data packet to the buffer if there is room
+                if (stimTimeSampleQueue.size() < 1000)
+                {
+                    // Lock the stim time buffer, add data, unlock
+                    this->m_stimTimeBufferLock.lock();
+                    stimTimeSampleQueue.push(startStimulationTimes); // add struct with timestamps and exception to queue
+                    this->m_stimTimeBufferLock.unlock();
 
                         // Notify the streaming function that new data exists
                         stimTimeDataNotify->notify_all();
@@ -687,11 +685,10 @@ namespace BICGRPCHelperNamespace
             catch (std::exception& anyException)
             {
                 std::cout << "ERROR: Stimulation exception encountered: " << anyException.what() << std::endl;
-
-                // If exception occurred, before and after timestamps are the same
-                before = std::chrono::system_clock::now();
-                startStimulationTimes.beforeStimTimeStamp = before.time_since_epoch().count();
-                startStimulationTimes.afterStimTimeStamp = before.time_since_epoch().count();
+                
+                // If exception occurred, after is the timestamp when the exception occurred
+                after = std::chrono::system_clock::now();
+                startStimulationTimes.afterStimTimeStamp = after.time_since_epoch().count();
                 // Also keep track of exception encountered
                 startStimulationTimes.recordedException = anyException.what();
 
@@ -978,6 +975,10 @@ namespace BICGRPCHelperNamespace
 
         while (isOLStimEn)
         {
+            // Get time before start stimulation command (UTC)
+            before = std::chrono::system_clock::now();
+            startStimulationTimes.beforeStimTimeStamp = before.time_since_epoch().count();
+
             try {
                 // Check if stimulation is already occuring. Stop it if so
                 if (isStimulating())
@@ -1020,25 +1021,6 @@ namespace BICGRPCHelperNamespace
             catch (std::exception& anyException)
             {
                 std::cout << "ERROR: Open Loop Management Exception Encountered. Reason: " << anyException.what() << std::endl;
-
-                // If exception occurred, before and after timestamps are the same
-                before = std::chrono::system_clock::now();
-                startStimulationTimes.beforeStimTimeStamp = before.time_since_epoch().count();
-                startStimulationTimes.afterStimTimeStamp = before.time_since_epoch().count();
-                // Also keep track of exception encountered
-                startStimulationTimes.recordedException = anyException.what();
-
-                if (stimTimeSampleQueue.size() < 1000)
-                {
-                    // Lock the stim time buffer, add data, unlock
-                    this->m_stimTimeBufferLock.lock();
-                    stimTimeSampleQueue.push(startStimulationTimes); // add struct with timestamps and exception to queue
-                    this->m_stimTimeBufferLock.unlock();
-                }
-                else
-                {
-                    std::cout << "WARNING: Before Stim Time Log Queue Size Overflow, streaming data skipped" << std::endl;
-                }
             }
             catch (...)
             {
