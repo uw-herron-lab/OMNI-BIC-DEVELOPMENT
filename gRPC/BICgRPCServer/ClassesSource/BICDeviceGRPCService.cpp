@@ -730,7 +730,13 @@ namespace BICGRPCHelperNamespace
         }
 
         // Check if parameters are valid
-        if (request->sensingchannel() < 0 || request->sensingchannel() > 31)
+        if (request->sensingchannelpos() < 0 || request->sensingchannelpos() > 31)
+        {
+            return grpc::Status(grpc::StatusCode::INVALID_ARGUMENT, "Arguments out of range");
+        }
+
+        // Check if parameters are valid
+        if (request->sensingchannelneg() < 0 || request->sensingchannelneg() > 31)
         {
             return grpc::Status(grpc::StatusCode::INVALID_ARGUMENT, "Arguments out of range");
         }
@@ -754,7 +760,7 @@ namespace BICGRPCHelperNamespace
         }
 
         // Perform the operation
-        deviceDirectory[request->deviceaddress()]->listener->enableDistributedStim(request->enable(), request->sensingchannel(), coefficients_B, coefficients_A, request->triggeredfunctionindex(), request->triggerstimthreshold());
+        deviceDirectory[request->deviceaddress()]->listener->enableDistributedStim(request->enable(), request->sensingchannelpos(), request->sensingchannelneg(), coefficients_B, coefficients_A, request->triggeredfunctionindex(), request->triggerstimthreshold());
 
         // Respond to client
         return grpc::Status::OK;

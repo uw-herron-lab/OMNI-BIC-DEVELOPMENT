@@ -244,11 +244,12 @@ message openLoopStimEnableRequest{
 message distributedStimEnableRequest{
 	string deviceAddress = 1;
 	bool enable = 2;
-	uint32 sensingChannel = 3;
-	repeated double filterCoefficients_B = 4;
-	repeated double filterCoefficients_A = 5;
-	uint32 triggeredFunctionIndex = 6;
-	double triggerStimThreshold = 7;
+	uint32 sensingChannelPos = 3;
+	uint32 sensingChannelNeg = 4;
+	repeated double filterCoefficients_B = 5;
+	repeated double filterCoefficients_A = 6;
+	uint32 triggeredFunctionIndex = 7;
+	double triggerStimThreshold = 8;
 }
 
 // *************************** Device Streaming Service Messages ***************************
@@ -276,8 +277,9 @@ message NeuralSample{
 	uint32 sampleCounter = 7;
 	bool isInterpolated = 8;
 	double filtSample = 9;
-	uint32 filtChannel = 10;
-	uint64 timeStamp = 11;
+	uint32 filtChannelPos = 10;
+	uint32 filtChannelNeg = 11;
+	uint64 timeStamp = 12;
 }
 
 message ConnectionUpdate{

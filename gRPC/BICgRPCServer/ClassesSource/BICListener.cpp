@@ -432,7 +432,8 @@ namespace BICGRPCHelperNamespace
                 newSample->set_stimulationactive(samples->at(i).isStimulationActive());
                 newSample->set_samplecounter(sampleCounter);
                 newSample->set_isinterpolated(false);
-                newSample->set_filtchannel(distributedInputChannel);
+                newSample->set_filtchannelpos(distributedInputChannelPos);
+                newSample->set_filtchannelneg(distributedInputChannelNeg);
                 newSample->set_timestamp(sampleTime);
                 // Check if we've lost packets, if so interpolate
                 if (lastNeuroCount + 1 != sampleCounter)
@@ -487,7 +488,8 @@ namespace BICGRPCHelperNamespace
                                 newInterpolatedSample->set_stimulationactive(newSample->stimulationactive());
                                 newInterpolatedSample->set_samplecounter(lastNeuroCount + interpolatedPointNum);
                                 newInterpolatedSample->set_isinterpolated(true);
-                                newInterpolatedSample->set_filtchannel(distributedInputChannel);
+                                newInterpolatedSample->set_filtchannelpos(distributedInputChannelPos);
+                                newInterpolatedSample->set_filtchannelneg(distributedInputChannelNeg);
                                 newInterpolatedSample->set_timestamp(latestTimeStamp);
 
                                 // Copy in the time domain data in
@@ -495,12 +497,12 @@ namespace BICGRPCHelperNamespace
                                 {
                                     double interpolatedSample = latestData[interChannelPoint] + (interpolationSlopes[interChannelPoint] * interpolatedPointNum);
                                     newInterpolatedSample->add_measurements(interpolatedSample);
-                                    if (interChannelPoint == distributedInputChannel)
-                                    {
-                                        // call the processing helper, take output and send to client
-                                        newInterpolatedSample->set_filtsample(processingHelper(interpolatedSample)); // set the filtered sample in the neural sample 
-                                    }
                                 }
+
+                                // Perform DSP operations on interpolated datapoints
+                                double filtSample = processingHelper(newInterpolatedSample->measurements(distributedInputChannelPos) - newInterpolatedSample->measurements(distributedInputChannelNeg));
+                                newInterpolatedSample->set_filtsample(filtSample); // set the filtered sample in the neural sample 
+
                                 // Add it to the buffer if there is room
                                 if (neuralSampleQueue.size() < 1000)
                                 {
@@ -535,12 +537,11 @@ namespace BICGRPCHelperNamespace
                 {
                     newSample->add_measurements(theData[j]);
                     latestData[j] = theData[j];
-                    if (j == distributedInputChannel)
-                    {
-                        // Call Processing Helper, take output and send to client
-                        newSample->set_filtsample(processingHelper(theData[j]));
-                    }
                 }
+
+                // Call Processing Helper, take output and send to client
+                newSample->set_filtsample(processingHelper(theData[distributedInputChannelPos] - theData[distributedInputChannelNeg]));
+
                 delete theData;
 
                 // Add latest received data packet to the buffer if there is room
@@ -574,10 +575,11 @@ namespace BICGRPCHelperNamespace
     /// <param name="enableDistributed">A boolean indicating if phasic stim should be enabled or disabled</param>
     /// <param name="phaseSensingChannel">The channel to sense phase on</param>
     /// <param name="phaseStimChannel">The channel to stimulate after negative zero crossings of phase sensing channel</param>
-    void BICListener::enableDistributedStim(bool enableDistributed, int sensingChannel, std::vector<double> filtCoeff_B, std::vector<double> filtCoeff_A, uint32_t triggeredFunctionIndex, double stimThreshold)
+    void BICListener::enableDistributedStim(bool enableDistributed, int sensingChannelPos, int sensingChannelNeg, std::vector<double> filtCoeff_B, std::vector<double> filtCoeff_A, uint32_t triggeredFunctionIndex, double stimThreshold)
     {
         // could potentially add filter coefficients to be updated here..?
-        distributedInputChannel = sensingChannel;
+        distributedInputChannelPos = sensingChannelPos;
+        distributedInputChannelNeg = sensingChannelNeg;
         betaBandPassIIR_B = filtCoeff_B;
         betaBandPassIIR_A = filtCoeff_A;
         distributedStimThreshold = stimThreshold;

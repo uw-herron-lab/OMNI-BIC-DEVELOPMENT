@@ -28,7 +28,7 @@ namespace BICGRPCHelperNamespace
 
         // ************************* Public Distributed Algorithm Stimulation Management *************************
         void enableOpenLoopStim(bool enableOpenLoop, uint32_t watchdogInterval);
-        void enableDistributedStim(bool enableDistributed, int phaseSensingChannel, std::vector<double> filtCoeff_B, std::vector<double> filtCoeff_A, uint32_t triggeredFunctionIndex, double stimThreshold);
+        void enableDistributedStim(bool enableDistributed, int phaseSensingChannelPos, int phaseSensingChannelNeg, std::vector<double> filtCoeff_B, std::vector<double> filtCoeff_A, uint32_t triggeredFunctionIndex, double stimThreshold);
         void addImplantPointer(cortec::implantapi::IImplant* theImplantedDevice);
         void enableStimTimeLogging(bool enableSensing);
         double processingHelper(double newData);
@@ -154,7 +154,8 @@ namespace BICGRPCHelperNamespace
         bool isOLStimEn = false;                    // State tracking boolean indicates whether open loop stim is active or not
         uint32_t openLoopSleepTimeDuration;
         UINT_PTR openLoopTimerPointer;
-        uint32_t distributedInputChannel = 0;       // Distributed algorithm sensing channel (input)
+        uint32_t distributedInputChannelPos = 0;       // Distributed algorithm sensing channel (positive input)
+        uint32_t distributedInputChannelNeg = 0;       // Distributed algorithm sensing channel (negative input)
         uint32_t distributedOutputChannel = 31;     // Distributed algorithm stimulation channel (output)
         double distributedCathodeAmplitude = -1000; // Distributed algorithm cathode (negative pulse) amplitude (input)
         uint64_t distributedCathodeDuration = 400;  // Distributed algorithm cathode (negative pulse) duration (input)

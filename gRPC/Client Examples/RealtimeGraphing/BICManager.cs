@@ -209,7 +209,7 @@ namespace RealtimeGraphing
             }
         }
 
-        public void enableDistributedStim(bool closedStimEn, uint stimChannel, uint senseChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, List<double> filterCoefficients_B, List<double> filterCoefficients_A, double stimThreshold)
+        public void enableDistributedStim(bool closedStimEn, uint stimChannel, uint senseChannelPos, uint senseChannelNeg, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, List<double> filterCoefficients_B, List<double> filterCoefficients_A, double stimThreshold)
         {
             if (closedStimEn)
             {
@@ -228,8 +228,8 @@ namespace RealtimeGraphing
             }
 
             // Start the distributed stimulation function
-            deviceClient.enableDistributedStimulation(new distributedStimEnableRequest() { DeviceAddress = DeviceName, Enable = closedStimEn, SensingChannel = senseChannel, 
-                FilterCoefficientsB = { filterCoefficients_B }, FilterCoefficientsA = { filterCoefficients_A }, TriggerStimThreshold = stimThreshold}); 
+            deviceClient.enableDistributedStimulation(new distributedStimEnableRequest() { DeviceAddress = DeviceName, Enable = closedStimEn, SensingChannelPos = senseChannelPos,
+                SensingChannelNeg = senseChannelNeg, FilterCoefficientsB = { filterCoefficients_B }, FilterCoefficientsA = { filterCoefficients_A }, TriggerStimThreshold = stimThreshold}); 
         }
 
         /// <summary>
@@ -399,13 +399,15 @@ namespace RealtimeGraphing
                         filtBuffer[sampleNum] = stream.ResponseStream.Current.Samples[sampleNum].FiltSample;
 
                         // Log the latest info out to the CSV
-                        int filteredIndex = (int)stream.ResponseStream.Current.Samples[sampleNum].FiltChannel;
+                        int filteredIndexPos = (int)stream.ResponseStream.Current.Samples[sampleNum].FiltChannelPos;
+                        int filteredIndexNeg = (int)stream.ResponseStream.Current.Samples[sampleNum].FiltChannelNeg;
 
                         // Enqueue the data for the logging thread
                         string logString = stream.ResponseStream.Current.Samples[sampleNum].SampleCounter.ToString() + ", " +
                             stream.ResponseStream.Current.Samples[sampleNum].TimeStamp.ToString() + ", " + 
-                            filteredIndex.ToString() + ", " +
-                            stream.ResponseStream.Current.Samples[sampleNum].Measurements[filteredIndex].ToString() + ", " +
+                            filteredIndexPos.ToString() + ", " + filteredIndexNeg.ToString() + ", " +
+                            stream.ResponseStream.Current.Samples[sampleNum].Measurements[filteredIndexPos].ToString() + ", " +
+                            stream.ResponseStream.Current.Samples[sampleNum].Measurements[filteredIndexNeg].ToString() + ", " +
                             stream.ResponseStream.Current.Samples[sampleNum].FiltSample.ToString() + ", " +
                             stream.ResponseStream.Current.Samples[sampleNum].IsInterpolated.ToString() + ", " +
                             stream.ResponseStream.Current.Samples[sampleNum].Measurements[5].ToString() + ", " +
