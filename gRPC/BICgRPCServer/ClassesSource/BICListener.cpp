@@ -506,6 +506,7 @@ namespace BICGRPCHelperNamespace
                                         {
                                             // Update stimTriggerPhase based on previous stim phase
                                             updateStimTrigger(newInterpolatedSample->phase());
+                                            std::cout << "old phase: " << newInterpolatedSample->phase() << std::endl;
                                         }
                                     }
                                 }
@@ -554,6 +555,7 @@ namespace BICGRPCHelperNamespace
                         {
                             // Update stimTriggerPhase based on previous stim phase
                             updateStimTrigger(newSample->phase());
+                            std::cout << "old phase: " << newSample->phase() << std::endl;
                         }
                     }
                 }
@@ -887,24 +889,36 @@ namespace BICGRPCHelperNamespace
         // Save the calculated phase
         prevPhase->insert(prevPhase->begin(), currPhase);
         prevPhase->pop_back();
+
         std::cout << "trigger: " << stimTriggerPhase << std::endl;
+        if (stimTriggerPhase <= 0 || stimTriggerPhase > 360)
+        {
+            // reset stimTriggerPhase
+            stimTriggerPhase = 90;
+        }
         return currPhase;
     }
 
-    bool BICListener::updateStimTrigger(double prevStimPhase)
+    void BICListener::updateStimTrigger(double prevStimPhase)
     {
+        // Checks to modify stimTriggerPhase based on previous stim phase value
         if (prevStimPhase > 270)
         {
             // If stim was late, then update stimTriggerPhase so next stim is earlier
             stimTriggerPhase -= 2;
         }
 
-        if (prevStimPhase < 180)
+        else if (prevStimPhase < 180)
         {
             // If stim was early, then update stimTriggerPhase so next stim is later
             stimTriggerPhase += 2;
         }
-        return true;
+
+        // Checks to reset stimTriggerPhase if out of bounds
+        if (stimTriggerPhase < 0 || stimTriggerPhase > 180)
+        {
+            stimTriggerPhase = 90;
+        }
     }
 
     /// <summary>
@@ -931,6 +945,9 @@ namespace BICGRPCHelperNamespace
 
         // Append to the name of the stim logging file 
         std::string fileName = "stimTimeLog_" + timeStamp + ".csv";
+        myFile.open(fileName, std::ios_base::app);
+        myFile << "BeforeStim, AfterStim, Exception, triggerPhase" << "\n";
+        myFile.close();
 
         // Loop while streaming is active
         while (stimTimeLoggingState)
@@ -948,7 +965,7 @@ namespace BICGRPCHelperNamespace
                     // Write out new line to file
                     myFile.open(fileName, std::ios_base::app);
                     // log timestamp before and after stim command and exception
-                    myFile << stimTimeSampleQueue.front().beforeStimTimeStamp << ", " << stimTimeSampleQueue.front().afterStimTimeStamp << ", " << stimTimeSampleQueue.front().recordedException << "\n";
+                    myFile << stimTimeSampleQueue.front().beforeStimTimeStamp << ", " << stimTimeSampleQueue.front().afterStimTimeStamp << ", " << stimTimeSampleQueue.front().recordedException << ", " << stimTriggerPhase << "\n";
                     myFile.close();
                     // Clean up the current sample from the list
                     stimTimeSampleQueue.pop(); // take out first item of queue
