@@ -278,6 +278,7 @@ message NeuralSample{
 	double filtSample = 9;
 	uint32 filtChannel = 10;
 	uint64 timeStamp = 11;
+	double phase = 12;
 }
 
 message ConnectionUpdate{

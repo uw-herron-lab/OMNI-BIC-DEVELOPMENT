@@ -499,6 +499,7 @@ namespace BICGRPCHelperNamespace
                                     {
                                         // call the processing helper, take output and send to client
                                         newInterpolatedSample->set_filtsample(processingHelper(interpolatedSample)); // set the filtered sample in the neural sample 
+                                        newInterpolatedSample->set_phase(calcPhase(bpFiltData, latestTimeStamp, &sigFreqData, &phaseData));
                                     }
                                 }
                                 // Add it to the buffer if there is room
@@ -539,6 +540,7 @@ namespace BICGRPCHelperNamespace
                     {
                         // Call Processing Helper, take output and send to client
                         newSample->set_filtsample(processingHelper(theData[j]));
+                        newSample->set_phase(calcPhase(bpFiltData, sampleTime, &sigFreqData, &phaseData));
                     }
                 }
                 delete theData;
@@ -770,19 +772,19 @@ namespace BICGRPCHelperNamespace
     }
 
     /// <summary>
-    /// Helper function for identifying if the latest point is a negative zero crossing
+    /// Helper function for identifying if the latest point is a positive zero crossing
     /// </summary>
     /// <param name="dataArray">vector of sensing data to assess for zero crossing</param>
-    /// <returns>Boolean indicating if the latest point is a negative zero crossing</returns>
+    /// <returns>Boolean indicating if the latest point is a positive zero crossing</returns>
     bool BICListener::isZeroCrossing(std::vector<double> dataArray)
     {
         bool isZeroCrossing = false;
 
-        // check if most recent filtered sample is negative
-        if (dataArray[0] < 0)
+        // check if most recent filtered sample is positive
+        if (dataArray[0] > 0)
         {
-            // then check if older filtered sample was positive
-            if (dataArray[1] > 0)
+            // then check if older filtered sample was negative
+            if (dataArray[1] < 0)
             {
                 isZeroCrossing = true;
             }
@@ -804,6 +806,43 @@ namespace BICGRPCHelperNamespace
             wasLocalMaxima = true;
         }
         return wasLocalMaxima;
+    }
+
+    double BICListener::calcPhase(std::vector<double> dataArray, uint64_t currTimeStamp, std::vector<double>* prevSigFreq, std::vector<double>* prevPhase)
+    {
+        double avgSigFreq = 0;
+        double sigFreq = 0;
+        double currPhase = 0;
+
+        // Check if there is a negative zero crossing
+        if (isZeroCrossing(dataArray))
+        {
+            // If so, calculate the  frequency
+            sigFreq = 1 / ((currTimeStamp - zeroPhaseTimeStamp) / pow(10, 7));
+
+            // Check that the calculated frequency is within reasonable bounds
+            if (sigFreq > 10 && sigFreq < 30) // successful check
+            {
+                // If so, add calculated frequency to history
+                prevSigFreq->insert(prevSigFreq->begin(), sigFreq);
+                prevSigFreq->pop_back();
+            }
+            std::cout << "currTS: " << currTimeStamp << std::endl;
+            std::cout << "zeroTS: " << zeroPhaseTimeStamp << std::endl;
+            std::cout << "SigFreq: " << sigFreq << std::endl;
+
+            // Update zeroPhaseTimeStamp, regardless if it's within frequency bounds
+            zeroPhaseTimeStamp = currTimeStamp;
+        }
+
+        for (int i = 0; i < prevSigFreq->size(); i++)
+        {
+            avgSigFreq += prevSigFreq->at(i);
+        }
+        avgSigFreq /= prevSigFreq->size();
+
+        currPhase = ((currTimeStamp - zeroPhaseTimeStamp) / pow(10, 7)) * avgSigFreq * 360;
+        return currPhase;
     }
 
     /// <summary>
