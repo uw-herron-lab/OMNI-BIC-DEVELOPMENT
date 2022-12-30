@@ -500,6 +500,13 @@ namespace BICGRPCHelperNamespace
                                         // call the processing helper, take output and send to client
                                         newInterpolatedSample->set_filtsample(processingHelper(interpolatedSample)); // set the filtered sample in the neural sample 
                                         newInterpolatedSample->set_phase(calcPhase(bpFiltData, latestTimeStamp, &sigFreqData, &phaseData));
+
+                                        // If stim is active
+                                        if (newInterpolatedSample->stimulationactive())
+                                        {
+                                            // Update stimTriggerPhase based on previous stim phase
+                                            updateStimTrigger(newInterpolatedSample->phase());
+                                        }
                                     }
                                 }
                                 // Add it to the buffer if there is room
@@ -541,6 +548,13 @@ namespace BICGRPCHelperNamespace
                         // Call Processing Helper, take output and send to client
                         newSample->set_filtsample(processingHelper(theData[j]));
                         newSample->set_phase(calcPhase(bpFiltData, sampleTime, &sigFreqData, &phaseData));
+
+                        // If stim is active
+                        if (newSample->stimulationactive())
+                        {
+                            // Update stimTriggerPhase based on previous stim phase
+                            updateStimTrigger(newSample->phase());
+                        }
                     }
                 }
                 delete theData;
@@ -636,6 +650,8 @@ namespace BICGRPCHelperNamespace
         std::chrono::system_clock::time_point before;
         std::chrono::system_clock::time_point after;
 
+        double currStimTriggerPhase = 0;
+
         // Wait for a zero crossing
         stimTrigger->wait(stimTriggerWait);
 
@@ -676,7 +692,6 @@ namespace BICGRPCHelperNamespace
                 {
                     std::cout << "WARNING: Before Stim Time Log Queue Size Overflow, streaming data skipped" << std::endl;
                 }
-
             }
             catch (std::exception& anyException)
             {
@@ -732,8 +747,8 @@ namespace BICGRPCHelperNamespace
         // Band pass filter for beta activity
         double filtSamp = filterIIR(newData, &bpFiltData, &rawPrevData, &betaBandPassIIR_B, &betaBandPassIIR_A);
 
-        // if at a local maxima above an arbitrary threshold and closed loop stim is enabled, send stimulation
-        //if (isCLStimEn && detectStimTrigger(phaseData) && bpFiltData[1] > distributedStimThreshold)
+        // if at a particular phase, above an arbitrary threshold, and closed loop stim is enabled, send stimulation
+        if (isCLStimEn && detectStimTrigger(phaseData) && bpFiltData[1] > distributedStimThreshold)
         {
             // start thread to execute stim command
             stimTrigger->notify_all();
@@ -806,7 +821,12 @@ namespace BICGRPCHelperNamespace
         }
         return wasLocalMaxima;
     }
-
+    
+    /// <summary>
+    /// Helper function to identify if a certain phase has passed
+    /// </summary>
+    /// <param name="prevPhase">vector of previous phase data</param>
+    /// <returns>Boolean indicating if the phase for triggering stim has passed</returns>
     bool BICListener::detectStimTrigger(std::vector<double> prevPhase)
     {
         bool stimTrigger = false;
@@ -815,10 +835,16 @@ namespace BICGRPCHelperNamespace
         {
             stimTrigger = true;
         }
-
         return stimTrigger;
     }
 
+    /// <summary>
+    /// Function for calculating the phase of a sample
+    /// <param name="dataArray">vector of filtered sensing data</param>
+    /// <param name="currTimeStamp">timestamp of the current sample</param>
+    /// <param name="prevSigFreq">vector of previously calculated frequencies</param>
+    /// <param name="prevPhase">vector of previously calculated phases</param>
+    /// <returns>calculated phase of the current sample</returns>
     double BICListener::calcPhase(std::vector<double> dataArray, uint64_t currTimeStamp, std::vector<double>* prevSigFreq, std::vector<double>* prevPhase)
     {
         double avgSigFreq = 0;
@@ -838,9 +864,6 @@ namespace BICGRPCHelperNamespace
                 prevSigFreq->insert(prevSigFreq->begin(), sigFreq);
                 prevSigFreq->pop_back();
             }
-            std::cout << "currTS: " << currTimeStamp << std::endl;
-            std::cout << "zeroTS: " << zeroPhaseTimeStamp << std::endl;
-            std::cout << "SigFreq: " << sigFreq << std::endl;
 
             // Update zeroPhaseTimeStamp, regardless if it's within frequency bounds
             zeroPhaseTimeStamp = currTimeStamp;
@@ -864,8 +887,24 @@ namespace BICGRPCHelperNamespace
         // Save the calculated phase
         prevPhase->insert(prevPhase->begin(), currPhase);
         prevPhase->pop_back();
-
+        std::cout << "trigger: " << stimTriggerPhase << std::endl;
         return currPhase;
+    }
+
+    bool BICListener::updateStimTrigger(double prevStimPhase)
+    {
+        if (prevStimPhase > 270)
+        {
+            // If stim was late, then update stimTriggerPhase so next stim is earlier
+            stimTriggerPhase -= 2;
+        }
+
+        if (prevStimPhase < 180)
+        {
+            // If stim was early, then update stimTriggerPhase so next stim is later
+            stimTriggerPhase += 2;
+        }
+        return true;
     }
 
     /// <summary>
