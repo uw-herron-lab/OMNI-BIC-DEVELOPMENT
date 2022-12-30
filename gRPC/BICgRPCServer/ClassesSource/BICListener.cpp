@@ -578,7 +578,6 @@ namespace BICGRPCHelperNamespace
     /// <param name="phaseStimChannel">The channel to stimulate after negative zero crossings of phase sensing channel</param>
     void BICListener::enableDistributedStim(bool enableDistributed, int sensingChannel, std::vector<double> filtCoeff_B, std::vector<double> filtCoeff_A, uint32_t triggeredFunctionIndex, double stimThreshold)
     {
-        // could potentially add filter coefficients to be updated here..?
         distributedInputChannel = sensingChannel;
         betaBandPassIIR_B = filtCoeff_B;
         betaBandPassIIR_A = filtCoeff_A;
@@ -734,7 +733,7 @@ namespace BICGRPCHelperNamespace
         double filtSamp = filterIIR(newData, &bpFiltData, &rawPrevData, &betaBandPassIIR_B, &betaBandPassIIR_A);
 
         // if at a local maxima above an arbitrary threshold and closed loop stim is enabled, send stimulation
-        if (isCLStimEn && detectLocalMaxima(bpFiltData) && bpFiltData[1] > distributedStimThreshold)
+        //if (isCLStimEn && detectStimTrigger(phaseData) && bpFiltData[1] > distributedStimThreshold)
         {
             // start thread to execute stim command
             stimTrigger->notify_all();
@@ -808,6 +807,18 @@ namespace BICGRPCHelperNamespace
         return wasLocalMaxima;
     }
 
+    bool BICListener::detectStimTrigger(std::vector<double> prevPhase)
+    {
+        bool stimTrigger = false;
+
+        if (prevPhase[0] > stimTriggerPhase && prevPhase[1] < stimTriggerPhase)
+        {
+            stimTrigger = true;
+        }
+
+        return stimTrigger;
+    }
+
     double BICListener::calcPhase(std::vector<double> dataArray, uint64_t currTimeStamp, std::vector<double>* prevSigFreq, std::vector<double>* prevPhase)
     {
         double avgSigFreq = 0;
@@ -833,15 +844,27 @@ namespace BICGRPCHelperNamespace
 
             // Update zeroPhaseTimeStamp, regardless if it's within frequency bounds
             zeroPhaseTimeStamp = currTimeStamp;
+
+            // Phase is 0 since it's a zero crossing
+            currPhase = 0;
         }
 
-        for (int i = 0; i < prevSigFreq->size(); i++)
+        // Calculate the phase value using previous recorded signal frequencies
+        else
         {
-            avgSigFreq += prevSigFreq->at(i);
-        }
-        avgSigFreq /= prevSigFreq->size();
+            for (int i = 0; i < prevSigFreq->size(); i++)
+            {
+                avgSigFreq += prevSigFreq->at(i);
+            }
+            avgSigFreq /= prevSigFreq->size();
 
-        currPhase = ((currTimeStamp - zeroPhaseTimeStamp) / pow(10, 7)) * avgSigFreq * 360;
+            currPhase = ((currTimeStamp - zeroPhaseTimeStamp) / pow(10, 7)) * avgSigFreq * 360;
+        }
+
+        // Save the calculated phase
+        prevPhase->insert(prevPhase->begin(), currPhase);
+        prevPhase->pop_back();
+
         return currPhase;
     }
 
