@@ -149,6 +149,7 @@ namespace BICGRPCHelperNamespace
         bool isZeroCrossing(std::vector<double> dataArray);
         bool detectLocalMaxima(std::vector<double> dataArray);
         double calcPhase(std::vector<double> dataArray, uint64_t currTimeStamp, std::vector<double>* prevSigFreq, std::vector<double>* prevPhase);
+        bool detectStimTrigger(std::vector<double> prevPhase);
 
         // Generic Distributed Variables
         bool isCLStimEn = false;                    // State tracking boolean indicates whether distributed stim is active or not
@@ -163,6 +164,7 @@ namespace BICGRPCHelperNamespace
         uint64_t distributedAnodeDuration = 1600;   // Distributed algorithm anode (positive pulse) duration (input)
         double distributedStimThreshold = 10;       // Distributed algorithm threshold to trigger stimulation (input)
         uint64_t zeroPhaseTimeStamp = 0;
+        double stimTriggerPhase = 45;
 
         // Signal Processing Variables
         std::vector<double> bpFiltData = { 0, 0, 0 };                   // IIR filter output history
@@ -170,6 +172,6 @@ namespace BICGRPCHelperNamespace
         std::vector<double> betaBandPassIIR_B = { 0.0305, 0, -0.0305 }; // IIR "B" filter coefficients for a beta-range band-pass
         std::vector<double> betaBandPassIIR_A = { 1, -1.9247, 0.9391 }; // IIR "A" filter coefficients for a beta-range band-pass
         std::vector<double> sigFreqData = { 0, 0, 0, 0 };
-        std::vector<double> phaseData = { 0, 0, 0 };
+        std::vector<double> phaseData = { 0, 0 };
     };
 }
