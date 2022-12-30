@@ -150,6 +150,7 @@ namespace BICGRPCHelperNamespace
         bool detectLocalMaxima(std::vector<double> dataArray);
         double calcPhase(std::vector<double> dataArray, uint64_t currTimeStamp, std::vector<double>* prevSigFreq, std::vector<double>* prevPhase);
         bool detectStimTrigger(std::vector<double> prevPhase);
+        bool updateStimTrigger(double prevStimPhase);
 
         // Generic Distributed Variables
         bool isCLStimEn = false;                    // State tracking boolean indicates whether distributed stim is active or not
@@ -164,7 +165,7 @@ namespace BICGRPCHelperNamespace
         uint64_t distributedAnodeDuration = 1600;   // Distributed algorithm anode (positive pulse) duration (input)
         double distributedStimThreshold = 10;       // Distributed algorithm threshold to trigger stimulation (input)
         uint64_t zeroPhaseTimeStamp = 0;
-        double stimTriggerPhase = 45;
+        double stimTriggerPhase = 130;
 
         // Signal Processing Variables
         std::vector<double> bpFiltData = { 0, 0, 0 };                   // IIR filter output history
