@@ -1,0 +1,11 @@
+{
+  "stimType": "beta",
+  "senseChannel": 1,
+  "stimChannel": 32,
+  "stimPeriod": 50000,
+  "stimAmplitude": -1000,
+  "stimDuration": 250,
+  "stimThreshold": 100,
+  "filterCoefficients_B": [ 0.03046874709125371380, 0.00000000000000000000, -0.03046874709125371380 ],
+  "filterCoefficients_A": [ 1.00000000000000000000, -1.91613492559802489623, 0.93906250581749250994 ]
+}
