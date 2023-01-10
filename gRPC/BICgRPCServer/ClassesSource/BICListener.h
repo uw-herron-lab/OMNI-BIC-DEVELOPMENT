@@ -166,6 +166,7 @@ namespace BICGRPCHelperNamespace
         double distributedStimThreshold = 10;       // Distributed algorithm threshold to trigger stimulation (input)
         uint64_t zeroPhaseTimeStamp = 0;
         double stimTriggerPhase = 90;
+        bool savedStimState = false;
 
         // Signal Processing Variables
         std::vector<double> bpFiltData = { 0, 0, 0 };                   // IIR filter output history
