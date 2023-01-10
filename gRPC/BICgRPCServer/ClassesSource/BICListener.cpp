@@ -502,12 +502,14 @@ namespace BICGRPCHelperNamespace
                                         newInterpolatedSample->set_phase(calcPhase(bpFiltData, latestTimeStamp, &sigFreqData, &phaseData));
 
                                         // If stim is active
-                                        if (newInterpolatedSample->stimulationactive())
+                                        if (newInterpolatedSample->stimulationactive() == true && savedStimState == false)
                                         {
                                             // Update stimTriggerPhase based on previous stim phase
                                             updateStimTrigger(newInterpolatedSample->phase());
-                                            std::cout << "old phase: " << newInterpolatedSample->phase() << std::endl;
                                         }
+
+                                        // Update with current stim state
+                                        savedStimState = newInterpolatedSample->stimulationactive();
                                     }
                                 }
                                 // Add it to the buffer if there is room
@@ -551,12 +553,13 @@ namespace BICGRPCHelperNamespace
                         newSample->set_phase(calcPhase(bpFiltData, sampleTime, &sigFreqData, &phaseData));
 
                         // If stim is active
-                        if (newSample->stimulationactive())
+                        if (newSample->stimulationactive() == true && savedStimState == false)
                         {
                             // Update stimTriggerPhase based on previous stim phase
                             updateStimTrigger(newSample->phase());
-                            std::cout << "old phase: " << newSample->phase() << std::endl;
                         }
+                        // Update with current stim state
+                        savedStimState = newSample->stimulationactive();
                     }
                 }
                 delete theData;
