@@ -164,16 +164,18 @@ namespace BICGRPCHelperNamespace
         double distributedAnodeAmplitude = 250;     // Distributed algorithm anode (positive pulse) amplitude (input)
         uint64_t distributedAnodeDuration = 1600;   // Distributed algorithm anode (positive pulse) duration (input)
         double distributedStimThreshold = 10;       // Distributed algorithm threshold to trigger stimulation (input)
-        uint64_t zeroPhaseTimeStamp = 0;
-        double stimTriggerPhase = 90;
-        bool savedStimState = false;
 
         // Signal Processing Variables
         std::vector<double> bpFiltData = { 0, 0, 0 };                   // IIR filter output history
         std::vector<double> rawPrevData = { 0, 0 };                     // Data history for raw input samples
         std::vector<double> betaBandPassIIR_B = { 0.0305, 0, -0.0305 }; // IIR "B" filter coefficients for a beta-range band-pass
         std::vector<double> betaBandPassIIR_A = { 1, -1.9247, 0.9391 }; // IIR "A" filter coefficients for a beta-range band-pass
-        std::vector<double> sigFreqData = { 0, 0, 0, 0 };
-        std::vector<double> phaseData = { 0, 0 };
+        
+        // Phase Calculation Variables
+        uint64_t zeroPhaseTimeStamp = 0;                    // Phase calculation timestamp for first negative zero crossing
+        double stimTriggerPhase = 90;                       // Phase calculation phase for triggering stimulation
+        bool savedStimState = false;                        // Phase calculation state for previous stimulation 
+        std::vector<double> sigFreqData = { 0, 0, 0, 0 };   // History of frequency estimates 
+        std::vector<double> phaseData = { 0, 0 };           // History for previous estimated phase calculations
     };
 }

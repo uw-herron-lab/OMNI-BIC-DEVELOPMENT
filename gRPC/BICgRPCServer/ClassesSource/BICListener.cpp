@@ -499,6 +499,8 @@ namespace BICGRPCHelperNamespace
                                     {
                                         // call the processing helper, take output and send to client
                                         newInterpolatedSample->set_filtsample(processingHelper(interpolatedSample)); // set the filtered sample in the neural sample 
+                                        
+                                        // Call calcPhase to estimate current sample's phase
                                         newInterpolatedSample->set_phase(calcPhase(bpFiltData, latestTimeStamp, &sigFreqData, &phaseData));
 
                                         // If stim is active
@@ -550,6 +552,8 @@ namespace BICGRPCHelperNamespace
                     {
                         // Call Processing Helper, take output and send to client
                         newSample->set_filtsample(processingHelper(theData[j]));
+
+                        // Call calcPhase to estimate current sample's phase
                         newSample->set_phase(calcPhase(bpFiltData, sampleTime, &sigFreqData, &phaseData));
 
                         // If stim is active
@@ -863,21 +867,21 @@ namespace BICGRPCHelperNamespace
             sigFreq = 1 / ((currTimeStamp - zeroPhaseTimeStamp) / pow(10, 7));
 
             // Check that the calculated frequency is within reasonable bounds
-            if (sigFreq > 10 && sigFreq < 30) // successful check
+            if (sigFreq > 10 && sigFreq < 30) 
             {
                 // If so, add calculated frequency to history
                 prevSigFreq->insert(prevSigFreq->begin(), sigFreq);
                 prevSigFreq->pop_back();
             }
 
-            // Update zeroPhaseTimeStamp, regardless if it's within frequency bounds
+            // Update zeroPhaseTimeStamp, regardless if it passed bounds check
             zeroPhaseTimeStamp = currTimeStamp;
 
             // Phase is 0 since it's a zero crossing
             currPhase = 0;
         }
 
-        // Calculate the phase value using previous recorded signal frequencies
+        // Calculate the phase value using previously recorded signal frequencies
         else
         {
             for (int i = 0; i < prevSigFreq->size(); i++)
@@ -893,10 +897,10 @@ namespace BICGRPCHelperNamespace
         prevPhase->insert(prevPhase->begin(), currPhase);
         prevPhase->pop_back();
 
-        std::cout << "trigger: " << stimTriggerPhase << std::endl;
+        // Check stimTriggerPhase is within range
         if (stimTriggerPhase <= 0 || stimTriggerPhase > 360)
         {
-            // reset stimTriggerPhase
+            // If not, reset stimTriggerPhase
             stimTriggerPhase = 90;
         }
         return currPhase;
