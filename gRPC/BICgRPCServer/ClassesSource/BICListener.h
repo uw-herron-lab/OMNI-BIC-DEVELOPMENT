@@ -149,8 +149,8 @@ namespace BICGRPCHelperNamespace
         bool isZeroCrossing(std::vector<double> dataArray);
         bool detectLocalMaxima(std::vector<double> dataArray);
         double calcPhase(std::vector<double> dataArray, uint64_t currTimeStamp, std::vector<double>* prevSigFreq, std::vector<double>* prevPhase);
-        bool detectStimTrigger(std::vector<double> prevPhase);
-        void updateStimTrigger(double prevStimPhase);
+        bool detectTriggerPhase(std::vector<double> prevPhase, double triggerPhase);
+        void updateTriggerPhase(double prevStimPhase);
 
         // Generic Distributed Variables
         bool isCLStimEn = false;                    // State tracking boolean indicates whether distributed stim is active or not
