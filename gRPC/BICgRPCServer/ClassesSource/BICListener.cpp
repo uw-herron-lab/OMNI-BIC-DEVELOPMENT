@@ -507,7 +507,7 @@ namespace BICGRPCHelperNamespace
                                         if (newInterpolatedSample->stimulationactive() == true && savedStimState == false)
                                         {
                                             // Update stimTriggerPhase based on previous stim phase
-                                            updateStimTrigger(newInterpolatedSample->phase());
+                                            updateTriggerPhase(newInterpolatedSample->phase());
                                         }
 
                                         // Update with current stim state
@@ -560,7 +560,7 @@ namespace BICGRPCHelperNamespace
                         if (newSample->stimulationactive() == true && savedStimState == false)
                         {
                             // Update stimTriggerPhase based on previous stim phase
-                            updateStimTrigger(newSample->phase());
+                            updateTriggerPhase(newSample->phase());
                         }
                         // Update with current stim state
                         savedStimState = newSample->stimulationactive();
@@ -757,7 +757,7 @@ namespace BICGRPCHelperNamespace
         double filtSamp = filterIIR(newData, &bpFiltData, &rawPrevData, &betaBandPassIIR_B, &betaBandPassIIR_A);
 
         // if at a particular phase, above an arbitrary threshold, and closed loop stim is enabled, send stimulation
-        if (isCLStimEn && detectStimTrigger(phaseData) && bpFiltData[1] > distributedStimThreshold)
+        if (isCLStimEn && detectTriggerPhase(phaseData, stimTriggerPhase) && bpFiltData[1] > distributedStimThreshold)
         {
             // start thread to execute stim command
             stimTrigger->notify_all();
@@ -836,15 +836,15 @@ namespace BICGRPCHelperNamespace
     /// </summary>
     /// <param name="prevPhase">vector of previous phase data</param>
     /// <returns>Boolean indicating if the phase for triggering stim has passed</returns>
-    bool BICListener::detectStimTrigger(std::vector<double> prevPhase)
+    bool BICListener::detectTriggerPhase(std::vector<double> prevPhase, double triggerPhase)
     {
-        bool stimTrigger = false;
+        bool wasTriggerPhase = false;
 
-        if (prevPhase[0] > stimTriggerPhase && prevPhase[1] < stimTriggerPhase)
+        if (prevPhase[0] > triggerPhase && prevPhase[1] < triggerPhase)
         {
-            stimTrigger = true;
+            wasTriggerPhase = true;
         }
-        return stimTrigger;
+        return wasTriggerPhase;
     }
 
     /// <summary>
@@ -906,7 +906,7 @@ namespace BICGRPCHelperNamespace
         return currPhase;
     }
 
-    void BICListener::updateStimTrigger(double prevStimPhase)
+    void BICListener::updateTriggerPhase(double prevStimPhase)
     {
         // Checks to modify stimTriggerPhase based on previous stim phase value
         if (prevStimPhase > 270)
