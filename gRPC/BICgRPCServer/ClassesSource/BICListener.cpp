@@ -599,12 +599,13 @@ namespace BICGRPCHelperNamespace
     /// <param name="enableDistributed">A boolean indicating if phasic stim should be enabled or disabled</param>
     /// <param name="phaseSensingChannel">The channel to sense phase on</param>
     /// <param name="phaseStimChannel">The channel to stimulate after negative zero crossings of phase sensing channel</param>
-    void BICListener::enableDistributedStim(bool enableDistributed, int sensingChannel, std::vector<double> filtCoeff_B, std::vector<double> filtCoeff_A, uint32_t triggeredFunctionIndex, double stimThreshold)
+    void BICListener::enableDistributedStim(bool enableDistributed, int sensingChannel, std::vector<double> filtCoeff_B, std::vector<double> filtCoeff_A, uint32_t triggeredFunctionIndex, double stimThreshold, double triggerPhase)
     {
         distributedInputChannel = sensingChannel;
         betaBandPassIIR_B = filtCoeff_B;
         betaBandPassIIR_A = filtCoeff_A;
         distributedStimThreshold = stimThreshold;
+        stimTriggerPhase = triggerPhase;
 
         if (enableDistributed && !isTriggeringStimulation() && !isStimulating())
         {
@@ -923,6 +924,8 @@ namespace BICGRPCHelperNamespace
             // If stim was early, then update stimTriggerPhase so next stim is later
             stimTriggerPhase += 2;
         }
+
+        std::cout << "new trigger: " << stimTriggerPhase << std::endl;
 
         // Checks to reset stimTriggerPhase if out of bounds
         if (stimTriggerPhase < 0 || stimTriggerPhase > 180)

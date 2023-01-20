@@ -28,7 +28,7 @@ namespace BICGRPCHelperNamespace
 
         // ************************* Public Distributed Algorithm Stimulation Management *************************
         void enableOpenLoopStim(bool enableOpenLoop, uint32_t watchdogInterval);
-        void enableDistributedStim(bool enableDistributed, int phaseSensingChannel, std::vector<double> filtCoeff_B, std::vector<double> filtCoeff_A, uint32_t triggeredFunctionIndex, double stimThreshold);
+        void enableDistributedStim(bool enableDistributed, int phaseSensingChannel, std::vector<double> filtCoeff_B, std::vector<double> filtCoeff_A, uint32_t triggeredFunctionIndex, double stimThreshold, double triggerPhase);
         void addImplantPointer(cortec::implantapi::IImplant* theImplantedDevice);
         void enableStimTimeLogging(bool enableSensing);
         double processingHelper(double newData);
