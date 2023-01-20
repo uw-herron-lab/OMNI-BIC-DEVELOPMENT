@@ -249,6 +249,7 @@ message distributedStimEnableRequest{
 	repeated double filterCoefficients_A = 5;
 	uint32 triggeredFunctionIndex = 6;
 	double triggerStimThreshold = 7;
+	double initTriggerStimPhase = 8;
 }
 
 // *************************** Device Streaming Service Messages ***************************

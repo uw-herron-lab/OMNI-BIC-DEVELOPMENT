@@ -53,6 +53,7 @@ namespace StimTherapyApp
             public double stimThreshold { get; set; }
             public List<double> filterCoefficients_B { get; set; }
             public List<double> filterCoefficients_A { get; set; }
+            public double triggerPhase { get; set; }
         }
 
         public MainWindow()
@@ -248,6 +249,7 @@ namespace StimTherapyApp
                                 OutputConsole.Inlines.Add(configInfo.filterCoefficients_A[i] + " ");
                             }
                             OutputConsole.Inlines.Add("\n");
+                            OutputConsole.Inlines.Add("Starting Trigger Phase: " + configInfo.triggerPhase + " uV\n");
                             Scroller.ScrollToEnd();
                         }
 
@@ -282,7 +284,7 @@ namespace StimTherapyApp
                 // start phase triggered stim and update status
                 try
                 {
-                    aBICManager.enableDistributedStim(true, (uint)configInfo.stimChannel - 1, (uint)configInfo.senseChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, configInfo.filterCoefficients_B, configInfo.filterCoefficients_A, configInfo.stimThreshold);
+                    aBICManager.enableDistributedStim(true, (uint)configInfo.stimChannel - 1, (uint)configInfo.senseChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, configInfo.filterCoefficients_B, configInfo.filterCoefficients_A, configInfo.stimThreshold, configInfo.triggerPhase);
                 }
                 catch
                 {
@@ -368,7 +370,7 @@ namespace StimTherapyApp
                 if (phasicStimState)
                 {
                     // disable beta and open loop stim
-                    aBICManager.enableDistributedStim(false, (uint)configInfo.stimChannel - 1, (uint)configInfo.senseChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, configInfo.filterCoefficients_B, configInfo.filterCoefficients_A, configInfo.stimThreshold);
+                    aBICManager.enableDistributedStim(false, (uint)configInfo.stimChannel - 1, (uint)configInfo.senseChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, configInfo.filterCoefficients_B, configInfo.filterCoefficients_A, configInfo.stimThreshold, configInfo.triggerPhase);
                     phasicStimState = false;
                 }
                 if (openStimState)
