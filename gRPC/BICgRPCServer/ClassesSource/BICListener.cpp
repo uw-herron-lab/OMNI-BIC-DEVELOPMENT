@@ -859,12 +859,15 @@ namespace BICGRPCHelperNamespace
         double avgSigFreq = 0;
         double sigFreq = 0;
         double currPhase = 0;
+        double tDiff = 0;
+
+        tDiff = (currTimeStamp - zeroPhaseTimeStamp) / pow(10, 7);
 
         // Check if there is a negative zero crossing
         if (isZeroCrossing(dataArray))
         {
             // If so, calculate the  frequency
-            sigFreq = 1 / ((currTimeStamp - zeroPhaseTimeStamp) / pow(10, 7));
+            sigFreq = 1 / tDiff;
 
             // Check that the calculated frequency is within reasonable bounds
             if (sigFreq > 10 && sigFreq < 30) 
@@ -890,7 +893,7 @@ namespace BICGRPCHelperNamespace
             }
             avgSigFreq /= prevSigFreq->size();
 
-            currPhase = ((currTimeStamp - zeroPhaseTimeStamp) / pow(10, 7)) * avgSigFreq * 360;
+            currPhase = tDiff * avgSigFreq * 360;
         }
 
         // Save the calculated phase
