@@ -253,7 +253,7 @@ namespace StimTherapyApp
                                 OutputConsole.Inlines.Add(configInfo.filterCoefficients_A[i] + " ");
                             }
                             OutputConsole.Inlines.Add("\n");
-                            OutputConsole.Inlines.Add("Starting Trigger Phase: " + configInfo.triggerPhase + " uV\n");
+                            OutputConsole.Inlines.Add("Starting Trigger Phase: " + configInfo.triggerPhase + "\n");
                             Scroller.ScrollToEnd();
                         }
 
