@@ -912,18 +912,26 @@ namespace BICGRPCHelperNamespace
 
     void BICListener::updateTriggerPhase(double prevStimPhase)
     {
-        // Checks to modify stimTriggerPhase based on previous stim phase value
-        if (prevStimPhase > 270)
-        {
-            // If stim was late, then update stimTriggerPhase so next stim is earlier
-            stimTriggerPhase -= 2;
-        }
+        double phaseDiff = 0;
 
-        else if (prevStimPhase < 180)
-        {
-            // If stim was early, then update stimTriggerPhase so next stim is later
-            stimTriggerPhase += 2;
-        }
+        // Checks to modify stimTriggerPhase based on previous stim phase value
+        //if (prevStimPhase > 230)
+        //{
+        //    // If stim was late, then update stimTriggerPhase so next stim is earlier
+        //    stimTriggerPhase -= 2;
+        //}
+
+        //else if (prevStimPhase < 210)
+        //{
+        //    // If stim was early, then update stimTriggerPhase so next stim is later
+        //    stimTriggerPhase += 2;
+        //}
+
+        // find phase difference and use that to update stimTriggerPhase
+        phaseDiff = prevStimPhase - 225;
+
+        // value is a gain 
+        stimTriggerPhase -= (0.2) * phaseDiff;
 
         std::cout << "new trigger: " << stimTriggerPhase << std::endl;
 
