@@ -236,7 +236,7 @@ namespace RealtimeGraphing
         /// Provide a copy of the current data buffers
         /// </summary>
         /// <returns>A list of double-arrays, each array is composed of the latest time domain data from each BIC channel. index 0 is the oldest data. </returns>
-        public List<double>[] getData() // need to modify this section in order to get filtered data
+        public List<double>[] getData() 
         {
             List<double>[] outputBuffer = new List<double>[dataBuffer.Length + filtDataBuffer.Length];
 
@@ -250,11 +250,24 @@ namespace RealtimeGraphing
                 {
                     outputBuffer[dataBuffer.Length + j] = new List<double>(filtDataBuffer[j]);
                 }
-
             }
-            // have something similar for filtered data buffer
 
             return outputBuffer;
+        }
+
+        /// <summary>
+        /// Get impedances for all channels
+        /// </summary>
+        /// <returns>A string array of impedances for each BIC channel</returns>
+        public string[] getImpedance()
+        {
+            string[] impedanceValues = new string[32];
+            for (int channelNum = 0; channelNum < 32; channelNum++)
+            {
+                bicGetImpedanceReply chanImpedValue = deviceClient.bicGetImpedance(new bicGetImpedanceRequest() { DeviceAddress = DeviceName, Channel = (uint) channelNum });
+                impedanceValues[channelNum] = chanImpedValue.ChannelImpedance.ToString() + chanImpedValue.Units;
+            }
+            return impedanceValues;
         }
 
         private void loggingThread()
