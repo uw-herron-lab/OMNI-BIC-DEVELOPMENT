@@ -836,6 +836,7 @@ namespace BICGRPCHelperNamespace
     /// Helper function to identify if a certain phase has passed
     /// </summary>
     /// <param name="prevPhase">vector of previous phase data</param>
+    /// <param name="triggerPhase">current triggering phase value</param>
     /// <returns>Boolean indicating if the phase for triggering stim has passed</returns>
     bool BICListener::detectTriggerPhase(std::vector<double> prevPhase, double triggerPhase)
     {
@@ -910,30 +911,17 @@ namespace BICGRPCHelperNamespace
         return currPhase;
     }
 
+    /// <summary>
+    /// Function for updating the triggering phase value
+    /// </summary>
+    /// <param name="prevStimPhase">phase of current sample that just triggered stimulation</param>
     void BICListener::updateTriggerPhase(double prevStimPhase)
     {
         double phaseDiff = 0;
 
-        // Checks to modify stimTriggerPhase based on previous stim phase value
-        //if (prevStimPhase > 230)
-        //{
-        //    // If stim was late, then update stimTriggerPhase so next stim is earlier
-        //    stimTriggerPhase -= 2;
-        //}
-
-        //else if (prevStimPhase < 210)
-        //{
-        //    // If stim was early, then update stimTriggerPhase so next stim is later
-        //    stimTriggerPhase += 2;
-        //}
-
-        // find phase difference and use that to update stimTriggerPhase
+        // find phase difference and use that to update stimTriggerPhase alongside arbitrary gain
         phaseDiff = prevStimPhase - 225;
-
-        // value is a gain 
         stimTriggerPhase -= (0.2) * phaseDiff;
-
-        std::cout << "new trigger: " << stimTriggerPhase << std::endl;
 
         // Checks to reset stimTriggerPhase if out of bounds
         if (stimTriggerPhase < 0 || stimTriggerPhase > 180)
