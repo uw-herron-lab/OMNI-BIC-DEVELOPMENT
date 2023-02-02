@@ -5,8 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:StimTherapyApp"
         mc:Ignorable="d"
-        Title="ImpedWindow" Height="450" Width="800">
+        Title="ImpedWindow" Height="694.8" Width="484.356">
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Name="ImpedOutput" HorizontalAlignment="Left" TextWrapping="Wrap" FontSize="15" VerticalAlignment="Top" Height="639" Width="458" Margin="10,10,0,0"/>
+
     </Grid>
 </Window>

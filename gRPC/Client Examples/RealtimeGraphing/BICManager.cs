@@ -24,6 +24,7 @@ namespace RealtimeGraphing
         private List<double>[] filtDataBuffer;
         private const int numSensingChannelsDef = 32;
         private object dataBufferLock = new object();
+        private string[] impedBuffer = new string[numSensingChannelsDef];
 
         // Logging Objects
         FileStream logFileStream;
@@ -136,6 +137,13 @@ namespace RealtimeGraphing
             // Connect to the device
             Console.WriteLine("Connecting to implantable device.");
             var connectDeviceReply = deviceClient.ConnectDevice(new ConnectDeviceRequest() { DeviceAddress = DeviceName, LogFileName = "./deviceLog.txt" });
+
+            // Print out impedances of electrodes
+            for (uint channelNum = 0; channelNum < numSensingChannelsDef; channelNum++)
+            {
+                bicGetImpedanceReply chanImpedValue = deviceClient.bicGetImpedance(new bicGetImpedanceRequest() { DeviceAddress = DeviceName, Channel = channelNum });
+                impedBuffer[channelNum] = chanImpedValue.ChannelImpedance.ToString() + chanImpedValue.Units;
+            }
 
             // Start up the neural stream
             neuroMonitor = Task.Run(neuralMonitorTaskAsync);
@@ -261,13 +269,7 @@ namespace RealtimeGraphing
         /// <returns>A string array of impedances for each BIC channel</returns>
         public string[] getImpedance()
         {
-            string[] impedanceValues = new string[32];
-            for (int channelNum = 0; channelNum < 32; channelNum++)
-            {
-                bicGetImpedanceReply chanImpedValue = deviceClient.bicGetImpedance(new bicGetImpedanceRequest() { DeviceAddress = DeviceName, Channel = (uint) channelNum });
-                impedanceValues[channelNum] = chanImpedValue.ChannelImpedance.ToString() + chanImpedValue.Units;
-            }
-            return impedanceValues;
+            return impedBuffer;
         }
 
         private void loggingThread()

@@ -461,14 +461,9 @@ namespace StimTherapyApp
         }
         private void btn_imped_Click(object sender, RoutedEventArgs e)
         {
-            ImpedWindow impedWindow = new ImpedWindow() { Owner = this };
-            impedWindow.Show();
             string[] impedanceCheck = aBICManager.getImpedance();
-
-            for (int i = 0; i < impedanceCheck.Count(); i++)
-            {
-                OutputConsole.Inlines.Add("Ch " + i.ToString() + ": " + impedanceCheck[i] + "\n");
-            }
+            ImpedWindow impedWindow = new ImpedWindow(impedanceCheck);
+            impedWindow.Show();
         }
         private void MainWindow_Closed(object sender, EventArgs e)
         {
