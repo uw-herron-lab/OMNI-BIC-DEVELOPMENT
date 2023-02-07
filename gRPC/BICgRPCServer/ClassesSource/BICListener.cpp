@@ -754,6 +754,44 @@ namespace BICGRPCHelperNamespace
     /// <returns></returns>
     double BICListener::processingHelper(double newData)
     {   
+        double medianVal;
+        double MAD;
+        double hampelSamp;
+        std::vector<double> modifier;
+
+        // Artifact suppression/rejection
+        // copy contents of rawPrevData
+        std::vector<double> sorted(rawPrevData);
+
+        // sort in ascending order
+        sort(sorted.begin(), sorted.end());
+
+        // find the median of sorted rawPrevData
+        medianVal = sorted[((sorted.size() - 1) / 2) + 1];
+
+        // find modifier by subtracting median from all elements in rawPrevData
+        for (int i = 0; i < rawPrevData.size(); i++)
+        {
+            modifier[i] = rawPrevData[i] - medianVal;
+        }
+
+        // sort modifier in ascending order
+        sort(modifier.begin(), modifier.end());
+
+        // find median absolute deviation
+        MAD = 1.4826 * modifier[((modifier.size() - 1) / 2) + 1];
+
+        // check if newData is outside of threshold
+        if (abs(newData - medianVal) <= 1 * MAD)
+        {
+            hampelSamp = newData;
+        }
+        else
+        {
+            // if outside (i.e. outlier), replace with median
+            hampelSamp = medianVal;
+        }
+
         // Band pass filter for beta activity
         double filtSamp = filterIIR(newData, &bpFiltData, &rawPrevData, &betaBandPassIIR_B, &betaBandPassIIR_A);
 
