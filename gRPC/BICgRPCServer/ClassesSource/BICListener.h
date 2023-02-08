@@ -31,7 +31,7 @@ namespace BICGRPCHelperNamespace
         void enableDistributedStim(bool enableDistributed, int phaseSensingChannel, std::vector<double> filtCoeff_B, std::vector<double> filtCoeff_A, uint32_t triggeredFunctionIndex, double stimThreshold, double triggerPhase);
         void addImplantPointer(cortec::implantapi::IImplant* theImplantedDevice);
         void enableStimTimeLogging(bool enableSensing);
-        double processingHelper(double newData);
+        double processingHelper(double newData, std::vector<double>* dataHistory, std::vector<double>* hampelDataHistory);
 
         // ************************* Public Event Handlers *************************
         void onStimulationStateChanged(const bool isStimulating);
@@ -167,7 +167,8 @@ namespace BICGRPCHelperNamespace
 
         // Signal Processing Variables
         std::vector<double> bpFiltData = { 0, 0, 0 };                   // IIR filter output history
-        std::vector<double> rawPrevData = { 0, 0 };                     // Data history for raw input samples
+        std::vector<double> rawPrevData = std::vector<double>(15, 0);   // Data history for raw input samples
+        std::vector<double> hampelPrevData = std::vector<double>(15, 0);// Data history for hampel filtered input samples
         std::vector<double> betaBandPassIIR_B = { 0.0305, 0, -0.0305 }; // IIR "B" filter coefficients for a beta-range band-pass
         std::vector<double> betaBandPassIIR_A = { 1, -1.9247, 0.9391 }; // IIR "A" filter coefficients for a beta-range band-pass
         

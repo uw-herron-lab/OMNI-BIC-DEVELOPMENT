@@ -498,7 +498,7 @@ namespace BICGRPCHelperNamespace
                                     if (interChannelPoint == distributedInputChannel)
                                     {
                                         // call the processing helper, take output and send to client
-                                        newInterpolatedSample->set_filtsample(processingHelper(interpolatedSample)); // set the filtered sample in the neural sample 
+                                        newInterpolatedSample->set_filtsample(processingHelper(interpolatedSample, &rawPrevData, &hampelPrevData)); // set the filtered sample in the neural sample 
                                         
                                         // Call calcPhase to estimate current sample's phase
                                         newInterpolatedSample->set_phase(calcPhase(bpFiltData, latestTimeStamp, &sigFreqData, &phaseData));
@@ -551,7 +551,7 @@ namespace BICGRPCHelperNamespace
                     if (j == distributedInputChannel)
                     {
                         // Call Processing Helper, take output and send to client
-                        newSample->set_filtsample(processingHelper(theData[j]));
+                        newSample->set_filtsample(processingHelper(theData[j], &rawPrevData, &hampelPrevData));
 
                         // Call calcPhase to estimate current sample's phase
                         newSample->set_phase(calcPhase(bpFiltData, sampleTime, &sigFreqData, &phaseData));
@@ -752,16 +752,21 @@ namespace BICGRPCHelperNamespace
     /// </summary>
     /// <param name="newData">latest datapoint to be processed for potential triggering of stimulation</param>
     /// <returns></returns>
-    double BICListener::processingHelper(double newData)
+    double BICListener::processingHelper(double newData, std::vector<double>* dataHistory, std::vector<double>* hampelDataHistory)
     {   
-        double medianVal;
-        double MAD;
         double hampelSamp;
-        std::vector<double> modifier;
+        double MAD;
+        double medianVal;
+        
+        std::vector<double> modifier(dataHistory->size());
+        std::vector<double> sorted(dataHistory->size());
+
+        dataHistory->insert(dataHistory->begin(), newData);
+        dataHistory->pop_back();
 
         // Artifact suppression/rejection
         // copy contents of rawPrevData
-        std::vector<double> sorted(rawPrevData);
+        sorted = *dataHistory;
 
         // sort in ascending order
         sort(sorted.begin(), sorted.end());
@@ -770,9 +775,9 @@ namespace BICGRPCHelperNamespace
         medianVal = sorted[((sorted.size() - 1) / 2) + 1];
 
         // find modifier by subtracting median from all elements in rawPrevData
-        for (int i = 0; i < rawPrevData.size(); i++)
+        for (int i = 0; i < dataHistory->size(); i++)
         {
-            modifier[i] = rawPrevData[i] - medianVal;
+            modifier[i] = abs(dataHistory->at(i) - medianVal);
         }
 
         // sort modifier in ascending order
@@ -791,10 +796,14 @@ namespace BICGRPCHelperNamespace
             // if outside (i.e. outlier), replace with median
             hampelSamp = medianVal;
         }
+        // Update the history of hampel filtered samples
+        hampelDataHistory->insert(hampelDataHistory->begin(), hampelSamp);
+        hampelDataHistory->pop_back();
 
         // Band pass filter for beta activity
-        double filtSamp = filterIIR(newData, &bpFiltData, &rawPrevData, &betaBandPassIIR_B, &betaBandPassIIR_A);
+        double filtSamp = filterIIR(hampelSamp, &bpFiltData, hampelDataHistory, &betaBandPassIIR_B, &betaBandPassIIR_A);
 
+        std::cout << "trig val: " << bpFiltData[1] << std::endl;
         // if at a particular phase, above an arbitrary threshold, and closed loop stim is enabled, send stimulation
         if (isCLStimEn && detectTriggerPhase(phaseData, stimTriggerPhase) && bpFiltData[1] > distributedStimThreshold)
         {
@@ -827,8 +836,8 @@ namespace BICGRPCHelperNamespace
         prevFiltOut->pop_back();
 
         // prevData[0] holds the most recent sample while prevData[1] keeps older sample
-        prevInput->insert(prevInput->begin(), currSamp);
-        prevInput->pop_back();
+        //prevInput->insert(prevInput->begin(), currSamp);
+        //prevInput->pop_back();
 
         return filtTemp;
     }
