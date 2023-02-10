@@ -803,7 +803,6 @@ namespace BICGRPCHelperNamespace
         // Band pass filter for beta activity
         double filtSamp = filterIIR(hampelSamp, &bpFiltData, hampelDataHistory, &betaBandPassIIR_B, &betaBandPassIIR_A);
 
-        std::cout << "trig val: " << bpFiltData[1] << std::endl;
         // if at a particular phase, above an arbitrary threshold, and closed loop stim is enabled, send stimulation
         if (isCLStimEn && detectTriggerPhase(phaseData, stimTriggerPhase) && bpFiltData[1] > distributedStimThreshold)
         {
