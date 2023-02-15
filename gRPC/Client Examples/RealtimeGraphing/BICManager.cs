@@ -62,7 +62,12 @@ namespace RealtimeGraphing
             }
             logFileStream = new FileStream("./filterLog.csv", FileMode.Create, FileAccess.Write, FileShare.None, 4096, FileOptions.Asynchronous);
             logFileWriter = new StreamWriter(logFileStream);
-            logFileWriter.WriteLine("PacketNum, TimeStamp, FilteredChannelNum, RawChannelData, FilteredChannelData, boolInterpolated, StimChannelData, StimActive, CalcPhase");
+            string chanHeader = "";
+            for (int chNum = 0; chNum < numSensingChannelsDef; chNum++)
+            {
+                chanHeader += ", CH" + (chNum + 1).ToString();
+            }
+            logFileWriter.WriteLine("PacketNum, TimeStamp, FilteredChannelNum, RawChannelData, FilteredChannelData, boolInterpolated, StimChannelData, StimActive, CalcPhase" + chanHeader);
         }
         public bool BICConnect()
         {
@@ -412,6 +417,10 @@ namespace RealtimeGraphing
                             stream.ResponseStream.Current.Samples[sampleNum].Measurements[5].ToString() + ", " +
                             stream.ResponseStream.Current.Samples[sampleNum].StimulationActive.ToString() + ", " + 
                             stream.ResponseStream.Current.Samples[sampleNum].Phase.ToString();
+                        for (int chNum = 0; chNum < numSensingChannelsDef; chNum++)
+                        {
+                            logString += ", " + stream.ResponseStream.Current.Samples[sampleNum].Measurements[chNum].ToString();
+                        }
                         logLineQueue.Enqueue(logString);
                     }
                     // Add new data to filtered data buffer
