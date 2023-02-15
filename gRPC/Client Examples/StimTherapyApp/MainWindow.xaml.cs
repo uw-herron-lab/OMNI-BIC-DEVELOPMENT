@@ -45,8 +45,10 @@ namespace StimTherapyApp
         public class Configuration
         {
             public string stimType { get; set; }
+            public bool monopolar { get; set; }
             public int senseChannel { get; set; }
             public int stimChannel { get; set; }
+            public int returnChannel { get; set; }
             public uint stimPeriod { get; set; }
             public int stimAmplitude { get; set; }
             public uint stimDuration { get; set; }
@@ -232,8 +234,10 @@ namespace StimTherapyApp
 
                             OutputConsole.Inlines.Add("Loaded " + fileName + "\n");
                             OutputConsole.Inlines.Add("Stimulation type: " + configInfo.stimType + "\n");
+                            OutputConsole.Inlines.Add("Monopolar stim: " + configInfo.monopolar + "\n");
                             OutputConsole.Inlines.Add("Sense channel: " + configInfo.senseChannel + "\n");
                             OutputConsole.Inlines.Add("Stim channel: " + configInfo.stimChannel + "\n");
+                            OutputConsole.Inlines.Add("Return channel: " + configInfo.returnChannel + "\n");
                             OutputConsole.Inlines.Add("Stim period: " + (configInfo.stimPeriod) + " us\n");
                             OutputConsole.Inlines.Add("Stim Pulse Amplitude: " + configInfo.stimAmplitude + " uA\n");
                             OutputConsole.Inlines.Add("Stim Pulse Duration: " + configInfo.stimDuration + " us\n");
@@ -328,7 +332,7 @@ namespace StimTherapyApp
                 // start open loop stim and update status
                 try
                 {
-                    aBICManager.enableOpenLoopStimulation(true, (uint)configInfo.stimChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, configInfo.stimPeriod - (5 * configInfo.stimDuration) - 3500, configInfo.stimThreshold);
+                    aBICManager.enableOpenLoopStimulation(true, configInfo.monopolar, (uint)configInfo.stimChannel - 1, (uint)configInfo.returnChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, configInfo.stimPeriod - (5 * configInfo.stimDuration) - 3500, configInfo.stimThreshold);
                 }
                 catch
                 {
@@ -375,7 +379,7 @@ namespace StimTherapyApp
                 }
                 if (openStimState)
                 {
-                    aBICManager.enableOpenLoopStimulation(false, (uint)configInfo.stimChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 1, 20000, configInfo.stimThreshold);
+                    aBICManager.enableOpenLoopStimulation(false, configInfo.monopolar, (uint)configInfo.stimChannel - 1, (uint)configInfo.returnChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 1, 20000, configInfo.stimThreshold);
                     openStimState = false;
                 }
             });

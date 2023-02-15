@@ -1,7 +1,9 @@
 {
   "stimType": "open",
+  "monopolar": false,
   "senseChannel": 1,
   "stimChannel": 16,
+  "returnChannel": 5,
   "stimPeriod": 50000,
   "stimAmplitude": -1000,
   "stimDuration": 250,
