@@ -28,7 +28,7 @@ namespace RealtimeGraphing
         // Logging Objects
         FileStream logFileStream;
         StreamWriter logFileWriter;
-        string filePath = "./filterLog" + DateTime.Now.ToString("_MMMdyyyy_HHmmss") + ".csv";
+        string filePath = "./filterLog" + DateTime.Now.ToString("_MMddyyyy_HHmmss") + ".csv";
         ConcurrentQueue<string> logLineQueue = new ConcurrentQueue<string>();
         Thread newLoggingThread;
         bool loggingNotDisposed = true;
