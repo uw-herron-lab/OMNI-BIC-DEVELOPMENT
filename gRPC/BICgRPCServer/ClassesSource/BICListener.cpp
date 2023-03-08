@@ -498,7 +498,7 @@ namespace BICGRPCHelperNamespace
                                     if (interChannelPoint == distributedInputChannel)
                                     {
                                         // call the processing helper, take output and send to client
-                                        newInterpolatedSample->set_filtsample(processingHelper(interpolatedSample, &rawPrevData, &hampelPrevData)); // set the filtered sample in the neural sample 
+                                        newInterpolatedSample->set_filtsample(processingHelper(interpolatedSample, &rawPrevData, &hampelPrevData, &DCPrevData)); // set the filtered sample in the neural sample 
                                         
                                         // Call calcPhase to estimate current sample's phase
                                         newInterpolatedSample->set_phase(calcPhase(bpFiltData, latestTimeStamp, &sigFreqData, &phaseData));
@@ -551,7 +551,7 @@ namespace BICGRPCHelperNamespace
                     if (j == distributedInputChannel)
                     {
                         // Call Processing Helper, take output and send to client
-                        newSample->set_filtsample(processingHelper(theData[j], &rawPrevData, &hampelPrevData));
+                        newSample->set_filtsample(processingHelper(theData[j], &rawPrevData, &hampelPrevData, &DCPrevData));
 
                         // Call calcPhase to estimate current sample's phase
                         newSample->set_phase(calcPhase(bpFiltData, sampleTime, &sigFreqData, &phaseData));
@@ -752,8 +752,9 @@ namespace BICGRPCHelperNamespace
     /// </summary>
     /// <param name="newData">latest datapoint to be processed for potential triggering of stimulation</param>
     /// <returns></returns>
-    double BICListener::processingHelper(double newData, std::vector<double>* dataHistory, std::vector<double>* hampelDataHistory)
+    double BICListener::processingHelper(double newData, std::vector<double>* dataHistory, std::vector<double>* hampelDataHistory, std::vector<double>* DCDataHistory)
     {   
+        double DCSamp;
         double hampelSamp;
         double MAD;
         double medianVal;
@@ -761,10 +762,16 @@ namespace BICGRPCHelperNamespace
         std::vector<double> modifier(dataHistory->size());
         std::vector<double> sorted(dataHistory->size());
 
-        dataHistory->insert(dataHistory->begin(), newData);
+        // Artifact suppression/rejection
+
+        // DC block filter for DC offset and drift
+        DCSamp = 0.9 * DCDataHistory->at(0) + dataHistory->at(1) - dataHistory->at(0);
+
+        // Save the newest DC block filtered sample
+        dataHistory->insert(dataHistory->begin(), DCSamp);
         dataHistory->pop_back();
 
-        // Artifact suppression/rejection
+        // Hampel filter for outlier detection
         // copy contents of rawPrevData
         sorted = *dataHistory;
 
