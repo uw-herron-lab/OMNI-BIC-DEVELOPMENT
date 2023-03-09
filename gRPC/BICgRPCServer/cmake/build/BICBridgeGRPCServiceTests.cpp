@@ -15,41 +15,30 @@ using BICgRPC::BICBridgeService;
 class BICBridgeGRPCServiceTest : public testing::Test {
 
 protected:
+
 	// Per-test-suite set-up.
 	// Called before the first test in this test suite.
-	// Can be omitted if not needed.
 	static void SetUpTestSuite() {
 
 		const std::string& deviceType = "DeviceType";
 		const std::string& hardwareRevision = "Hardware";
 		const std::string& deviceId = "deviceId";
 		const std::string& firmwareVersion = "firmwareVersion";
-
-
 		unitInfo1 = new cortec::implantapi::CExternalUnitInfo(deviceType, hardwareRevision, deviceId, firmwareVersion);
 
-
-		// If `shared_resource_` is **not deleted** in `TearDownTestSuite()`,
-		// reallocation should be prevented because `SetUpTestSuite()` may be called
-		// in subclasses of FooTest and lead to memory leak.
-		//
-		// if (shared_resource_ == nullptr) {
-		//   shared_resource_ = new ...;
-		// }
 	}
 
 	// Per-test-suite tear-down.
 	// Called after the last test in this test suite.
-	// Can be omitted if not needed.
 	static void TearDownTestSuite() {
 		delete unitInfo1;
 		unitInfo1 = nullptr;
 	}
 
-	// You can define per-test set-up logic as usual.
+	// Per-test set-up
+	// Called before each test
 	void SetUp() override {
 
-		MockIImplant mockDevice;
 		BICGRPCHelperNamespace::BICDeviceGRPCService deviceService;
 		BICGRPCHelperNamespace::BICInfoGRPCService infoService;
 		std::unique_ptr<::grpc::Server> gRPCServer;
@@ -82,20 +71,28 @@ protected:
 
 	}
 
-	// You can define per-test tear-down logic as usual.
+	// Per-test teardown
+	// Called after each test
 	void TearDown() override {
+		delete mockManager;
+		mockManager = nullptr;
 
 	}
 
-	// Some expensive resource shared by all tests.
+	// Resources shared by all tests.
 	static cortec::implantapi::CExternalUnitInfo* unitInfo1;
 	static BICGRPCHelperNamespace::BICBridgeGRPCService bridgeService;
 	static MockIImplantFactory* mockManager;
 
 };
 
+// ExternalUnitInfo object containing info about dummy object 
 cortec::implantapi::CExternalUnitInfo* BICBridgeGRPCServiceTest::unitInfo1 = nullptr;
+
+// BicBridgeGRPCService object that connects to mock objects
 BICGRPCHelperNamespace::BICBridgeGRPCService BICBridgeGRPCServiceTest::bridgeService;
+
+// Mock of a IImplantFactory object
 MockIImplantFactory* BICBridgeGRPCServiceTest::mockManager = nullptr;
 
 TEST_F(BICBridgeGRPCServiceTest, ListBridgesWithoutConnections) {
@@ -111,6 +108,9 @@ TEST_F(BICBridgeGRPCServiceTest, ListBridgesWithoutConnections) {
 
 	// Check that when no bridges are connected, listBridges can be called without any error
 	EXPECT_EQ(val.ok(), true);
+
+	// Check that mumber of connected bridges is 0
+	EXPECT_EQ(reply->bridges_size(), 0);
 
 	// Call destructor
 	mockManager->~MockIImplantFactory();
@@ -140,6 +140,14 @@ TEST_F(BICBridgeGRPCServiceTest, ListBridgesWithOneConnections) {
 	// Check that when one bridges is connected, listBridges can be called without any error
 	EXPECT_EQ(val.ok(), true);
 
+	// Check that reply has one connected bridge
+	EXPECT_EQ(reply->bridges_size(), 1);
+
+	BICgRPC::Bridge connectedBridge = reply->bridges(0);
+	const std::string expectedName = "//bic/bridge/deviceId";
+	// Check that bridge has expected name
+	EXPECT_EQ(connectedBridge.name(), expectedName);
+
 	// Call destructor
 	mockManager->~MockIImplantFactory();
 
@@ -160,6 +168,9 @@ TEST_F(BICBridgeGRPCServiceTest, ScanBridgesWithoutConnections) {
 
 	// Check that when no bridges are connected, scanBridges can be called without any error
 	EXPECT_EQ(val.ok(), true);
+
+	// Check that mumber of connected bridges is 0
+	EXPECT_EQ(reply->bridges_size(), 0);
 
 	// Call destructor
 	mockManager->~MockIImplantFactory();
@@ -184,6 +195,11 @@ TEST_F(BICBridgeGRPCServiceTest, ScanBridgesWithOneConnections) {
 	// Check that when one bridge is connected, scanBridges can be called without any error
 	EXPECT_EQ(val.ok(), true);
 
+	BICgRPC::Bridge connectedBridge = reply->bridges(0);
+	const std::string expectedName = "//bic/bridge/deviceId";
+	// Check that bridge has expected name
+	EXPECT_EQ(connectedBridge.name(), expectedName);
+
 	// Call destructor
 	mockManager->~MockIImplantFactory();
 
@@ -203,6 +219,9 @@ TEST_F(BICBridgeGRPCServiceTest, ConnectedBridgesWithoutConnections) {
 
 	// Check that when no bridges are connected, connectedBridges can be called without any error
 	EXPECT_EQ(val.ok(), true);
+
+	// Check that mumber of connected bridges is 0
+	EXPECT_EQ(reply->bridges_size(), 0);
 
 	// Call destructor
 	mockManager->~MockIImplantFactory();
@@ -226,6 +245,17 @@ TEST_F(BICBridgeGRPCServiceTest, ConnectedBridgeWithOneConnection) {
 
 	// Check that when one bridge is connected, connectedBridges can be called without any error
 	EXPECT_EQ(val.ok(), true);
+
+	// Check that mumber of connected bridges is 1
+	EXPECT_EQ(reply->bridges_size(), 1);
+	
+	// Check values of reply
+	BICgRPC::Bridge connectedBridge = reply->bridges(0);
+	const std::string expectedName = "//bic/bridge/deviceId";
+	EXPECT_EQ(connectedBridge.name(), expectedName);
+	EXPECT_EQ(connectedBridge.firmwareversion(), "firmwareVersion");
+	EXPECT_EQ(connectedBridge.devicetype(), "deviceType");
+	EXPECT_EQ(connectedBridge.deviceid(), "deviceId");
 
 	// Call destructor
 	mockManager->~MockIImplantFactory();
