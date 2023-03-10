@@ -498,7 +498,7 @@ namespace BICGRPCHelperNamespace
                                     if (interChannelPoint == distributedInputChannel)
                                     {
                                         // call the processing helper, take output and send to client
-                                        newInterpolatedSample->set_filtsample(processingHelper(interpolatedSample, &rawPrevData, &hampelPrevData, &DCPrevData)); // set the filtered sample in the neural sample 
+                                        newInterpolatedSample->set_filtsample(processingHelper(interpolatedSample, &rawPrevData, &hampelPrevData, &dummyPrevData)); // set the filtered sample in the neural sample 
                                         
                                         // Call calcPhase to estimate current sample's phase
                                         newInterpolatedSample->set_phase(calcPhase(bpFiltData, latestTimeStamp, &sigFreqData, &phaseData));
@@ -551,7 +551,7 @@ namespace BICGRPCHelperNamespace
                     if (j == distributedInputChannel)
                     {
                         // Call Processing Helper, take output and send to client
-                        newSample->set_filtsample(processingHelper(theData[j], &rawPrevData, &hampelPrevData, &DCPrevData));
+                        newSample->set_filtsample(processingHelper(theData[j], &rawPrevData, &hampelPrevData, &dummyPrevData));
 
                         // Call calcPhase to estimate current sample's phase
                         newSample->set_phase(calcPhase(bpFiltData, sampleTime, &sigFreqData, &phaseData));
@@ -752,9 +752,10 @@ namespace BICGRPCHelperNamespace
     /// </summary>
     /// <param name="newData">latest datapoint to be processed for potential triggering of stimulation</param>
     /// <returns></returns>
-    double BICListener::processingHelper(double newData, std::vector<double>* dataHistory, std::vector<double>* hampelDataHistory, std::vector<double>* DCDataHistory)
+    double BICListener::processingHelper(double newData, std::vector<double>* dataHistory, std::vector<double>* hampelDataHistory, std::vector<double>* dummyHistory)
     {   
-        double DCSamp;
+        double dummySamp;
+        double dcFiltSamp;
         double hampelSamp;
         double MAD;
         double medianVal;
@@ -763,13 +764,12 @@ namespace BICGRPCHelperNamespace
         std::vector<double> sorted(dataHistory->size());
 
         // Artifact suppression/rejection
+        dcFiltSamp = filterIIR(newData, &hpFiltData, dummyHistory, &highPassIIR_B, &highPassIIR_A);
+        dcFiltSamp = filterIIR(dcFiltSamp, &lpFiltData, dataHistory, &lowPassIIR_B, &lowPassIIR_A);
 
-        // DC block filter for DC offset and drift
-        DCSamp = 0.9 * DCDataHistory->at(0) + dataHistory->at(1) - dataHistory->at(0);
-
-        // Save the newest DC block filtered sample
-        dataHistory->insert(dataHistory->begin(), DCSamp);
-        dataHistory->pop_back();
+        // Save the original raw sample
+        /*dataHistory->insert(dataHistory->begin(), newData);
+        dataHistory->pop_back();*/
 
         // Hampel filter for outlier detection
         // copy contents of rawPrevData
@@ -794,9 +794,9 @@ namespace BICGRPCHelperNamespace
         MAD = 1.4826 * modifier[((modifier.size() - 1) / 2) + 1];
 
         // check if newData is outside of threshold
-        if (abs(newData - medianVal) <= 1 * MAD)
+        if (abs(dcFiltSamp - medianVal) <= 1 * MAD)
         {
-            hampelSamp = newData;
+            hampelSamp = dcFiltSamp;
         }
         else
         {
@@ -804,8 +804,8 @@ namespace BICGRPCHelperNamespace
             hampelSamp = medianVal;
         }
         // Update the history of hampel filtered samples
-        hampelDataHistory->insert(hampelDataHistory->begin(), hampelSamp);
-        hampelDataHistory->pop_back();
+        //hampelDataHistory->insert(hampelDataHistory->begin(), hampelSamp);
+        //hampelDataHistory->pop_back();
 
         // Band pass filter for beta activity
         double filtSamp = filterIIR(hampelSamp, &bpFiltData, hampelDataHistory, &betaBandPassIIR_B, &betaBandPassIIR_A);
@@ -842,8 +842,8 @@ namespace BICGRPCHelperNamespace
         prevFiltOut->pop_back();
 
         // prevData[0] holds the most recent sample while prevData[1] keeps older sample
-        //prevInput->insert(prevInput->begin(), currSamp);
-        //prevInput->pop_back();
+        prevInput->insert(prevInput->begin(), currSamp);
+        prevInput->pop_back();
 
         return filtTemp;
     }
