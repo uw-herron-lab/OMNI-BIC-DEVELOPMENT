@@ -278,6 +278,12 @@ TEST_F(BICBridgeGRPCServiceTest, ConnectBridgeWithoutConnections) {
 	// Check that when no bridges are connected, connectBridge can be called without any error
 	EXPECT_EQ(val.ok(), true);
 
+	// Check that request name was correctly set
+	EXPECT_EQ(request->name(), reply->name());
+
+	// Check that conenction status was set correctly
+	EXPECT_EQ(reply->connection_status(), (BICgRPC::ConnectBridgeStatus)2);
+
 	// Call destructor
 	mockManager->~MockIImplantFactory();
 
