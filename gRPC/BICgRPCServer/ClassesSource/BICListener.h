@@ -31,7 +31,7 @@ namespace BICGRPCHelperNamespace
         void enableDistributedStim(bool enableDistributed, int phaseSensingChannel, std::vector<double> filtCoeff_B, std::vector<double> filtCoeff_A, uint32_t triggeredFunctionIndex, double stimThreshold, double triggerPhase);
         void addImplantPointer(cortec::implantapi::IImplant* theImplantedDevice);
         void enableStimTimeLogging(bool enableSensing);
-        double processingHelper(double newData, std::vector<double>* dataHistory, std::vector<double>* hampelDataHistory, std::vector<double>* dummyHistory);
+        double processingHelper(double newData, std::vector<double>* dataHistory, std::vector<double>* hampelDataHistory, std::vector<double>* dummyHistory, double filterGain);
 
         // ************************* Public Event Handlers *************************
         void onStimulationStateChanged(const bool isStimulating);
@@ -145,7 +145,7 @@ namespace BICGRPCHelperNamespace
         // Distributed Stim Functions
         void triggeredSendStimThread(void);
         void openLoopStimLoopThread(void);
-        double filterIIR(double currSamp, std::vector<double>* prevFiltOut, std::vector<double>* prevInput, std::vector<double>* b, std::vector<double>* a);
+        double filterIIR(double currSamp, std::vector<double>* prevFiltOut, std::vector<double>* prevInput, std::vector<double>* b, std::vector<double>* a, double gainVal);
         bool isZeroCrossing(std::vector<double> dataArray);
         bool detectLocalMaxima(std::vector<double> dataArray);
         double calcPhase(std::vector<double> dataArray, uint64_t currTimeStamp, std::vector<double>* prevSigFreq, std::vector<double>* prevPhase);
@@ -169,17 +169,17 @@ namespace BICGRPCHelperNamespace
         std::vector<double> bpFiltData = { 0, 0, 0 };                   // IIR filter output history
         std::vector<double> hpFiltData = { 0, 0, 0 };                   // IIR high pass filter output history
         std::vector<double> lpFiltData = { 0, 0, 0 };                   // IIR high pass filter output history
-        std::vector<double> rawPrevData = std::vector<double>(11, 0);   // Data history for raw input samples
-        std::vector<double> hampelPrevData = std::vector<double>(11, 0);// Data history for hampel filtered input samples
-        std::vector<double> dummyPrevData = std::vector<double>(11, 0);
+        std::vector<double> rawPrevData = std::vector<double>(15, 0);   // Data history for raw input samples
+        std::vector<double> hampelPrevData = std::vector<double>(15, 0);// Data history for hampel filtered input samples
+        std::vector<double> dummyPrevData = std::vector<double>(15, 0);
         std::vector<double> betaBandPassIIR_B = { 0.0305, 0, -0.0305 }; // IIR "B" filter coefficients for a beta-range band-pass
         std::vector<double> betaBandPassIIR_A = { 1, -1.9247, 0.9391 }; // IIR "A" filter coefficients for a beta-range band-pass
         std::vector<double> highPassIIR_B = { 0.9845, -0.9845, 0 };     // IIR "B" filter coefficients for a high pass filter with fc = 5 Hz
         std::vector<double> highPassIIR_A = { 1, -0.9691, 0 };            // IIR "A" filter coefficients for a high pass filter with fc = 5 Hz
         std::vector<double> lowPassIIR_B = { 0.0402, 0.0804, 0.0402 };       // IIR "B" filter coefficients for a low pass filter with fc = 50 Hz with gain = 2
         std::vector<double> lowPassIIR_A = { 1, -1.561, 0.6414 };              // IIR "A" filter coefficients for a low pass filter with fc = 50 Hz
-        std::vector<double> bandPassIIR_B = { 0.1246, 0, -0.1246 };       // IIR "B" filter coefficients for a low pass filter with fc = 50 Hz
-        std::vector<double> bandPassIIR_A = { 1, -1.7421, 0.7508 };              // IIR "A" filter coefficients for a low pass filter with fc = 50 Hz
+        std::vector<bool> prevStimStates = std::vector<bool>(50, false);
+        double sampGain = 1;
 
         
         // Phase Calculation Variables

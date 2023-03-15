@@ -497,9 +497,25 @@ namespace BICGRPCHelperNamespace
                                     newInterpolatedSample->add_measurements(interpolatedSample);
                                     if (interChannelPoint == distributedInputChannel)
                                     {
-                                        // call the processing helper, take output and send to client
-                                        newInterpolatedSample->set_filtsample(processingHelper(interpolatedSample, &rawPrevData, &hampelPrevData, &dummyPrevData)); // set the filtered sample in the neural sample 
-                                        
+                                        if (newInterpolatedSample->stimulationactive() == true)
+                                        {
+                                            sampGain = 0.001;
+                                        }
+                                        else
+                                        {
+                                            if (std::find(prevStimStates.begin(), prevStimStates.end(), true) != prevStimStates.end())
+                                            {
+                                                sampGain = 0.001;
+                                            }
+                                            else
+                                            {
+                                                sampGain = 500;
+                                            }
+                                        }
+
+                                        // Call Processing Helper, take output and send to client
+                                        newInterpolatedSample->set_filtsample(processingHelper(interpolatedSample, &rawPrevData, &hampelPrevData, &dummyPrevData, sampGain));
+
                                         // Call calcPhase to estimate current sample's phase
                                         newInterpolatedSample->set_phase(calcPhase(bpFiltData, latestTimeStamp, &sigFreqData, &phaseData));
 
@@ -509,11 +525,14 @@ namespace BICGRPCHelperNamespace
                                             // Update stimTriggerPhase based on previous stim phase
                                             updateTriggerPhase(newInterpolatedSample->phase());
                                         }
-
-                                        // Update with current stim state
-                                        savedStimState = newInterpolatedSample->stimulationactive();
                                     }
                                 }
+                                // Update with current stim state at the beginning of prevStimStates
+                                prevStimStates.insert(prevStimStates.begin(), newInterpolatedSample->stimulationactive());
+
+                                // Remove the oldest stim state at the end of prevStimStates
+                                prevStimStates.pop_back();
+
                                 // Add it to the buffer if there is room
                                 if (neuralSampleQueue.size() < 1000)
                                 {
@@ -550,8 +569,25 @@ namespace BICGRPCHelperNamespace
                     latestData[j] = theData[j];
                     if (j == distributedInputChannel)
                     {
+                        if (newSample->stimulationactive() == true)
+                        {
+                            sampGain = 0.001;
+                        }
+                        else
+                        {
+                            // check if we're still in stim artifact recovery stage
+                            if (std::find(prevStimStates.begin(), prevStimStates.end(), true) != prevStimStates.end())
+                            {
+                                sampGain = 0.001;
+                            }
+                            else
+                            {
+                                sampGain = 500;
+                            }
+                        }
+
                         // Call Processing Helper, take output and send to client
-                        newSample->set_filtsample(processingHelper(theData[j], &rawPrevData, &hampelPrevData, &dummyPrevData));
+                        newSample->set_filtsample(processingHelper(theData[j], &rawPrevData, &hampelPrevData, &dummyPrevData, sampGain));
 
                         // Call calcPhase to estimate current sample's phase
                         newSample->set_phase(calcPhase(bpFiltData, sampleTime, &sigFreqData, &phaseData));
@@ -562,10 +598,14 @@ namespace BICGRPCHelperNamespace
                             // Update stimTriggerPhase based on previous stim phase
                             updateTriggerPhase(newSample->phase());
                         }
-                        // Update with current stim state
-                        savedStimState = newSample->stimulationactive();
                     }
                 }
+                // Update with current stim state at the beginning of prevStimStates
+                prevStimStates.insert(prevStimStates.begin(), newSample->stimulationactive());
+
+                // Remove the oldest stim state at the end of prevStimStates
+                prevStimStates.pop_back();
+
                 delete theData;
 
                 // Add latest received data packet to the buffer if there is room
@@ -752,7 +792,7 @@ namespace BICGRPCHelperNamespace
     /// </summary>
     /// <param name="newData">latest datapoint to be processed for potential triggering of stimulation</param>
     /// <returns></returns>
-    double BICListener::processingHelper(double newData, std::vector<double>* dataHistory, std::vector<double>* hampelDataHistory, std::vector<double>* dummyHistory)
+    double BICListener::processingHelper(double newData, std::vector<double>* dataHistory, std::vector<double>* hampelDataHistory, std::vector<double>* dummyHistory, double filterGain)
     {   
         double dummySamp;
         double dcFiltSamp;
@@ -764,8 +804,8 @@ namespace BICGRPCHelperNamespace
         std::vector<double> sorted(dataHistory->size());
 
         // Artifact suppression/rejection
-        dcFiltSamp = filterIIR(newData, &hpFiltData, dummyHistory, &highPassIIR_B, &highPassIIR_A);
-        dcFiltSamp = filterIIR(dcFiltSamp, &lpFiltData, dataHistory, &lowPassIIR_B, &lowPassIIR_A);
+        dcFiltSamp = filterIIR(newData, &hpFiltData, dummyHistory, &highPassIIR_B, &highPassIIR_A, 1);
+        dcFiltSamp = filterIIR(dcFiltSamp, &lpFiltData, dataHistory, &lowPassIIR_B, &lowPassIIR_A, 1);
 
         // Save the original raw sample
         /*dataHistory->insert(dataHistory->begin(), newData);
@@ -808,7 +848,7 @@ namespace BICGRPCHelperNamespace
         //hampelDataHistory->pop_back();
 
         // Band pass filter for beta activity
-        double filtSamp = filterIIR(hampelSamp, &bpFiltData, hampelDataHistory, &betaBandPassIIR_B, &betaBandPassIIR_A);
+        double filtSamp = filterIIR(hampelSamp, &bpFiltData, hampelDataHistory, &betaBandPassIIR_B, &betaBandPassIIR_A, filterGain);
 
         // if at a particular phase, above an arbitrary threshold, and closed loop stim is enabled, send stimulation
         if (isCLStimEn && detectTriggerPhase(phaseData, stimTriggerPhase) && bpFiltData[1] > distributedStimThreshold)
@@ -830,12 +870,12 @@ namespace BICGRPCHelperNamespace
     /// <param name="b">b-array for IIR constants</param>
     /// <param name="a">a-array for IIR constants</param>
     /// <returns>current filtered output</returns>
-    double BICListener::filterIIR(double currSamp, std::vector<double>* prevFiltOut, std::vector<double>* prevInput, std::vector<double>* b, std::vector<double>* a)
+    double BICListener::filterIIR(double currSamp, std::vector<double>* prevFiltOut, std::vector<double>* prevInput, std::vector<double>* b, std::vector<double>* a, double gainVal)
     {
        double filtTemp;
 
         // check if n-1 is negative, then n-2 would also be negative
-        filtTemp = b->at(0) * currSamp + b->at(1) * prevInput->at(0) + b->at(2) * prevInput->at(1) - a->at(1) * prevFiltOut->at(0) - a->at(2) * prevFiltOut->at(1);
+        filtTemp = gainVal * b->at(0) * currSamp + gainVal * b->at(1) * prevInput->at(0) + gainVal * b->at(2) * prevInput->at(1) - a->at(1) * prevFiltOut->at(0) - a->at(2) * prevFiltOut->at(1);
 
         // remove the last sample and insert the most recent sample to the front of the vector
         prevFiltOut->insert(prevFiltOut->begin(), filtTemp);
@@ -974,7 +1014,7 @@ namespace BICGRPCHelperNamespace
 
         // find phase difference and use that to update stimTriggerPhase alongside arbitrary gain
         phaseDiff = prevStimPhase - 225;
-        stimTriggerPhase -= (0.2) * phaseDiff;
+        stimTriggerPhase -= (0.1) * phaseDiff;
 
         // Checks to reset stimTriggerPhase if out of bounds
         if (stimTriggerPhase < 0 || stimTriggerPhase > 180)
