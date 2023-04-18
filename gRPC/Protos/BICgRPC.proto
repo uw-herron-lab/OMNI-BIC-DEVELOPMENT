@@ -280,6 +280,8 @@ message NeuralSample{
 	uint32 filtChannel = 10;
 	uint64 timeStamp = 11;
 	double phase = 12;
+	double preFiltSample = 13;
+	double hampelFiltSample = 14;
 }
 
 message ConnectionUpdate{

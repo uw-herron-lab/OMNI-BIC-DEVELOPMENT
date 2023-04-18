@@ -67,7 +67,8 @@ namespace RealtimeGraphing
             {
                 chanHeader += ", CH" + (chNum + 1).ToString();
             }
-            logFileWriter.WriteLine("PacketNum, TimeStamp, FilteredChannelNum, RawChannelData, FilteredChannelData, boolInterpolated, StimChannelData, StimActive, CalcPhase" + chanHeader);
+            logFileWriter.WriteLine("PacketNum, TimeStamp, FilteredChannelNum, RawChannelData, PreFilteredChannelData, HampelFilteredChannelData, " +
+                "FilteredChannelData, boolInterpolated, StimChannelData, StimActive, CalcPhase" + chanHeader);
         }
         public bool BICConnect()
         {
@@ -313,7 +314,7 @@ namespace RealtimeGraphing
         async Task neuralMonitorTaskAsync()
         {
 
-            var stream = deviceClient.bicNeuralStream(new bicNeuralSetStreamingEnable() { DeviceAddress = DeviceName, Enable = true, BufferSize = 100, MaxInterpolationPoints = 10, AmplificationFactor = RecordingAmplificationFactor.Amplification395DB, RefChannels = { 31 }, UseGroundReference = true });
+            var stream = deviceClient.bicNeuralStream(new bicNeuralSetStreamingEnable() { DeviceAddress = DeviceName, Enable = true, BufferSize = 100, MaxInterpolationPoints = 10, AmplificationFactor = RecordingAmplificationFactor.Amplification395DB, RefChannels = { 24 }, UseGroundReference = true });
 
             // Create performance-tracking interpacket variables
             Stopwatch aStopwatch = new Stopwatch();
@@ -412,6 +413,8 @@ namespace RealtimeGraphing
                             stream.ResponseStream.Current.Samples[sampleNum].TimeStamp.ToString() + ", " + 
                             filteredIndex.ToString() + ", " +
                             stream.ResponseStream.Current.Samples[sampleNum].Measurements[filteredIndex].ToString() + ", " +
+                            stream.ResponseStream.Current.Samples[sampleNum].PreFiltSample.ToString() + ", " +
+                            stream.ResponseStream.Current.Samples[sampleNum].HampelFiltSample.ToString() + ", " +
                             stream.ResponseStream.Current.Samples[sampleNum].FiltSample.ToString() + ", " +
                             stream.ResponseStream.Current.Samples[sampleNum].IsInterpolated.ToString() + ", " +
                             stream.ResponseStream.Current.Samples[sampleNum].Measurements[5].ToString() + ", " +
