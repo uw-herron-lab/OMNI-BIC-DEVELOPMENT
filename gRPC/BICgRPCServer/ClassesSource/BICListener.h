@@ -167,18 +167,11 @@ namespace BICGRPCHelperNamespace
 
         // Signal Processing Variables
         std::vector<double> bpFiltData = { 0, 0, 0 };                   // IIR filter output history
-        std::vector<double> hpFiltData = { 0, 0, 0 };                   // IIR high pass filter output history
-        std::vector<double> lpFiltData = { 0, 0, 0 };                   // IIR high pass filter output history
         std::vector<double> rawPrevData = std::vector<double>(15, 0);   // Data history for raw input samples
         std::vector<double> hampelPrevData = std::vector<double>(15, 0);// Data history for hampel filtered input samples
         std::vector<double> dummyPrevData = std::vector<double>(15, 0);
         std::vector<double> betaBandPassIIR_B = { 0.0305, 0, -0.0305 }; // IIR "B" filter coefficients for a beta-range band-pass
         std::vector<double> betaBandPassIIR_A = { 1, -1.9247, 0.9391 }; // IIR "A" filter coefficients for a beta-range band-pass
-        std::vector<double> highPassIIR_B = { 0.9845, -0.9845, 0 };     // IIR "B" filter coefficients for a high pass filter with fc = 5 Hz
-        std::vector<double> highPassIIR_A = { 1, -0.9691, 0 };            // IIR "A" filter coefficients for a high pass filter with fc = 5 Hz
-        std::vector<double> lowPassIIR_B = { 0.0402, 0.0804, 0.0402 };       // IIR "B" filter coefficients for a low pass filter with fc = 50 Hz with gain = 2
-        std::vector<double> lowPassIIR_A = { 1, -1.561, 0.6414 };              // IIR "A" filter coefficients for a low pass filter with fc = 50 Hz
-        std::vector<bool> prevStimStates = std::vector<bool>(50, false);
         double sampGain = 1;
 
         
@@ -187,6 +180,6 @@ namespace BICGRPCHelperNamespace
         double stimTriggerPhase = 90;                       // Phase calculation phase for triggering stimulation
         bool savedStimState = false;                        // Phase calculation state for previous stimulation 
         std::vector<double> sigFreqData = { 0, 0, 0, 0 };   // History of frequency estimates 
-        std::vector<double> phaseData = { 0, 0 };           // History for previous estimated phase calculations
+        std::vector<double> phaseData = { 0, 0, 0 };           // History for previous estimated phase calculations
     };
 }
