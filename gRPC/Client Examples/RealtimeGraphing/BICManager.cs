@@ -251,7 +251,7 @@ namespace RealtimeGraphing
             }
         }
 
-        public void enableDistributedStim(bool closedStimEn, uint stimChannel, uint senseChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, List<double> filterCoefficients_B, List<double> filterCoefficients_A, double stimThreshold, double initTriggerPhase)
+        public void enableDistributedStim(bool closedStimEn, uint stimChannel, uint returnChannel, uint senseChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, List<double> filterCoefficients_B, List<double> filterCoefficients_A, double stimThreshold, double initTriggerPhase)
         {
             if (closedStimEn)
             {
@@ -263,7 +263,7 @@ namespace RealtimeGraphing
                     StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
                     {
                         FunctionName = "betaPulseFunction",
-                        StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 10, PulseWidth = stimDuration, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { }, UseGround = true, BurstRepetitions = 1 }
+                    StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 10, PulseWidth = stimDuration, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { returnChannel }, UseGround = true, BurstRepetitions = 1 }
                     };
                     aNewWaveformRequest.Functions.Add(pulseFunction0);
                 }
@@ -277,7 +277,7 @@ namespace RealtimeGraphing
                     };
                     aNewWaveformRequest.Functions.Add(pulseFunction0);
                 }
-
+                
                 // Enqueue the stimulation waveform
                 deviceClient.bicEnqueueStimulation(aNewWaveformRequest);
             }
