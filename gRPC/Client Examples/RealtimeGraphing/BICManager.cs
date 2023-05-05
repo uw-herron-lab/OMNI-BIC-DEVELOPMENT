@@ -62,7 +62,12 @@ namespace RealtimeGraphing
             }
             logFileStream = new FileStream("./filterLog.csv", FileMode.Create, FileAccess.Write, FileShare.None, 4096, FileOptions.Asynchronous);
             logFileWriter = new StreamWriter(logFileStream);
-            logFileWriter.WriteLine("PacketNum, TimeStamp, FilteredChannelNum, RawChannelData, FilteredChannelData, boolInterpolated, StimChannelData, StimActive");
+            string chanHeader = "";
+            for (int chNum = 0; chNum < numSensingChannelsDef; chNum++)
+            {
+                chanHeader += ", CH" + (chNum + 1).ToString();
+            }
+            logFileWriter.WriteLine("PacketNum, TimeStamp, FilteredChannelNum, RawChannelData, FilteredChannelData, boolInterpolated, StimChannelData, StimActive" + chanHeader);
         }
         public bool BICConnect()
         {
