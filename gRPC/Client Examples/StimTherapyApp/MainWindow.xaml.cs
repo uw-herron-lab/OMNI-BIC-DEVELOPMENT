@@ -525,11 +525,12 @@ namespace StimTherapyApp
         {
             double yMinVal = 0;
             bool valEntry = double.TryParse(y_min.Text, out yMinVal);
-
-            Console.WriteLine(yMinVal);
-            if (yMinVal < neuroStreamChart.ChartAreas[0].AxisY.Maximum)
+            if (valEntry)
             {
-                neuroStreamChart.ChartAreas[0].AxisY.Minimum = yMinVal;
+                if (yMinVal < neuroStreamChart.ChartAreas[0].AxisY.Maximum)
+                {
+                    neuroStreamChart.ChartAreas[0].AxisY.Minimum = yMinVal;
+                }
             }
         }
 
@@ -537,10 +538,12 @@ namespace StimTherapyApp
         {
             double yMaxVal = 0;
             bool valEntry = double.TryParse(y_max.Text, out yMaxVal);
-            Console.WriteLine(yMaxVal);
-            if (yMaxVal > neuroStreamChart.ChartAreas[0].AxisY.Minimum)
+            if (valEntry)
             {
-                neuroStreamChart.ChartAreas[0].AxisY.Maximum = yMaxVal;
+                if (yMaxVal > neuroStreamChart.ChartAreas[0].AxisY.Minimum)
+                {
+                    neuroStreamChart.ChartAreas[0].AxisY.Maximum = yMaxVal;
+                }
             }
         }
     }
