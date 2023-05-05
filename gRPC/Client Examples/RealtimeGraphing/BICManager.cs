@@ -410,6 +410,10 @@ namespace RealtimeGraphing
                             stream.ResponseStream.Current.Samples[sampleNum].IsInterpolated.ToString() + ", " +
                             stream.ResponseStream.Current.Samples[sampleNum].Measurements[5].ToString() + ", " +
                             stream.ResponseStream.Current.Samples[sampleNum].StimulationActive.ToString();
+                        for (int chNum = 0; chNum < numSensingChannelsDef; chNum++)
+                        {
+                            logString += ", " + stream.ResponseStream.Current.Samples[sampleNum].Measurements[chNum].ToString();
+                        }
                         logLineQueue.Enqueue(logString);
                     }
                     // Add new data to filtered data buffer
