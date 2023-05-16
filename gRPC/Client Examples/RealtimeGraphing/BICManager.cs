@@ -35,12 +35,12 @@ namespace RealtimeGraphing
 
         // Public Class Properties
         public int DataBufferMaxSampleNumber { get; set; }
-        
+
         // Task pointers for streaming methods
         private Task neuroMonitor = null;
 
         // Constructor
-        public BICManager(int definedDataBufferLength) 
+        public BICManager(int definedDataBufferLength)
         {
             // Open up the GRPC Channel to the BIC microservice
             aGRPChannel = new Channel("127.0.0.1:50051", ChannelCredentials.Insecure);
@@ -49,14 +49,14 @@ namespace RealtimeGraphing
             DataBufferMaxSampleNumber = definedDataBufferLength;
             dataBuffer = new List<double>[numSensingChannelsDef];
             filtDataBuffer = new List<double>[1];
-            for(int i = 0; i < numSensingChannelsDef; i++)
+            for (int i = 0; i < numSensingChannelsDef; i++)
             {
                 dataBuffer[i] = new List<double>();
             }
             filtDataBuffer[0] = new List<double>();
 
             // Set up the logging interface
-            if(File.Exists(filePath))
+            if (File.Exists(filePath))
             {
                 File.Delete(filePath);
             }
@@ -247,11 +247,11 @@ namespace RealtimeGraphing
             else
             {
                 // Stop the stim
-                deviceClient.enableOpenLoopStimulation(new openLoopStimEnableRequest() { DeviceAddress = DeviceName, Enable = false});
+                deviceClient.enableOpenLoopStimulation(new openLoopStimEnableRequest() { DeviceAddress = DeviceName, Enable = false });
             }
         }
 
-        public void enableDistributedStim(bool closedStimEn, uint stimChannel, uint returnChannel, uint senseChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, List<double> filterCoefficients_B, List<double> filterCoefficients_A, double stimThreshold, double initTriggerPhase)
+        public void enableDistributedStim(bool closedStimEn, bool monopolar, uint stimChannel, uint returnChannel, uint senseChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, List<double> filterCoefficients_B, List<double> filterCoefficients_A, double stimThreshold, double initTriggerPhase)
         {
             if (closedStimEn)
             {
@@ -263,7 +263,7 @@ namespace RealtimeGraphing
                     StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
                     {
                         FunctionName = "betaPulseFunction",
-                    StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 10, PulseWidth = stimDuration, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { returnChannel }, UseGround = true, BurstRepetitions = 1 }
+                        StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 10, PulseWidth = stimDuration, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { }, UseGround = true, BurstRepetitions = 1 }
                     };
                     aNewWaveformRequest.Functions.Add(pulseFunction0);
                 }
@@ -277,14 +277,21 @@ namespace RealtimeGraphing
                     };
                     aNewWaveformRequest.Functions.Add(pulseFunction0);
                 }
-                
+
                 // Enqueue the stimulation waveform
                 deviceClient.bicEnqueueStimulation(aNewWaveformRequest);
             }
 
             // Start the distributed stimulation function
-            deviceClient.enableDistributedStimulation(new distributedStimEnableRequest() { DeviceAddress = DeviceName, Enable = closedStimEn, SensingChannel = senseChannel, 
-                FilterCoefficientsB = { filterCoefficients_B }, FilterCoefficientsA = { filterCoefficients_A }, TriggerStimThreshold = stimThreshold, InitTriggerStimPhase = initTriggerPhase}); 
+            deviceClient.enableDistributedStimulation(new distributedStimEnableRequest()
+            {
+                DeviceAddress = DeviceName,
+                Enable = closedStimEn,
+                SensingChannel = senseChannel,
+                FilterCoefficientsB = { filterCoefficients_B },
+                FilterCoefficientsA = { filterCoefficients_A },
+                TriggerStimThreshold = stimThreshold
+            });
         }
 
         /// <summary>
@@ -295,7 +302,7 @@ namespace RealtimeGraphing
         {
             List<double>[] outputBuffer = new List<double>[dataBuffer.Length + filtDataBuffer.Length];
 
-            lock(dataBufferLock)
+            lock (dataBufferLock)
             {
                 for (int i = 0; i < dataBuffer.Length; i++)
                 {
@@ -318,7 +325,7 @@ namespace RealtimeGraphing
             string dequeuedString;
 
             // Loop until quit
-            while(loggingNotDisposed)
+            while (loggingNotDisposed)
             {
                 try
                 {
@@ -345,7 +352,7 @@ namespace RealtimeGraphing
             for (int i = 1; i < sampleBuffer.Count; i++)
             {
                 // check if the sequential packet number is less than the previous packet number
-                if (sampleBuffer[i].SampleCounter < prevPacketNum + 1) 
+                if (sampleBuffer[i].SampleCounter < prevPacketNum + 1)
                 {
                     Console.WriteLine("ERROR: Packet numbers are not in order! Sample (prev, next): " + prevPacketNum.ToString() + ", " + sampleBuffer[i].SampleCounter.ToString());
                     return false;
@@ -367,7 +374,7 @@ namespace RealtimeGraphing
             Stopwatch aStopwatch = new Stopwatch();
             newLoggingThread = new Thread(loggingThread);
             newLoggingThread.Start();
-            
+
             uint latestPacketNum = 0;
             while (await stream.ResponseStream.MoveNext())
             {
@@ -375,19 +382,19 @@ namespace RealtimeGraphing
                 validBufferOrderCheck(stream.ResponseStream.Current.Samples);
 
                 // Missing packet handling
-                if (stream.ResponseStream.Current.Samples[0].SampleCounter != (latestPacketNum + 1) )
+                if (stream.ResponseStream.Current.Samples[0].SampleCounter != (latestPacketNum + 1))
                 {
                     // Determine the number of packets missing
                     long diffPackets = stream.ResponseStream.Current.Samples[0].SampleCounter - (latestPacketNum + 1);
-                    
+
                     // Account for uint wrap around (RARE)
-                    if(diffPackets < 0)
+                    if (diffPackets < 0)
                     {
                         diffPackets = uint.MaxValue - (latestPacketNum + 1) + stream.ResponseStream.Current.Samples[0].SampleCounter;
                     }
 
                     // Insert a maximum of 10 NANs
-                    if(diffPackets > 10)
+                    if (diffPackets > 10)
                     {
                         diffPackets = 10;
                     }
@@ -400,7 +407,7 @@ namespace RealtimeGraphing
                     {
                         nanBuffer[i] = double.NaN;
                     }
-                    
+
                     // Lock dataBuffer access to ensure no mid-update copy.
                     lock (dataBufferLock)
                     {
@@ -421,7 +428,7 @@ namespace RealtimeGraphing
                 // Create local copy buffers and loop variables
                 int numSamples = stream.ResponseStream.Current.Samples.Count;
                 double[] copyBuffer = new double[numSamples];
-                double[] filtBuffer = new double [numSamples];
+                double[] filtBuffer = new double[numSamples];
 
                 // Lock dataBuffer access to ensure no mid-update copy.
                 lock (dataBufferLock)
@@ -457,7 +464,7 @@ namespace RealtimeGraphing
 
                         // Enqueue the data for the logging thread
                         string logString = stream.ResponseStream.Current.Samples[sampleNum].SampleCounter.ToString() + ", " +
-                            stream.ResponseStream.Current.Samples[sampleNum].TimeStamp.ToString() + ", " + 
+                            stream.ResponseStream.Current.Samples[sampleNum].TimeStamp.ToString() + ", " +
                             filteredIndex.ToString() + ", " +
                             stream.ResponseStream.Current.Samples[sampleNum].Measurements[filteredIndex].ToString() + ", " +
                             stream.ResponseStream.Current.Samples[sampleNum].PreFiltSample.ToString() + ", " +
@@ -465,7 +472,7 @@ namespace RealtimeGraphing
                             stream.ResponseStream.Current.Samples[sampleNum].FiltSample.ToString() + ", " +
                             stream.ResponseStream.Current.Samples[sampleNum].IsInterpolated.ToString() + ", " +
                             stream.ResponseStream.Current.Samples[sampleNum].Measurements[5].ToString() + ", " +
-                            stream.ResponseStream.Current.Samples[sampleNum].StimulationActive.ToString() + ", ";
+                            stream.ResponseStream.Current.Samples[sampleNum].StimulationActive.ToString() + ", " +
                             stream.ResponseStream.Current.Samples[sampleNum].Phase.ToString();
                         for (int chNum = 0; chNum < numSensingChannelsDef; chNum++)
                         {
