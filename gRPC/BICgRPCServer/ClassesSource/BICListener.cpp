@@ -498,7 +498,7 @@ namespace BICGRPCHelperNamespace
                                     if (interChannelPoint == distributedInputChannel)
                                     {
                                         // Call Processing Helper, take output and send to client
-                                        newInterpolatedSample->set_filtsample(processingHelper(interpolatedSample, &rawPrevData, &hampelPrevData, &dummyPrevData, sampGain));
+                                        newInterpolatedSample->set_filtsample(processingHelper(interpolatedSample, &rawPrevData, &stimSent, &hampelPrevData, &dummyPrevData, sampGain));
                                         newInterpolatedSample->set_prefiltsample(dummyPrevData[0]);
                                         newInterpolatedSample->set_hampelfiltsample(hampelPrevData[0]);
 
@@ -508,9 +508,18 @@ namespace BICGRPCHelperNamespace
                                         // If stim is active
                                         if (newInterpolatedSample->stimulationactive() == true && savedStimState == false)
                                         {
+                                            // Save the stim output for this sample
+                                            stimSent.insert(stimSent.begin(), 1);
+
                                             // Update stimTriggerPhase based on previous stim phase
                                             updateTriggerPhase(newInterpolatedSample->phase());
                                         }
+                                        else
+                                        {
+                                            // Save the stim output for this sample
+                                            stimSent.insert(stimSent.begin(), 0);
+                                        }
+                                        stimSent.pop_back();
                                     }
                                 }
 
@@ -551,7 +560,7 @@ namespace BICGRPCHelperNamespace
                     if (j == distributedInputChannel)
                     {
                         // Call Processing Helper, take output and send to client
-                        newSample->set_filtsample(processingHelper(theData[j], &rawPrevData, &hampelPrevData, &dummyPrevData, sampGain));
+                        newSample->set_filtsample(processingHelper(theData[j], &rawPrevData, &stimSent, &hampelPrevData, &dummyPrevData, sampGain));
                         newSample->set_prefiltsample(dummyPrevData[0]);
                         newSample->set_hampelfiltsample(hampelPrevData[0]);
 
@@ -561,9 +570,18 @@ namespace BICGRPCHelperNamespace
                         // If stim is active
                         if (newSample->stimulationactive() == true && savedStimState == false)
                         {
+                            // Save the stim output for this sample
+                            stimSent.insert(stimSent.begin(), 1);
+
                             // Update stimTriggerPhase based on previous stim phase
                             updateTriggerPhase(newSample->phase());
                         }
+                        else
+                        {
+                            // Save the stim output for this sample
+                            stimSent.insert(stimSent.begin(), 0);
+                        }
+                        stimSent.pop_back();
                     }
                 }
 
@@ -753,9 +771,9 @@ namespace BICGRPCHelperNamespace
     /// </summary>
     /// <param name="newData">latest datapoint to be processed for potential triggering of stimulation</param>
     /// <returns></returns>
-    double BICListener::processingHelper(double newData, std::vector<double>* dataHistory, std::vector<double>* hampelDataHistory, std::vector<double>* dummyHistory, double filterGain)
+    double BICListener::processingHelper(double newData, std::vector<double>* dataHistory, std::vector<double>* stimHistory, std::vector<double>* hampelDataHistory, std::vector<double>* dummyHistory, double filterGain)
     {   
-        double dummySamp;
+        double dummySamp = 0;
         double dcFiltSamp;
         double hampelSamp;
         double MAD;
@@ -770,8 +788,29 @@ namespace BICGRPCHelperNamespace
 
         // Artifact suppression/rejection
 
-        // Send data through DC block filter
-        dcFiltSamp = 0.93 * dummyHistory->at(0) + dataHistory->at(0) - dataHistory->at(1);
+        //// Send data through DC block filter
+        //dcFiltSamp = 0.945 * dummyHistory->at(0) + dataHistory->at(0) - dataHistory->at(1);
+
+        //// store DC block filtered sample
+        //dummyHistory->insert(dummyHistory->begin(), dcFiltSamp);
+        //dummyHistory->pop_back();
+
+        // check if the sum of stimHistory is greater than 0
+        for (int i = 0; i < stimSent.size(); i++)
+        {
+            dummySamp += stimSent[i];
+        }
+
+        if (dummySamp > 0)
+        {
+            // Blank if artifact or near artifact
+            dcFiltSamp = 0;
+        }
+        else
+        {
+            // Send data through DC block filter
+            dcFiltSamp = 0.945 * dummyHistory->at(0) + dataHistory->at(0) - dataHistory->at(1);
+        }
 
         // store DC block filtered sample
         dummyHistory->insert(dummyHistory->begin(), dcFiltSamp);
@@ -810,7 +849,7 @@ namespace BICGRPCHelperNamespace
         }
 
         // Band pass filter for beta activity
-        double filtSamp = filterIIR(hampelSamp, &bpFiltData, hampelDataHistory, &betaBandPassIIR_B, &betaBandPassIIR_A, 5);
+        double filtSamp = filterIIR(hampelSamp, &bpFiltData, hampelDataHistory, &betaBandPassIIR_B, &betaBandPassIIR_A, 10);
 
         // if at a particular phase, above an arbitrary threshold, and closed loop stim is enabled, send stimulation
         if (isCLStimEn && detectTriggerPhase(phaseData, stimTriggerPhase) && bpFiltData[0] > distributedStimThreshold)
