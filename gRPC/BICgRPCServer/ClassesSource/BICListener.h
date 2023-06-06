@@ -148,7 +148,7 @@ namespace BICGRPCHelperNamespace
         double filterIIR(double currSamp, std::vector<double>* prevFiltOut, std::vector<double>* prevInput, std::vector<double>* b, std::vector<double>* a, double gainVal);
         bool isZeroCrossing(std::vector<double> dataArray);
         bool detectLocalMaxima(std::vector<double> dataArray);
-        double calcPhase(std::vector<double> dataArray, uint64_t currTimeStamp, std::vector<double>* prevSigFreq, std::vector<double>* prevPhase);
+        double calcPhase(std::vector<double> dataArray, uint64_t currSamp, std::vector<double>* prevSigFreq, std::vector<double>* prevPhase);
         bool detectTriggerPhase(std::vector<double> prevPhase, double triggerPhase);
         void updateTriggerPhase(double prevStimPhase);
 
@@ -177,10 +177,10 @@ namespace BICGRPCHelperNamespace
 
         
         // Phase Calculation Variables
-        uint64_t zeroPhaseTimeStamp = 0;                    // Phase calculation timestamp for first negative zero crossing
+        uint64_t zeroSamp = 0;                              // Phase calculation timestamp for first negative zero crossing
         double stimTriggerPhase = 90;                       // Phase calculation phase for triggering stimulation
         bool savedStimState = false;                        // Phase calculation state for previous stimulation 
         std::vector<double> sigFreqData = { 0, 0, 0, 0 };   // History of frequency estimates 
-        std::vector<double> phaseData = { 0, 0, 0 };           // History for previous estimated phase calculations
+        std::vector<double> phaseData = { 0, 0, 0 };        // History for previous estimated phase calculations
     };
 }

@@ -503,7 +503,7 @@ namespace BICGRPCHelperNamespace
                                         newInterpolatedSample->set_hampelfiltsample(hampelPrevData[0]);
 
                                         // Call calcPhase to estimate current sample's phase
-                                        newInterpolatedSample->set_phase(calcPhase(bpFiltData, latestTimeStamp, &sigFreqData, &phaseData));
+                                        newInterpolatedSample->set_phase(calcPhase(bpFiltData, lastNeuroCount + interpolatedPointNum, &sigFreqData, &phaseData));
 
                                         // If stim is active
                                         if (newInterpolatedSample->stimulationactive() == true && savedStimState == false)
@@ -574,7 +574,7 @@ namespace BICGRPCHelperNamespace
                         newSample->set_hampelfiltsample(hampelPrevData[0]);
 
                         // Call calcPhase to estimate current sample's phase
-                        newSample->set_phase(calcPhase(bpFiltData, sampleTime, &sigFreqData, &phaseData));
+                        newSample->set_phase(calcPhase(bpFiltData, sampleCounter, &sigFreqData, &phaseData));
 
                         // If stim is active
                         if (newSample->stimulationactive() == true && savedStimState == false)
@@ -968,20 +968,21 @@ namespace BICGRPCHelperNamespace
     /// <param name="prevSigFreq">vector of previously calculated frequencies</param>
     /// <param name="prevPhase">vector of previously calculated phases</param>
     /// <returns>calculated phase of the current sample</returns>
-    double BICListener::calcPhase(std::vector<double> dataArray, uint64_t currTimeStamp, std::vector<double>* prevSigFreq, std::vector<double>* prevPhase)
+    double BICListener::calcPhase(std::vector<double> dataArray, uint64_t currSamp, std::vector<double>* prevSigFreq, std::vector<double>* prevPhase)
     {
         double avgSigFreq = 0;
         double sigFreq = 0;
         double currPhase = 0;
-        double tDiff = 0;
+        uint64_t sampDiff = 0;
 
-        tDiff = (currTimeStamp - zeroPhaseTimeStamp) / pow(10, 7);
+        // Identify sample difference 
+        sampDiff = currSamp - zeroSamp;
 
         // Check if there is a negative zero crossing
         if (isZeroCrossing(dataArray))
         {
             // If so, calculate the  frequency
-            sigFreq = 1 / tDiff;
+            sigFreq = 1 / (sampDiff * 0.001);
 
             // Check that the calculated frequency is within reasonable bounds
             if (sigFreq > 10 && sigFreq < 30) 
@@ -992,7 +993,7 @@ namespace BICGRPCHelperNamespace
             }
 
             // Update zeroPhaseTimeStamp, regardless if it passed bounds check
-            zeroPhaseTimeStamp = currTimeStamp;
+            zeroSamp = currSamp;
 
             // Phase is 0 since it's a zero crossing
             currPhase = 0;
@@ -1007,7 +1008,7 @@ namespace BICGRPCHelperNamespace
             }
             avgSigFreq /= prevSigFreq->size();
 
-            currPhase = tDiff * avgSigFreq * 360;
+            currPhase = sampDiff * avgSigFreq * 360;
         }
 
         // Save the calculated phase
@@ -1033,7 +1034,7 @@ namespace BICGRPCHelperNamespace
 
         // find phase difference and use that to update stimTriggerPhase alongside arbitrary gain
         phaseDiff = prevStimPhase - 200; // due to slight delay, shift desired points earlier by 10 degrees
-        stimTriggerPhase -= (0.05) * phaseDiff;
+        stimTriggerPhase -= (0.1) * phaseDiff;
 
         // Checks to reset stimTriggerPhase if out of bounds
         if (stimTriggerPhase < 30 || stimTriggerPhase > 180)
