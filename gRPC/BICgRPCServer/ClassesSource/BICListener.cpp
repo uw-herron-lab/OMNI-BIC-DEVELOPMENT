@@ -513,11 +513,20 @@ namespace BICGRPCHelperNamespace
 
                                             // Update stimTriggerPhase based on previous stim phase
                                             updateTriggerPhase(newInterpolatedSample->phase());
+
+                                            // update state variable to avoid over updating trigger phase
+                                            savedStimState = true;
                                         }
                                         else
                                         {
                                             // Save the stim output for this sample
                                             stimSent.insert(stimSent.begin(), 0);
+                                        }
+
+                                        // If stim is no longer active
+                                        if (newInterpolatedSample->stimulationactive() == false && savedStimState == true)
+                                        {
+                                            savedStimState = false;
                                         }
                                         stimSent.pop_back();
                                     }
@@ -575,11 +584,20 @@ namespace BICGRPCHelperNamespace
 
                             // Update stimTriggerPhase based on previous stim phase
                             updateTriggerPhase(newSample->phase());
+
+                            // update state variable to avoid over updating trigger phase
+                            savedStimState = true;
                         }
                         else
                         {
                             // Save the stim output for this sample
                             stimSent.insert(stimSent.begin(), 0);
+                        }
+
+                        // If stim is no longer active
+                        if (newSample->stimulationactive() == false && savedStimState == true)
+                        {
+                            savedStimState = false;
                         }
                         stimSent.pop_back();
                     }
