@@ -31,7 +31,7 @@ namespace BICGRPCHelperNamespace
         void enableDistributedStim(bool enableDistributed, int phaseSensingChannel, std::vector<double> filtCoeff_B, std::vector<double> filtCoeff_A, uint32_t triggeredFunctionIndex, double stimThreshold, double triggerPhase);
         void addImplantPointer(cortec::implantapi::IImplant* theImplantedDevice);
         void enableStimTimeLogging(bool enableSensing);
-        double processingHelper(double newData, std::vector<double>* dataHistory, std::vector<double>* stimHistory, std::vector<double>* hampelDataHistory, std::vector<double>* dummyHistory, double filterGain);
+        double processingHelper(double newData, std::vector<double>* dataHistory, std::vector<double>* stimHistory, std::vector<double>* hampelDataHistory, std::vector<double>* dcFiltHistory, double filterGain);
 
         // ************************* Public Event Handlers *************************
         void onStimulationStateChanged(const bool isStimulating);
@@ -169,17 +169,17 @@ namespace BICGRPCHelperNamespace
         std::vector<double> bpFiltData = { 0, 0, 0 };                   // IIR filter output history
         std::vector<double> rawPrevData = std::vector<double>(15, 0);   // Data history for raw input samples
         std::vector<double> hampelPrevData = std::vector<double>(15, 0);// Data history for hampel filtered input samples
-        std::vector<double> dummyPrevData = std::vector<double>(15, 0);
+        std::vector<double> dcFiltPrevData = std::vector<double>(15, 0);
         std::vector<double> betaBandPassIIR_B = { 0.0305, 0, -0.0305 }; // IIR "B" filter coefficients for a beta-range band-pass
         std::vector<double> betaBandPassIIR_A = { 1, -1.9247, 0.9391 }; // IIR "A" filter coefficients for a beta-range band-pass
         double sampGain = 1;
-        std::vector<double> stimSent = std::vector<double>(6, 0);        // history of stimulation output to facilitate blanking
+        std::vector<double> stimOnset = std::vector<double>(6, 0);        // history of stimulation output to facilitate blanking
 
         
         // Phase Calculation Variables
         uint64_t zeroSamp = 0;                              // Phase calculation timestamp for first negative zero crossing
-        double stimTriggerPhase = 90;                       // Phase calculation phase for triggering stimulation
-        bool savedStimState = false;                        // Phase calculation state for previous stimulation 
+        double stimTriggerPhase = 45;                       // Phase calculation phase for triggering stimulation
+        bool prevStimActive = false;                        // Phase calculation state for previous stimulation 
         std::vector<double> sigFreqData = { 0, 0, 0, 0 };   // History of frequency estimates 
         std::vector<double> phaseData = { 0, 0, 0 };        // History for previous estimated phase calculations
     };
