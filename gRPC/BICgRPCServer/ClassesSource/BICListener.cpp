@@ -489,6 +489,7 @@ namespace BICGRPCHelperNamespace
                                 newInterpolatedSample->set_isinterpolated(true);
                                 newInterpolatedSample->set_filtchannel(distributedInputChannel);
                                 newInterpolatedSample->set_timestamp(latestTimeStamp);
+                                
 
                                 // Copy in the time domain data in
                                 for (int interChannelPoint = 0; interChannelPoint < sampleNum; interChannelPoint++)
@@ -498,37 +499,40 @@ namespace BICGRPCHelperNamespace
                                     if (interChannelPoint == distributedInputChannel)
                                     {
                                         // Call Processing Helper, take output and send to client
-                                        newInterpolatedSample->set_filtsample(processingHelper(interpolatedSample, &rawPrevData, &stimSent, &hampelPrevData, &dummyPrevData, sampGain));
-                                        newInterpolatedSample->set_prefiltsample(dummyPrevData[0]);
+                                        newInterpolatedSample->set_filtsample(processingHelper(interpolatedSample, &rawPrevData, &stimOnset, &hampelPrevData, &dcFiltPrevData, sampGain));
+                                        newInterpolatedSample->set_prefiltsample(dcFiltPrevData[0]);
                                         newInterpolatedSample->set_hampelfiltsample(hampelPrevData[0]);
 
                                         // Call calcPhase to estimate current sample's phase
                                         newInterpolatedSample->set_phase(calcPhase(bpFiltData, lastNeuroCount + interpolatedPointNum, &sigFreqData, &phaseData));
 
-                                        // If stim is active
-                                        if (newInterpolatedSample->stimulationactive() == true && savedStimState == false)
+                                        // Check if this sample is at stimulation onset
+                                        if (newInterpolatedSample->stimulationactive() == true && prevStimActive == false)
                                         {
                                             // Save the stim output for this sample
-                                            stimSent.insert(stimSent.begin(), 1);
+                                            stimOnset.insert(stimOnset.begin(), 1);
 
                                             // Update stimTriggerPhase based on previous stim phase
                                             updateTriggerPhase(newInterpolatedSample->phase());
 
-                                            // update state variable to avoid over updating trigger phase
-                                            savedStimState = true;
+                                            // update state variable on stimActive state
+                                            prevStimActive = true;
                                         }
+
+                                        // Otherwise, we aren't at stim onset
                                         else
                                         {
                                             // Save the stim output for this sample
-                                            stimSent.insert(stimSent.begin(), 0);
+                                            stimOnset.insert(stimOnset.begin(), 0);
                                         }
 
-                                        // If stim is no longer active
-                                        if (newInterpolatedSample->stimulationactive() == false && savedStimState == true)
+                                        // If stim is no longer active- stim is going from high to low
+                                        if (newInterpolatedSample->stimulationactive() == false && prevStimActive == true)
                                         {
-                                            savedStimState = false;
+                                            // update state variable on stimActive state
+                                            prevStimActive = false;
                                         }
-                                        stimSent.pop_back();
+                                        stimOnset.pop_back();
                                     }
                                 }
 
@@ -569,37 +573,37 @@ namespace BICGRPCHelperNamespace
                     if (j == distributedInputChannel)
                     {
                         // Call Processing Helper, take output and send to client
-                        newSample->set_filtsample(processingHelper(theData[j], &rawPrevData, &stimSent, &hampelPrevData, &dummyPrevData, sampGain));
-                        newSample->set_prefiltsample(dummyPrevData[0]);
+                        newSample->set_filtsample(processingHelper(theData[j], &rawPrevData, &stimOnset, &hampelPrevData, &dcFiltPrevData, sampGain));
+                        newSample->set_prefiltsample(dcFiltPrevData[0]);
                         newSample->set_hampelfiltsample(hampelPrevData[0]);
 
                         // Call calcPhase to estimate current sample's phase
                         newSample->set_phase(calcPhase(bpFiltData, sampleCounter, &sigFreqData, &phaseData));
 
                         // If stim is active
-                        if (newSample->stimulationactive() == true && savedStimState == false)
+                        if (newSample->stimulationactive() == true && prevStimActive == false)
                         {
                             // Save the stim output for this sample
-                            stimSent.insert(stimSent.begin(), 1);
+                            stimOnset.insert(stimOnset.begin(), 1);
 
                             // Update stimTriggerPhase based on previous stim phase
                             updateTriggerPhase(newSample->phase());
 
                             // update state variable to avoid over updating trigger phase
-                            savedStimState = true;
+                            prevStimActive = true;
                         }
                         else
                         {
                             // Save the stim output for this sample
-                            stimSent.insert(stimSent.begin(), 0);
+                            stimOnset.insert(stimOnset.begin(), 0);
                         }
 
                         // If stim is no longer active
-                        if (newSample->stimulationactive() == false && savedStimState == true)
+                        if (newSample->stimulationactive() == false && prevStimActive == true)
                         {
-                            savedStimState = false;
+                            prevStimActive = false;
                         }
-                        stimSent.pop_back();
+                        stimOnset.pop_back();
                     }
                 }
 
@@ -697,8 +701,6 @@ namespace BICGRPCHelperNamespace
         std::chrono::system_clock::time_point before;
         std::chrono::system_clock::time_point after;
 
-        double currStimTriggerPhase = 0;
-
         // Wait for a zero crossing
         stimTrigger->wait(stimTriggerWait);
 
@@ -789,7 +791,7 @@ namespace BICGRPCHelperNamespace
     /// </summary>
     /// <param name="newData">latest datapoint to be processed for potential triggering of stimulation</param>
     /// <returns></returns>
-    double BICListener::processingHelper(double newData, std::vector<double>* dataHistory, std::vector<double>* stimHistory, std::vector<double>* hampelDataHistory, std::vector<double>* dummyHistory, double filterGain)
+    double BICListener::processingHelper(double newData, std::vector<double>* dataHistory, std::vector<double>* stimHistory, std::vector<double>* hampelDataHistory, std::vector<double>* dcFiltHistory, double filterGain)
     {   
         double dummySamp = 0;
         double dcFiltSamp;
@@ -813,10 +815,10 @@ namespace BICGRPCHelperNamespace
         //dummyHistory->insert(dummyHistory->begin(), dcFiltSamp);
         //dummyHistory->pop_back();
 
-        // check if the sum of stimHistory is greater than 0
-        for (int i = 0; i < stimSent.size(); i++)
+        // check if the sum of stimHistory is greater than 0- are we far enough away from stim onset?
+        for (int i = 0; i < stimHistory->size(); i++)
         {
-            dummySamp += stimSent[i];
+            dummySamp += stimHistory->at(i);
         }
 
         if (dummySamp > 0)
@@ -827,15 +829,15 @@ namespace BICGRPCHelperNamespace
         else
         {
             // Send data through DC block filter
-            dcFiltSamp = 0.945 * dummyHistory->at(0) + dataHistory->at(0) - dataHistory->at(1);
+            dcFiltSamp = 0.945 * dcFiltHistory->at(0) + dataHistory->at(0) - dataHistory->at(1);
         }
 
         // store DC block filtered sample
-        dummyHistory->insert(dummyHistory->begin(), dcFiltSamp);
-        dummyHistory->pop_back();
+        dcFiltHistory->insert(dcFiltHistory->begin(), dcFiltSamp);
+        dcFiltHistory->pop_back();
 
         // Hampel filter for outlier detection
-        sorted = *dummyHistory; 
+        sorted = *dcFiltHistory;
 
         // sort in ascending order
         sort(sorted.begin(), sorted.end());
@@ -844,9 +846,9 @@ namespace BICGRPCHelperNamespace
         medianVal = sorted[((sorted.size() - 1) / 2) + 1];
 
         // find modifier by subtracting median from all elements in rawPrevData
-        for (int i = 0; i < dummyHistory->size(); i++)
+        for (int i = 0; i < dcFiltHistory->size(); i++)
         {
-            modifier[i] = abs(dummyHistory->at(i) - medianVal);
+            modifier[i] = abs(dcFiltHistory->at(i) - medianVal);
         }
 
         // sort modifier in ascending order
@@ -855,7 +857,7 @@ namespace BICGRPCHelperNamespace
         // find median absolute deviation
         MAD = 1.4826 * modifier[((modifier.size() - 1) / 2) + 1];
 
-        // check if newData is outside of threshold
+        // check if the DC filtered sample is outside of threshold, and considered an outlier
         if (abs(dcFiltSamp - medianVal) <= 1 * MAD)
         {
             hampelSamp = dcFiltSamp;
@@ -867,7 +869,7 @@ namespace BICGRPCHelperNamespace
         }
 
         // Band pass filter for beta activity
-        double filtSamp = filterIIR(hampelSamp, &bpFiltData, hampelDataHistory, &betaBandPassIIR_B, &betaBandPassIIR_A, 10);
+        double filtSamp = filterIIR(hampelSamp, &bpFiltData, hampelDataHistory, &betaBandPassIIR_B, &betaBandPassIIR_A, 1);
 
         // if at a particular phase, above an arbitrary threshold, and closed loop stim is enabled, send stimulation
         if (isCLStimEn && detectTriggerPhase(phaseData, stimTriggerPhase) && bpFiltData[0] > distributedStimThreshold)
@@ -1008,7 +1010,7 @@ namespace BICGRPCHelperNamespace
             }
             avgSigFreq /= prevSigFreq->size();
 
-            currPhase = sampDiff * avgSigFreq * 360;
+            currPhase = 0.001 * sampDiff * avgSigFreq * 360;
         }
 
         // Save the calculated phase
@@ -1019,7 +1021,7 @@ namespace BICGRPCHelperNamespace
         if (stimTriggerPhase <= 0 || stimTriggerPhase > 360)
         {
             // If not, reset stimTriggerPhase
-            stimTriggerPhase = 90;
+            stimTriggerPhase = 45;
         }
         return currPhase;
     }
@@ -1037,7 +1039,7 @@ namespace BICGRPCHelperNamespace
         stimTriggerPhase -= (0.1) * phaseDiff;
 
         // Checks to reset stimTriggerPhase if out of bounds
-        if (stimTriggerPhase < 30 || stimTriggerPhase > 180)
+        if (stimTriggerPhase < 20 || stimTriggerPhase > 100)
         {
             stimTriggerPhase = 90;
         }
