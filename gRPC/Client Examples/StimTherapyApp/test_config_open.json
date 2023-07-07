@@ -1,11 +1,13 @@
 {
   "stimType": "open",
+  "monopolar": true,
   "senseChannel": 1,
-  "stimChannel": 32,
+  "stimChannel": 5,
+  "returnChannel": 16,
   "stimPeriod": 50000,
-  "stimAmplitude": -1000,
+  "stimAmplitude": -3000,
   "stimDuration": 250,
-  "stimThreshold":  100,
+  "stimThreshold": 100,
   "filterCoefficients_B": [ 0.0305, 0, -0.0305 ],
   "filterCoefficients_A": [ 1, -1.9247, 0.9391 ]
 }

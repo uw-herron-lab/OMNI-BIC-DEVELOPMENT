@@ -1,7 +1,9 @@
 {
   "stimType": "beta",
+  "monopolar": false,
   "senseChannel": 1,
-  "stimChannel": 32,
+  "stimChannel": 5,
+  "returnChannel": 16, 
   "stimPeriod": 50000,
   "stimAmplitude": -1000,
   "stimDuration": 250,
