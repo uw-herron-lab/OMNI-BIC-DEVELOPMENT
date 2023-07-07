@@ -108,6 +108,6 @@ namespace BICGRPCHelperNamespace
 
     grpc::Status BICBridgeGRPCService::DisconnectBridge(grpc::ServerContext* context, const BICgRPC::DisconnectBridgeRequest* request, google::protobuf::Empty* reply) {
         // All bridges are by definition 'connected' via USB, so they can't be disconnected
-        return grpc::Status::OK;
+        return grpc::Status(grpc::StatusCode::ABORTED, "Bridges 'connected' via USB by definition, and should not be disconnected");
     }
 };

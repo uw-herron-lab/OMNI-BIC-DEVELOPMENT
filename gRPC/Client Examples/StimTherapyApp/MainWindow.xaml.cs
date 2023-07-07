@@ -234,7 +234,7 @@ namespace StimTherapyApp
 
                             OutputConsole.Inlines.Add("Loaded " + fileName + "\n");
                             OutputConsole.Inlines.Add("Stimulation type: " + configInfo.stimType + "\n");
-                            OutputConsole.Inlines.Add("Monopolar stim: " + configInfo.monopolar + "\n");
+                            OutputConsole.Inlines.Add("Monopolar stimulation: " + configInfo.monopolar + "\n");
                             OutputConsole.Inlines.Add("Sense channel: " + configInfo.senseChannel + "\n");
                             OutputConsole.Inlines.Add("Stim channel: " + configInfo.stimChannel + "\n");
                             OutputConsole.Inlines.Add("Return channel: " + configInfo.returnChannel + "\n");
