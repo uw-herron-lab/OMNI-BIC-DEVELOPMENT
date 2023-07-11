@@ -403,6 +403,7 @@ namespace BICGRPCHelperNamespace
 
         // Clean up the buffer
         delete bufferedNeuroUpdate;
+        delete bufferedNeuroUpdate;
     }
 
     /// <summary>
@@ -434,6 +435,8 @@ namespace BICGRPCHelperNamespace
                 newSample->set_isinterpolated(false);
                 newSample->set_filtchannel(distributedInputChannel);
                 newSample->set_timestamp(sampleTime);
+                newSample->set_triggerphase(stimTriggerPhase);
+
                 // Check if we've lost packets, if so interpolate
                 if (lastNeuroCount + 1 != sampleCounter)
                 {
@@ -489,6 +492,7 @@ namespace BICGRPCHelperNamespace
                                 newInterpolatedSample->set_isinterpolated(true);
                                 newInterpolatedSample->set_filtchannel(distributedInputChannel);
                                 newInterpolatedSample->set_timestamp(latestTimeStamp);
+                                newInterpolatedSample->set_triggerphase(stimTriggerPhase);
                                 
 
                                 // Copy in the time domain data in
@@ -515,8 +519,16 @@ namespace BICGRPCHelperNamespace
                                             // Update stimTriggerPhase based on previous stim phase
                                             updateTriggerPhase(newInterpolatedSample->phase());
 
+
                                             // update state variable on stimActive state
                                             prevStimActive = true;
+
+                                            // save the sample number when stimulation onset occurs
+                                            stimSampStamp.insert(stimSampStamp.begin(), lastNeuroCount + interpolatedPointNum);
+                                            stimSampStamp.pop_back();
+
+                                            // Perform check to see if this stimulation pulse is surpassing the self-triggering limit
+                                            detectSelfTriggering(stimSampStamp, 1.25 * 1/(sigFreqData[0]) * 1000); 
                                         }
 
                                         // Otherwise, we aren't at stim onset
@@ -591,6 +603,13 @@ namespace BICGRPCHelperNamespace
 
                             // update state variable to avoid over updating trigger phase
                             prevStimActive = true;
+
+                            // save the sample number when stimulation onset occurs
+                            stimSampStamp.insert(stimSampStamp.begin(), sampleCounter);
+                            stimSampStamp.pop_back();
+
+                            // Perform check to see if this stimulation pulse is surpassing the self-triggering limit
+                            detectSelfTriggering(stimSampStamp, 1.25 * 1/(sigFreqData[0]) * 1000); 
                         }
                         else
                         {
@@ -807,14 +826,6 @@ namespace BICGRPCHelperNamespace
         dataHistory->pop_back();
 
         // Artifact suppression/rejection
-
-        //// Send data through DC block filter
-        //dcFiltSamp = 0.945 * dummyHistory->at(0) + dataHistory->at(0) - dataHistory->at(1);
-
-        //// store DC block filtered sample
-        //dummyHistory->insert(dummyHistory->begin(), dcFiltSamp);
-        //dummyHistory->pop_back();
-
         // check if the sum of stimHistory is greater than 0- are we far enough away from stim onset?
         for (int i = 0; i < stimHistory->size(); i++)
         {
@@ -858,7 +869,7 @@ namespace BICGRPCHelperNamespace
         MAD = 1.4826 * modifier[((modifier.size() - 1) / 2) + 1];
 
         // check if the DC filtered sample is outside of threshold, and considered an outlier
-        if (abs(dcFiltSamp - medianVal) <= 1 * MAD)
+        if (abs(dcFiltSamp - medianVal) <= 1 * MAD) // maybe make more lenient or remove..?
         {
             hampelSamp = dcFiltSamp;
         }
@@ -867,6 +878,9 @@ namespace BICGRPCHelperNamespace
             // if outside (i.e. outlier), replace with median
             hampelSamp = medianVal;
         }
+
+        // If we want to skip Hampel filter, comment out portions of above and uncomment below
+        //hampelSamp = dcFiltSamp;
 
         // Band pass filter for beta activity
         double filtSamp = filterIIR(hampelSamp, &bpFiltData, hampelDataHistory, &betaBandPassIIR_B, &betaBandPassIIR_A, 1);
@@ -1035,13 +1049,38 @@ namespace BICGRPCHelperNamespace
         double phaseDiff = 0;
 
         // find phase difference and use that to update stimTriggerPhase alongside arbitrary gain
-        phaseDiff = prevStimPhase - 200; // due to slight delay, shift desired points earlier by 10 degrees
+        phaseDiff = prevStimPhase - 210; // due to slight delay, shift desired points earlier by 10 degrees
         stimTriggerPhase -= (0.1) * phaseDiff;
 
         // Checks to reset stimTriggerPhase if out of bounds
-        if (stimTriggerPhase < 20 || stimTriggerPhase > 100)
+        if (stimTriggerPhase < 10 || stimTriggerPhase > 170)
         {
-            stimTriggerPhase = 90;
+            stimTriggerPhase = 45;
+        }
+    }
+
+    void BICListener::detectSelfTriggering(std::vector<int> stimSampArray, double selfTrigThresh)
+    {
+        int counter = 0;
+
+        // Loop through the sample stamps and see if they are close/back to back
+        for (int i = 0; i < stimSampArray.size() - 1; i++)
+        {
+            if (0 < (stimSampArray[i] - stimSampArray[i + 1]) < selfTrigThresh)
+            {
+                // For every instance they are back to back, increase the counter
+                counter++;
+            }
+        }
+
+        // Check if the number of self-triggering pulses exceeds the threshold limit and return boolean state
+        if (counter == stimSampArray.size() - 1)
+        {
+            isSelfTrig = true;
+        }
+        else
+        {
+            isSelfTrig = false;
         }
     }
 

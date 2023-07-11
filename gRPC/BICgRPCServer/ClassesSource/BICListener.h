@@ -151,6 +151,7 @@ namespace BICGRPCHelperNamespace
         double calcPhase(std::vector<double> dataArray, uint64_t currSamp, std::vector<double>* prevSigFreq, std::vector<double>* prevPhase);
         bool detectTriggerPhase(std::vector<double> prevPhase, double triggerPhase);
         void updateTriggerPhase(double prevStimPhase);
+        void detectSelfTriggering(std::vector<int> stimSampArray, double selfTrigThresh);
 
         // Generic Distributed Variables
         bool isCLStimEn = false;                    // State tracking boolean indicates whether distributed stim is active or not
@@ -173,7 +174,9 @@ namespace BICGRPCHelperNamespace
         std::vector<double> betaBandPassIIR_B = { 0.0305, 0, -0.0305 }; // IIR "B" filter coefficients for a beta-range band-pass
         std::vector<double> betaBandPassIIR_A = { 1, -1.9247, 0.9391 }; // IIR "A" filter coefficients for a beta-range band-pass
         double sampGain = 1;
-        std::vector<double> stimOnset = std::vector<double>(6, 0);        // history of stimulation output to facilitate blanking
+        std::vector<double> stimOnset = std::vector<double>(10, 0);      // history of stimulation output to facilitate blanking
+        bool isSelfTrig = false;                                        // State tracking boolean to determine if system is self-triggering
+        std::vector<int> stimSampStamp = std::vector<int>(5, 0);        // history of sample number for stim onset
 
         
         // Phase Calculation Variables
