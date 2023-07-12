@@ -178,7 +178,7 @@ namespace BICGRPCHelperNamespace
         
         // Phase Calculation Variables
         uint64_t zeroPhaseTimeStamp = 0;                    // Phase calculation timestamp for first negative zero crossing
-        double stimTriggerPhase = 90;                       // Phase calculation phase for triggering stimulation
+        double stimTriggerPhase = 45;                       // Phase calculation phase for triggering stimulation
         bool savedStimState = false;                        // Phase calculation state for previous stimulation 
         std::vector<double> sigFreqData = { 0, 0, 0, 0 };   // History of frequency estimates 
         std::vector<double> phaseData = { 0, 0, 0 };           // History for previous estimated phase calculations

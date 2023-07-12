@@ -434,6 +434,7 @@ namespace BICGRPCHelperNamespace
                 newSample->set_isinterpolated(false);
                 newSample->set_filtchannel(distributedInputChannel);
                 newSample->set_timestamp(sampleTime);
+                newSample->set_triggerphase(stimTriggerPhase);
                 // Check if we've lost packets, if so interpolate
                 if (lastNeuroCount + 1 != sampleCounter)
                 {
@@ -489,6 +490,7 @@ namespace BICGRPCHelperNamespace
                                 newInterpolatedSample->set_isinterpolated(true);
                                 newInterpolatedSample->set_filtchannel(distributedInputChannel);
                                 newInterpolatedSample->set_timestamp(latestTimeStamp);
+                                newInterpolatedSample->set_triggerphase(stimTriggerPhase);
 
                                 // Copy in the time domain data in
                                 for (int interChannelPoint = 0; interChannelPoint < sampleNum; interChannelPoint++)
@@ -849,7 +851,7 @@ namespace BICGRPCHelperNamespace
         }
 
         // Band pass filter for beta activity
-        double filtSamp = filterIIR(hampelSamp, &bpFiltData, hampelDataHistory, &betaBandPassIIR_B, &betaBandPassIIR_A, 10);
+        double filtSamp = filterIIR(hampelSamp, &bpFiltData, hampelDataHistory, &betaBandPassIIR_B, &betaBandPassIIR_A, 1);
 
         // if at a particular phase, above an arbitrary threshold, and closed loop stim is enabled, send stimulation
         if (isCLStimEn && detectTriggerPhase(phaseData, stimTriggerPhase) && bpFiltData[0] > distributedStimThreshold)
