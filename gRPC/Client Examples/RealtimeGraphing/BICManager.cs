@@ -67,6 +67,7 @@ namespace RealtimeGraphing
             {
                 chanHeader += ", CH" + (chNum + 1).ToString();
             }
+            // list of header names
             logFileWriter.WriteLine("PacketNum, TimeStamp, FilteredChannelNum, RawChannelData, FilteredChannelData, boolInterpolated, StimChannelData, StimActive" + chanHeader);
         }
         public bool BICConnect()
