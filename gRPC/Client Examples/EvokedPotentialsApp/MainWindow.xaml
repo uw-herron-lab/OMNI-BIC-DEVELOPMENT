@@ -9,25 +9,47 @@
         Title="MainWindow" Height="450" Width="800" Loaded="MainWindow_Loaded" Closed="MainWindow_Closed">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="23*"/>
-            <RowDefinition Height="7*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="10*"/>
+            <RowDefinition Height="10*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="95*"/>
-            <ColumnDefinition Width="129*"/>
-            <ColumnDefinition Width="570*"/>
+            <ColumnDefinition Width="100*"/>
+            <ColumnDefinition Width="100*"/>
+            <ColumnDefinition Width="600*"/>
         </Grid.ColumnDefinitions>
-        <Button x:Name="btn_load" Content="Load Config" Margin="12,24,16,0" VerticalAlignment="Top" Click="btn_load_Click" Height="20" Grid.ColumnSpan="2"/>
-        <Button x:Name="btn_beta" Content="Beta Stim" Margin="10,65,10.2,0" VerticalAlignment="Top" Click="btn_beta_Click" Height="20"/>
-        <Button x:Name="btn_open" Content="Open Loop Stim" Margin="19.8,65,16,0" VerticalAlignment="Top" Click="btn_open_Click" Grid.Column="1"/>
-        <Button x:Name="btn_stop" Content="Stop Stim" Margin="10,111,10.2,0" VerticalAlignment="Top" Click="btn_stop_Click" Height="20"/>
-        <Button x:Name="btn_diagnostic" Content="Diagnostic" Margin="37.8,111,16,0" VerticalAlignment="Top" Click="btn_diagnostic_Click" Grid.Column="1" Height="20"/>
-        <ScrollViewer Name="Scroller" Margin="0,0.4,-0.4,0" Background="White" Grid.ColumnSpan="3" VerticalScrollBarVisibility="Auto" Grid.Row="1">
+        
+        <Button x:Name="btn_load" Content="Load Config" VerticalAlignment="Top" Click="btn_load_Click" Grid.ColumnSpan="2" Margin="10"/>
+        
+        <Label Height="20" Grid.Row="1" Grid.Column="0">Source</Label>
+        <ComboBox Height="20" x:Name="sources" Grid.Row="1" Grid.Column="1"></ComboBox>
+        <Label Grid.Row="2" Grid.Column="0">Destination</Label>
+        <ComboBox x:Name="destinations" Grid.Row="2" Grid.Column="1"></ComboBox>
+        
+        <Button x:Name="btn_start" Content="Start Stim" Click="btn_start_Click" Grid.Row="3" Grid.Column="0"/>
+        <Button x:Name="btn_stop" Content="Stop Stim" Click="btn_stop_Click" Grid.Row="3" Grid.Column="1"/>
+
+        <Button x:Name="btn_diagnostic" Content="Diagnostic" Margin="37.8,111,16,0" VerticalAlignment="Top" Click="btn_diagnostic_Click" Grid.Row="4" Grid.ColumnSpan="2" Height="20"/>
+
+        <ListBox ItemsSource="{Binding channelList}" Margin="10,144,16,37.6" Grid.Row="5" Grid.ColumnSpan="2">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <CheckBox IsChecked="{Binding IsSelected}" Content="{Binding Name}" Checked="CheckBox_Changed" Unchecked="CheckBox_Changed"/>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <ScrollViewer Name="Scroller" Margin="0,0.4,-0.4,0" Background="White" VerticalScrollBarVisibility="Auto" Grid.Row="6" Grid.ColumnSpan="3">
             <Border BorderThickness="1" BorderBrush="Black">
                 <TextBlock Name="OutputConsole" Foreground="Black" FontFamily="Consolas" FontSize="15" Padding="10" TextWrapping="Wrap"/>
             </Border>
         </ScrollViewer>
-        <WindowsFormsHost x:Name="formHost" Margin="0,0,-0.4,37.6" Grid.Column="2">
+        
+        <WindowsFormsHost x:Name="formHost" Margin="0,0,-0.4,37.6" Grid.RowSpan="5" Grid.Column="2">
             <winformchart:Chart x:Name="neuroStreamChart" Dock="Fill">
                 <winformchart:Chart.Series>
                     <winformchart:Series Name="series" ChartType="Line"/>
@@ -40,17 +62,12 @@
                 </winformchart:Chart.Legends>
             </winformchart:Chart>
         </WindowsFormsHost>
-        <ListBox ItemsSource="{Binding channelList}" Margin="10,144,16,37.6" Grid.ColumnSpan="2">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <CheckBox IsChecked="{Binding IsSelected}" Content="{Binding Name}" Checked="CheckBox_Changed" Unchecked="CheckBox_Changed"/>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-        <TextBlock TextWrapping="Wrap" Text="y-axis min:" Grid.Column="2" Margin="0,0,192.6,12.6" Height="16" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="61"/>
+        
+
+        <!--<TextBlock TextWrapping="Wrap" Text="y-axis min:" Grid.Column="2" Margin="0,0,192.6,12.6" Height="16" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="61"/>
         <TextBox x:Name="y_min" TextWrapping="Wrap" Margin="0,0,141.6,9.6" Grid.Column="2" TextChanged="y_min_TextChanged" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="50"/>
         <TextBlock TextWrapping="Wrap" Text="y-axis max:" Grid.Column="2" Margin="0,0,65.6,12.6" HorizontalAlignment="Right" Width="63" Height="16" VerticalAlignment="Bottom"/>
-        <TextBox x:Name="y_max" TextWrapping="Wrap" Margin="0,0,15.6,9.6" Grid.Column="2" TextChanged="y_max_TextChanged" HorizontalAlignment="Right" Width="50" Height="20" VerticalAlignment="Bottom"/>
+        <TextBox x:Name="y_max" TextWrapping="Wrap" Margin="0,0,15.6,9.6" Grid.Column="2" TextChanged="y_max_TextChanged" HorizontalAlignment="Right" Width="50" Height="20" VerticalAlignment="Bottom"/>-->
 
 
     </Grid>
