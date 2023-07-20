@@ -9,7 +9,7 @@ using System.Diagnostics;
 using System.IO;
 using Grpc.Core;
 using BICgRPC;
-
+// D:\gitbuilds\OMNI - BIC - DEVELOPMENT\gRPC\Client Examples\EvokedPotentialsApp\BICManager.cs
 namespace RealtimeGraphing
 {
     class BICManager : IDisposable
@@ -165,127 +165,66 @@ namespace RealtimeGraphing
             logFileStream.Dispose();
         }
 
-        public void enableOpenLoopStimulation(bool openStimEn, bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold)
+        public void enableEvokedPotentialStimulation(bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold, uint numPulses)
         {
-            if (openStimEn)
-            {
+            //if (openStimEn)
+            //{
                 // Create a waveform defintion request 
-                bicEnqueueStimulationRequest aNewWaveformRequest = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.PersistentWaveform, WaveformRepititions = 255 };
+                bicEnqueueStimulationRequest aNewWaveformRequest = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.PersistentWaveform, WaveformRepititions = numPulses }; // what are waveform reps?? burst? changed from 255 to numPulses...
 
-                // check if interPulseInterval is greater than 20400 us (DZ1 duration limit) to determine how to add inter pulse interval
-                if (interPulseInterval <= 20400)
-                {
-                    if (monopolar)
-                    {
-                        // Create a pulse function for monopolar stimulation
-                        StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
-                        {
-                            FunctionName = "openLoopPulse",
-                            StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = interPulseInterval, PulseWidth = stimDuration, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { }, UseGround = true, BurstRepetitions = 1 }
-
-                        };
-                        aNewWaveformRequest.Functions.Add(pulseFunction0);
-                    }
-                    else
-                    {
-                        // Create a pulse function for bipolar stimulation
-                        StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
-                        {
-                            FunctionName = "openLoopPulse",
-                            StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = interPulseInterval, PulseWidth = stimDuration, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { returnChannel }, UseGround = false, BurstRepetitions = 1 }
-
-                        };
-                        aNewWaveformRequest.Functions.Add(pulseFunction0);
-                    }
-                }
-                else
-                {
-                    if (monopolar)
-                    {
-                        // Create a pulse function for monopolar stimulation
-                        StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
-                        {
-                            FunctionName = "openLoopPulse",
-                            StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 10, PulseWidth = stimDuration, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { }, UseGround = true, BurstRepetitions = 1 }
-
-                        };
-                        aNewWaveformRequest.Functions.Add(pulseFunction0);
-
-                        // Create the interpulse pause for monopolar stimulation
-                        StimulationFunctionDefinition interpulsePause = new StimulationFunctionDefinition()
-                        {
-                            FunctionName = "pausePulse",
-                            Pause = new pauseFunction() { Duration = interPulseInterval }
-                        };
-                        aNewWaveformRequest.Functions.Add(interpulsePause);
-                    }
-                    else
-                    {
-                        // Create a pulse function for bipolar stimulation
-                        StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
-                        {
-                            FunctionName = "openLoopPulse",
-                            StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 10, PulseWidth = stimDuration, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { returnChannel }, UseGround = false, BurstRepetitions = 1 }
-
-                        };
-                        aNewWaveformRequest.Functions.Add(pulseFunction0);
-
-                        // Create the interpulse pause for bipolar stimulation
-                        StimulationFunctionDefinition interpulsePause = new StimulationFunctionDefinition()
-                        {
-                            FunctionName = "pausePulse",
-                            Pause = new pauseFunction() { Duration = interPulseInterval }
-                        };
-                        aNewWaveformRequest.Functions.Add(interpulsePause);
-                    }
-                }
-
-                // Enqueue the stimulation waveform
-                deviceClient.bicEnqueueStimulation(aNewWaveformRequest);
-                deviceClient.enableOpenLoopStimulation(new openLoopStimEnableRequest() { DeviceAddress = DeviceName, Enable = true, WatchdogInterval = 5000, TriggerStimThreshold = stimThreshold });
-            }
-            else
-            {
-                // Stop the stim
-                deviceClient.enableOpenLoopStimulation(new openLoopStimEnableRequest() { DeviceAddress = DeviceName, Enable = false});
-            }
-        }
-
-        public void enableDistributedStim(bool closedStimEn, bool monopolar, uint stimChannel, uint returnChannel, uint senseChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, List<double> filterCoefficients_B, List<double> filterCoefficients_A, double stimThreshold)
-        {
-            if (closedStimEn)
-            {
-                // Create a waveform defintion request 
-                bicEnqueueStimulationRequest aNewWaveformRequest = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.PersistentWaveform, WaveformRepititions = 1 };
+                // assuming interPulseInterval > 20400 and openStimEn
                 if (monopolar)
                 {
-                    // Create a pulse function
+                    // Create a pulse function for monopolar stimulation
                     StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
                     {
-                        FunctionName = "betaPulseFunction",
+                        FunctionName = "evokedPotentialStim",
                         StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 10, PulseWidth = stimDuration, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { }, UseGround = true, BurstRepetitions = 1 }
+
                     };
                     aNewWaveformRequest.Functions.Add(pulseFunction0);
+
+                    // Create the interpulse pause for monopolar stimulation
+                    StimulationFunctionDefinition interpulsePause = new StimulationFunctionDefinition()
+                    {
+                        FunctionName = "pausePulse",
+                        Pause = new pauseFunction() { Duration = interPulseInterval }
+                    };
+                    aNewWaveformRequest.Functions.Add(interpulsePause);
                 }
                 else
                 {
-                    // Create a pulse function
+                    // Create a pulse function for bipolar stimulation
                     StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
                     {
-                        FunctionName = "betaPulseFunction",
+                        FunctionName = "openLoopPulse",
                         StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 10, PulseWidth = stimDuration, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { returnChannel }, UseGround = false, BurstRepetitions = 1 }
+
                     };
                     aNewWaveformRequest.Functions.Add(pulseFunction0);
+
+                    // Create the interpulse pause for bipolar stimulation
+                    StimulationFunctionDefinition interpulsePause = new StimulationFunctionDefinition()
+                    {
+                        FunctionName = "pausePulse",
+                        Pause = new pauseFunction() { Duration = interPulseInterval }
+                    };
+                    aNewWaveformRequest.Functions.Add(interpulsePause);
                 }
-
                 // Enqueue the stimulation waveform
+                // what will be equivalent of enable openLoopStimulation??
                 deviceClient.bicEnqueueStimulation(aNewWaveformRequest);
-            }
+                deviceClient.bicStartStimulation(new bicStartStimulationRequest() { DeviceAddress = DeviceName });
+                //deviceClient.enableOpenLoopStimulation(new openLoopStimEnableRequest() { DeviceAddress = DeviceName, Enable = true, WatchdogInterval = 5000, TriggerStimThreshold = stimThreshold });
+            //}
+            //else
+            //{
+            //    // Stop the stim
+            //    deviceClient.enableOpenLoopStimulation(new openLoopStimEnableRequest() { DeviceAddress = DeviceName, Enable = false });
+            //}
 
-            // Start the distributed stimulation function
-            deviceClient.enableDistributedStimulation(new distributedStimEnableRequest() { DeviceAddress = DeviceName, Enable = closedStimEn, SensingChannel = senseChannel, 
-                FilterCoefficientsB = { filterCoefficients_B }, FilterCoefficientsA = { filterCoefficients_A }, TriggerStimThreshold = stimThreshold}); 
         }
+ 
 
         /// <summary>
         /// Provide a copy of the current data buffers

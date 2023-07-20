@@ -44,17 +44,18 @@ namespace EvokedPotentialsApp
 
         public class Configuration
         {
-            public string stimType { get; set; }
-            public bool monopolar { get; set; }
-            public int senseChannel { get; set; }
-            public int stimChannel { get; set; }
-            public int returnChannel { get; set; }
-            public uint stimPeriod { get; set; }
-            public int stimAmplitude { get; set; }
-            public uint stimDuration { get; set; }
+            public int stimChannel { get; set; } = 1; // remove default later
+            public int returnChannel { get; set; } = 2; // remove default later
+            public int numChannels { get; set; } = 30;
+            public uint numPulses { get; set; } = 50;
+            public uint stimPeriod { get; set; } = 1000000; // uS
+            public int stimAmplitude { get; set; } = 5400; // uV
+            public uint stimDuration { get; set; } = 250;
+            public int jitterMax { get; set; } = 300; // uS // TODO: add jitter to pulse method (add to pause?) 
+            public bool monopolar { get; set; } = false;
             public double stimThreshold { get; set; }
-            public List<double> filterCoefficients_B { get; set; }
-            public List<double> filterCoefficients_A { get; set; }
+
+
         }
 
         public MainWindow()
@@ -149,8 +150,7 @@ namespace EvokedPotentialsApp
                 delegate
                 {
                     // disable buttons
-                    btn_beta.IsEnabled = false; // beta stim button; have to use method invoker
-                    btn_open.IsEnabled = false; // open loop stim button
+                    btn_start.IsEnabled = false; // open loop stim button
                     btn_diagnostic.IsEnabled = false; // diagnostics button
                     btn_stop.IsEnabled = false; // stop stim button
 
@@ -232,25 +232,22 @@ namespace EvokedPotentialsApp
                             configInfo = System.Text.Json.JsonSerializer.Deserialize<Configuration>(configJson);
 
                             OutputConsole.Inlines.Add("Loaded " + fileName + "\n");
-                            OutputConsole.Inlines.Add("Stimulation type: " + configInfo.stimType + "\n");
-                            OutputConsole.Inlines.Add("Monopolar stimulation: " + configInfo.monopolar + "\n");
-                            OutputConsole.Inlines.Add("Sense channel: " + configInfo.senseChannel + "\n");
-                            OutputConsole.Inlines.Add("Stim channel: " + configInfo.stimChannel + "\n");
-                            OutputConsole.Inlines.Add("Return channel: " + configInfo.returnChannel + "\n");
+                            //OutputConsole.Inlines.Add("Source channel: " + configInfo.sourceChannel + "\n");
+                            //OutputConsole.Inlines.Add("Destination channel: " + configInfo.destChannel + "\n");
+                            OutputConsole.Inlines.Add("Number of pulses: " + configInfo.numPulses + "\n");
                             OutputConsole.Inlines.Add("Stim period: " + (configInfo.stimPeriod) + " us\n");
                             OutputConsole.Inlines.Add("Stim Pulse Amplitude: " + configInfo.stimAmplitude + " uA\n");
-                            OutputConsole.Inlines.Add("Stim Pulse Duration: " + configInfo.stimDuration + " us\n");
-                            OutputConsole.Inlines.Add("Stim Trigger Threshold: " + configInfo.stimThreshold + " uV\n");
-                            OutputConsole.Inlines.Add("Filter Coefficient [B]: ");
-                            for (int i = 0; i < configInfo.filterCoefficients_B.Count; i++)
-                            {
-                                OutputConsole.Inlines.Add(configInfo.filterCoefficients_B[i] + " ");
-                            }
-                            OutputConsole.Inlines.Add("\nFilter Coefficients [A]: ");
-                            for (int i = 0; i < configInfo.filterCoefficients_A.Count; i++)
-                            {
-                                OutputConsole.Inlines.Add(configInfo.filterCoefficients_A[i] + " ");
-                            }
+                            OutputConsole.Inlines.Add("Random jitter between 0-: " + configInfo.jitterMax + " us\n");
+                            //OutputConsole.Inlines.Add("Filter Coefficient [B]: ");
+                            //for (int i = 0; i < configInfo.filterCoefficients_B.Count; i++)
+                            //{
+                            //    OutputConsole.Inlines.Add(configInfo.filterCoefficients_B[i] + " ");
+                            //}
+                            //OutputConsole.Inlines.Add("\nFilter Coefficients [A]: ");
+                            //for (int i = 0; i < configInfo.filterCoefficients_A.Count; i++)
+                            //{
+                            //    OutputConsole.Inlines.Add(configInfo.filterCoefficients_A[i] + " ");
+                            //}
                             OutputConsole.Inlines.Add("\n");
                             Scroller.ScrollToEnd();
                         }
@@ -259,8 +256,7 @@ namespace EvokedPotentialsApp
                         delegate
                         {
                             // enable buttons after a config has been successfully loaded
-                            btn_beta.IsEnabled = true; // beta stim button; have to use method invoker
-                            btn_open.IsEnabled = true; // open loop stim button
+                            btn_start.IsEnabled = true; // open loop stim button
                             btn_load.IsEnabled = true; // load config button
                             btn_diagnostic.IsEnabled = true; // diagnostics button
                             btn_stop.IsEnabled = true; // stop stim button
@@ -276,51 +272,7 @@ namespace EvokedPotentialsApp
                 Scroller.ScrollToEnd();
             }
         }
-        private void btn_beta_Click(object sender, RoutedEventArgs e)
-        {
-            ThreadPool.QueueUserWorkItem(a =>
-            {
-                // Keep the time for console output writring
-                string timeStamp = DateTime.Now.ToString("h:mm:ss tt");
-
-                // start phase triggered stim and update status
-                try
-                {
-                    aBICManager.enableDistributedStim(true, configInfo.monopolar, (uint)configInfo.stimChannel - 1, (uint)configInfo.returnChannel - 1, (uint)configInfo.senseChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, configInfo.filterCoefficients_B, configInfo.filterCoefficients_A, configInfo.stimThreshold);
-                }
-                catch
-                {
-                    // Exception occured, gRPC command did not succeed, do not update UI button elements
-                    Application.Current.Dispatcher.Invoke(new Action(() =>
-                    {
-                        OutputConsole.Inlines.Add("Beta triggered stimulation NOT started: " + timeStamp + ", load new configuration\n");
-                        Scroller.ScrollToEnd();
-                    }));
-                    return;
-                }
-
-                phasicStimState = true;
-
-                // Succesfully enabled distributed, update UI elements
-                neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
-                delegate
-                {
-                    // disable buttons
-                    btn_beta.IsEnabled = false; // beta stim button; have to use method invoker
-                    btn_open.IsEnabled = false; // open loop stim button
-                    btn_load.IsEnabled = false; // load config button
-                    btn_diagnostic.IsEnabled = false; // diagnostics button
-                }));
-
-                // notify user of beta stimulation starting
-                Application.Current.Dispatcher.Invoke(new Action(() =>
-                {
-                    OutputConsole.Inlines.Add("Beta triggered stimulation started: " + timeStamp + "\n");
-                    Scroller.ScrollToEnd();
-                }));
-            });
-        }
-        private void btn_open_Click(object sender, RoutedEventArgs e)
+        private void btn_start_Click(object sender, RoutedEventArgs e)
         {
             ThreadPool.QueueUserWorkItem(a =>
             {
@@ -330,7 +282,9 @@ namespace EvokedPotentialsApp
                 // start open loop stim and update status
                 try
                 {
-                    aBICManager.enableOpenLoopStimulation(true, configInfo.monopolar, (uint)configInfo.stimChannel - 1, (uint)configInfo.returnChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, configInfo.stimPeriod - (5 * configInfo.stimDuration) - 3500, configInfo.stimThreshold);
+                    uint interPulseInterval = configInfo.stimPeriod - (5 * configInfo.stimDuration) - 3500; // worth revisiting the 3500
+                    aBICManager.enableEvokedPotentialStimulation(configInfo.monopolar, (uint)configInfo.stimChannel - 1, (uint)configInfo.returnChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, interPulseInterval, configInfo.stimThreshold, configInfo.numPulses);
+                    //aBICManager.enableOpenLoopStimulation(true, configInfo.monopolar, (uint)configInfo.stimChannel - 1, (uint)configInfo.returnChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, configInfo.stimPeriod - (5 * configInfo.stimDuration) - 3500, configInfo.stimThreshold);
                 }
                 catch
                 {
@@ -350,8 +304,7 @@ namespace EvokedPotentialsApp
                 delegate
                 {
                     // disable buttons
-                    btn_beta.IsEnabled = false; // beta stim button; have to use method invoker
-                    btn_open.IsEnabled = false; // open loop stim button
+                    btn_start.IsEnabled = false; // open loop stim button
                     btn_load.IsEnabled = false; // load config button
                     btn_diagnostic.IsEnabled = false; // diagnostics button
                 }));
@@ -364,6 +317,9 @@ namespace EvokedPotentialsApp
                 }));
             });
         }
+
+        private void btn_start_Click(object sender, RoutedEventArgs e)
+        { }
 
         private void btn_stop_Click(object sender, RoutedEventArgs e)
         {
@@ -386,8 +342,7 @@ namespace EvokedPotentialsApp
             neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
                 delegate
                 {
-                    btn_beta.IsEnabled = true;
-                    btn_open.IsEnabled = true;
+                    btn_start.IsEnabled = true;
                     btn_load.IsEnabled = true;
                     btn_diagnostic.IsEnabled = true;
                 }));

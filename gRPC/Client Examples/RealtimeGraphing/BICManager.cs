@@ -9,8 +9,8 @@ using System.Diagnostics;
 using System.IO;
 using Grpc.Core;
 using BICgRPC;
-
 namespace RealtimeGraphing
+
 {
     class BICManager : IDisposable
     {
@@ -208,7 +208,7 @@ namespace RealtimeGraphing
                             FunctionName = "openLoopPulse",
                             StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 10, PulseWidth = stimDuration, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { }, UseGround = true, BurstRepetitions = 1 }
 
-                        };
+                        }; 
                         aNewWaveformRequest.Functions.Add(pulseFunction0);
 
                         // Create the interpulse pause for monopolar stimulation
