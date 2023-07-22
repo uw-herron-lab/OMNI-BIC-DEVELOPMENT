@@ -28,10 +28,17 @@ namespace EvokedPotentialsApp
     public partial class MainWindow : Window
     {
         private RealtimeGraphing.BICManager aBICManager;
-        private bool phasicStimState = false;
-        private bool openStimState = false;
-        private int numChannels = 34;
+        private int numChannels = 32;
         private Configuration configInfo;
+        private int? stimChannel = null;
+        private int? returnChannel = null;
+        private uint numPulses = 50;
+        private uint stimPeriod = 1000000; // uS
+        private int stimAmplitude = 5400; // uV
+        private uint stimDuration = 250;
+        private int jitterMax = 300; // uS // TODO: add jitter to pulse method (add to pause?) 
+        private bool monopolar = false;
+        private double stimThreshold;
 
         public class Channel
         {
@@ -41,21 +48,20 @@ namespace EvokedPotentialsApp
 
         private System.Timers.Timer neuroChartUpdateTimer;
         public List<Channel> channelList { get; set; }
+        public List<int> channelNumList { get; set; }
 
         public class Configuration
         {
-            public int stimChannel { get; set; } = 1; // remove default later
-            public int returnChannel { get; set; } = 2; // remove default later
-            public int numChannels { get; set; } = 30;
-            public uint numPulses { get; set; } = 50;
-            public uint stimPeriod { get; set; } = 1000000; // uS
-            public int stimAmplitude { get; set; } = 5400; // uV
-            public uint stimDuration { get; set; } = 250;
-            public int jitterMax { get; set; } = 300; // uS // TODO: add jitter to pulse method (add to pause?) 
-            public bool monopolar { get; set; } = false;
+            public int stimChannel { get; set; }
+            public int returnChannel { get; set; }
+            public int numChannels { get; set; }
+            public uint numPulses { get; set; }
+            public uint stimPeriod { get; set; } // uS
+            public int stimAmplitude { get; set; } // uV
+            public uint stimDuration { get; set; }
+            public int jitterMax { get; set; } // uS // TODO: add jitter to pulse method (add to pause?) 
+            public bool monopolar { get; set; }
             public double stimThreshold { get; set; }
-
-
         }
 
         public MainWindow()
@@ -64,17 +70,14 @@ namespace EvokedPotentialsApp
 
             // Add items to check list box
             channelList = new List<Channel>();
-            for (int i = 1; i < numChannels; i++)
+            channelNumList = new List<int>();
+
+            for (int i = 1; i < numChannels + 1; i++)
             {
-                if (i == 33)
-                {
-                    channelList.Add(new Channel { IsSelected = false, Name = "Filtered Channel" });
-                }
-                else
-                {
-                    channelList.Add(new Channel { IsSelected = false, Name = i.ToString() });
-                }
+                channelList.Add(new Channel { IsSelected = false, Name = i.ToString() });
+                channelNumList.Add(i);
             }
+
             this.DataContext = this;
             OutputConsole.Inlines.Add("Application started...\n");
 
@@ -152,10 +155,11 @@ namespace EvokedPotentialsApp
                     // disable buttons
                     btn_start.IsEnabled = false; // open loop stim button
                     btn_diagnostic.IsEnabled = false; // diagnostics button
-                    btn_stop.IsEnabled = false; // stop stim button
-
+                    btn_stop.IsEnabled = false;
                     // temporary- hide diagnostic buttons
                     btn_diagnostic.Visibility = Visibility.Hidden;
+                    sources.IsEnabled = true;
+                    destinations.IsEnabled = true;
                 }));
 
             // Start update timer
@@ -232,8 +236,8 @@ namespace EvokedPotentialsApp
                             configInfo = System.Text.Json.JsonSerializer.Deserialize<Configuration>(configJson);
 
                             OutputConsole.Inlines.Add("Loaded " + fileName + "\n");
-                            //OutputConsole.Inlines.Add("Source channel: " + configInfo.sourceChannel + "\n");
-                            //OutputConsole.Inlines.Add("Destination channel: " + configInfo.destChannel + "\n");
+                            OutputConsole.Inlines.Add("Stim channel: " + configInfo.stimChannel + "\n");
+                            OutputConsole.Inlines.Add("Return channel: " + configInfo.returnChannel + "\n");
                             OutputConsole.Inlines.Add("Number of pulses: " + configInfo.numPulses + "\n");
                             OutputConsole.Inlines.Add("Stim period: " + (configInfo.stimPeriod) + " us\n");
                             OutputConsole.Inlines.Add("Stim Pulse Amplitude: " + configInfo.stimAmplitude + " uA\n");
@@ -252,6 +256,16 @@ namespace EvokedPotentialsApp
                             Scroller.ScrollToEnd();
                         }
 
+                        stimChannel = configInfo.stimChannel;
+                        returnChannel = configInfo.returnChannel;
+                        numPulses = configInfo.numPulses;
+                        stimPeriod = configInfo.stimPeriod;
+                        stimAmplitude = configInfo.stimAmplitude;
+                        stimDuration = configInfo.stimDuration;
+                        jitterMax = configInfo.jitterMax;
+                        monopolar = configInfo.monopolar;
+                        stimThreshold = configInfo.stimThreshold;
+
                         neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
                         delegate
                         {
@@ -259,7 +273,7 @@ namespace EvokedPotentialsApp
                             btn_start.IsEnabled = true; // open loop stim button
                             btn_load.IsEnabled = true; // load config button
                             btn_diagnostic.IsEnabled = true; // diagnostics button
-                            btn_stop.IsEnabled = true; // stop stim button
+                            btn_stop.IsEnabled = false; // stop stim button
                         }));
                     }
                 }
@@ -279,27 +293,26 @@ namespace EvokedPotentialsApp
                 // Keep the time for console output writring
                 string timeStamp = DateTime.Now.ToString("h:mm:ss tt");
 
-                // start open loop stim and update status
+                // start stim and update status
                 try
                 {
-                    uint interPulseInterval = configInfo.stimPeriod - (5 * configInfo.stimDuration) - 3500; // worth revisiting the 3500
-                    aBICManager.enableEvokedPotentialStimulation(configInfo.monopolar, (uint)configInfo.stimChannel - 1, (uint)configInfo.returnChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, interPulseInterval, configInfo.stimThreshold, configInfo.numPulses);
-                    //aBICManager.enableOpenLoopStimulation(true, configInfo.monopolar, (uint)configInfo.stimChannel - 1, (uint)configInfo.returnChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, configInfo.stimPeriod - (5 * configInfo.stimDuration) - 3500, configInfo.stimThreshold);
+                    uint interPulseInterval = stimPeriod - (5 * stimDuration) - 3500; // worth revisiting the 3500
+                    aBICManager.enableEvokedPotentialStimulation(monopolar, (uint)stimChannel - 1, (uint)returnChannel - 1, stimAmplitude, stimDuration, 4, interPulseInterval, stimThreshold, numPulses);
                 }
                 catch
                 {
                     // Exception occured, gRPC command did not succeed, do not update UI button elements
                     Application.Current.Dispatcher.Invoke(new Action(() =>
                     {
-                        OutputConsole.Inlines.Add("Open loop stimulation NOT started: " + timeStamp + ", load new configuration\n");
+                        OutputConsole.Inlines.Add("Evoked Potential stimulation NOT started: " + timeStamp + ", load new configuration\n");
                         Scroller.ScrollToEnd();
                     }));
                     return;
                 }
 
-                openStimState = true;
+                //openStimState = true;
 
-                // Succesfully enabled open loop stim, update UI elements
+                // Succesfully enabled stim, update UI elements
                 neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
                 delegate
                 {
@@ -307,6 +320,9 @@ namespace EvokedPotentialsApp
                     btn_start.IsEnabled = false; // open loop stim button
                     btn_load.IsEnabled = false; // load config button
                     btn_diagnostic.IsEnabled = false; // diagnostics button
+                    btn_stop.IsEnabled = false;
+                    sources.IsEnabled = false;
+                    destinations.IsEnabled = false;
                 }));
 
                 // notify user of open loop stimulation starting
@@ -318,33 +334,35 @@ namespace EvokedPotentialsApp
             });
         }
 
-        private void btn_start_Click(object sender, RoutedEventArgs e)
-        { }
-
         private void btn_stop_Click(object sender, RoutedEventArgs e)
         {
-            ThreadPool.QueueUserWorkItem(a =>
-            {
-                if (phasicStimState)
-                {
-                    // disable beta and open loop stim
-                    aBICManager.enableDistributedStim(false, configInfo.monopolar, (uint)configInfo.stimChannel - 1, (uint)configInfo.returnChannel - 1, (uint)configInfo.senseChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, configInfo.filterCoefficients_B, configInfo.filterCoefficients_A, configInfo.stimThreshold);
-                    phasicStimState = false;
-                }
-                if (openStimState)
-                {
-                    aBICManager.enableOpenLoopStimulation(false, configInfo.monopolar, (uint)configInfo.stimChannel - 1, (uint)configInfo.returnChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 1, 20000, configInfo.stimThreshold);
-                    openStimState = false;
-                }
-            });
-
+            //ThreadPool.QueueUserWorkItem(a =>
+            //{
+            //    if (phasicStimState)
+            //    {
+            //        // disable beta and open loop stim
+            //        aBICManager.enableDistributedStim(false, configInfo.monopolar, (uint)configInfo.stimChannel - 1, (uint)configInfo.returnChannel - 1, (uint)configInfo.senseChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, configInfo.filterCoefficients_B, configInfo.filterCoefficients_A, configInfo.stimThreshold);
+            //        phasicStimState = false;
+            //    }
+            //    if (openStimState)
+            //    {
+            //        aBICManager.enableOpenLoopStimulation(false, configInfo.monopolar, (uint)configInfo.stimChannel - 1, (uint)configInfo.returnChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 1, 20000, configInfo.stimThreshold);
+            //        openStimState = false;
+            //    }
+            //});
+            aBICManager.stopEvokedPotentialStimulation();
+            
             // enable previously disabled buttons
             neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
                 delegate
                 {
                     btn_start.IsEnabled = true;
                     btn_load.IsEnabled = true;
+                    sources.IsEnabled = true;
+                    destinations.IsEnabled = true;
                     btn_diagnostic.IsEnabled = true;
+                    sources.IsEnabled = true;
+                    destinations.IsEnabled = true;
                 }));
 
             string timeStamp = DateTime.Now.ToString("h:mm:ss tt");
@@ -503,6 +521,24 @@ namespace EvokedPotentialsApp
                 {
                     neuroStreamChart.ChartAreas[0].AxisY.Maximum = yMaxVal;
                 }
+            }
+        }
+
+        private void sources_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            stimChannel = (int)e.AddedItems[0]; // is this necessary?
+            if (stimChannel != null & returnChannel != null)
+            {
+                btn_start.IsEnabled = true;
+            }
+        }
+
+        private void destinations_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            returnChannel = (int)e.AddedItems[0]; // is this necessary?
+            if (stimChannel != null & returnChannel != null)
+            {
+                btn_start.IsEnabled = true;
             }
         }
     }

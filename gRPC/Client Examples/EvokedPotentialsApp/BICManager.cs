@@ -219,11 +219,17 @@ namespace RealtimeGraphing
             //}
             //else
             //{
-            //    // Stop the stim
-            //    deviceClient.enableOpenLoopStimulation(new openLoopStimEnableRequest() { DeviceAddress = DeviceName, Enable = false });
+                // Stop the stim
+                //deviceClient.enableOpenLoopStimulation(new openLoopStimEnableRequest() { DeviceAddress = DeviceName, Enable = false }); 
             //}
 
         }
+
+        public void stopEvokedPotentialStimulation()
+        {
+            deviceClient.bicStopStimulation(new RequestDeviceAddress() { DeviceAddress = DeviceName });
+        }
+
  
 
         /// <summary>
