@@ -290,7 +290,8 @@ namespace RealtimeGraphing
                 SensingChannel = senseChannel,
                 FilterCoefficientsB = { filterCoefficients_B },
                 FilterCoefficientsA = { filterCoefficients_A },
-                TriggerStimThreshold = stimThreshold
+                TriggerStimThreshold = stimThreshold,
+                InitTriggerStimPhase = initTriggerPhase
             });
         }
 
