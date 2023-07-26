@@ -502,13 +502,14 @@ namespace BICGRPCHelperNamespace
                                     newInterpolatedSample->add_measurements(interpolatedSample);
                                     if (interChannelPoint == distributedInputChannel)
                                     {
+
+                                        // Call calcPhase to estimate current sample's phase
+                                        newInterpolatedSample->set_phase(calcPhase(bpFiltData, lastNeuroCount + interpolatedPointNum, &sigFreqData, &phaseData));
+
                                         // Call Processing Helper, take output and send to client
                                         newInterpolatedSample->set_filtsample(processingHelper(interpolatedSample, &rawPrevData, &stimOnset, &hampelPrevData, &dcFiltPrevData, sampGain));
                                         newInterpolatedSample->set_prefiltsample(dcFiltPrevData[0]);
                                         newInterpolatedSample->set_hampelfiltsample(hampelPrevData[0]);
-
-                                        // Call calcPhase to estimate current sample's phase
-                                        newInterpolatedSample->set_phase(calcPhase(bpFiltData, lastNeuroCount + interpolatedPointNum, &sigFreqData, &phaseData));
 
                                         // Check if this sample is at stimulation onset
                                         if (newInterpolatedSample->stimulationactive() == true && prevStimActive == false)
@@ -526,16 +527,30 @@ namespace BICGRPCHelperNamespace
                                             // save the sample number when stimulation onset occurs
                                             stimSampStamp.insert(stimSampStamp.begin(), lastNeuroCount + interpolatedPointNum);
                                             stimSampStamp.pop_back();
-
-                                            // Perform check to see if this stimulation pulse is surpassing the self-triggering limit
-                                            detectSelfTriggering(stimSampStamp, 1.25 * 1/(sigFreqData[0]) * 1000); 
                                         }
 
                                         // Otherwise, we aren't at stim onset
                                         else
                                         {
                                             // Save the stim output for this sample
+                                            // Save the stim output for this sample
                                             stimOnset.insert(stimOnset.begin(), 0);
+                                        }
+
+                                        // Process to reset self triggering flag
+                                        if (isSelfTrig == false)
+                                        {
+                                            // Perform check to see if this stimulation pulse is surpassing the self-triggering limit
+                                            detectSelfTriggering(stimSampStamp, 1.25 * 1 / (sigFreqData[0]) * 1000);
+                                        }
+                                        else
+                                        {
+                                            // check how much time has passed and reset the flag if enough samples/time has passed
+                                            if (lastNeuroCount + interpolatedPointNum - stimSampStamp[i] > 150) // check if 150 samples/ms has passed
+                                            {
+                                                isSelfTrig = false;
+                                            }
+
                                         }
 
                                         // If stim is no longer active- stim is going from high to low
@@ -584,13 +599,13 @@ namespace BICGRPCHelperNamespace
                     latestData[j] = theData[j];
                     if (j == distributedInputChannel)
                     {
+                        // Call calcPhase to estimate current sample's phase
+                        newSample->set_phase(calcPhase(bpFiltData, sampleCounter, &sigFreqData, &phaseData));
+
                         // Call Processing Helper, take output and send to client
                         newSample->set_filtsample(processingHelper(theData[j], &rawPrevData, &stimOnset, &hampelPrevData, &dcFiltPrevData, sampGain));
                         newSample->set_prefiltsample(dcFiltPrevData[0]);
                         newSample->set_hampelfiltsample(hampelPrevData[0]);
-
-                        // Call calcPhase to estimate current sample's phase
-                        newSample->set_phase(calcPhase(bpFiltData, sampleCounter, &sigFreqData, &phaseData));
 
                         // If stim is active
                         if (newSample->stimulationactive() == true && prevStimActive == false)
@@ -607,14 +622,27 @@ namespace BICGRPCHelperNamespace
                             // save the sample number when stimulation onset occurs
                             stimSampStamp.insert(stimSampStamp.begin(), sampleCounter);
                             stimSampStamp.pop_back();
-
-                            // Perform check to see if this stimulation pulse is surpassing the self-triggering limit
-                            detectSelfTriggering(stimSampStamp, 1.25 * 1/(sigFreqData[0]) * 1000); 
                         }
                         else
                         {
                             // Save the stim output for this sample
                             stimOnset.insert(stimOnset.begin(), 0);
+                        }
+
+                        // Process to reset self triggering flag
+                        if (isSelfTrig == false)
+                        {
+                            // Perform check to see if this stimulation pulse is surpassing the self-triggering limit
+                            detectSelfTriggering(stimSampStamp, 1.25 * 1 / (sigFreqData[0]) * 1000);
+                        }
+                        else
+                        {
+                            // check how much time has passed and reset the flag if enough samples/time has passed
+                            if (sampleCounter - stimSampStamp[i] > 150) // check if 150 samples/ms has passed
+                            {
+                                isSelfTrig = false;
+                            }
+
                         }
 
                         // If stim is no longer active
@@ -1053,7 +1081,7 @@ namespace BICGRPCHelperNamespace
         stimTriggerPhase -= (0.1) * phaseDiff;
 
         // Checks to reset stimTriggerPhase if out of bounds
-        if (stimTriggerPhase < 10 || stimTriggerPhase > 170)
+        if (stimTriggerPhase < 1 || stimTriggerPhase > 170)
         {
             stimTriggerPhase = 45;
         }
@@ -1066,7 +1094,7 @@ namespace BICGRPCHelperNamespace
         // Loop through the sample stamps and see if they are close/back to back
         for (int i = 0; i < stimSampArray.size() - 1; i++)
         {
-            if (0 < (stimSampArray[i] - stimSampArray[i + 1]) < selfTrigThresh)
+            if ((stimSampArray[i] - stimSampArray[i + 1]) <= selfTrigThresh)
             {
                 // For every instance they are back to back, increase the counter
                 counter++;
@@ -1074,13 +1102,13 @@ namespace BICGRPCHelperNamespace
         }
 
         // Check if the number of self-triggering pulses exceeds the threshold limit and return boolean state
-        if (counter == stimSampArray.size() - 1)
+        if (counter < stimSampArray.size() - 1)
         {
-            isSelfTrig = true;
+            isSelfTrig = false;
         }
         else
         {
-            isSelfTrig = false;
+            isSelfTrig = true;
         }
     }
 
