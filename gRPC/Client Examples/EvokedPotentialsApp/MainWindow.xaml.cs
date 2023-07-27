@@ -236,8 +236,8 @@ namespace EvokedPotentialsApp
                             configInfo = System.Text.Json.JsonSerializer.Deserialize<Configuration>(configJson);
 
                             OutputConsole.Inlines.Add("Loaded " + fileName + "\n");
-                            OutputConsole.Inlines.Add("Stim channel: " + configInfo.stimChannel + "\n");
-                            OutputConsole.Inlines.Add("Return channel: " + configInfo.returnChannel + "\n");
+                            //OutputConsole.Inlines.Add("Stim channel: " + configInfo.stimChannel + "\n");
+                            //OutputConsole.Inlines.Add("Return channel: " + configInfo.returnChannel + "\n");
                             OutputConsole.Inlines.Add("Number of pulses: " + configInfo.numPulses + "\n");
                             OutputConsole.Inlines.Add("Stim period: " + (configInfo.stimPeriod) + " us\n");
                             OutputConsole.Inlines.Add("Stim Pulse Amplitude: " + configInfo.stimAmplitude + " uA\n");
@@ -252,7 +252,7 @@ namespace EvokedPotentialsApp
                             //{
                             //    OutputConsole.Inlines.Add(configInfo.filterCoefficients_A[i] + " ");
                             //}
-                            OutputConsole.Inlines.Add("\n");
+                            //OutputConsole.Inlines.Add("\n");
                             Scroller.ScrollToEnd();
                         }
 
@@ -265,6 +265,9 @@ namespace EvokedPotentialsApp
                         jitterMax = configInfo.jitterMax;
                         monopolar = configInfo.monopolar;
                         stimThreshold = configInfo.stimThreshold;
+
+                        sources.SelectedValue = stimChannel;
+                        destinations.SelectedValue = returnChannel;
 
                         neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
                         delegate
@@ -317,7 +320,7 @@ namespace EvokedPotentialsApp
                 delegate
                 {
                     // disable buttons
-                    btn_start.IsEnabled = false; // open loop stim button
+                    btn_start.IsEnabled = false; // stim button
                     btn_load.IsEnabled = false; // load config button
                     btn_diagnostic.IsEnabled = false; // diagnostics button
                     btn_stop.IsEnabled = false;
@@ -325,10 +328,10 @@ namespace EvokedPotentialsApp
                     destinations.IsEnabled = false;
                 }));
 
-                // notify user of open loop stimulation starting
+                // notify user of stimulation starting
                 Application.Current.Dispatcher.Invoke(new Action(() =>
                 {
-                    OutputConsole.Inlines.Add("Open loop stimulation started: " + timeStamp + "\n");
+                    OutputConsole.Inlines.Add("Evoked potential stimulation started: " + timeStamp + "\n");
                     Scroller.ScrollToEnd();
                 }));
             });
@@ -480,15 +483,8 @@ namespace EvokedPotentialsApp
 
             // update legend for newest selection of channels
             for (int i = 0; i < selectedChannels.Count; i++)
-            {
-                if (selectedChannels[i] == 33)
-                {
-                    chanString = "Filtered Channel";
-                }
-                else
-                {
-                    chanString = "Channel " + selectedChannels[i].ToString();
-                }
+            {                
+                chanString = "Channel " + selectedChannels[i].ToString();                
                 neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
                 delegate
                 {
@@ -526,7 +522,9 @@ namespace EvokedPotentialsApp
 
         private void sources_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            stimChannel = (int)e.AddedItems[0]; // is this necessary?
+            stimChannel = (int)e.AddedItems[0]; // is this necessary?]
+            OutputConsole.Inlines.Add("Stim channel: " + stimChannel + "\n");
+
             if (stimChannel != null & returnChannel != null)
             {
                 btn_start.IsEnabled = true;
@@ -536,6 +534,8 @@ namespace EvokedPotentialsApp
         private void destinations_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             returnChannel = (int)e.AddedItems[0]; // is this necessary?
+            OutputConsole.Inlines.Add("Return channel: " + returnChannel + "\n");
+
             if (stimChannel != null & returnChannel != null)
             {
                 btn_start.IsEnabled = true;
