@@ -165,7 +165,7 @@ namespace RealtimeGraphing
             logFileStream.Dispose();
         }
 
-        public void enableEvokedPotentialStimulation(bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold, uint numPulses)
+        public bicSuccessReply enableEvokedPotentialStimulation(bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold, uint numPulses)
         {
             //if (openStimEn)
             //{
@@ -214,9 +214,10 @@ namespace RealtimeGraphing
                 // Enqueue the stimulation waveform
                 // what will be equivalent of enable openLoopStimulation??
                 deviceClient.bicEnqueueStimulation(aNewWaveformRequest);
-                deviceClient.bicStartStimulation(new bicStartStimulationRequest() { DeviceAddress = DeviceName });
+                bicSuccessReply reply = deviceClient.bicStartStimulation(new bicStartStimulationRequest() { DeviceAddress = DeviceName });
+                return reply;
                 //deviceClient.enableOpenLoopStimulation(new openLoopStimEnableRequest() { DeviceAddress = DeviceName, Enable = true, WatchdogInterval = 5000, TriggerStimThreshold = stimThreshold });
-            //}
+            //}  
             //else
             //{
                 // Stop the stim
