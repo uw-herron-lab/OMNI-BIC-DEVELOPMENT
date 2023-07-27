@@ -914,7 +914,7 @@ namespace BICGRPCHelperNamespace
         double filtSamp = filterIIR(hampelSamp, &bpFiltData, hampelDataHistory, &betaBandPassIIR_B, &betaBandPassIIR_A, 1);
 
         // if at a particular phase, above an arbitrary threshold, and closed loop stim is enabled, send stimulation
-        if (isCLStimEn && detectTriggerPhase(phaseData, stimTriggerPhase) && bpFiltData[0] > distributedStimThreshold)
+        if (!isSelfTrig && isCLStimEn && detectTriggerPhase(phaseData, stimTriggerPhase) && bpFiltData[0] > distributedStimThreshold)
         {
             // start thread to execute stim command
             stimTrigger->notify_all();
