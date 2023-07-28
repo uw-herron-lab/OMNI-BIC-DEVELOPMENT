@@ -301,6 +301,8 @@ namespace EvokedPotentialsApp
                 {
                     uint interPulseInterval = stimPeriod - (5 * stimDuration) - 3500; // worth revisiting the 3500
                     aBICManager.enableEvokedPotentialStimulation(monopolar, (uint)stimChannel - 1, (uint)returnChannel - 1, stimAmplitude, stimDuration, 4, interPulseInterval, stimThreshold, numPulses);
+                    //BICgRPC.bicSuccessReply reply = aBICManager.enableEvokedPotentialStimulation(monopolar, (uint)stimChannel - 1, (uint)returnChannel - 1, stimAmplitude, stimDuration, 4, interPulseInterval, stimThreshold, numPulses);
+                    //OutputConsole.Inlines.Add(reply.ToString());
                 }
                 catch
                 {
