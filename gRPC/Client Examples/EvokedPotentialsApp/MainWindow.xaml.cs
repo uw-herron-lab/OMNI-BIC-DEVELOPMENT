@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -32,11 +33,11 @@ namespace EvokedPotentialsApp
         private Configuration configInfo;
         private int? stimChannel = null;
         private int? returnChannel = null;
-        private uint numPulses = 50;
+        private uint numPulses = 10;
         private uint stimPeriod = 1000000; // uS
-        private int stimAmplitude = 5400; // uV
+        private int stimAmplitude = -3000; // uV
         private uint stimDuration = 250;
-        private int jitterMax = 300; // uS // TODO: add jitter to pulse method (add to pause?) 
+        private int jitterMax = 300000; // uS // TODO: add jitter to pulse method (add to pause?) 
         private bool monopolar = false;
         private double stimThreshold;
 
@@ -47,6 +48,7 @@ namespace EvokedPotentialsApp
         }
 
         private System.Timers.Timer neuroChartUpdateTimer;
+        private System.Timers.Timer completePulsesTimer;
         public List<Channel> channelList { get; set; }
         public List<int> channelNumList { get; set; }
 
@@ -242,17 +244,6 @@ namespace EvokedPotentialsApp
                             OutputConsole.Inlines.Add("Stim period: " + (configInfo.stimPeriod) + " us\n");
                             OutputConsole.Inlines.Add("Stim Pulse Amplitude: " + configInfo.stimAmplitude + " uA\n");
                             OutputConsole.Inlines.Add("Random jitter between 0-: " + configInfo.jitterMax + " us\n");
-                            //OutputConsole.Inlines.Add("Filter Coefficient [B]: ");
-                            //for (int i = 0; i < configInfo.filterCoefficients_B.Count; i++)
-                            //{
-                            //    OutputConsole.Inlines.Add(configInfo.filterCoefficients_B[i] + " ");
-                            //}
-                            //OutputConsole.Inlines.Add("\nFilter Coefficients [A]: ");
-                            //for (int i = 0; i < configInfo.filterCoefficients_A.Count; i++)
-                            //{
-                            //    OutputConsole.Inlines.Add(configInfo.filterCoefficients_A[i] + " ");
-                            //}
-                            //OutputConsole.Inlines.Add("\n");
                             Scroller.ScrollToEnd();
                         }
 
@@ -289,6 +280,28 @@ namespace EvokedPotentialsApp
                 Scroller.ScrollToEnd();
             }
         }
+
+        private void OnTimerElapsed(object sender, ElapsedEventArgs e)
+        {
+            Application.Current.Dispatcher.Invoke(new Action(() =>
+            {
+                OutputConsole.Inlines.Add("Evoked potential stimulation completed. \n");
+                Scroller.ScrollToEnd();
+            }));
+            neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
+            delegate
+            {
+                btn_start.IsEnabled = true;
+                btn_stop.IsEnabled= false;
+                btn_load.IsEnabled = true;
+                sources.IsEnabled = true;
+                destinations.IsEnabled = true;
+                btn_diagnostic.IsEnabled = true;
+                sources.IsEnabled = true;
+                destinations.IsEnabled = true;
+            }
+                ));
+        }
         private void btn_start_Click(object sender, RoutedEventArgs e)
         {
             ThreadPool.QueueUserWorkItem(a =>
@@ -299,10 +312,8 @@ namespace EvokedPotentialsApp
                 // start stim and update status
                 try
                 {
-                    uint interPulseInterval = stimPeriod - (5 * stimDuration) - 3500; // worth revisiting the 3500
+                    uint interPulseInterval = stimPeriod - (5 * stimDuration); // removed the - 3500
                     aBICManager.enableEvokedPotentialStimulation(monopolar, (uint)stimChannel - 1, (uint)returnChannel - 1, stimAmplitude, stimDuration, 4, interPulseInterval, stimThreshold, numPulses);
-                    //BICgRPC.bicSuccessReply reply = aBICManager.enableEvokedPotentialStimulation(monopolar, (uint)stimChannel - 1, (uint)returnChannel - 1, stimAmplitude, stimDuration, 4, interPulseInterval, stimThreshold, numPulses);
-                    //OutputConsole.Inlines.Add(reply.ToString());
                 }
                 catch
                 {
@@ -325,7 +336,7 @@ namespace EvokedPotentialsApp
                     btn_start.IsEnabled = false; // stim button
                     btn_load.IsEnabled = false; // load config button
                     btn_diagnostic.IsEnabled = false; // diagnostics button
-                    btn_stop.IsEnabled = false;
+                    btn_stop.IsEnabled = true;
                     sources.IsEnabled = false;
                     destinations.IsEnabled = false;
                 }));
@@ -336,6 +347,12 @@ namespace EvokedPotentialsApp
                     OutputConsole.Inlines.Add("Evoked potential stimulation started: " + timeStamp + "\n");
                     Scroller.ScrollToEnd();
                 }));
+
+                completePulsesTimer = new System.Timers.Timer((stimPeriod + jitterMax) / 1000 * numPulses);
+                completePulsesTimer.AutoReset = false;
+                Debug.WriteLine("timer: " + (stimPeriod + jitterMax) / 1000 * numPulses);
+                completePulsesTimer.Elapsed += OnTimerElapsed;
+                completePulsesTimer.Start();
             });
         }
 
@@ -356,12 +373,15 @@ namespace EvokedPotentialsApp
             //    }
             //});
             aBICManager.stopEvokedPotentialStimulation();
-            
+            completePulsesTimer.Stop();
+
             // enable previously disabled buttons
+            // why do it like this?
             neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
                 delegate
                 {
                     btn_start.IsEnabled = true;
+                    btn_stop.IsEnabled = false;
                     btn_load.IsEnabled = true;
                     sources.IsEnabled = true;
                     destinations.IsEnabled = true;
