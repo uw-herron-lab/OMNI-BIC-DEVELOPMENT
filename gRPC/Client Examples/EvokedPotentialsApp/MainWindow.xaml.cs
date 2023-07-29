@@ -313,7 +313,7 @@ namespace EvokedPotentialsApp
                 try
                 {
                     uint interPulseInterval = stimPeriod - (5 * stimDuration); // removed the - 3500
-                    aBICManager.enableEvokedPotentialStimulation(monopolar, (uint)stimChannel - 1, (uint)returnChannel - 1, stimAmplitude, stimDuration, 4, interPulseInterval, stimThreshold, numPulses);
+                    aBICManager.enableEvokedPotentialStimulation(monopolar, (uint)stimChannel - 1, (uint)returnChannel - 1, stimAmplitude, stimDuration, 4, interPulseInterval, stimThreshold, numPulses, jitterMax);
                 }
                 catch
                 {
