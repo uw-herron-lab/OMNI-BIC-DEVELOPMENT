@@ -165,18 +165,17 @@ namespace RealtimeGraphing
             logFileStream.Dispose();
         }
 
-        public void enableEvokedPotentialStimulation(bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold, uint numPulses)
+        public void enableEvokedPotentialStimulation(bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold, uint numPulses, int jitterMax)
         //public bicSuccessReply enableEvokedPotentialStimulation(bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold, uint numPulses)
         {
-            //if (openStimEn)
-            //{
-                // Create a waveform defintion request 
-                bicEnqueueStimulationRequest aNewWaveformRequest = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.PersistentWaveform, WaveformRepititions = numPulses }; // what are waveform reps?? burst? changed from 255 to numPulses...
-
-                // assuming interPulseInterval > 20400 and openStimEn
+            // assuming interPulseInterval > 20400 
+            // Create a waveform defintion request 
+            bicEnqueueStimulationRequest aNewWaveformRequest = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.PersistentWaveform, WaveformRepititions = 1 }; // what are waveform reps?? burst? changed from 255 to numPulses...
+            for (int i = 0; i < numPulses; i++)
+            {
                 if (monopolar)
                 {
-                    // Create a pulse function for monopolar stimulation
+                    // Create a pulse function for monopolar
                     StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
                     {
                         FunctionName = "evokedPotentialStim",
@@ -184,14 +183,6 @@ namespace RealtimeGraphing
 
                     };
                     aNewWaveformRequest.Functions.Add(pulseFunction0);
-
-                    // Create the interpulse pause for monopolar stimulation
-                    StimulationFunctionDefinition interpulsePause = new StimulationFunctionDefinition()
-                    {
-                        FunctionName = "pausePulse",
-                        Pause = new pauseFunction() { Duration = interPulseInterval }
-                    };
-                    aNewWaveformRequest.Functions.Add(interpulsePause);
                 }
                 else
                 {
@@ -203,29 +194,22 @@ namespace RealtimeGraphing
 
                     };
                     aNewWaveformRequest.Functions.Add(pulseFunction0);
-
-                    // Create the interpulse pause for bipolar stimulation
-                    StimulationFunctionDefinition interpulsePause = new StimulationFunctionDefinition()
-                    {
-                        FunctionName = "pausePulse",
-                        Pause = new pauseFunction() { Duration = interPulseInterval }
-                    };
-                    aNewWaveformRequest.Functions.Add(interpulsePause);
                 }
-                // Enqueue the stimulation waveform
-                // what will be equivalent of enable openLoopStimulation??
-                deviceClient.bicEnqueueStimulation(aNewWaveformRequest);
-                deviceClient.bicStartStimulation(new bicStartStimulationRequest() { DeviceAddress = DeviceName });
-                //bicSuccessReply reply = deviceClient.bicStartStimulation(new bicStartStimulationRequest() { DeviceAddress = DeviceName });
-                //return reply;
-                //deviceClient.enableOpenLoopStimulation(new openLoopStimEnableRequest() { DeviceAddress = DeviceName, Enable = true, WatchdogInterval = 5000, TriggerStimThreshold = stimThreshold });
-            //}  
-            //else
-            //{
-            // Stop the stim
-            //deviceClient.enableOpenLoopStimulation(new openLoopStimEnableRequest() { DeviceAddress = DeviceName, Enable = false }); 
-            //}
 
+                // Create the interpulse pause
+                Random random = new Random();
+                uint randomJitter = (uint)random.Next(0, jitterMax);
+                StimulationFunctionDefinition interpulsePause = new StimulationFunctionDefinition()
+                {
+                    FunctionName = "pausePulse",
+                    Pause = new pauseFunction() { Duration = interPulseInterval + randomJitter}
+                };
+                aNewWaveformRequest.Functions.Add(interpulsePause);
+            }
+            // Enqueue the stimulation waveform
+            // what will be equivalent of enable openLoopStimulation??
+            deviceClient.bicEnqueueStimulation(aNewWaveformRequest);
+            deviceClient.bicStartStimulation(new bicStartStimulationRequest() { DeviceAddress = DeviceName });
         }
 
         public void stopEvokedPotentialStimulation()
