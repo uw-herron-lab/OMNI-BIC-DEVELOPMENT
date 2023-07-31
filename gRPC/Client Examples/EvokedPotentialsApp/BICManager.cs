@@ -170,8 +170,8 @@ namespace RealtimeGraphing
         {
             // assuming interPulseInterval > 20400 
             // Create a waveform defintion request 
-            bicEnqueueStimulationRequest aNewWaveformRequest = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.PersistentWaveform, WaveformRepititions = 1 }; // what are waveform reps?? burst? changed from 255 to numPulses...
-            for (int i = 0; i < numPulses; i++)
+            bicEnqueueStimulationRequest aNewWaveformRequest = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.PersistentWaveform, WaveformRepititions = numPulses / 5 }; // what are waveform reps?? burst? changed from 255 to numPulses...
+            for (int i = 0; i < 5; i++)
             {
                 if (monopolar)
                 {
@@ -202,7 +202,8 @@ namespace RealtimeGraphing
                 StimulationFunctionDefinition interpulsePause = new StimulationFunctionDefinition()
                 {
                     FunctionName = "pausePulse",
-                    Pause = new pauseFunction() { Duration = interPulseInterval + randomJitter}
+                    //Pause = new pauseFunction() { Duration = interPulseInterval + randomJitter}
+                    Pause = new pauseFunction() { Duration = interPulseInterval}
                 };
                 aNewWaveformRequest.Functions.Add(interpulsePause);
             }
