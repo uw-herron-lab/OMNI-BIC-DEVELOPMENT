@@ -170,9 +170,9 @@ namespace RealtimeGraphing
         {
             // assuming interPulseInterval > 20400 
             // Create a waveform defintion request 
+            bicEnqueueStimulationRequest aNewWaveformRequest = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.PersistentWaveform, WaveformRepititions = 1 }; // what are waveform reps?? burst? changed from 255 to numPulses...
             for (int i = 0; i < numPulses; i++)
             {
-                bicEnqueueStimulationRequest aNewWaveformRequest = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.PersistentWaveform, WaveformRepititions = 1 };
                 if (monopolar)
                 {
                     // Create a pulse function for monopolar
@@ -205,13 +205,11 @@ namespace RealtimeGraphing
                     Pause = new pauseFunction() { Duration = interPulseInterval + randomJitter}
                 };
                 aNewWaveformRequest.Functions.Add(interpulsePause);
-
-                deviceClient.bicEnqueueStimulation(aNewWaveformRequest);
             }
             // Enqueue the stimulation waveform
-            deviceClient.bicStartStimulation(new bicStartStimulationRequest() { DeviceAddress = DeviceName });
             // what will be equivalent of enable openLoopStimulation??
-            //deviceClient.bicStartStimulation(new bicStartStimulationRequest() { DeviceAddress = DeviceName });
+            deviceClient.bicEnqueueStimulation(aNewWaveformRequest);
+            deviceClient.bicStartStimulation(new bicStartStimulationRequest() { DeviceAddress = DeviceName });
         }
 
         public void stopEvokedPotentialStimulation()
