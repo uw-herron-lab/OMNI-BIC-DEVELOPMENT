@@ -316,67 +316,6 @@ namespace EvokedPotentialsApp
             }
         }
 
-
-        //private void btn_start_Click(object sender, RoutedEventArgs e)
-        //{
-        //    ThreadPool.QueueUserWorkItem(a =>
-        //    {
-        //        // Keep the time for console output writring
-        //        string timeStamp = DateTime.Now.ToString("h:mm:ss tt");
-
-        //        // start stim and update status
-        //        try
-        //        {
-        //            uint interPulseInterval = stimPeriod - (5 * stimDuration); // removed the - 3500
-        //            aBICManager.enableEvokedPotentialStimulation(monopolar, (uint)stimChannel - 1, (uint)returnChannel - 1, stimAmplitude, stimDuration, 4, interPulseInterval, stimThreshold, numPulses, jitterMax);
-        //        }
-        //        catch
-        //        {
-        //            // Exception occured, gRPC command did not succeed, do not update UI button elements
-        //            Application.Current.Dispatcher.Invoke(new Action(() =>
-        //            {
-        //                OutputConsole.Inlines.Add("Evoked Potential stimulation NOT started: " + timeStamp + ", load new configuration\n");
-        //                Scroller.ScrollToEnd();
-        //            }));
-        //            return;
-        //        }
-
-        //        //openStimState = true;
-
-        //        // Succesfully enabled stim, update UI elements
-        //        neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
-        //        delegate
-        //        {
-        //            // disable buttons
-        //            btn_start.IsEnabled = false; // stim button
-        //            btn_load.IsEnabled = false; // load config button
-        //            btn_diagnostic.IsEnabled = false; // diagnostics button
-        //            btn_stop.IsEnabled = true;
-        //            sources.IsEnabled = false;
-        //            destinations.IsEnabled = false;
-        //        }));
-
-        //        // notify user of stimulation starting
-        //        Application.Current.Dispatcher.Invoke(new Action(() =>
-        //        {
-        //            OutputConsole.Inlines.Add("Evoked potential stimulation started: " + timeStamp + "\n");
-        //            Scroller.ScrollToEnd();
-        //        }));
-
-        //        // timer for end of all stim pulses
-        //        completePulsesTimer = new System.Timers.Timer((stimPeriod + jitterMax) / 1000 * numPulses);
-        //        completePulsesTimer.AutoReset = false;
-        //        Debug.WriteLine("timer: " + (stimPeriod + jitterMax) / 1000 * numPulses);
-        //        completePulsesTimer.Elapsed += OnCompletePulsesTimerElapsed;
-        //        completePulsesTimer.Start();
-        //    });
-        //}
-
-        //private void perform_pulses(int stimChannel, int returnChannel, int conditionIndex, int numConditions)
-        //{
-
-        //}
-
         private async void btn_start_Click(object sender, RoutedEventArgs e)
         {
             int numConditions;
@@ -386,6 +325,7 @@ namespace EvokedPotentialsApp
             }
             else
             {
+                // If we're not scanning (single experiment mode), only go through loop once
                 numConditions = 1;
             }
             for (int i = 0; i < numConditions; i++)
@@ -396,7 +336,6 @@ namespace EvokedPotentialsApp
                     stopStimClicked = false;
                     return;
                 }
-                // if scanMode false, we want to just go with the stimChannel that was set in combobox or as first element in list on config load  
                 if (scanMode)
                 {
                     stimChannel = stimChannels[i];
@@ -467,64 +406,6 @@ namespace EvokedPotentialsApp
             }));
             stop_stim_UI_update();
         }
-
-        //private void start_scan_false()
-        //{
-        //    stimChannel = stimChannels[0];
-        //    returnChannel = returnChannels[0];
-
-        //    ThreadPool.QueueUserWorkItem(a =>
-        //    {
-        //        // Keep the time for console output writring
-        //        string timeStamp = DateTime.Now.ToString("h:mm:ss tt");
-
-        //        // start stim and update status
-        //        try
-        //        {
-        //            uint interPulseInterval = stimPeriod - (5 * stimDuration); // removed the - 3500
-        //            aBICManager.enableEvokedPotentialStimulation(monopolar, (uint)stimChannel - 1, (uint)returnChannel - 1, stimAmplitude, stimDuration, 4, interPulseInterval, stimThreshold, numPulses, jitterMax);
-        //        }
-        //        catch
-        //        {
-        //            // Exception occured, gRPC command did not succeed, do not update UI button elements
-        //            Application.Current.Dispatcher.Invoke(new Action(() =>
-        //            {
-        //                OutputConsole.Inlines.Add("Evoked Potential stimulation NOT started: " + timeStamp + ", load new configuration\n");
-        //                Scroller.ScrollToEnd();
-        //            }));
-        //            return;
-        //        }
-
-        //        // Succesfully enabled stim, update UI elements
-        //        neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
-        //        delegate
-        //        {
-        //            // disable buttons
-        //            btn_start.IsEnabled = false; // stim button
-        //            btn_load.IsEnabled = false; // load config button
-        //            btn_diagnostic.IsEnabled = false; // diagnostics button
-        //            btn_stop.IsEnabled = true;
-        //            sources.IsEnabled = false;
-        //            destinations.IsEnabled = false;
-        //        }));
-
-        //        // notify user of stimulation starting
-        //        Application.Current.Dispatcher.Invoke(new Action(() =>
-        //        {
-        //            OutputConsole.Inlines.Add("Evoked potential stimulation started: " + timeStamp + "\n");
-        //            Scroller.ScrollToEnd();
-        //        }));
-
-        //        // timer for end of all stim pulses
-        //        completePulsesTimer = new System.Timers.Timer((stimPeriod + jitterMax) / 1000 * numPulses);
-        //        completePulsesTimer.AutoReset = false;
-        //        Debug.WriteLine("timer: " + (stimPeriod + jitterMax) / 1000 * numPulses);
-        //        completePulsesTimer.Elapsed += OnCompletePulsesTimerElapsed;
-        //        completePulsesTimer.Start();
-        //    });
-        //}
-
-
 
 
         private void stop_stim_UI_update()
@@ -727,10 +608,7 @@ namespace EvokedPotentialsApp
 
         private void sources_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            //stimChannels = new List<int> { (int)e.AddedItems[0] }; // is this necessary?]
             stimChannel = (int)e.AddedItems[0];
-            //OutputConsole.Inlines.Add("Stim channel: " + stimChannel + "\n");
-
             if (stimChannel != null & returnChannel != null)
             {
                 btn_start.IsEnabled = true;
@@ -740,10 +618,7 @@ namespace EvokedPotentialsApp
         private void destinations_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
-            //returnChannels = new List<int> { (int)e.AddedItems[0] };
             returnChannel = (int)e.AddedItems[0];
-            //OutputConsole.Inlines.Add("Return channel: " + retrnChannel + "\n");
-
             if (stimChannel != null & returnChannel != null)
             {
                 btn_start.IsEnabled = true;
@@ -771,7 +646,6 @@ namespace EvokedPotentialsApp
                         destinations.IsEnabled = true;
                     }));
             }
-
         }
     }
 }
