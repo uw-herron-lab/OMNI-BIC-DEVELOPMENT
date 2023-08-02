@@ -1,11 +1,12 @@
 {
   "monopolar": false,
-  "numPulses":  10,
-  "stimChannel": 5,
-  "returnChannel": 16,
+  "numPulses": 15,
+  "stimChannels": [ 5 ],
+  "returnChannels": [ 16 ],
   "stimPeriod": 1000000,
   "stimAmplitude": -3000,
   "stimDuration": 250,
   "stimThreshold": 100,
-  "jitterMax":  300000
+  "jitterMax": 300000,
+  "baselinePeriod": 100000
 }

@@ -6,9 +6,10 @@
         xmlns:winformchart="clr-namespace:System.Windows.Forms.DataVisualization.Charting;assembly=System.Windows.Forms.DataVisualization"
         xmlns:local="clr-namespace:EvokedPotentialsApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" Loaded="MainWindow_Loaded" Closed="MainWindow_Closed">
+        Title="MainWindow" Height="500" Width="800" Loaded="MainWindow_Loaded" Closed="MainWindow_Closed">
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="10*"/>
             <RowDefinition Height="10*"/>
             <RowDefinition Height="10*"/>
             <RowDefinition Height="10*"/>
@@ -24,19 +25,24 @@
         </Grid.ColumnDefinitions>
         
         <Button x:Name="btn_load" Content="Load Config" VerticalAlignment="Top" Click="btn_load_Click" Grid.ColumnSpan="2" Margin="5"/>
-        
-        <Label Grid.Row="1" Grid.Column="0">Source:</Label>
-        <!--<ComboBox x:Name="sources" Grid.Row="1" Grid.Column="1" Margin="10"></ComboBox>-->
-        <ComboBox x:Name="sources" ItemsSource="{Binding Path=channelNumList}" SelectedItem="{Binding Path=stimChannel, Mode=TwoWay}" SelectionChanged="sources_SelectionChanged" Grid.Row="1" Grid.Column="1" Margin="5"/>
-        <Label Grid.Row="2" Grid.Column="0">Destination:</Label>
-        <ComboBox x:Name="destinations" ItemsSource="{Binding Path=channelNumList}" SelectedItem="{Binding Path=returnChannel, Mode=TwoWay}" SelectionChanged="destinations_SelectionChanged" Grid.Row="2" Grid.Column="1" Margin="5"></ComboBox>
 
-        <Button x:Name="btn_start" Content="Start Stim" Click="btn_start_Click" Grid.Row="3" Grid.Column="0" Margin="5"/>
-        <Button x:Name="btn_stop" Content="Stop Stim" Click="btn_stop_Click" Grid.Row="3" Grid.Column="1" Margin="5"/>
+        <Label Grid.Row="1" Grid.Column="0">Mode:</Label>
+        <ComboBox x:Name="mode" SelectionChanged="mode_SelectionChanged"  Grid.Row="1" Grid.Column="1" Margin="5">
+            <ComboBoxItem>Single experiment</ComboBoxItem>
+            <ComboBoxItem>Scanning</ComboBoxItem>
+        </ComboBox>
 
-        <Button x:Name="btn_diagnostic" Content="Diagnostic" Click="btn_diagnostic_Click" Grid.Row="4" Margin="5"/>
+        <Label Grid.Row="2" Grid.Column="0">Source:</Label>
+        <ComboBox x:Name="sources" ItemsSource="{Binding Path=channelNumList}" SelectedItem="{Binding Path=stimChannel, Mode=TwoWay}" SelectionChanged="sources_SelectionChanged" Grid.Row="2" Grid.Column="1" Margin="5"/>
+        <Label Grid.Row="3" Grid.Column="0">Destination:</Label>
+        <ComboBox x:Name="destinations" ItemsSource="{Binding Path=channelNumList}" SelectedItem="{Binding Path=returnChannel, Mode=TwoWay}" SelectionChanged="destinations_SelectionChanged" Grid.Row="3" Grid.Column="1" Margin="5"></ComboBox>
 
-        <ListBox ItemsSource="{Binding channelList}" Grid.Row="5" Grid.ColumnSpan="2">
+        <Button x:Name="btn_start" Content="Start Stim" Click="btn_start_Click" Grid.Row="4" Grid.Column="0" Margin="5"/>
+        <Button x:Name="btn_stop" Content="Stop Stim" Click="btn_stop_Click" Grid.Row="4" Grid.Column="1" Margin="5"/>
+
+        <Button x:Name="btn_diagnostic" Content="Diagnostic" Click="btn_diagnostic_Click" Grid.Row="5" Margin="5"/>
+
+        <ListBox ItemsSource="{Binding channelList}" Grid.Row="6" Grid.ColumnSpan="2">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <CheckBox IsChecked="{Binding IsSelected}" Content="{Binding Name}" Checked="CheckBox_Changed" Unchecked="CheckBox_Changed"/>
@@ -45,14 +51,14 @@
         </ListBox>
 
         <!--display config?-->
-        <ScrollViewer Name="Scroller" Margin="0,0.4,-0.4,0" Background="White" VerticalScrollBarVisibility="Auto" Grid.Row="6" Grid.ColumnSpan="3">
+        <ScrollViewer Name="Scroller" Margin="0,0.4,-0.4,0" Background="White" VerticalScrollBarVisibility="Auto" Grid.Row="7" Grid.ColumnSpan="3">
             <Border BorderThickness="1" BorderBrush="Black">
                 <TextBlock Name="OutputConsole" Foreground="Black" FontFamily="Consolas" FontSize="15" Padding="10" TextWrapping="Wrap"/>
             </Border>
         </ScrollViewer>
         
         <!--display activity-->
-        <WindowsFormsHost x:Name="formHost" Margin="0,0,-0.4,37.6" Grid.RowSpan="6" Grid.Column="2">
+        <WindowsFormsHost x:Name="formHost" Margin="0,0,-0.4,37.6" Grid.RowSpan="7" Grid.Column="2">
             <winformchart:Chart x:Name="neuroStreamChart" Dock="Fill">
                 <winformchart:Chart.Series>
                     <winformchart:Series Name="series" ChartType="Line"/>

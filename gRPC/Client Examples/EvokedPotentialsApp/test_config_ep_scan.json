@@ -1,0 +1,12 @@
+{
+  "scanMode": true,
+  "monopolar": false,
+  "numPulses":  5,
+  "stimChannels": [ 1, 7, 2, 8, 3, 9, 4, 10 ],
+  "returnChannels": [ 7, 1, 8, 2, 9, 3, 10, 4 ],
+  "stimPeriod": 1000000,
+  "stimAmplitude": -3000,
+  "stimDuration": 250,
+  "stimThreshold": 100,
+  "jitterMax":  300000
+}
