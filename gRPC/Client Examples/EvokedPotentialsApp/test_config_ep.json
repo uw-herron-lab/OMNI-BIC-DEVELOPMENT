@@ -1,4 +1,5 @@
 {
+  "scanMode":  false,
   "monopolar": false,
   "numPulses": 15,
   "stimChannels": [ 5 ],

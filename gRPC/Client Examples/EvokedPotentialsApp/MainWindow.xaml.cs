@@ -45,8 +45,8 @@ namespace EvokedPotentialsApp
 
         private bool stopStimClicked = false;
 
-        private List<int> stimChannels;
-        private List<int> returnChannels;
+        private List<int> stimChannels = new List<int> { 1, 7, 2, 8, 3, 9, 4, 10 };
+        private List<int> returnChannels = new List<int> { 7, 1, 8, 2, 9, 3, 10, 4 };
 
         public class Channel
         {
@@ -55,13 +55,12 @@ namespace EvokedPotentialsApp
         }
 
         private System.Timers.Timer neuroChartUpdateTimer;
-        private System.Timers.Timer completePulsesTimer;
         public List<Channel> channelList { get; set; }
         public List<int> channelNumList { get; set; }
 
         public class Configuration
         {
-            public bool scanMode { get; set; }
+            public bool scanMode { get; set; } = false;
             //public int stimChannel { get; set; }
             //public int returnChannel { get; set; }
             public int numChannels { get; set; }
@@ -175,6 +174,8 @@ namespace EvokedPotentialsApp
                     mode.IsEnabled = true;
                 }));
 
+            mode.SelectedIndex = 0;
+
             // Start update timer
             neuroChartUpdateTimer = new System.Timers.Timer(200);
             neuroChartUpdateTimer.Elapsed += neuroChartUpdateTimer_Elapsed;
@@ -249,9 +250,8 @@ namespace EvokedPotentialsApp
                             configInfo = System.Text.Json.JsonSerializer.Deserialize<Configuration>(configJson);
 
                             OutputConsole.Inlines.Add("Loaded " + fileName + "\n");
-                            OutputConsole.Inlines.Add("Stim channels: " + configInfo.stimChannels + "\n");
-                            // TODO: fix printing list
-                            OutputConsole.Inlines.Add("Return channels: " + configInfo.returnChannels + "\n");
+                            OutputConsole.Inlines.Add("Stim channels: " + String.Join(", ", configInfo.stimChannels) + "\n");
+                            OutputConsole.Inlines.Add("Return channels: " + String.Join(", ", configInfo.returnChannels) + "\n");
                             OutputConsole.Inlines.Add("Number of pulses: " + configInfo.numPulses + "\n");
                             OutputConsole.Inlines.Add("Stim period: " + (configInfo.stimPeriod) + " us\n");
                             OutputConsole.Inlines.Add("Stim Pulse Amplitude: " + configInfo.stimAmplitude + " uA\n");
@@ -290,7 +290,7 @@ namespace EvokedPotentialsApp
                         }
                         else
                         {
-                            mode.SelectedValue = 0;
+                            mode.SelectedIndex = 0;
                             neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
                                 delegate
                                 {
