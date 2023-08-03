@@ -61,17 +61,14 @@ namespace EvokedPotentialsApp
         public class Configuration
         {
             public bool scanMode { get; set; } = false;
-            //public int stimChannel { get; set; }
-            //public int returnChannel { get; set; }
             public int numChannels { get; set; }
             public uint numPulses { get; set; }
             public uint stimPeriod { get; set; } // uS
             public int stimAmplitude { get; set; } // uV
             public uint stimDuration { get; set; }
-            public int jitterMax { get; set; } // uS // TODO: add jitter to pulse method (add to pause?) 
+            public int jitterMax { get; set; } // uS
             public bool monopolar { get; set; }
             public double stimThreshold { get; set; }
-
             public List<int> stimChannels { get; set; }
             public List<int> returnChannels { get; set; }
         }
@@ -97,7 +94,7 @@ namespace EvokedPotentialsApp
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             string seriesName;
-            aBICManager = new RealtimeGraphing.BICManager(neuroStreamChart.Width);
+            aBICManager = new RealtimeGraphing.BICManager(neuroStreamChart.Width); // initialize buffer to the width we need! or maybe whichever is bigger. might need to do something later for the display, if buffer is diff length
             aBICManager.BICConnect();
 
             var colors_list = new System.Drawing.Color[]
@@ -140,14 +137,7 @@ namespace EvokedPotentialsApp
             neuroStreamChart.Series.Clear();
             for (int i = 1; i < numChannels; i++)
             {
-                if (i == 33)
-                {
-                    seriesName = "Filtered Channel";
-                }
-                else
-                {
-                    seriesName = "Channel " + i.ToString();
-                }
+                seriesName = "Channel " + i.ToString();
                 neuroStreamChart.Series.Add(
                 new System.Windows.Forms.DataVisualization.Charting.Series
                 {
@@ -202,27 +192,13 @@ namespace EvokedPotentialsApp
             foreach (String item in selected)
             {
                 valConvert = Int32.TryParse(item, out chanVal);
-                if (valConvert)
-                {
-                    selectedChannels.Add(chanVal);
-                }
-                else
-                {
-                    selectedChannels.Add(33);
-                }
+                selectedChannels.Add(chanVal);
             }
 
             // update plot with newest data for selected channels
             for (int i = 0; i < selectedChannels.Count; i++)
             {
-                if (selectedChannels[i] == 33)
-                {
-                    chanString = "Filtered Channel";
-                }
-                else
-                {
-                    chanString = "Channel " + selectedChannels[i].ToString();
-                }
+                chanString = "Channel " + selectedChannels[i].ToString();
                 neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
                 delegate
                 {
