@@ -22,8 +22,16 @@ namespace RealtimeGraphing
         private string DeviceName;
         private List<double>[] dataBuffer;
         private List<double>[] filtDataBuffer;
+        private List<double>[] runningTotals;
+        private List<double>[] currPulseBuffer;
+        private int numSamplesPerPulse;
+        private int currNumPulses = 0;
         private const int numSensingChannelsDef = 32;
         private object dataBufferLock = new object();
+        //private int chartWidth;
+        private uint stimPeriodSamples;
+        private uint baselinePeriodSamples;
+        private uint samplingRate = 1000; // Hz
 
         // Logging Objects
         FileStream logFileStream;
@@ -35,19 +43,24 @@ namespace RealtimeGraphing
 
         // Public Class Properties
         public int DataBufferMaxSampleNumber { get; set; }
+        public int deviceSampleRate {  get; set; }
         
         // Task pointers for streaming methods
         private Task neuroMonitor = null;
 
         // Constructor
-        public BICManager(int definedDataBufferLength) 
+        public BICManager(int definedDataBufferLength, uint stimPeriod, uint baselinePeriod) 
         {
             // Open up the GRPC Channel to the BIC microservice
             aGRPChannel = new Channel("127.0.0.1:50051", ChannelCredentials.Insecure);
 
             // Set up variables for visualization: instantiate data buffers and length variables.
             DataBufferMaxSampleNumber = definedDataBufferLength;
+            //this.chartWidth = neuroStreamChartWidth;
+            this.stimPeriodSamples = (uint)(stimPeriod / 1e6 * samplingRate);
+            this.baselinePeriodSamples = (uint)(baselinePeriod / 1e6 * samplingRate);
             dataBuffer = new List<double>[numSensingChannelsDef];
+            runningTotals = new List<double>[numSensingChannelsDef];
             filtDataBuffer = new List<double>[1];
             for(int i = 0; i < numSensingChannelsDef; i++)
             {
@@ -171,6 +184,8 @@ namespace RealtimeGraphing
             // assuming interPulseInterval > 20400 
             // Create a waveform defintion request 
             bicEnqueueStimulationRequest aNewWaveformRequest = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.PersistentWaveform, WaveformRepititions = numPulses / 5 }; // what are waveform reps?? burst? changed from 255 to numPulses...
+            
+            // creates a sequence of randomized jitter for 5 pulses, then repeats this sequence until we reach numPulses
             for (int i = 0; i < 5; i++)
             {
                 if (monopolar)
@@ -245,6 +260,29 @@ namespace RealtimeGraphing
             return outputBuffer;
         }
 
+        /// <summary>
+        /// Provide a copy of the current data buffers
+        /// </summary>
+        /// <returns>A list of double-arrays, each array is composed of the latest time domain data from each BIC channel. index 0 is the oldest data. </returns>
+        //public List<double>[] getDisplayData() // need to modify this section in order to get filtered data
+        //{
+        //    List<double>[] outputBuffer = new List<double>[chartWidth];
+
+        //    lock (dataBufferLock)
+        //    {
+        //        // if chartWidth < length of buffer, skip beginning of buffer
+        //        int start = chartWidth < dataBuffer.Length ? dataBuffer.Length - chartWidth : 0;
+        //        for (int i = start; i < dataBuffer.Length; i++)
+        //        {
+        //            outputBuffer[i] = new List<double>(dataBuffer[i]);
+        //        }
+
+        //    }
+        //    // have something similar for filtered data buffer
+
+        //    return outputBuffer;
+        //}
+
         private void loggingThread()
         {
             // Declare output from concurrent queue
@@ -289,20 +327,39 @@ namespace RealtimeGraphing
             return true;
         }
 
+        private int getStimulationActiveIndex(Google.Protobuf.Collections.RepeatedField<NeuralSample> samples)
+        {
+            for (int i = 0; i < samples.Count; i++)
+            {
+                if (samples[i].StimulationActive)
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        private List<double> getFilteredChanBuffer(List<double> buffer)
+        {
+            return buffer;
+        }
+
         /// <summary>
         /// Monitor the neural stream for new data
         /// </summary>
         /// <returns>Task completion information</returns>
         async Task neuralMonitorTaskAsync()
         {
+            Debug.WriteLine("********************************************************* calling monitor task");
             var stream = deviceClient.bicNeuralStream(new bicNeuralSetStreamingEnable() { DeviceAddress = DeviceName, Enable = true, BufferSize = 100, MaxInterpolationPoints = 10, AmplificationFactor = RecordingAmplificationFactor.Amplification395DB, RefChannels = { 31 }, UseGroundReference = true});
         
             // Create performance-tracking interpacket variables
             Stopwatch aStopwatch = new Stopwatch();
             newLoggingThread = new Thread(loggingThread);
             newLoggingThread.Start();
-            
+
             uint latestPacketNum = 0;
+
             while (await stream.ResponseStream.MoveNext())
             {
                 // Check if buffer has out of order packet numbers
@@ -315,7 +372,7 @@ namespace RealtimeGraphing
                     long diffPackets = stream.ResponseStream.Current.Samples[0].SampleCounter - (latestPacketNum + 1);
                     
                     // Account for uint wrap around (RARE)
-                    if(diffPackets < 0)
+                    if (diffPackets < 0)
                     {
                         diffPackets = uint.MaxValue - (latestPacketNum + 1) + stream.ResponseStream.Current.Samples[0].SampleCounter;
                     }
@@ -351,15 +408,84 @@ namespace RealtimeGraphing
 
                 // Status update to console
                 aStopwatch.Restart();
-
+               
                 // Create local copy buffers and loop variables
                 int numSamples = stream.ResponseStream.Current.Samples.Count;
                 double[] copyBuffer = new double[numSamples];
                 double[] filtBuffer = new double [numSamples];
 
                 // Lock dataBuffer access to ensure no mid-update copy.
+                // we also don't want a mid update copy of the running totals. will that be taken care of as well? maybe not relevant if I only tell it to access running totals after they've been updated?
+                // do we want this all in the same lock? 
                 lock (dataBufferLock)
                 {
+                    // Update the current pulse buffer
+
+                    // If current pulse buffer is empty, watch for active stim. If found, start the next current pulse buffer
+                    if (currPulseBuffer is null || currPulseBuffer[0].Count == 0)
+                    {
+                        int stimulationActiveIndex = getStimulationActiveIndex(stream.ResponseStream.Current.Samples);
+                        // if it finds active stim, start adding to buffer
+                        if (stimulationActiveIndex != -1)
+                        {
+                            int currDataBufferSize = dataBuffer[0].Count;
+                            int dataBufferStartI = (int)(currDataBufferSize - (baselinePeriodSamples - stimulationActiveIndex));
+                            int pulseBufferCurrSize = (int)(baselinePeriodSamples + (numSamples - stimulationActiveIndex));
+                            for (int channelNum = 0; channelNum < dataBuffer.Length; channelNum++)
+                            {
+                                // add previous data from buffer to chanCurrPulseBuffer
+                                double[] chanCurrPulseBuffer = new double[pulseBufferCurrSize];
+                                for (int i = dataBufferStartI; i < currDataBufferSize; i++)
+                                {
+                                    chanCurrPulseBuffer[i - dataBufferStartI] = dataBuffer[channelNum][i];
+                                }
+                                // add new data to chanCurrPulseBuffer
+                                for (int sampleNum = 0; sampleNum < numSamples; sampleNum++)
+                                {
+                                    chanCurrPulseBuffer[currDataBufferSize - dataBufferStartI + sampleNum] = stream.ResponseStream.Current.Samples[sampleNum].Measurements[channelNum];
+                                }
+                                currPulseBuffer[channelNum].AddRange(chanCurrPulseBuffer);
+                            }                            
+                        }
+                    }
+                    // if current pulse buffer is not empty, add new samples until it's full. once full, filter and send to running totals
+                    else
+                    {
+                        for (int channelNum = 0; channelNum < currPulseBuffer.Length; channelNum++)
+                        {
+                            for (int sampleNum = 0; sampleNum < numSamples; sampleNum++)
+                            {
+                                copyBuffer[sampleNum] = stream.ResponseStream.Current.Samples[sampleNum].Measurements[channelNum];
+                            }
+                            // only add enough data to fill currPulseBuffer
+                            if (currPulseBuffer[channelNum].Count + copyBuffer.Length >= stimPeriodSamples)
+                            {
+                                currPulseBuffer[channelNum].AddRange(new ArraySegment<double>(copyBuffer, 0, (int)(stimPeriodSamples - currPulseBuffer[channelNum].Count)));
+                            }
+                            else
+                            {
+                                currPulseBuffer[channelNum].AddRange(copyBuffer);
+                            }
+                        }
+                        // if we've filled up the buffer
+                        if (currPulseBuffer[0].Count == stimPeriodSamples) // it should never be greater than! check this?
+                        {
+                            // increment num pulses
+                            currNumPulses++;
+                            // filter and add to running totals
+                            for (int channelNum = 0; channelNum < currPulseBuffer.Length; channelNum++)
+                            {
+                                List<double> filtPulseBuffer = getFilteredChanBuffer(currPulseBuffer[channelNum]);
+                                currPulseBuffer[channelNum].Clear();
+                                for (int sampleNum = 0; sampleNum < stimPeriodSamples; sampleNum++)
+                                {
+                                    runningTotals[channelNum][sampleNum] += filtPulseBuffer[sampleNum];
+                                }
+                            }
+                        }
+                    }
+                    
+
                     // Update the data buffers
                     for (int channelNum = 0; channelNum < dataBuffer.Length; channelNum++)
                     {
