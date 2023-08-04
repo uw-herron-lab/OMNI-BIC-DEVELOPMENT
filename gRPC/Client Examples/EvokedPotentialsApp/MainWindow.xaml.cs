@@ -36,12 +36,14 @@ namespace EvokedPotentialsApp
         private int? stimChannel = null;
         private int? returnChannel = null;
         private uint numPulses = 10;
-        private uint stimPeriod = 1000000; // uS
+        private uint stimPeriod = 1000000000; // uS
+        private uint baselinePeriod = 100000000; // uS (.1 s)
         private int stimAmplitude = -3000; // uV
         private uint stimDuration = 250;
         private int jitterMax = 300000; // uS // TODO: add jitter to pulse method (add to pause?) 
         private bool monopolar = false;
         private double stimThreshold = 100;
+        private int samplingRate = 1000; // Hz, 
 
         private bool stopStimClicked = false;
 
@@ -94,7 +96,9 @@ namespace EvokedPotentialsApp
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             string seriesName;
-            aBICManager = new RealtimeGraphing.BICManager(neuroStreamChart.Width); // initialize buffer to the width we need! or maybe whichever is bigger. might need to do something later for the display, if buffer is diff length
+            //aBICManager = new RealtimeGraphing.BICManager(neuroStreamChart.Width); // initialize buffer to the width we need! or maybe whichever is bigger. might need to do something later for the display, if buffer is diff length
+            int bufferLength = (int)((stimPeriod + baselinePeriod) / 10 ^ 9 * samplingRate);
+            aBICManager = new RealtimeGraphing.BICManager(neuroStreamChart.Width, stimPeriod, baselinePeriod);
             aBICManager.BICConnect();
 
             var colors_list = new System.Drawing.Color[]
@@ -372,7 +376,7 @@ namespace EvokedPotentialsApp
                 // timer for end of all stim pulses
                 Debug.WriteLine("**********DELAY IS " + (stimPeriod + jitterMax) / 1000 * numPulses);
                 await Task.Delay((int)((stimPeriod + jitterMax) / 1000 * numPulses));
-                //Thread.Sleep((int)((stimPeriod + jitterMax) / 1000 * numPulses));
+                //Thread.Sleep((int)((stimPeriodSamples + jitterMax) / 1000 * numPulses));
             }
             // notify user and update UI
             Application.Current.Dispatcher.Invoke(new Action(() =>
@@ -465,14 +469,7 @@ namespace EvokedPotentialsApp
             foreach (String item in selected)
             {
                 valConvert = Int32.TryParse(item, out chanVal);
-                if (valConvert)
-                {
-                    selectedChannels.Add(chanVal);
-                }
-                else
-                {
-                    selectedChannels.Add(33);
-                }
+                selectedChannels.Add(chanVal);
             }
 
             // clear the current legend
@@ -522,14 +519,7 @@ namespace EvokedPotentialsApp
             foreach (String item in selected)
             {
                 valConvert = Int32.TryParse(item, out chanVal);
-                if (valConvert)
-                {
-                    selectedChannels.Add(chanVal);
-                }
-                else
-                {
-                    selectedChannels.Add(33);
-                }
+                selectedChannels.Add(chanVal);
             }
 
             // reset current legend

@@ -1,7 +1,7 @@
 {
   "scanMode":  false,
   "monopolar": false,
-  "numPulses": 15,
+  "numPulses": 10,
   "stimChannels": [ 5 ],
   "returnChannels": [ 16 ],
   "stimPeriod": 1000000,
