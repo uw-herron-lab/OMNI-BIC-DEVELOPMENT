@@ -48,6 +48,17 @@ namespace RealtimeGraphing
         // Task pointers for streaming methods
         private Task neuroMonitor = null;
 
+        // Random class used for jitter
+        private static readonly Random random = new Random();
+        private static readonly object syncLock = new object();
+        public static int RandomNumber(int min, int max)
+        {
+            lock (syncLock)
+            {
+                return random.Next(min, max);
+            }
+        }
+
         // Constructor
         public BICManager(int definedDataBufferLength, uint stimPeriod, uint baselinePeriod) 
         {
@@ -204,7 +215,7 @@ namespace RealtimeGraphing
                     // Create a pulse function for bipolar stimulation
                     StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
                     {
-                        FunctionName = "openLoopPulse",
+                        FunctionName = "evokedPotentialStim",
                         StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 10, PulseWidth = stimDuration, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { returnChannel }, UseGround = false, BurstRepetitions = 1 }
 
                     };
@@ -212,13 +223,12 @@ namespace RealtimeGraphing
                 }
 
                 // Create the interpulse pause
-                Random random = new Random();
-                uint randomJitter = (uint)random.Next(0, jitterMax);
+                int randomJitter = RandomNumber(0, jitterMax);
+                Debug.WriteLine("random jitter: " + randomJitter);
                 StimulationFunctionDefinition interpulsePause = new StimulationFunctionDefinition()
                 {
                     FunctionName = "pausePulse",
-                    //Pause = new pauseFunction() { Duration = interPulseInterval + randomJitter}
-                    Pause = new pauseFunction() { Duration = interPulseInterval}
+                    Pause = new pauseFunction() { Duration = (ulong)(interPulseInterval + randomJitter) }
                 };
                 aNewWaveformRequest.Functions.Add(interpulsePause);
             }
