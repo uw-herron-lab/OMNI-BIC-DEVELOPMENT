@@ -1,9 +1,9 @@
 {
   "scanMode":  false,
   "monopolar": false,
-  "numPulses": 10,
-  "stimChannels": [ 5 ],
-  "returnChannels": [ 16 ],
+  "numPulses": 15,
+  "stimChannelsQueue": [ 5 ],
+  "returnChannelsQueue": [ 16 ],
   "stimPeriod": 1000000,
   "stimAmplitude": -3000,
   "stimDuration": 250,

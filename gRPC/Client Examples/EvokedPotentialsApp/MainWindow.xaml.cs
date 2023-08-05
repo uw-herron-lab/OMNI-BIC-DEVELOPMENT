@@ -36,19 +36,19 @@ namespace EvokedPotentialsApp
         private int? stimChannel = null;
         private int? returnChannel = null;
         private uint numPulses = 10;
-        private uint stimPeriod = 1000000000; // uS
-        private uint baselinePeriod = 100000000; // uS (.1 s)
+        private uint stimPeriod = 1000000; // uS
+        private uint baselinePeriod = 100000;
         private int stimAmplitude = -3000; // uV
         private uint stimDuration = 250;
         private int jitterMax = 300000; // uS // TODO: add jitter to pulse method (add to pause?) 
         private bool monopolar = false;
         private double stimThreshold = 100;
-        private int samplingRate = 1000; // Hz, 
+        private uint samplingRate = 1000; //Hz
 
         private bool stopStimClicked = false;
 
-        private List<int> stimChannels = new List<int> { 1, 7, 2, 8, 3, 9, 4, 10 };
-        private List<int> returnChannels = new List<int> { 7, 1, 8, 2, 9, 3, 10, 4 };
+        private List<int> stimChannelsQueue = new List<int> { 1, 7, 2, 8, 3, 9, 4, 10 };
+        private List<int> returnChannelsQueue = new List<int> { 7, 1, 8, 2, 9, 3, 10, 4 };
 
         public class Channel
         {
@@ -71,8 +71,8 @@ namespace EvokedPotentialsApp
             public int jitterMax { get; set; } // uS
             public bool monopolar { get; set; }
             public double stimThreshold { get; set; }
-            public List<int> stimChannels { get; set; }
-            public List<int> returnChannels { get; set; }
+            public List<int> stimChannelsQueue { get; set; }
+            public List<int> returnChannelsQueue { get; set; }
         }
 
         public MainWindow()
@@ -96,9 +96,7 @@ namespace EvokedPotentialsApp
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             string seriesName;
-            //aBICManager = new RealtimeGraphing.BICManager(neuroStreamChart.Width); // initialize buffer to the width we need! or maybe whichever is bigger. might need to do something later for the display, if buffer is diff length
-            int bufferLength = (int)((stimPeriod + baselinePeriod) / 10 ^ 9 * samplingRate);
-            aBICManager = new RealtimeGraphing.BICManager(neuroStreamChart.Width, stimPeriod, baselinePeriod);
+            aBICManager = new RealtimeGraphing.BICManager(neuroStreamChart.Width, stimPeriod, baselinePeriod); // initialize buffer to the width we need! or maybe whichever is bigger. might need to do something later for the display, if buffer is diff length
             aBICManager.BICConnect();
 
             var colors_list = new System.Drawing.Color[]
@@ -230,8 +228,8 @@ namespace EvokedPotentialsApp
                             configInfo = System.Text.Json.JsonSerializer.Deserialize<Configuration>(configJson);
 
                             OutputConsole.Inlines.Add("Loaded " + fileName + "\n");
-                            OutputConsole.Inlines.Add("Stim channels: " + String.Join(", ", configInfo.stimChannels) + "\n");
-                            OutputConsole.Inlines.Add("Return channels: " + String.Join(", ", configInfo.returnChannels) + "\n");
+                            OutputConsole.Inlines.Add("Stim channels: " + String.Join(", ", configInfo.stimChannelsQueue) + "\n");
+                            OutputConsole.Inlines.Add("Return channels: " + String.Join(", ", configInfo.returnChannelsQueue) + "\n");
                             OutputConsole.Inlines.Add("Number of pulses: " + configInfo.numPulses + "\n");
                             OutputConsole.Inlines.Add("Stim period: " + (configInfo.stimPeriod) + " us\n");
                             OutputConsole.Inlines.Add("Stim Pulse Amplitude: " + configInfo.stimAmplitude + " uA\n");
@@ -240,10 +238,10 @@ namespace EvokedPotentialsApp
                         }
 
                         scanMode = configInfo.scanMode;
-                        stimChannels = configInfo.stimChannels;
-                        returnChannels = configInfo.returnChannels;
-                        stimChannel = stimChannels[0];
-                        returnChannel = returnChannels[0];
+                        stimChannelsQueue = configInfo.stimChannelsQueue;
+                        returnChannelsQueue = configInfo.returnChannelsQueue;
+                        stimChannel = stimChannelsQueue[0];
+                        returnChannel = returnChannelsQueue[0];
                         numPulses = configInfo.numPulses;
                         stimPeriod = configInfo.stimPeriod;
                         stimAmplitude = configInfo.stimAmplitude;
@@ -301,7 +299,7 @@ namespace EvokedPotentialsApp
             int numConditions;
             if (scanMode)
             {
-                numConditions = stimChannels.Count;
+                numConditions = stimChannelsQueue.Count;
             }
             else
             {
@@ -318,8 +316,8 @@ namespace EvokedPotentialsApp
                 }
                 if (scanMode)
                 {
-                    stimChannel = stimChannels[i];
-                    returnChannel = returnChannels[i];
+                    stimChannel = stimChannelsQueue[i];
+                    returnChannel = returnChannelsQueue[i];
                 }
 
                 sources.SelectedValue = stimChannel;
@@ -376,7 +374,7 @@ namespace EvokedPotentialsApp
                 // timer for end of all stim pulses
                 Debug.WriteLine("**********DELAY IS " + (stimPeriod + jitterMax) / 1000 * numPulses);
                 await Task.Delay((int)((stimPeriod + jitterMax) / 1000 * numPulses));
-                //Thread.Sleep((int)((stimPeriodSamples + jitterMax) / 1000 * numPulses));
+                //Thread.Sleep((int)((stimPeriod + jitterMax) / 1000 * numPulses));
             }
             // notify user and update UI
             Application.Current.Dispatcher.Invoke(new Action(() =>
@@ -394,8 +392,8 @@ namespace EvokedPotentialsApp
             if (scanMode)
             {
                 // set source/dest back to first in list
-                sources.SelectedValue = stimChannels[0];
-                destinations.SelectedValue = returnChannels[0];
+                sources.SelectedValue = stimChannelsQueue[0];
+                destinations.SelectedValue = returnChannelsQueue[0];
 
                 // enable all buttons except dropdowns for source/destination
                 neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
@@ -575,7 +573,7 @@ namespace EvokedPotentialsApp
         private void sources_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             stimChannel = (int)e.AddedItems[0];
-            if (stimChannel != null & returnChannel != null)
+            if (!scanMode && stimChannel != null && returnChannel != null)
             {
                 btn_start.IsEnabled = true;
             }
@@ -585,7 +583,7 @@ namespace EvokedPotentialsApp
         {
 
             returnChannel = (int)e.AddedItems[0];
-            if (stimChannel != null & returnChannel != null)
+            if (!scanMode && stimChannel != null && returnChannel != null)
             {
                 btn_start.IsEnabled = true;
             }
