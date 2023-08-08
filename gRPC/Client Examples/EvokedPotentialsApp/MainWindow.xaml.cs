@@ -382,6 +382,7 @@ namespace EvokedPotentialsApp
                 OutputConsole.Inlines.Add("Evoked potential stimulation completed.\n");
                 Scroller.ScrollToEnd();
             }));
+            aBICManager.experimentRunning = false;
             stop_stim_UI_update();
         }
 
