@@ -30,6 +30,7 @@ namespace RealtimeGraphing
         private object dataBufferLock = new object();
         //private int chartWidth;
         private uint stimPeriodSamples;
+        private uint stimPeriod; // uS
         private uint baselinePeriodSamples;
         private uint samplingRate = 1000; // Hz
 
@@ -69,6 +70,7 @@ namespace RealtimeGraphing
             // Set up variables for visualization: instantiate data buffers and length variables.
             DataBufferMaxSampleNumber = definedDataBufferLength;
             //this.chartWidth = neuroStreamChartWidth;
+            this.stimPeriod = stimPeriod;
             this.stimPeriodSamples = (uint)(stimPeriod / 1e6 * samplingRate);
             this.baselinePeriodSamples = (uint)(baselinePeriod / 1e6 * samplingRate);
             dataBuffer = new List<double>[numSensingChannelsDef];
@@ -192,18 +194,16 @@ namespace RealtimeGraphing
             logFileStream.Dispose();
         }
 
-        public void enableEvokedPotentialStimulation(bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold, uint numPulses, int jitterMax)
+        public async void enableEvokedPotentialStimulation(bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold, uint numPulses, int jitterMax)
         //public bicSuccessReply enableEvokedPotentialStimulation(bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold, uint numPulses)
         {
             experimentRunning = true;
             currNumPulses = 0;
             // assuming interPulseInterval > 20400 
             // Create a waveform defintion request 
-            bicEnqueueStimulationRequest aNewWaveformRequest = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.PersistentWaveform, WaveformRepititions = numPulses / 5 }; // what are waveform reps?? burst? changed from 255 to numPulses...
-            
-            // creates a sequence of randomized jitter for 5 pulses, then repeats this sequence until we reach numPulses
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < numPulses; i++)
             {
+                bicEnqueueStimulationRequest aNewWaveformRequest = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.PersistentWaveform, WaveformRepititions = 1 }; // what are waveform reps?? burst? changed from 255 to numPulses...
                 if (monopolar)
                 {
                     // Create a pulse function for monopolar
@@ -226,21 +226,12 @@ namespace RealtimeGraphing
                     };
                     aNewWaveformRequest.Functions.Add(pulseFunction0);
                 }
+                deviceClient.bicEnqueueStimulation(aNewWaveformRequest);
+                deviceClient.bicStartStimulation(new bicStartStimulationRequest() { DeviceAddress = DeviceName });
 
-                // Create the interpulse pause
                 int randomJitter = RandomNumber(0, jitterMax);
-                Debug.WriteLine("random jitter: " + randomJitter);
-                StimulationFunctionDefinition interpulsePause = new StimulationFunctionDefinition()
-                {
-                    FunctionName = "pausePulse",
-                    Pause = new pauseFunction() { Duration = (ulong)(interPulseInterval + randomJitter) }
-                };
-                aNewWaveformRequest.Functions.Add(interpulsePause);
+                await Task.Delay((int)((stimPeriod + randomJitter) / 1000));
             }
-            // Enqueue the stimulation waveform
-            // what will be equivalent of enable openLoopStimulation??
-            deviceClient.bicEnqueueStimulation(aNewWaveformRequest);
-            deviceClient.bicStartStimulation(new bicStartStimulationRequest() { DeviceAddress = DeviceName });
         }
 
         public void stopEvokedPotentialStimulation()
