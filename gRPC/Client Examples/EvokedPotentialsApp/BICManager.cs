@@ -22,9 +22,8 @@ namespace RealtimeGraphing
         private string DeviceName;
         private List<double>[] dataBuffer;
         private List<double>[] filtDataBuffer;
-        private double[,] runningTotals;
+        private List<double>[] runningTotals;
         private List<double>[] currPulseBuffer;
-        private int numSamplesPerPulse;
         private int currNumPulses = 0;
         private const int numSensingChannelsDef = 32;
         private object dataBufferLock = new object();
@@ -75,12 +74,13 @@ namespace RealtimeGraphing
             this.baselinePeriodSamples = (uint)(baselinePeriod / 1e6 * samplingRate);
             dataBuffer = new List<double>[numSensingChannelsDef];
             currPulseBuffer = new List<double>[numSensingChannelsDef];
-            runningTotals = new double[numSensingChannelsDef, stimPeriodSamples];
+            runningTotals = new List<double>[numSensingChannelsDef];
             filtDataBuffer = new List<double>[1];
             for(int i = 0; i < numSensingChannelsDef; i++)
             {
                 dataBuffer[i] = new List<double>();
                 currPulseBuffer[i] = new List<double>();
+                runningTotals[i] = new List<double>();
             }
             filtDataBuffer[0] = new List<double>();
 
@@ -263,6 +263,21 @@ namespace RealtimeGraphing
 
             }
             // have something similar for filtered data buffer
+
+            return outputBuffer;
+        }
+
+        public List<double>[] getAverageData() // need to modify this section in order to get filtered data
+        {
+            List<double>[] outputBuffer = new List<double>[runningTotals.Length];
+
+            lock (dataBufferLock)
+            {
+                for (int i = 0; i < runningTotals.Length; i++)
+                {
+                    outputBuffer[i] = new List<double>(runningTotals[i]);
+                }
+            }
 
             return outputBuffer;
         }
@@ -504,7 +519,7 @@ namespace RealtimeGraphing
                                 currPulseBuffer[channelNum].Clear();
                                 for (int sampleNum = 0; sampleNum < stimPeriodSamples; sampleNum++)
                                 {
-                                    runningTotals[channelNum, sampleNum] += filtPulseBuffer[sampleNum];
+                                    runningTotals[channelNum][sampleNum] += filtPulseBuffer[sampleNum];
                                 }
                             }
                             pulseFound = false;
