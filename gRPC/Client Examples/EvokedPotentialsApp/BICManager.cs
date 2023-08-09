@@ -194,44 +194,73 @@ namespace RealtimeGraphing
             logFileStream.Dispose();
         }
 
-        public async void enableEvokedPotentialStimulation(bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold, uint numPulses, int jitterMax)
-        //public bicSuccessReply enableEvokedPotentialStimulation(bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold, uint numPulses)
+        //public async void enableEvokedPotentialStimulation(bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold, uint numPulses, int jitterMax)
+        ////public bicSuccessReply enableEvokedPotentialStimulation(bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold, uint numPulses)
+        //{
+        //    experimentRunning = true;
+        //    currNumPulses = 0;
+        //    // assuming interPulseInterval > 20400 
+        //    // Create a waveform defintion request 
+        //    for (int i = 0; i < numPulses; i++)
+        //    {
+        //        bicEnqueueStimulationRequest aNewWaveformRequest = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.PersistentWaveform, WaveformRepititions = 1 }; // what are waveform reps?? burst? changed from 255 to numPulses...
+        //        if (monopolar)
+        //        {
+        //            // Create a pulse function for monopolar
+        //            StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
+        //            {
+        //                FunctionName = "evokedPotentialStim",
+        //                StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 10, PulseWidth = stimDuration, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { }, UseGround = true, BurstRepetitions = 1 }
+
+        //            };
+        //            aNewWaveformRequest.Functions.Add(pulseFunction0);
+        //        }
+        //        else
+        //        {
+        //            // Create a pulse function for bipolar stimulation
+        //            StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
+        //            {
+        //                FunctionName = "evokedPotentialStim",
+        //                StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 10, PulseWidth = stimDuration, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { returnChannel }, UseGround = false, BurstRepetitions = 1 }
+
+        //            };
+        //            aNewWaveformRequest.Functions.Add(pulseFunction0);
+        //        }
+        //        deviceClient.bicEnqueueStimulation(aNewWaveformRequest);
+        //        deviceClient.bicStartStimulation(new bicStartStimulationRequest() { DeviceAddress = DeviceName });
+
+        //        int randomJitter = RandomNumber(0, jitterMax);
+        //        await Task.Delay((int)((stimPeriod + randomJitter) / 1000));
+        //    }
+        //}
+
+        public void enableStimulationPulse(bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold)
         {
-            experimentRunning = true;
-            currNumPulses = 0;
-            // assuming interPulseInterval > 20400 
-            // Create a waveform defintion request 
-            for (int i = 0; i < numPulses; i++)
+            bicEnqueueStimulationRequest aNewWaveformRequest = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.PersistentWaveform, WaveformRepititions = 1 }; // what are waveform reps?? burst? changed from 255 to numPulses...
+            if (monopolar)
             {
-                bicEnqueueStimulationRequest aNewWaveformRequest = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.PersistentWaveform, WaveformRepititions = 1 }; // what are waveform reps?? burst? changed from 255 to numPulses...
-                if (monopolar)
+                // Create a pulse function for monopolar
+                StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
                 {
-                    // Create a pulse function for monopolar
-                    StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
-                    {
-                        FunctionName = "evokedPotentialStim",
-                        StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 10, PulseWidth = stimDuration, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { }, UseGround = true, BurstRepetitions = 1 }
+                    FunctionName = "evokedPotentialStim",
+                    StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 10, PulseWidth = stimDuration, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { }, UseGround = true, BurstRepetitions = 1 }
 
-                    };
-                    aNewWaveformRequest.Functions.Add(pulseFunction0);
-                }
-                else
-                {
-                    // Create a pulse function for bipolar stimulation
-                    StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
-                    {
-                        FunctionName = "evokedPotentialStim",
-                        StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 10, PulseWidth = stimDuration, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { returnChannel }, UseGround = false, BurstRepetitions = 1 }
-
-                    };
-                    aNewWaveformRequest.Functions.Add(pulseFunction0);
-                }
-                deviceClient.bicEnqueueStimulation(aNewWaveformRequest);
-                deviceClient.bicStartStimulation(new bicStartStimulationRequest() { DeviceAddress = DeviceName });
-
-                int randomJitter = RandomNumber(0, jitterMax);
-                await Task.Delay((int)((stimPeriod + randomJitter) / 1000));
+                };
+                aNewWaveformRequest.Functions.Add(pulseFunction0);
             }
+            else
+            {
+                // Create a pulse function for bipolar stimulation
+                StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
+                {
+                    FunctionName = "evokedPotentialStim",
+                    StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 10, PulseWidth = stimDuration, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { returnChannel }, UseGround = false, BurstRepetitions = 1 }
+
+                };
+                aNewWaveformRequest.Functions.Add(pulseFunction0);
+            }
+            deviceClient.bicEnqueueStimulation(aNewWaveformRequest);
+            deviceClient.bicStartStimulation(new bicStartStimulationRequest() { DeviceAddress = DeviceName });
         }
 
         public void stopEvokedPotentialStimulation()
@@ -433,7 +462,7 @@ namespace RealtimeGraphing
                     // If current pulse buffer is empty, watch for active stim. If found, start the next current pulse buffer
                     //if (experimentRunning && !pulseFound && currPulseBuffer[0].Count == 0)
                     //Debug.WriteLine(getStimulationActiveIndex(stream.ResponseStream.Current.Samples));
-                    Debug.WriteLine(stream.ResponseStream.Current.Samples[0].StimulationActive);
+                    //Debug.WriteLine(stream.ResponseStream.Current.Samples[0].StimulationActive);
                     if (experimentRunning && !pulseFound && currPulseBuffer[0].Count == 0)
                     {
                         int stimulationActiveIndex = getStimulationActiveIndex(stream.ResponseStream.Current.Samples);
@@ -442,7 +471,7 @@ namespace RealtimeGraphing
                         {
                             pulseFound = true;
                             double testElapsedTime = (double)aStopwatch.ElapsedTicks / (double)Stopwatch.Frequency;
-                            Debug.WriteLine(currNumPulses + " pulses, found start stim, " + testElapsedTime);
+                            //Debug.WriteLine(currNumPulses + " pulses, found start stim, " + testElapsedTime);
                             int transferBufferSize = (int)(baselinePeriodSamples - stimulationActiveIndex); // how much data to take from the end of the buffer to get to baselinePeriodSamples before stim
                             int currDataBufferSize = dataBuffer[0].Count;
                             int dataBufferStartI = (int)(currDataBufferSize - transferBufferSize); // starting i in dataBuffer to transfer to currPulseBuffer
@@ -566,7 +595,7 @@ namespace RealtimeGraphing
                         // if too long, remove the difference
                         filtDataBuffer[0].RemoveRange(0, filtDiffLength);
                     }
-                    Debug.WriteLine("current buffer size: " + currPulseBuffer[0].Count);
+                    //Debug.WriteLine("current buffer size: " + currPulseBuffer[0].Count);
                 }
 
                 // Update packet tracking number
