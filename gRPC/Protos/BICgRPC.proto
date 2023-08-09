@@ -250,6 +250,8 @@ message distributedStimEnableRequest{
 	uint32 triggeredFunctionIndex = 6;
 	double triggerStimThreshold = 7;
 	double initTriggerStimPhase = 8;
+	uint32 nStimBlankWindow = 9;
+	uint32 nStimTrigLimit = 10;
 }
 
 // *************************** Device Streaming Service Messages ***************************
@@ -283,6 +285,7 @@ message NeuralSample{
 	double triggerPhase = 13;
 	double preFiltSample = 14;
 	double hampelFiltSample = 15;
+	bool isValidTarget = 16;
 }
 
 message ConnectionUpdate{

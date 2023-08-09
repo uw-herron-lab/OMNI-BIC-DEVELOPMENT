@@ -510,6 +510,7 @@ namespace BICGRPCHelperNamespace
                                         newInterpolatedSample->set_filtsample(processingHelper(interpolatedSample, &rawPrevData, &stimOnset, &hampelPrevData, &dcFiltPrevData, sampGain));
                                         newInterpolatedSample->set_prefiltsample(dcFiltPrevData[0]);
                                         newInterpolatedSample->set_hampelfiltsample(hampelPrevData[0]);
+                                        newInterpolatedSample->set_isvalidtarget(isValidTarget);
 
                                         // Check if this sample is at stimulation onset
                                         if (newInterpolatedSample->stimulationactive() == true && prevStimActive == false)
@@ -532,7 +533,6 @@ namespace BICGRPCHelperNamespace
                                         // Otherwise, we aren't at stim onset
                                         else
                                         {
-                                            // Save the stim output for this sample
                                             // Save the stim output for this sample
                                             stimOnset.insert(stimOnset.begin(), 0);
                                         }
@@ -606,6 +606,7 @@ namespace BICGRPCHelperNamespace
                         newSample->set_filtsample(processingHelper(theData[j], &rawPrevData, &stimOnset, &hampelPrevData, &dcFiltPrevData, sampGain));
                         newSample->set_prefiltsample(dcFiltPrevData[0]);
                         newSample->set_hampelfiltsample(hampelPrevData[0]);
+                        newSample->set_isvalidtarget(isValidTarget);
 
                         // If stim is active
                         if (newSample->stimulationactive() == true && prevStimActive == false)
@@ -687,13 +688,15 @@ namespace BICGRPCHelperNamespace
     /// <param name="enableDistributed">A boolean indicating if phasic stim should be enabled or disabled</param>
     /// <param name="phaseSensingChannel">The channel to sense phase on</param>
     /// <param name="phaseStimChannel">The channel to stimulate after negative zero crossings of phase sensing channel</param>
-    void BICListener::enableDistributedStim(bool enableDistributed, int sensingChannel, std::vector<double> filtCoeff_B, std::vector<double> filtCoeff_A, uint32_t triggeredFunctionIndex, double stimThreshold, double triggerPhase)
+    void BICListener::enableDistributedStim(bool enableDistributed, int sensingChannel, std::vector<double> filtCoeff_B, std::vector<double> filtCoeff_A, uint32_t triggeredFunctionIndex, double stimThreshold, double triggerPhase, int nStimHistory, int nSelfTrigLimit)
     {
         distributedInputChannel = sensingChannel;
         betaBandPassIIR_B = filtCoeff_B;
         betaBandPassIIR_A = filtCoeff_A;
         distributedStimThreshold = stimThreshold;
         stimTriggerPhase = triggerPhase;
+        stimOnset = std::vector<double>(nStimHistory, 0);
+        stimSampStamp = std::vector<int>(nSelfTrigLimit, 0);
 
         if (enableDistributed && !isTriggeringStimulation() && !isStimulating())
         {
@@ -848,6 +851,7 @@ namespace BICGRPCHelperNamespace
         
         std::vector<double> modifier(dataHistory->size());
         std::vector<double> sorted(dataHistory->size());
+        std::vector<double> medWindow(15);
 
         // store most recent raw sample
         dataHistory->insert(dataHistory->begin(), newData);
@@ -863,7 +867,8 @@ namespace BICGRPCHelperNamespace
         if (dummySamp > 0)
         {
             // Blank if artifact or near artifact
-            dcFiltSamp = 0;
+            dcFiltSamp = hampelDataHistory->at(0);
+            //vRef = hampelDataHistory->at(0);
         }
         else
         {
@@ -916,8 +921,15 @@ namespace BICGRPCHelperNamespace
         // if at a particular phase, above an arbitrary threshold, and closed loop stim is enabled, send stimulation
         if (!isSelfTrig && isCLStimEn && detectTriggerPhase(phaseData, stimTriggerPhase) && bpFiltData[0] > distributedStimThreshold)
         {
+            // log that a valid target has been found
+            isValidTarget = true;
+
             // start thread to execute stim command
             stimTrigger->notify_all();
+        }
+        else
+        {
+            isValidTarget = false;
         }
 
         // Return the filtered sample for visualization purposes
@@ -1077,7 +1089,7 @@ namespace BICGRPCHelperNamespace
         double phaseDiff = 0;
 
         // find phase difference and use that to update stimTriggerPhase alongside arbitrary gain
-        phaseDiff = prevStimPhase - 210; // due to slight delay, shift desired points earlier by 10 degrees
+        phaseDiff = prevStimPhase - 200; // due to slight delay, shift desired points earlier by 10 degrees
         stimTriggerPhase -= (0.1) * phaseDiff;
 
         // Checks to reset stimTriggerPhase if out of bounds
@@ -1087,6 +1099,11 @@ namespace BICGRPCHelperNamespace
         }
     }
 
+    /// <summary>
+    /// Function for detecting if too many stimulation pulses have been sent out consecutively
+    /// </summary>
+    /// <param name="stimSampArray">Container of sample numbers indicating the onset of stimulation</param>
+    /// <param name="selfTrigThresh">Value dictating the maximum amount of time between two stimulation onsets to be considered self triggering </param>
     void BICListener::detectSelfTriggering(std::vector<int> stimSampArray, double selfTrigThresh)
     {
         int counter = 0;

@@ -28,7 +28,7 @@ namespace BICGRPCHelperNamespace
 
         // ************************* Public Distributed Algorithm Stimulation Management *************************
         void enableOpenLoopStim(bool enableOpenLoop, uint32_t watchdogInterval);
-        void enableDistributedStim(bool enableDistributed, int phaseSensingChannel, std::vector<double> filtCoeff_B, std::vector<double> filtCoeff_A, uint32_t triggeredFunctionIndex, double stimThreshold, double triggerPhase);
+        void enableDistributedStim(bool enableDistributed, int phaseSensingChannel, std::vector<double> filtCoeff_B, std::vector<double> filtCoeff_A, uint32_t triggeredFunctionIndex, double stimThreshold, double triggerPhase, int nStimHistory, int nSelfTrigLimit);
         void addImplantPointer(cortec::implantapi::IImplant* theImplantedDevice);
         void enableStimTimeLogging(bool enableSensing);
         double processingHelper(double newData, std::vector<double>* dataHistory, std::vector<double>* stimHistory, std::vector<double>* hampelDataHistory, std::vector<double>* dcFiltHistory, double filterGain);
@@ -167,16 +167,20 @@ namespace BICGRPCHelperNamespace
         double distributedStimThreshold = 10;       // Distributed algorithm threshold to trigger stimulation (input)
 
         // Signal Processing Variables
-        std::vector<double> bpFiltData = { 0, 0, 0 };                   // IIR filter output history
-        std::vector<double> rawPrevData = std::vector<double>(15, 0);   // Data history for raw input samples
-        std::vector<double> hampelPrevData = std::vector<double>(15, 0);// Data history for hampel filtered input samples
-        std::vector<double> dcFiltPrevData = std::vector<double>(15, 0);
-        std::vector<double> betaBandPassIIR_B = { 0.0305, 0, -0.0305 }; // IIR "B" filter coefficients for a beta-range band-pass
-        std::vector<double> betaBandPassIIR_A = { 1, -1.9247, 0.9391 }; // IIR "A" filter coefficients for a beta-range band-pass
+        std::vector<double> bpFiltData = { 0, 0, 0 };                       // IIR filter output history
+        std::vector<double> rawPrevData = std::vector<double>(15, 0);       // Data history for raw input samples
+        std::vector<double> hampelPrevData = std::vector<double>(15, 0);    // Data history for hampel filtered input samples
+        std::vector<double> dcFiltPrevData = std::vector<double>(15, 0);    
+        std::vector<double> betaBandPassIIR_B = { 0.0305, 0, -0.0305 };     // IIR "B" filter coefficients for a beta-range band-pass
+        std::vector<double> betaBandPassIIR_A = { 1, -1.9247, 0.9391 };     // IIR "A" filter coefficients for a beta-range band-pass
         double sampGain = 1;
-        std::vector<double> stimOnset = std::vector<double>(10, 0);      // history of stimulation output to facilitate blanking
-        bool isSelfTrig = false;                                        // State tracking boolean to determine if system is self-triggering
-        std::vector<int> stimSampStamp = std::vector<int>(5, 0);        // history of sample number for stim onset
+        bool isSelfTrig = false;                                            // State tracking boolean to determine if system is self-triggering
+        bool isValidTarget = false;                                         // State tracking boolean to determine if the system is in a state to be stimulating (limit self-triggering)
+        int nStimWindowSize = 15;                                           // Size of window keeping track of stimulation history (stim blanking window size)
+        int nStimTrigLimit = 2;                                             // Limit of consecutive pulses that the system can send (self-triggering limit)
+        std::vector<double> stimOnset = std::vector<double>(nStimWindowSize, 0);    // history of stimulation output to facilitate blanking                                      
+        std::vector<int> stimSampStamp = std::vector<int>(nStimTrigLimit, 0);// history of sample number for stim onset
+        
 
         
         // Phase Calculation Variables
