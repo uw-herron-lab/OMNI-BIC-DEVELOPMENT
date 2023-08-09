@@ -256,28 +256,20 @@ namespace RealtimeGraphing
             return outputBuffer;
         }
 
-        /// <summary>
-        /// Provide a copy of the current data buffers
-        /// </summary>
-        /// <returns>A list of double-arrays, each array is composed of the latest time domain data from each BIC channel. index 0 is the oldest data. </returns>
-        //public List<double>[] getDisplayData() // need to modify this section in order to get filtered data
-        //{
-        //    List<double>[] outputBuffer = new List<double>[chartWidth];
+        public List<double>[] getAvgData() // need to modify this section in order to get filtered data
+        {
+            List<double>[] outputBuffer = new List<double>[runningTotals.Length];
 
-        //    lock (dataBufferLock)
-        //    {
-        //        // if chartWidth < length of buffer, skip beginning of buffer
-        //        int start = chartWidth < dataBuffer.Length ? dataBuffer.Length - chartWidth : 0;
-        //        for (int i = start; i < dataBuffer.Length; i++)
-        //        {
-        //            outputBuffer[i] = new List<double>(dataBuffer[i]);
-        //        }
+            lock (dataBufferLock)
+            {
+                for (int i = 0; i < runningTotals.Length; i++)
+                {
+                    outputBuffer[i] = new List<double>(runningTotals[i]);
+                }
+            }
+            return outputBuffer;
+        }
 
-        //    }
-        //    // have something similar for filtered data buffer
-
-        //    return outputBuffer;
-        //}
 
         private void loggingThread()
         {
