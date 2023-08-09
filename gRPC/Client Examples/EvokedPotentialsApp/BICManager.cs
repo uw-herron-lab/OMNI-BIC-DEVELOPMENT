@@ -256,7 +256,7 @@ namespace RealtimeGraphing
             return outputBuffer;
         }
 
-        public List<double>[] getAvgData() // need to modify this section in order to get filtered data
+        public List<double>[] getAvgsData() // need to modify this section in order to get filtered data
         {
             List<double>[] outputBuffer = new List<double>[runningTotals.Length];
 

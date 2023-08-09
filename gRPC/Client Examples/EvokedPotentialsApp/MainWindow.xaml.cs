@@ -148,6 +148,7 @@ namespace EvokedPotentialsApp
             };
 
             neuroStreamChart.Series.Clear();
+            avgsChart.Series.Clear();
             for (int i = 1; i < numChannels; i++)
             {
                 seriesName = "Channel " + i.ToString();
@@ -159,8 +160,17 @@ namespace EvokedPotentialsApp
                     ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastLine
                 });
 
+                avgsChart.Series.Add(
+                new System.Windows.Forms.DataVisualization.Charting.Series
+                {
+                    Name = seriesName,
+                    Color = colors_list[i - 1],
+                    ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastLine
+                });
+
                 // when loading window, make legend invisible
                 neuroStreamChart.Series[i - 1].IsVisibleInLegend = false;
+                avgsChart.Series[i - 1].IsVisibleInLegend = false;
             }
 
             neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
@@ -216,6 +226,41 @@ namespace EvokedPotentialsApp
                 delegate
                 {
                     neuroStreamChart.Series[chanString].Points.DataBindY(neuroData[selectedChannels[i] - 1]);
+                }));
+            }
+        }
+
+        private void updateAvgsChart()
+        {
+            // grab latest data
+            List<double>[] avgsData = aBICManager.getAvgsData();
+
+            // look for the selected items in the listbox
+            List<int> selectedChannels = new List<int>();
+            string chanString = "";
+            int chanVal;
+            bool valConvert = false;
+
+            // get a list of selected channels
+            var selected = from item in channelList
+                           where item.IsSelected == true
+                           select item.Name.ToString();
+
+            // convert from string to int type
+            foreach (String item in selected)
+            {
+                valConvert = Int32.TryParse(item, out chanVal);
+                selectedChannels.Add(chanVal);
+            }
+
+            // update plot with newest data for selected channels
+            for (int i = 0; i < selectedChannels.Count; i++)
+            {
+                chanString = "Channel " + selectedChannels[i].ToString();
+                avgsChart.Invoke(new System.Windows.Forms.MethodInvoker(
+                delegate
+                {
+                    avgsChart.Series[chanString].Points.DataBindY(avgsData[selectedChannels[i] - 1]);
                 }));
             }
         }
@@ -408,7 +453,7 @@ namespace EvokedPotentialsApp
 
         private async void enableEvokedPotentialStimulation(bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold, uint numPulses, int jitterMax)
         {
-            aBICManager.currNumPulses = 0;
+            //aBICManager.currNumPulses = 0;
             for (int i = 0; i < numPulses; i++)
             {
                 if (stopStimClicked)
@@ -417,9 +462,11 @@ namespace EvokedPotentialsApp
                 }
                 else
                 {
-                    aBICManager.currNumPulses++;
+                    updateAvgsChart(); // calling before the next stim, hoping this means enough time for runningtotals and currNumPulses to update. ideally, this would get called in bicmanager after updating
+                    //aBICManager.currNumPulses++;
                     Debug.WriteLine("calling aBICManager.enableStimulationPulse. this should print every ~1 sec");
                     aBICManager.enableStimulationPulse(monopolar, stimChannel - 1, returnChannel - 1, stimAmplitude, stimDuration, 4, interPulseInterval, stimThreshold);
+                    
                     int randomJitter = RandomNumber(0, jitterMax);
                     await Task.Delay((int)((stimPeriod + randomJitter) / 1000));
                 }
@@ -522,6 +569,15 @@ namespace EvokedPotentialsApp
                     series.Enabled = false;
                 }
             }));
+            avgsChart.Invoke(new System.Windows.Forms.MethodInvoker(
+            delegate
+            {
+                foreach (var series in avgsChart.Series)
+                {
+                    series.IsVisibleInLegend = false;
+                    series.Enabled = false;
+                }
+            }));
 
             // Plot newly selected channels and show new legend
             for (int i = 0; i < selectedChannels.Count; i++)
@@ -533,6 +589,14 @@ namespace EvokedPotentialsApp
                     neuroStreamChart.Series[chanString].Points.DataBindY(neuroData[selectedChannels[i] - 1]);
                     neuroStreamChart.Series[chanString].IsVisibleInLegend = true;
                     neuroStreamChart.Series[chanString].Enabled = true;
+                }));
+
+                avgsChart.Invoke(new System.Windows.Forms.MethodInvoker(
+                delegate
+                {
+                    avgsChart.Series[chanString].Points.DataBindY(neuroData[selectedChannels[i] - 1]);
+                    avgsChart.Series[chanString].IsVisibleInLegend = true;
+                    avgsChart.Series[chanString].Enabled = true;
                 }));
             }
         }
@@ -573,6 +637,16 @@ namespace EvokedPotentialsApp
                 }
             }));
 
+            avgsChart.Invoke(new System.Windows.Forms.MethodInvoker(
+            delegate
+            {
+                foreach (var series in avgsChart.Series)
+                {
+                    series.IsVisibleInLegend = false;
+                    series.Enabled = false;
+                }
+            }));
+
             // update legend for newest selection of channels
             for (int i = 0; i < selectedChannels.Count; i++)
             {                
@@ -582,6 +656,16 @@ namespace EvokedPotentialsApp
                 {
                     neuroStreamChart.Series[chanString].IsVisibleInLegend = true;
                     neuroStreamChart.Series[chanString].Enabled = true;
+                }));
+            }
+            for (int i = 0; i < selectedChannels.Count; i++)
+            {
+                chanString = "Channel " + selectedChannels[i].ToString();
+                avgsChart.Invoke(new System.Windows.Forms.MethodInvoker(
+                delegate
+                {
+                    avgsChart.Series[chanString].IsVisibleInLegend = true;
+                    avgsChart.Series[chanString].Enabled = true;
                 }));
             }
         }
