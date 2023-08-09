@@ -6,7 +6,7 @@
         xmlns:winformchart="clr-namespace:System.Windows.Forms.DataVisualization.Charting;assembly=System.Windows.Forms.DataVisualization"
         xmlns:local="clr-namespace:EvokedPotentialsApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="500" Width="800" Loaded="MainWindow_Loaded" Closed="MainWindow_Closed">
+        Title="MainWindow" Height="800" Width="800" Loaded="MainWindow_Loaded" Closed="MainWindow_Closed">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="10*"/>
@@ -21,7 +21,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="100*"/>
             <ColumnDefinition Width="100*"/>
-            <ColumnDefinition Width="600*"/>
+            <ColumnDefinition Width="500*"/>
         </Grid.ColumnDefinitions>
         
         <Button x:Name="btn_load" Content="Load Config" VerticalAlignment="Top" Click="btn_load_Click" Grid.ColumnSpan="2" Margin="5"/>
@@ -56,21 +56,27 @@
                 <TextBlock Name="OutputConsole" Foreground="Black" FontFamily="Consolas" FontSize="15" Padding="10" TextWrapping="Wrap"/>
             </Border>
         </ScrollViewer>
-        
-        <!--display activity-->
-        <WindowsFormsHost x:Name="formHost" Margin="0,0,-0.4,37.6" Grid.RowSpan="7" Grid.Column="2">
-            <winformchart:Chart x:Name="neuroStreamChart" Dock="Fill">
-                <winformchart:Chart.Series>
-                    <winformchart:Series Name="series" ChartType="Line"/>
-                </winformchart:Chart.Series>
-                <winformchart:Chart.ChartAreas>
-                    <winformchart:ChartArea/>
-                </winformchart:Chart.ChartAreas>
-                <winformchart:Chart.Legends>
-                    <winformchart:Legend/>
-                </winformchart:Chart.Legends>
-            </winformchart:Chart>
-        </WindowsFormsHost>
+
+        <Grid Grid.RowSpan="7" Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <WindowsFormsHost x:Name="formHost" Margin="0,0,-0.4,37.6" Grid.Row="0">
+                <winformchart:Chart x:Name="neuroStreamChart" Dock="Fill">
+                    <winformchart:Chart.Series>
+                        <winformchart:Series Name="series" ChartType="Line"/>
+                    </winformchart:Chart.Series>
+                    <winformchart:Chart.ChartAreas>
+                        <winformchart:ChartArea/>
+                    </winformchart:Chart.ChartAreas>
+                    <winformchart:Chart.Legends>
+                        <winformchart:Legend/>
+                    </winformchart:Chart.Legends>
+                </winformchart:Chart>
+            </WindowsFormsHost>
+        </Grid>
+            
         
         <TextBlock TextWrapping="Wrap" Text="y-axis min:" Grid.Column="2" Margin="0,0,192.6,12.6" Height="16" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="61"/>
         <TextBox x:Name="y_min" TextWrapping="Wrap" Margin="0,0,141.6,9.6" Grid.Column="2" TextChanged="y_min_TextChanged" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="50"/>
