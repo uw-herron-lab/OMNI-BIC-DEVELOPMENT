@@ -260,11 +260,16 @@ namespace RealtimeGraphing
         {
             List<double>[] outputBuffer = new List<double>[runningTotals.Length];
 
-            lock (dataBufferLock)
+            lock (dataBufferLock) 
             {
                 for (int i = 0; i < runningTotals.Length; i++)
                 {
-                    outputBuffer[i] = new List<double>(runningTotals[i]);
+                    double[] chanBuffer = new double[stimPeriodSamples];
+                    for (int j = 0; j < stimPeriodSamples; j++)
+                    {
+                        chanBuffer[j] = runningTotals[i][j] / currNumPulses;
+                    }
+                    outputBuffer[i] = new List<double>(chanBuffer);
                 }
             }
             return outputBuffer;
