@@ -73,6 +73,9 @@
                     <winformchart:Chart.Legends>
                         <winformchart:Legend/>
                     </winformchart:Chart.Legends>
+                    <winformchart:Chart.Titles>
+                        <winformchart:Title Text="Neural Activity by Channel"></winformchart:Title>
+                    </winformchart:Chart.Titles>
                 </winformchart:Chart>
             </WindowsFormsHost>
             <WindowsFormsHost Grid.Row="1">
@@ -86,6 +89,9 @@
                     <winformchart:Chart.Legends>
                         <winformchart:Legend/>
                     </winformchart:Chart.Legends>
+                    <winformchart:Chart.Titles>
+                        <winformchart:Title Text="Real Time Trial Average by Channel"></winformchart:Title>
+                    </winformchart:Chart.Titles>
                 </winformchart:Chart>
             </WindowsFormsHost>
         </Grid>
