@@ -339,14 +339,14 @@ namespace EvokedPotentialsApp
 
                 ThreadPool.QueueUserWorkItem(a =>
                 {
-                    // Keep the time for console output writring
+                    // Keep the time for console output writing
                     string timeStamp = DateTime.Now.ToString("h:mm:ss tt");
 
                     // start stim and update status
                     try
                     {
                         uint interPulseInterval = stimPeriod - (5 * stimDuration); // removed the - 3500
-                        enableEvokedPotentialStimulation(monopolar, (uint)stimChannel - 1, (uint)returnChannel - 1, stimAmplitude, stimDuration, 4, interPulseInterval, stimThreshold, numPulses, jitterMax);
+                        enableEvokedPotentialStimulation(monopolar, (uint)stimChannel, (uint)returnChannel, stimAmplitude, stimDuration, 4, interPulseInterval, stimThreshold, numPulses, jitterMax);
                     }
                     catch
                     {
@@ -408,6 +408,7 @@ namespace EvokedPotentialsApp
 
         private async void enableEvokedPotentialStimulation(bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold, uint numPulses, int jitterMax)
         {
+            aBICManager.currNumPulses = 0;
             for (int i = 0; i < numPulses; i++)
             {
                 if (stopStimClicked)
@@ -416,7 +417,9 @@ namespace EvokedPotentialsApp
                 }
                 else
                 {
-                    aBICManager.enableStimulationPulse(monopolar, (uint)stimChannel - 1, (uint)returnChannel - 1, stimAmplitude, stimDuration, 4, interPulseInterval, stimThreshold);
+                    aBICManager.currNumPulses++;
+                    Debug.WriteLine("calling aBICManager.enableStimulationPulse. this should print every ~1 sec");
+                    aBICManager.enableStimulationPulse(monopolar, stimChannel - 1, returnChannel - 1, stimAmplitude, stimDuration, 4, interPulseInterval, stimThreshold);
                     int randomJitter = RandomNumber(0, jitterMax);
                     await Task.Delay((int)((stimPeriod + randomJitter) / 1000));
                 }
