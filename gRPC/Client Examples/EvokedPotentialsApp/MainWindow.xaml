@@ -75,6 +75,19 @@
                     </winformchart:Chart.Legends>
                 </winformchart:Chart>
             </WindowsFormsHost>
+            <WindowsFormsHost Grid.Row="1">
+                <winformchart:Chart x:Name="avgsChart" Dock="Fill">
+                    <winformchart:Chart.Series>
+                        <winformchart:Series Name="series" ChartType="Line"/>
+                    </winformchart:Chart.Series>
+                    <winformchart:Chart.ChartAreas>
+                        <winformchart:ChartArea/>
+                    </winformchart:Chart.ChartAreas>
+                    <winformchart:Chart.Legends>
+                        <winformchart:Legend/>
+                    </winformchart:Chart.Legends>
+                </winformchart:Chart>
+            </WindowsFormsHost>
         </Grid>
             
         
