@@ -68,7 +68,7 @@ namespace RealtimeGraphing
                 chanHeader += ", CH" + (chNum + 1).ToString();
             }
             logFileWriter.WriteLine("PacketNum, TimeStamp, FilteredChannelNum, RawChannelData, PreFilteredChannelData, HampelFilteredChannelData, " +
-                "FilteredChannelData, boolInterpolated, StimChannelData, StimActive, CalcPhase, TriggerPhase" + chanHeader);
+                "FilteredChannelData, boolInterpolated, StimChannelData, StimActive, CalcPhase, TriggerPhase, validTarget" + chanHeader);
         }
         public bool BICConnect()
         {
@@ -251,7 +251,7 @@ namespace RealtimeGraphing
             }
         }
 
-        public void enableDistributedStim(bool closedStimEn, bool monopolar, uint stimChannel, uint returnChannel, uint senseChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, List<double> filterCoefficients_B, List<double> filterCoefficients_A, double stimThreshold, double initTriggerPhase)
+        public void enableDistributedStim(bool closedStimEn, bool monopolar, uint stimChannel, uint returnChannel, uint senseChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, List<double> filterCoefficients_B, List<double> filterCoefficients_A, double stimThreshold, double initTriggerPhase, uint stimBlankWindow, uint stimTriggerLimit)
         {
             if (closedStimEn)
             {
@@ -291,7 +291,10 @@ namespace RealtimeGraphing
                 FilterCoefficientsB = { filterCoefficients_B },
                 FilterCoefficientsA = { filterCoefficients_A },
                 TriggerStimThreshold = stimThreshold,
-                InitTriggerStimPhase = initTriggerPhase
+                InitTriggerStimPhase = initTriggerPhase,
+                NStimBlankWindow = stimBlankWindow,
+                NStimTrigLimit = stimTriggerLimit
+                
             });
         }
 
@@ -475,7 +478,8 @@ namespace RealtimeGraphing
                             stream.ResponseStream.Current.Samples[sampleNum].Measurements[5].ToString() + ", " +
                             stream.ResponseStream.Current.Samples[sampleNum].StimulationActive.ToString() + ", " +
                             stream.ResponseStream.Current.Samples[sampleNum].Phase.ToString() + ", " +
-                            stream.ResponseStream.Current.Samples[sampleNum].TriggerPhase.ToString();
+                            stream.ResponseStream.Current.Samples[sampleNum].TriggerPhase.ToString() + ", " + 
+                            stream.ResponseStream.Current.Samples[sampleNum].IsValidTarget.ToString();
                         for (int chNum = 0; chNum < numSensingChannelsDef; chNum++)
                         {
                             logString += ", " + stream.ResponseStream.Current.Samples[sampleNum].Measurements[chNum].ToString();
