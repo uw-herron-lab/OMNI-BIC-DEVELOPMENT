@@ -476,6 +476,7 @@ namespace EvokedPotentialsApp
             }));
             stopStimClicked = true;
             stop_stim_UI_update();
+            aBICManager.experimentRunning = false;
         }
 
         private void btn_diagnostic_Click(object sender, RoutedEventArgs e)
