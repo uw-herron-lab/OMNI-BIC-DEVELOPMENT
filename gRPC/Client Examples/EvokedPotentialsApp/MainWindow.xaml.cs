@@ -56,6 +56,17 @@ namespace EvokedPotentialsApp
             public bool IsSelected { get; set; }
         }
 
+        // Random class used for jitter
+        private static readonly Random random = new Random();
+        private static readonly object syncLock = new object();
+        public static int RandomNumber(int min, int max)
+        {
+            lock (syncLock)
+            {
+                return random.Next(min, max);
+            }
+        }
+
         private System.Timers.Timer neuroChartUpdateTimer;
         public List<Channel> channelList { get; set; }
         public List<int> channelNumList { get; set; }
@@ -296,7 +307,9 @@ namespace EvokedPotentialsApp
 
         private async void btn_start_Click(object sender, RoutedEventArgs e)
         {
+            stopStimClicked = false;
             int numConditions;
+            aBICManager.experimentRunning = true;
             if (scanMode)
             {
                 numConditions = stimChannelsQueue.Count;
@@ -307,13 +320,14 @@ namespace EvokedPotentialsApp
                 numConditions = 1;
             }
             for (int i = 0; i < numConditions; i++)
-                //for (int i = 0; i <1; i++)
             {
+                Debug.WriteLine("hitting condition " + i);
                 if (stopStimClicked)
                 {
                     stopStimClicked = false;
                     return;
                 }
+
                 if (scanMode)
                 {
                     stimChannel = stimChannelsQueue[i];
@@ -332,7 +346,7 @@ namespace EvokedPotentialsApp
                     try
                     {
                         uint interPulseInterval = stimPeriod - (5 * stimDuration); // removed the - 3500
-                        aBICManager.enableEvokedPotentialStimulation(monopolar, (uint)stimChannel - 1, (uint)returnChannel - 1, stimAmplitude, stimDuration, 4, interPulseInterval, stimThreshold, numPulses, jitterMax);
+                        enableEvokedPotentialStimulation(monopolar, (uint)stimChannel - 1, (uint)returnChannel - 1, stimAmplitude, stimDuration, 4, interPulseInterval, stimThreshold, numPulses, jitterMax);
                     }
                     catch
                     {
@@ -370,6 +384,12 @@ namespace EvokedPotentialsApp
                         OutputConsole.Inlines.Add("Source channel: " + stimChannel + "\nDestination channel: " + returnChannel + "\n");
                         Scroller.ScrollToEnd();
                     }));
+
+                    if (stopStimClicked)
+                    {
+                        stopStimClicked = false;
+                        return;
+                    }
                 });
                 // timer for end of all stim pulses
                 Debug.WriteLine("**********DELAY IS " + (stimPeriod + jitterMax) / 1000 * numPulses);
@@ -384,6 +404,23 @@ namespace EvokedPotentialsApp
             }));
             aBICManager.experimentRunning = false;
             stop_stim_UI_update();
+        }
+
+        private async void enableEvokedPotentialStimulation(bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold, uint numPulses, int jitterMax)
+        {
+            for (int i = 0; i < numPulses; i++)
+            {
+                if (stopStimClicked)
+                {
+                    return;
+                }
+                else
+                {
+                    aBICManager.enableStimulationPulse(monopolar, (uint)stimChannel - 1, (uint)returnChannel - 1, stimAmplitude, stimDuration, 4, interPulseInterval, stimThreshold);
+                    int randomJitter = RandomNumber(0, jitterMax);
+                    await Task.Delay((int)((stimPeriod + randomJitter) / 1000));
+                }
+            }
         }
 
 
