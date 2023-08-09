@@ -366,12 +366,14 @@ namespace EvokedPotentialsApp
             }
             for (int i = 0; i < numConditions; i++)
             {
-                Debug.WriteLine("hitting condition " + i);
                 if (stopStimClicked)
                 {
                     stopStimClicked = false;
                     return;
                 }
+
+                // clear running totals before starting condition
+                aBICManager.zeroRunningTotals();
 
                 if (scanMode)
                 {

@@ -99,6 +99,14 @@ namespace RealtimeGraphing
             // list of header names
             logFileWriter.WriteLine("PacketNum, TimeStamp, FilteredChannelNum, RawChannelData, FilteredChannelData, boolInterpolated, StimChannelData, StimActive" + chanHeader);
         }
+        public void zeroRunningTotals()
+        {
+            for (int chan = 0; chan < numSensingChannelsDef; chan++)
+            {
+                runningTotals[chan] = new List<double>(new double[stimPeriodSamples]); ;
+            }
+        }
+        
         public bool BICConnect()
         {
 //#warning TODO: Add a check for already connected devices?
@@ -260,7 +268,7 @@ namespace RealtimeGraphing
         {
             List<double>[] outputBuffer = new List<double>[runningTotals.Length];
 
-            lock (dataBufferLock) 
+            lock (dataBufferLock)
             {
                 for (int i = 0; i < runningTotals.Length; i++)
                 {
@@ -273,6 +281,25 @@ namespace RealtimeGraphing
                 }
             }
             return outputBuffer;
+
+            //lock (dataBufferLock)
+            //{
+            //    for (int i = 0; i < runningTotals.Length; i++)
+            //    {
+            //        double[] chanBuffer = new double[stimPeriodSamples];
+            //        for (int j = 0; j < currPulseBuffer[0].Count; j ++)
+            //        {
+            //            chanBuffer[j] = currPulseBuffer[i][j];
+            //        }
+            //        int n = currPulseBuffer[0].Count;
+            //        while (n < stimPeriodSamples)
+            //        {
+            //            chanBuffer[n] = 0;
+            //        }
+            //        outputBuffer[i] = new List<double>(chanBuffer);
+            //    }
+            //}
+            //return outputBuffer;
         }
 
 
@@ -353,7 +380,6 @@ namespace RealtimeGraphing
             newLoggingThread.Start();
 
             uint latestPacketNum = 0;
-            bool pulseFound = false;
 
             while (await stream.ResponseStream.MoveNext())
             {
@@ -420,13 +446,15 @@ namespace RealtimeGraphing
                     //if (experimentRunning && !pulseFound && currPulseBuffer[0].Count == 0)
                     //Debug.WriteLine(getStimulationActiveIndex(stream.ResponseStream.Current.Samples));
                     //Debug.WriteLine(stream.ResponseStream.Current.Samples[0].StimulationActive);
-                    if (experimentRunning && !pulseFound && currPulseBuffer[0].Count == 0)
+                    int stimulationActiveIndex = getStimulationActiveIndex(stream.ResponseStream.Current.Samples);
+                    if (experimentRunning && currPulseBuffer[0].Count == 0)
                     {
-                        int stimulationActiveIndex = getStimulationActiveIndex(stream.ResponseStream.Current.Samples);
+                        //int stimulationActiveIndex = getStimulationActiveIndex(stream.ResponseStream.Current.Samples);
                         // if it finds active stim, start adding to buffer
                         if (stimulationActiveIndex != -1)
                         {
-                            pulseFound = true;
+                            Debug.WriteLine("******* stim found at" + stimulationActiveIndex);
+                            //pulseFound = true;
                             double testElapsedTime = (double)aStopwatch.ElapsedTicks / (double)Stopwatch.Frequency;
                             //Debug.WriteLine(currNumPulses + " pulses, found start stim, " + testElapsedTime);
                             int transferBufferSize = (int)(baselinePeriodSamples - stimulationActiveIndex); // how much data to take from the end of the buffer to get to baselinePeriodSamples before stim
@@ -440,9 +468,9 @@ namespace RealtimeGraphing
                                 double[] dataBufferTransfer = new double[transferBufferSize];
                                 for (int i = dataBufferStartI; i < currDataBufferSize; i++)
                                 {
-                                    copyBuffer[i - dataBufferStartI] = dataBuffer[channelNum][i];
+                                    dataBufferTransfer[i - dataBufferStartI] = dataBuffer[channelNum][i];
                                 }
-                                currPulseBuffer[channelNum].AddRange(copyBuffer);
+                                currPulseBuffer[channelNum].AddRange(dataBufferTransfer);
                                 // add new data to chanCurrPulseBuffer
                                 double[] streamTransfer = new double[numSamples];
                                 for (int sampleNum = 0; sampleNum < numSamples; sampleNum++)
@@ -450,11 +478,12 @@ namespace RealtimeGraphing
                                     streamTransfer[sampleNum] = stream.ResponseStream.Current.Samples[sampleNum].Measurements[channelNum];
                                 }
                                 currPulseBuffer[channelNum].AddRange(streamTransfer);
-                            }                            
+                            }
+                            Debug.WriteLine("currPulseBuffer size: " + currPulseBuffer[0].Count);
                         }
                     }
                     // if current pulse buffer is not empty, add new samples until it's full. once full, filter and send to running totals
-                    else if (pulseFound)
+                    else if (experimentRunning && currPulseBuffer[0].Count > 0)
                     {
                         for (int channelNum = 0; channelNum < currPulseBuffer.Length; channelNum++)
                         {
@@ -493,7 +522,7 @@ namespace RealtimeGraphing
                                     runningTotals[channelNum][sampleNum] += filtPulseBuffer[sampleNum];
                                 }
                             }
-                            pulseFound = false;
+                            //pulseFound = false;
                         }
                     }
                     
