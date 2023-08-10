@@ -287,9 +287,10 @@ namespace EvokedPotentialsApp
                             OutputConsole.Inlines.Add("Stim channels: " + String.Join(", ", configInfo.stimChannelsQueue) + "\n");
                             OutputConsole.Inlines.Add("Return channels: " + String.Join(", ", configInfo.returnChannelsQueue) + "\n");
                             OutputConsole.Inlines.Add("Number of pulses: " + configInfo.numPulses + "\n");
+                            OutputConsole.Inlines.Add("Random jitter between 0-" + configInfo.jitterMax + " us\n");
                             OutputConsole.Inlines.Add("Stim period: " + (configInfo.stimPeriod) + " us\n");
                             OutputConsole.Inlines.Add("Stim Pulse Amplitude: " + configInfo.stimAmplitude + " uA\n");
-                            OutputConsole.Inlines.Add("Random jitter between 0-" + configInfo.jitterMax + " us\n");
+                            OutputConsole.Inlines.Add("stimDuration: " + configInfo.stimDuration + " us\n");
                             Scroller.ScrollToEnd();
                         }
 
@@ -455,7 +456,7 @@ namespace EvokedPotentialsApp
 
         private async void enableEvokedPotentialStimulation(bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold, uint numPulses, int jitterMax)
         {
-            //aBICManager.currNumPulses = 0;
+            aBICManager.currNumPulses = 0;
             for (int i = 0; i < numPulses; i++)
             {
                 if (stopStimClicked)

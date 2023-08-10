@@ -9,46 +9,53 @@
         Title="MainWindow" Height="800" Width="800" Loaded="MainWindow_Loaded" Closed="MainWindow_Closed">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="10*"/>
-            <RowDefinition Height="10*"/>
-            <RowDefinition Height="10*"/>
-            <RowDefinition Height="10*"/>
-            <RowDefinition Height="10*"/>
-            <RowDefinition Height="10*"/>
+            <RowDefinition Height="5*"/>
+            <RowDefinition Height="5*"/>
+            <RowDefinition Height="5*"/>
+            <RowDefinition Height="5*"/>
+            <RowDefinition Height="5*"/>
+            <RowDefinition Height="5*"/>
             <RowDefinition Height="40*"/>
             <RowDefinition Height="30*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="100*"/>
-            <ColumnDefinition Width="100*"/>
+            <ColumnDefinition Width="125*"/>
+            <ColumnDefinition Width="125*"/>
             <ColumnDefinition Width="500*"/>
         </Grid.ColumnDefinitions>
         
         <Button x:Name="btn_load" Content="Load Config" VerticalAlignment="Top" Click="btn_load_Click" Grid.ColumnSpan="2" Margin="5"/>
 
         <Label Grid.Row="1" Grid.Column="0">Mode:</Label>
-        <ComboBox x:Name="mode" SelectionChanged="mode_SelectionChanged"  Grid.Row="1" Grid.Column="1" Margin="5">
+        <ComboBox x:Name="mode" SelectionChanged="mode_SelectionChanged" VerticalAlignment="Top" Grid.Row="1" Grid.Column="1" Margin="5" >
             <ComboBoxItem>Single experiment</ComboBoxItem>
             <ComboBoxItem>Scanning</ComboBoxItem>
         </ComboBox>
 
         <Label Grid.Row="2" Grid.Column="0">Source:</Label>
-        <ComboBox x:Name="sources" ItemsSource="{Binding Path=channelNumList}" SelectedItem="{Binding Path=stimChannel, Mode=TwoWay}" SelectionChanged="sources_SelectionChanged" Grid.Row="2" Grid.Column="1" Margin="5"/>
+        <ComboBox x:Name="sources" ItemsSource="{Binding Path=channelNumList}" SelectedItem="{Binding Path=stimChannel, Mode=TwoWay}" SelectionChanged="sources_SelectionChanged" VerticalAlignment="Top" Grid.Row="2" Grid.Column="1" Margin="5"/>
         <Label Grid.Row="3" Grid.Column="0">Destination:</Label>
-        <ComboBox x:Name="destinations" ItemsSource="{Binding Path=channelNumList}" SelectedItem="{Binding Path=returnChannel, Mode=TwoWay}" SelectionChanged="destinations_SelectionChanged" Grid.Row="3" Grid.Column="1" Margin="5"></ComboBox>
+        <ComboBox x:Name="destinations" ItemsSource="{Binding Path=channelNumList}" SelectedItem="{Binding Path=returnChannel, Mode=TwoWay}" SelectionChanged="destinations_SelectionChanged" VerticalAlignment="Top" Grid.Row="3" Grid.Column="1" Margin="5"></ComboBox>
 
-        <Button x:Name="btn_start" Content="Start Stim" Click="btn_start_Click" Grid.Row="4" Grid.Column="0" Margin="5"/>
-        <Button x:Name="btn_stop" Content="Stop Stim" Click="btn_stop_Click" Grid.Row="4" Grid.Column="1" Margin="5"/>
+        <Button x:Name="btn_start" Content="Start Stim" Click="btn_start_Click" VerticalAlignment="Top" Grid.Row="4" Grid.Column="0" Margin="5"/>
+        <Button x:Name="btn_stop" Content="Stop Stim" Click="btn_stop_Click" VerticalAlignment="Top" Grid.Row="4" Grid.Column="1" Margin="5"/>
 
         <Button x:Name="btn_diagnostic" Content="Diagnostic" Click="btn_diagnostic_Click" Grid.Row="5" Margin="5"/>
+        <Grid Grid.Row="6" Grid.ColumnSpan="2" Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="20*"/>
+            </Grid.RowDefinitions>
+            <Label Content="Display Channels"/>
+            <ListBox ItemsSource="{Binding channelList}" Grid.Row="1">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <CheckBox IsChecked="{Binding IsSelected}" Content="{Binding Name}" Checked="CheckBox_Changed" Unchecked="CheckBox_Changed"/>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
 
-        <ListBox ItemsSource="{Binding channelList}" Grid.Row="6" Grid.ColumnSpan="2">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <CheckBox IsChecked="{Binding IsSelected}" Content="{Binding Name}" Checked="CheckBox_Changed" Unchecked="CheckBox_Changed"/>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
 
         <!--display config?-->
         <ScrollViewer Name="Scroller" Margin="0,0.4,-0.4,0" Background="White" VerticalScrollBarVisibility="Auto" Grid.Row="7" Grid.ColumnSpan="3">
@@ -74,7 +81,7 @@
                         <winformchart:Legend/>
                     </winformchart:Chart.Legends>
                     <winformchart:Chart.Titles>
-                        <winformchart:Title Text="Neural Activity by Channel"></winformchart:Title>
+                        <winformchart:Title Text="Streamed Data by Channel (uV)"></winformchart:Title>
                     </winformchart:Chart.Titles>
                 </winformchart:Chart>
             </WindowsFormsHost>
@@ -90,7 +97,7 @@
                         <winformchart:Legend/>
                     </winformchart:Chart.Legends>
                     <winformchart:Chart.Titles>
-                        <winformchart:Title Text="Real Time Trial Average by Channel"></winformchart:Title>
+                        <winformchart:Title Text="Real Time Average by Channel"></winformchart:Title>
                     </winformchart:Chart.Titles>
                 </winformchart:Chart>
             </WindowsFormsHost>
