@@ -45,6 +45,7 @@ namespace EvokedPotentialsApp
         private double stimThreshold = 100;
         private uint samplingRate = 1000; //Hz
 
+        // set to true when stop is clicked. Flag to exit from for loops that would send more stimulation
         private bool stopStimClicked = false;
 
         private List<int> stimChannelsQueue = new List<int> { 1, 7, 2, 8, 3, 9, 4, 10 };
@@ -355,7 +356,8 @@ namespace EvokedPotentialsApp
         {
             stopStimClicked = false;
             int numConditions;
-            aBICManager.experimentRunning = true;
+            //aBICManager.zeroAvgsBuffers();
+            //aBICManager.experimentRunning = true;
             if (scanMode)
             {
                 numConditions = stimChannelsQueue.Count;
@@ -373,8 +375,9 @@ namespace EvokedPotentialsApp
                     return;
                 }
 
-                // clear running totals before starting condition
-                aBICManager.zeroRunningTotals();
+                // clear running totals and num pulses before starting each condition
+                aBICManager.zeroAvgsBuffers();
+                aBICManager.currNumPulses = 0;
 
                 if (scanMode)
                 {
@@ -440,9 +443,7 @@ namespace EvokedPotentialsApp
                     }
                 });
                 // timer for end of all stim pulses
-                Debug.WriteLine("**********DELAY IS " + (stimPeriod + jitterMax) / 1000 * numPulses);
                 await Task.Delay((int)((stimPeriod + jitterMax) / 1000 * numPulses));
-                //Thread.Sleep((int)((stimPeriod + jitterMax) / 1000 * numPulses));
             }
             // notify user and update UI
             Application.Current.Dispatcher.Invoke(new Action(() =>
@@ -450,13 +451,12 @@ namespace EvokedPotentialsApp
                 OutputConsole.Inlines.Add("Evoked potential stimulation completed.\n");
                 Scroller.ScrollToEnd();
             }));
-            aBICManager.experimentRunning = false;
+            //aBICManager.experimentRunning = false;
             stop_stim_UI_update();
         }
 
         private async void enableEvokedPotentialStimulation(bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold, uint numPulses, int jitterMax)
         {
-            aBICManager.currNumPulses = 0;
             for (int i = 0; i < numPulses; i++)
             {
                 if (stopStimClicked)
@@ -466,8 +466,6 @@ namespace EvokedPotentialsApp
                 else
                 {
                     updateAvgsChart(); // calling before the next stim, hoping this means enough time for runningtotals and currNumPulses to update. ideally, this would get called in bicmanager after updating
-                    //aBICManager.currNumPulses++;
-                    Debug.WriteLine("calling aBICManager.enableStimulationPulse. this should print every ~1 sec");
                     aBICManager.enableStimulationPulse(monopolar, stimChannel - 1, returnChannel - 1, stimAmplitude, stimDuration, 4, interPulseInterval, stimThreshold);
                     
                     int randomJitter = RandomNumber(0, jitterMax);
@@ -526,7 +524,8 @@ namespace EvokedPotentialsApp
             }));
             stopStimClicked = true;
             stop_stim_UI_update();
-            aBICManager.experimentRunning = false;
+            //aBICManager.experimentRunning = false;
+            aBICManager.zeroAvgsBuffers();
         }
 
         private void btn_diagnostic_Click(object sender, RoutedEventArgs e)
