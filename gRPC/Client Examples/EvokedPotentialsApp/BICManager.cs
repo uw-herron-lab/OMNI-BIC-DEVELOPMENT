@@ -21,7 +21,6 @@ namespace RealtimeGraphing
         private BICInfoService.BICInfoServiceClient infoClient;
         private string DeviceName;
         private List<double>[] dataBuffer;
-        private List<double>[] filtDataBuffer;
         private List<double>[] runningTotals;
         private List<double>[] currPulseBuffer; // begin filling when stimulation detected. stores data for current pulse
         public int currNumPulses { get; set; } = 0;
@@ -74,14 +73,12 @@ namespace RealtimeGraphing
             dataBuffer = new List<double>[numSensingChannelsDef];
             currPulseBuffer = new List<double>[numSensingChannelsDef];
             runningTotals = new List<double>[numSensingChannelsDef];
-            filtDataBuffer = new List<double>[1];
             for(int i = 0; i < numSensingChannelsDef; i++)
             {
                 dataBuffer[i] = new List<double>();
                 currPulseBuffer[i] = new List<double>();
                 runningTotals[i] = new List<double>(new double[stimPeriodSamples]);
             }
-            filtDataBuffer[0] = new List<double>();
 
             // Set up the logging interface
             if(File.Exists(filePath))
@@ -256,13 +253,9 @@ namespace RealtimeGraphing
                 {
                     outputBuffer[i] = new List<double>(dataBuffer[i]);
                 }
-                for (int j = 0; j < filtDataBuffer.Length; j++)
-                {
-                    outputBuffer[dataBuffer.Length + j] = new List<double>(filtDataBuffer[j]);
-                }
+
 
             }
-            // have something similar for filtered data buffer
 
             return outputBuffer;
         }
@@ -411,9 +404,6 @@ namespace RealtimeGraphing
                             dataBuffer[channelNum].AddRange(nanBuffer);
                             currPulseBuffer[channelNum].AddRange(nanBuffer);
                         }
-
-                        // do the same for the filtered data buffer
-                        filtDataBuffer[0].AddRange(nanBuffer);
                     }
                 }
 
@@ -545,16 +535,6 @@ namespace RealtimeGraphing
                             logString += ", " + stream.ResponseStream.Current.Samples[sampleNum].Measurements[chNum].ToString();
                         }
                         logLineQueue.Enqueue(logString);
-                    }
-                    // Add new data to filtered data buffer
-                    filtDataBuffer[0].AddRange(filtBuffer);
-
-                    // Check if filtered data buffer is too long
-                    int filtDiffLength = filtDataBuffer[0].Count - DataBufferMaxSampleNumber;
-                    if (filtDiffLength > 0)
-                    {
-                        // if too long, remove the difference
-                        filtDataBuffer[0].RemoveRange(0, filtDiffLength);
                     }
                 }
 
