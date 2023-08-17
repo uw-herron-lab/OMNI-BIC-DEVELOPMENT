@@ -388,9 +388,7 @@ namespace EvokedPotentialsApp
                 sources.SelectedValue = stimChannel;
                 destinations.SelectedValue = returnChannel;
 
-                bool stimCompleted = false;
-
-                ThreadPool.QueueUserWorkItem(async a =>
+                ThreadPool.QueueUserWorkItem(a =>
                 {
                     // Keep the time for console output writing
                     string timeStamp = DateTime.Now.ToString("h:mm:ss tt");
@@ -399,7 +397,7 @@ namespace EvokedPotentialsApp
                     try
                     {
                         uint interPulseInterval = stimPeriod - (5 * stimDuration); // removed the - 3500
-                        stimCompleted = await enableEvokedPotentialStimulation(monopolar, (uint)stimChannel, (uint)returnChannel, stimAmplitude, stimDuration, 4, interPulseInterval, stimThreshold, numPulses, jitterMax);
+                        enableEvokedPotentialStimulation(monopolar, (uint)stimChannel, (uint)returnChannel, stimAmplitude, stimDuration, 4, interPulseInterval, stimThreshold, numPulses, jitterMax);
                     }
                     catch
                     {
@@ -437,18 +435,15 @@ namespace EvokedPotentialsApp
                         OutputConsole.Inlines.Add("Source channel: " + stimChannel + "\nDestination channel: " + returnChannel + "\n");
                         Scroller.ScrollToEnd();
                     }));
+
+                    if (stopStimClicked)
+                    {
+                        stopStimClicked = false;
+                        return;
+                    }
                 });
-
-                while (!stimCompleted) { }
-                Debug.WriteLine("stimCompleted should be true: " + stimCompleted);
-
-                if (stopStimClicked)
-                {
-                    stopStimClicked = false;
-                    return;
-                }
-                // timer for end of all stim pulses for this condition, so that in scan mode, we don't go to the next condition until this one is finished
-                //await Task.Delay((int)((stimPeriod + jitterMax) / 1000 * numPulses));
+                // timer for end of all stim pulses
+                await Task.Delay((int)((stimPeriod + jitterMax) / 1000 * numPulses));
             }
             // notify user and update UI
             Application.Current.Dispatcher.Invoke(new Action(() =>
@@ -460,13 +455,13 @@ namespace EvokedPotentialsApp
             stop_stim_UI_update();
         }
 
-        private async Task<bool> enableEvokedPotentialStimulation(bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold, uint numPulses, int jitterMax)
+        private async void enableEvokedPotentialStimulation(bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold, uint numPulses, int jitterMax)
         {
             for (int i = 0; i < numPulses; i++)
             {
                 if (stopStimClicked)
                 {
-                    return true;
+                    return;
                 }
                 else
                 {
@@ -477,7 +472,6 @@ namespace EvokedPotentialsApp
                     await Task.Delay((int)((stimPeriod + randomJitter) / 1000));
                 }
             }
-            return true;
         }
 
 
