@@ -387,17 +387,44 @@ namespace EvokedPotentialsApp
 
                 sources.SelectedValue = stimChannel;
                 destinations.SelectedValue = returnChannel;
+                bool stimCompleted = false;
+
+                // update UI on first iteration
+                if (i == 0)
+                {
+                    // Succesfully enabled stim, update UI elements
+                    neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
+                    delegate
+                    {
+                            // disable buttons
+                        btn_start.IsEnabled = false; // stim button
+                        btn_load.IsEnabled = false; // load config button
+                        btn_diagnostic.IsEnabled = false; // diagnostics button
+                        btn_stop.IsEnabled = true;
+                        sources.IsEnabled = false;
+                        destinations.IsEnabled = false;
+                        mode.IsEnabled = false;
+                    }));
+                }
+                // Keep the time for console output writing
+                string timeStamp = DateTime.Now.ToString("h:mm:ss tt");
+
+                // notify user of stimulation starting
+                Application.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    OutputConsole.Inlines.Add("Evoked potential stimulation started: " + timeStamp + "\n");
+                    OutputConsole.Inlines.Add("Source channel: " + stimChannel + "\nDestination channel: " + returnChannel + "\n");
+                    Scroller.ScrollToEnd();
+                }));
 
                 ThreadPool.QueueUserWorkItem(a =>
                 {
-                    // Keep the time for console output writing
-                    string timeStamp = DateTime.Now.ToString("h:mm:ss tt");
-
                     // start stim and update status
                     try
                     {
                         uint interPulseInterval = stimPeriod - (5 * stimDuration); // removed the - 3500
-                        enableEvokedPotentialStimulation(monopolar, (uint)stimChannel, (uint)returnChannel, stimAmplitude, stimDuration, 4, interPulseInterval, stimThreshold, numPulses, jitterMax);
+                        //enableEvokedPotentialStimulation(monopolar, (uint)stimChannel, (uint)returnChannel, stimAmplitude, stimDuration, 4, interPulseInterval, stimThreshold, numPulses, jitterMax).Wait();
+                        stimCompleted = enableEvokedPotentialStimulation(monopolar, (uint)stimChannel, (uint)returnChannel, stimAmplitude, stimDuration, 4, interPulseInterval, stimThreshold, numPulses, jitterMax).Result;
                     }
                     catch
                     {
@@ -407,43 +434,21 @@ namespace EvokedPotentialsApp
                             OutputConsole.Inlines.Add("Evoked Potential stimulation NOT started: " + timeStamp + ", load new configuration\n");
                             Scroller.ScrollToEnd();
                         }));
-                        return;
-                    }
-
-                    // update UI on first iteration
-                    if (i == 0)
-                    {
-                        // Succesfully enabled stim, update UI elements
-                        neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
-                        delegate
-                        {
-                        // disable buttons
-                            btn_start.IsEnabled = false; // stim button
-                            btn_load.IsEnabled = false; // load config button
-                            btn_diagnostic.IsEnabled = false; // diagnostics button
-                            btn_stop.IsEnabled = true;
-                            sources.IsEnabled = false;
-                            destinations.IsEnabled = false;
-                            mode.IsEnabled = false;
-                        }));
-                    }
-
-                    // notify user of stimulation starting
-                    Application.Current.Dispatcher.Invoke(new Action(() =>
-                    {
-                        OutputConsole.Inlines.Add("Evoked potential stimulation started: " + timeStamp + "\n");
-                        OutputConsole.Inlines.Add("Source channel: " + stimChannel + "\nDestination channel: " + returnChannel + "\n");
-                        Scroller.ScrollToEnd();
-                    }));
-
-                    if (stopStimClicked)
-                    {
-                        stopStimClicked = false;
+                        // update UI same as stop stim clicked
                         return;
                     }
                 });
                 // timer for end of all stim pulses
-                await Task.Delay((int)((stimPeriod + jitterMax) / 1000 * numPulses));
+                //await Task.Delay((int)((stimPeriod + jitterMax) / 1000 * numPulses));
+                //while(!stimCompleted) { }
+
+                //Debug.WriteLine("stimCompleted should be true: " + stimCompleted);
+
+                if (stopStimClicked)
+                {
+                    stopStimClicked = false;
+                    return;
+                }
             }
             // notify user and update UI
             Application.Current.Dispatcher.Invoke(new Action(() =>
@@ -455,13 +460,13 @@ namespace EvokedPotentialsApp
             stop_stim_UI_update();
         }
 
-        private async void enableEvokedPotentialStimulation(bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold, uint numPulses, int jitterMax)
+        private async Task<bool> enableEvokedPotentialStimulation(bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold, uint numPulses, int jitterMax)
         {
             for (int i = 0; i < numPulses; i++)
             {
                 if (stopStimClicked)
                 {
-                    return;
+                    return true;
                 }
                 else
                 {
@@ -472,6 +477,7 @@ namespace EvokedPotentialsApp
                     await Task.Delay((int)((stimPeriod + randomJitter) / 1000));
                 }
             }
+            return true;
         }
 
 
