@@ -245,7 +245,7 @@ namespace RealtimeGraphing
         /// <returns>A list of double-arrays, each array is composed of the latest time domain data from each BIC channel. index 0 is the oldest data. </returns>
         public List<double>[] getData()
         {
-            List<double>[] outputBuffer = new List<double>[dataBuffer.Length + filtDataBuffer.Length];
+            List<double>[] outputBuffer = new List<double>[dataBuffer.Length];
 
             lock(dataBufferLock)
             {
@@ -253,7 +253,6 @@ namespace RealtimeGraphing
                 {
                     outputBuffer[i] = new List<double>(dataBuffer[i]);
                 }
-
 
             }
 
@@ -544,7 +543,7 @@ namespace RealtimeGraphing
                 // Output status
                 aStopwatch.Stop();
                 double elapsedTime = (double)aStopwatch.ElapsedTicks / (double)Stopwatch.Frequency;
-                Console.WriteLine("Implant Stream Neural Samples Received: " + stream.ResponseStream.Current.Samples.Count + "copyTime: " + elapsedTime.ToString());
+                //Console.WriteLine("Implant Stream Neural Samples Received: " + stream.ResponseStream.Current.Samples.Count + "copyTime: " + elapsedTime.ToString());
             }
             Console.WriteLine("(Neural Monitor Task Exited)");
         }
