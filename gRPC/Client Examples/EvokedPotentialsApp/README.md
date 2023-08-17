@@ -1,5 +1,5 @@
 # An interface for administering evoked potential experiments
-
+========================================================================================================================================================================================================================
 This application has two modes:
 1. Scanning: A user loads a sequence of source/destination channels and the app goes through all in an automated process.
 2. Single Experiment: A user can upload the source/destination channel in the configuration file and/or select specific source/destination channels manually.
@@ -24,3 +24,5 @@ This application has two modes:
 
 ## Next Steps
 1. Online pre-processing: Potential to add filtering, artifact removal, normalization and/or baseline correction to `getFilteredChanBuffer` in BICManager. 
+========================================================================================================================================================================================================================
+
