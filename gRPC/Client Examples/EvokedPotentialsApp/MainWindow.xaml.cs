@@ -47,6 +47,7 @@ namespace EvokedPotentialsApp
 
         // set to true when stop is clicked. Flag to exit from for loops that would send more stimulation
         private bool stopStimClicked = false;
+        private CancellationTokenSource cancellationTokenSource;
 
         private List<int> stimChannelsQueue = new List<int> { 1, 7, 2, 8, 3, 9, 4, 10 };
         private List<int> returnChannelsQueue = new List<int> { 7, 1, 8, 2, 9, 3, 10, 4 };
@@ -354,6 +355,8 @@ namespace EvokedPotentialsApp
 
         private async void btn_start_Click(object sender, RoutedEventArgs e)
         {
+            cancellationTokenSource = new CancellationTokenSource();
+
             stopStimClicked = false;
             int numConditions;
             //aBICManager.zeroAvgsBuffers();
@@ -435,7 +438,6 @@ namespace EvokedPotentialsApp
                         OutputConsole.Inlines.Add("Source channel: " + stimChannel + "\nDestination channel: " + returnChannel + "\n");
                         Scroller.ScrollToEnd();
                     }));
-
                     if (stopStimClicked)
                     {
                         stopStimClicked = false;
@@ -443,7 +445,16 @@ namespace EvokedPotentialsApp
                     }
                 });
                 // timer for end of all stim pulses
-                await Task.Delay((int)((stimPeriod + jitterMax) / 1000 * numPulses));
+                
+                await Task.Delay((int)((stimPeriod + jitterMax) / 1000 * numPulses), cancellationTokenSource.Token);
+                
+
+                if (stopStimClicked)
+                {
+                    stopStimClicked = false;
+                    return;
+                }
+
             }
             // notify user and update UI
             Application.Current.Dispatcher.Invoke(new Action(() =>
@@ -466,6 +477,7 @@ namespace EvokedPotentialsApp
                 else
                 {
                     updateAvgsChart(); // calling before the next stim, hoping this means enough time for runningtotals and currNumPulses to update. ideally, this would get called in bicmanager after updating
+                    // TODO: move somewhere else. this isn't great because when we switch to new condition, when first pulse is applied, it displays the average from the previous condition
                     aBICManager.enableStimulationPulse(monopolar, stimChannel - 1, returnChannel - 1, stimAmplitude, stimDuration, 4, interPulseInterval, stimThreshold);
                     
                     int randomJitter = RandomNumber(0, jitterMax);
@@ -516,6 +528,7 @@ namespace EvokedPotentialsApp
         private void btn_stop_Click(object sender, RoutedEventArgs e)
         {
             aBICManager.stopEvokedPotentialStimulation();
+            cancellationTokenSource.Cancel();
             string timeStamp = DateTime.Now.ToString("h:mm:ss tt");
             Application.Current.Dispatcher.Invoke(new Action(() =>
             {
