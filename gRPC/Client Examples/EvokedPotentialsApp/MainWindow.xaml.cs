@@ -40,13 +40,11 @@ namespace EvokedPotentialsApp
         private uint baselinePeriod = 100000;
         private int stimAmplitude = -3000; // uV
         private uint stimDuration = 250;
-        private int jitterMax = 300000; // uS // TODO: add jitter to pulse method (add to pause?) 
+        private int jitterMax = 300000; // uS
         private bool monopolar = false;
         private double stimThreshold = 100;
-        private uint samplingRate = 1000; //Hz
-
-        // set to true when stop is clicked. Flag to exit from for loops that would send more stimulation
-        private bool stopStimClicked = false;
+        
+        private bool stopStimClicked = false; // set to true when stop is clicked. Flag to exit from for loops that would send more stimulation
         private CancellationTokenSource cancellationTokenSource;
 
         private List<int> stimChannelsQueue = new List<int> { 1, 7, 2, 8, 3, 9, 4, 10 };
@@ -232,6 +230,9 @@ namespace EvokedPotentialsApp
             }
         }
 
+        /// <summary>
+        /// Plot latest data in running averages chart.
+        /// </summary>
         private void updateAvgsChart()
         {
             // grab latest data
@@ -267,6 +268,11 @@ namespace EvokedPotentialsApp
             }
         }
 
+        /// <summary>
+        /// Read in config file
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btn_load_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -373,6 +379,7 @@ namespace EvokedPotentialsApp
                 // If we're not scanning (single experiment mode), only go through loop once
                 numConditions = 1;
             }
+            // for every source/destination channel condition
             for (int i = 0; i < numConditions; i++)
             {
                 if (stopStimClicked)
@@ -439,7 +446,7 @@ namespace EvokedPotentialsApp
                    
                 });
 
-                // Wait until end of condition (numPulses pulses for current source/destination condition), or until Stop is clicked.
+                // Wait until end of condition before continuing to next condition (waiting for numPulses pulses for current source/destination condition), or wait until Stop is clicked.
                 try
                 {
                     await Task.Delay((int)((stimPeriod + jitterMax) / 1000 * numPulses), cancellationTokenSource.Token);
@@ -498,7 +505,9 @@ namespace EvokedPotentialsApp
             }
         }
 
-
+        /// <summary>
+        /// Enable/disable relevant buttons when stimulation completes.
+        /// </summary>
         private void stop_stim_UI_update()
         {
             // Update UI
@@ -537,9 +546,16 @@ namespace EvokedPotentialsApp
                     }));
             }
         }
+
+        /// <summary>
+        /// When stop is clicked, set stopStimClicked flag to true, cancel the timer for the end of the condition, 
+        /// update UI.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btn_stop_Click(object sender, RoutedEventArgs e)
         {
-            stopStimClicked = true;
+            stopStimClicked = true; // We use this flag to stop sending pulses for current condition, and to stop from cycling to next condition. 
             aBICManager.stopEvokedPotentialStimulation();
             cancellationTokenSource.Cancel();
             string timeStamp = DateTime.Now.ToString("h:mm:ss tt");
@@ -549,8 +565,6 @@ namespace EvokedPotentialsApp
                 Scroller.ScrollToEnd();
             }));
             stop_stim_UI_update();
-            //aBICManager.experimentRunning = false;
-            aBICManager.zeroAvgsBuffers();
         }
 
         private void btn_diagnostic_Click(object sender, RoutedEventArgs e)
@@ -560,79 +574,17 @@ namespace EvokedPotentialsApp
             Scroller.ScrollToEnd();
         }
 
-        private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            OutputConsole.Inlines.Add("Channel was selected/de-selected"); // not going through this function.. selecting doesn't invoke this function 
-            Scroller.ScrollToEnd();
-
-            // grab the most recent data
-            List<double>[] neuroData = aBICManager.getData();
-
-            // look for the selected items in the listbox
-            List<int> selectedChannels = new List<int>();
-            string chanString = "";
-            int chanVal;
-            bool valConvert = false;
-
-            // get a list of selected channels
-            var selected = from item in channelList
-                           where item.IsSelected == true
-                           select item.Name.ToString();
-
-            // get list of selected channels and convert from string to int type
-            foreach (String item in selected)
-            {
-                valConvert = Int32.TryParse(item, out chanVal);
-                selectedChannels.Add(chanVal);
-            }
-
-            // clear the current legend
-            neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
-            delegate
-            {
-                foreach (var series in neuroStreamChart.Series)
-                {
-                    series.IsVisibleInLegend = false;
-                    series.Enabled = false;
-                }
-            }));
-            avgsChart.Invoke(new System.Windows.Forms.MethodInvoker(
-            delegate
-            {
-                foreach (var series in avgsChart.Series)
-                {
-                    series.IsVisibleInLegend = false;
-                    series.Enabled = false;
-                }
-            }));
-
-            // Plot newly selected channels and show new legend
-            for (int i = 0; i < selectedChannels.Count; i++)
-            {
-                chanString = "Channel " + selectedChannels[i].ToString();
-                neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
-                delegate
-                {
-                    neuroStreamChart.Series[chanString].Points.DataBindY(neuroData[selectedChannels[i] - 1]);
-                    neuroStreamChart.Series[chanString].IsVisibleInLegend = true;
-                    neuroStreamChart.Series[chanString].Enabled = true;
-                }));
-
-                avgsChart.Invoke(new System.Windows.Forms.MethodInvoker(
-                delegate
-                {
-                    avgsChart.Series[chanString].Points.DataBindY(neuroData[selectedChannels[i] - 1]);
-                    avgsChart.Series[chanString].IsVisibleInLegend = true;
-                    avgsChart.Series[chanString].Enabled = true;
-                }));
-            }
-        }
         private void MainWindow_Closed(object sender, EventArgs e)
         {
             neuroChartUpdateTimer.Dispose();
             aBICManager.Dispose();
         }
 
+        /// <summary>
+        /// When channels are selected/deselected, update display
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CheckBox_Changed(object sender, RoutedEventArgs e)
         {
             // look for the selected items in the listbox
@@ -723,6 +675,11 @@ namespace EvokedPotentialsApp
             }
         }
 
+        /// <summary>
+        /// When stim source channel changes, update UI
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void sources_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             stimChannel = (int)e.AddedItems[0];
@@ -732,6 +689,11 @@ namespace EvokedPotentialsApp
             }
         }
 
+        /// <summary>
+        /// When stim destination channel changes, update UI
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void destinations_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
@@ -742,6 +704,11 @@ namespace EvokedPotentialsApp
             }
         }
 
+        /// <summary>
+        /// When mode (scanning vs single experiment) changes, update UI
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void mode_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             scanMode = mode.SelectedIndex == 1; // is this doing what I think?
