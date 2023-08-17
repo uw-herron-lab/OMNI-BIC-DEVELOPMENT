@@ -21,15 +21,13 @@ namespace RealtimeGraphing
         private BICInfoService.BICInfoServiceClient infoClient;
         private string DeviceName;
         private List<double>[] dataBuffer;
-        private List<double>[] runningTotals;
-        private List<double>[] currPulseBuffer; // begin filling when stimulation detected. stores data for current pulse
-        public int currNumPulses { get; set; } = 0;
+        private List<double>[] runningTotals; // Keeps track of a running total for each channel. This is divided by currNumPulses to compute our running average.
+        private List<double>[] currPulseBuffer; // Stores data for current pulse. Begin filling when stimulation detected, stops when reaches length of stimPeriodSampels.
+        public int currNumPulses { get; set; } = 0; // Keeps track of how many pulses have occured for the current source/destination condition. Used to compute running average.
         private const int numSensingChannelsDef = 32;
         private object dataBufferLock = new object();
-        //private int chartWidth;
-        private uint stimPeriodSamples;
-        private uint stimPeriod; // uS
-        private uint baselinePeriodSamples;
+        private uint stimPeriodSamples; // number of samples in the stimulation period
+        private uint baselinePeriodSamples; // number of samples in the baseline period (time before stimulation pulse to include in signal average)
         private uint samplingRate = 1000; // Hz
 
         // Logging Objects
@@ -67,7 +65,6 @@ namespace RealtimeGraphing
             // Set up variables for visualization: instantiate data buffers and length variables.
             DataBufferMaxSampleNumber = definedDataBufferLength;
             //this.chartWidth = neuroStreamChartWidth;
-            this.stimPeriod = stimPeriod;
             this.stimPeriodSamples = (uint)(stimPeriod / 1e6 * samplingRate);
             this.baselinePeriodSamples = (uint)(baselinePeriod / 1e6 * samplingRate);
             dataBuffer = new List<double>[numSensingChannelsDef];
@@ -96,7 +93,7 @@ namespace RealtimeGraphing
             logFileWriter.WriteLine("PacketNum, TimeStamp, FilteredChannelNum, RawChannelData, FilteredChannelData, boolInterpolated, StimChannelData, StimActive" + chanHeader);
         }
        
-        // Reset currPulseBuffer and runningTotals
+        // Resets currPulseBuffer and runningTotals
         public void zeroAvgsBuffers()
         {
             lock (dataBufferLock)
@@ -204,6 +201,17 @@ namespace RealtimeGraphing
             logFileStream.Dispose();
         }
 
+        /// <summary>
+        /// Sends one pulse of monopolar or bipolar stimulation
+        /// </summary>
+        /// <param name="monopolar"></param>
+        /// <param name="stimChannel"></param>
+        /// <param name="returnChannel"></param>
+        /// <param name="stimAmplitude"></param>
+        /// <param name="stimDuration"></param>
+        /// <param name="chargeBalancePWRatio"></param>
+        /// <param name="interPulseInterval"></param>
+        /// <param name="stimThreshold"></param>
         public void enableStimulationPulse(bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold)
         {
             bicEnqueueStimulationRequest aNewWaveformRequest = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.PersistentWaveform, WaveformRepititions = 1 }; // what are waveform reps?? burst? changed from 255 to numPulses...
