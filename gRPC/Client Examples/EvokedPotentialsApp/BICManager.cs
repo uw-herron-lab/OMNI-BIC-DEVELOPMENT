@@ -543,7 +543,7 @@ namespace RealtimeGraphing
                 // Output status
                 aStopwatch.Stop();
                 double elapsedTime = (double)aStopwatch.ElapsedTicks / (double)Stopwatch.Frequency;
-                Console.WriteLine("Implant Stream Neural Samples Received: " + stream.ResponseStream.Current.Samples.Count + "copyTime: " + elapsedTime.ToString());
+                //Console.WriteLine("Implant Stream Neural Samples Received: " + stream.ResponseStream.Current.Samples.Count + "copyTime: " + elapsedTime.ToString());
             }
             Console.WriteLine("(Neural Monitor Task Exited)");
         }
