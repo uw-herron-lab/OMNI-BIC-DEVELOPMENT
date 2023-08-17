@@ -440,15 +440,14 @@ namespace EvokedPotentialsApp
                    
                 });
 
-                // timer for end of all stim pulses
+                // Wait until end of condition (numPulses pulses for current source/destination condition), or until Stop is clicked.
                 try
                 {
                     await Task.Delay((int)((stimPeriod + jitterMax) / 1000 * numPulses), cancellationTokenSource.Token);
                 }
                 catch (TaskCanceledException)
                 {
-                    string timeStamp = DateTime.Now.ToString("h:mm:ss tt");
-                    OutputConsole.Inlines.Add("Evoked potential stimulation cancelled: " + timeStamp + "\n");
+                    // Cancelled if stop_stim_clicked
                     return;
                 }
             }
@@ -471,12 +470,11 @@ namespace EvokedPotentialsApp
                 }
                 else
                 {
-                    updateAvgsChart(); // calling before the next stim, hoping this means enough time for runningtotals and currNumPulses to update. ideally, this would get called in bicmanager after updating
-                    // TODO: move somewhere else. this isn't great because when we switch to new condition, when first pulse is applied, it displays the average from the previous condition
                     aBICManager.enableStimulationPulse(monopolar, stimChannel - 1, returnChannel - 1, stimAmplitude, stimDuration, 4, interPulseInterval, stimThreshold);
                     
                     int randomJitter = RandomNumber(0, jitterMax);
                     await Task.Delay((int)((stimPeriod + randomJitter) / 1000));
+                    updateAvgsChart(); // Update avgs chart after pulse completed
                 }
             }
         }
@@ -522,15 +520,15 @@ namespace EvokedPotentialsApp
         }
         private void btn_stop_Click(object sender, RoutedEventArgs e)
         {
+            stopStimClicked = true;
             aBICManager.stopEvokedPotentialStimulation();
             cancellationTokenSource.Cancel();
             string timeStamp = DateTime.Now.ToString("h:mm:ss tt");
             Application.Current.Dispatcher.Invoke(new Action(() =>
             {
-                OutputConsole.Inlines.Add("Evoked potential stimulation stopped at " + timeStamp + "\n");
+                OutputConsole.Inlines.Add("Evoked potential stimulation cancelled at " + timeStamp + "\n");
                 Scroller.ScrollToEnd();
             }));
-            stopStimClicked = true;
             stop_stim_UI_update();
             //aBICManager.experimentRunning = false;
             aBICManager.zeroAvgsBuffers();
