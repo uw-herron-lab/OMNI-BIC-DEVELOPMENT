@@ -417,27 +417,25 @@ namespace EvokedPotentialsApp
                     Scroller.ScrollToEnd();
                 }));
 
-                ThreadPool.QueueUserWorkItem(a =>
-                {
-                    // start stim and update status
-                    try
-                    {
-                        uint interPulseInterval = stimPeriod - (5 * stimDuration); // removed the - 3500
-                        //enableEvokedPotentialStimulation(monopolar, (uint)stimChannel, (uint)returnChannel, stimAmplitude, stimDuration, 4, interPulseInterval, stimThreshold, numPulses, jitterMax).Wait();
-                        stimCompleted = enableEvokedPotentialStimulation(monopolar, (uint)stimChannel, (uint)returnChannel, stimAmplitude, stimDuration, 4, interPulseInterval, stimThreshold, numPulses, jitterMax).Result;
-                    }
-                    catch
-                    {
-                        // Exception occured, gRPC command did not succeed, do not update UI button elements
-                        Application.Current.Dispatcher.Invoke(new Action(() =>
-                        {
-                            OutputConsole.Inlines.Add("Evoked Potential stimulation NOT started: " + timeStamp + ", load new configuration\n");
-                            Scroller.ScrollToEnd();
-                        }));
-                        // update UI same as stop stim clicked
-                        return;
-                    }
-                });
+                // start stim and update status
+                //try
+                //{
+                    uint interPulseInterval = stimPeriod - (5 * stimDuration); // removed the - 3500
+                    //enableEvokedPotentialStimulation(monopolar, (uint)stimChannel, (uint)returnChannel, stimAmplitude, stimDuration, 4, interPulseInterval, stimThreshold, numPulses, jitterMax).Wait();
+                    stimCompleted = await enableEvokedPotentialStimulation(monopolar, (uint)stimChannel, (uint)returnChannel, stimAmplitude, stimDuration, 4, interPulseInterval, stimThreshold, numPulses, jitterMax);
+                //}
+                //catch
+                //{
+                //    // Exception occured, gRPC command did not succeed, do not update UI button elements
+                //    Application.Current.Dispatcher.Invoke(new Action(() =>
+                //    {
+                //        OutputConsole.Inlines.Add("Evoked Potential stimulation NOT started: " + timeStamp + ", load new configuration\n");
+                //        Scroller.ScrollToEnd();
+                //    }));
+                //    // update UI same as stop stim clicked
+                //    return;
+                //}
+                
                 // timer for end of all stim pulses
                 //await Task.Delay((int)((stimPeriod + jitterMax) / 1000 * numPulses));
                 //while(!stimCompleted) { }
