@@ -15,12 +15,12 @@ This application has two modes:
 * jitterMax: random jitter from range (0, jitterMax) will be added to pause between pulses.
 * baselinePeriod: time (uS) from before stimulation onset to include when graphing average pulse.
 
-2. Start stimulation under current configuration. While in Single Experiment mode, start is disabled until source/destination channels have been selected or uploaded from the config. 
-3. Stop stimulation at any time.
-4. Toggle display channels
-5. Visualize data stream of selected channels
-6. Real time average pulse of selected channels
-7. Console logs state of experiment (configuration parameters, current source/destination channels, timestamp when stimulation is started/cancelled/completed)
+2. **Start stimulation** under current configuration. While in Single Experiment mode, start is disabled until source/destination channels have been selected or uploaded from the config. 
+3. **Stop stimulation at any time.**
+4. **Toggle display channels.**
+5. **Visualize data stream** of selected channels.
+6. **Real time average pulse** of selected channels.
+7. **Console logs state of experiment** (configuration parameters, current source/destination channels, timestamp when stimulation is started/cancelled/completed)
 
 ## Next Steps
 1. Online pre-processing: Potential to add filtering, artifact removal, normalization and/or baseline correction to `getFilteredChanBuffer` in BICManager. 
