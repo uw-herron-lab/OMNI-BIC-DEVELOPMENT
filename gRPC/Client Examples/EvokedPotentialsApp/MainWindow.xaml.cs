@@ -353,14 +353,17 @@ namespace EvokedPotentialsApp
             }
         }
 
+        /// <summary>
+        /// Send stimulation for all queued source/destination channels, and update UI
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void btn_start_Click(object sender, RoutedEventArgs e)
         {
             cancellationTokenSource = new CancellationTokenSource();
 
             stopStimClicked = false;
             int numConditions;
-            //aBICManager.zeroAvgsBuffers();
-            //aBICManager.experimentRunning = true;
             if (scanMode)
             {
                 numConditions = stimChannelsQueue.Count;
@@ -376,10 +379,6 @@ namespace EvokedPotentialsApp
                 {
                     return;
                 }
-
-                // clear running totals and num pulses before starting each condition
-                aBICManager.zeroAvgsBuffers();
-                aBICManager.currNumPulses = 0;
 
                 if (scanMode)
                 {
@@ -399,7 +398,7 @@ namespace EvokedPotentialsApp
                     try
                     {
                         uint interPulseInterval = stimPeriod - (5 * stimDuration); // removed the - 3500
-                        enableEvokedPotentialStimulation(monopolar, (uint)stimChannel, (uint)returnChannel, stimAmplitude, stimDuration, 4, interPulseInterval, stimThreshold, numPulses, jitterMax);
+                        enableEvokedPotentialPulses(monopolar, (uint)stimChannel, (uint)returnChannel, stimAmplitude, stimDuration, 4, interPulseInterval, stimThreshold, numPulses, jitterMax);
                     }
                     catch
                     {
@@ -460,8 +459,25 @@ namespace EvokedPotentialsApp
             stop_stim_UI_update();
         }
 
-        private async void enableEvokedPotentialStimulation(bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold, uint numPulses, int jitterMax)
+        /// <summary>
+        /// Send all numPulses stimulation pulses for a single source/destination channel condition
+        /// </summary>
+        /// <param name="monopolar"></param>
+        /// <param name="stimChannel"></param>
+        /// <param name="returnChannel"></param>
+        /// <param name="stimAmplitude"></param>
+        /// <param name="stimDuration"></param>
+        /// <param name="chargeBalancePWRatio"></param>
+        /// <param name="interPulseInterval"></param>
+        /// <param name="stimThreshold"></param>
+        /// <param name="numPulses"></param>
+        /// <param name="jitterMax"></param>
+        private async void enableEvokedPotentialPulses(bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold, uint numPulses, int jitterMax)
         {
+            // clear running totals and num pulses before starting each condition
+            aBICManager.zeroAvgsBuffers();
+            aBICManager.currNumPulses = 0;
+
             for (int i = 0; i < numPulses; i++)
             {
                 if (stopStimClicked)
@@ -474,7 +490,10 @@ namespace EvokedPotentialsApp
                     
                     int randomJitter = RandomNumber(0, jitterMax);
                     await Task.Delay((int)((stimPeriod + randomJitter) / 1000));
-                    updateAvgsChart(); // Update avgs chart after pulse completed
+
+                    // Increment currNumPulses and update avgs chart after pulse completed
+                    aBICManager.currNumPulses++;
+                    updateAvgsChart();
                 }
             }
         }

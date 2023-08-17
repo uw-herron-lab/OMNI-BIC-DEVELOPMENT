@@ -253,15 +253,13 @@ namespace RealtimeGraphing
                 {
                     outputBuffer[i] = new List<double>(dataBuffer[i]);
                 }
-
             }
-
             return outputBuffer;
         }
 
 
         /// <summary>
-        /// Provide a copy of the current running totals
+        /// Provide a copy of the current running averages
         /// </summary>
         /// <returns>A list of double-arrays, each array is composed of the latest running total from each BIC channel. </returns>
         public List<double>[] getAvgsData()
@@ -328,6 +326,11 @@ namespace RealtimeGraphing
             return true;
         }
 
+        /// <summary>
+        /// Get index of first instance of stimulation in a given collection of samples
+        /// </summary>
+        /// <param name="samples"></param>
+        /// <returns></returns>
         private int getStimulationActiveIndex(Google.Protobuf.Collections.RepeatedField<NeuralSample> samples)
         {
             for (int i = 0; i < samples.Count; i++)
@@ -340,6 +343,12 @@ namespace RealtimeGraphing
             return -1;
         }
 
+        /// <summary>
+        /// Apply filtering (and/or normalization, baseline correction, artifact removal?) to a list of a channel's data before 
+        /// adding to running average. Used to take data from currPulseBuffer. Not yet implemented, currently returns copy of same list.
+        /// </summary>
+        /// <param name="buffer">List<double> of a channel's data.</param>
+        /// <returns>A new List<double>. Currently returns a copy of the same list. Eventually add filtering</returns>
         private List<double> getFilteredChanBuffer(List<double> buffer)
         {
             List<double> filtChanBuffer = new List<double>(buffer);
@@ -415,11 +424,9 @@ namespace RealtimeGraphing
                 double[] filtBuffer = new double [numSamples];
 
                 // Lock dataBuffer access to ensure no mid-update copy.
-                // we also don't want a mid update copy of the running totals. will that be taken care of as well? maybe not relevant if I only tell it to access running totals after they've been updated?
-                // do we want this all in the same lock? 
                 lock (dataBufferLock)
                 {
-                    // Update the current pulse buffer
+                    // Updates the current pulse buffer
 
                     // If current pulse buffer is empty and stim found, start the next current pulse buffer
                     int stimulationActiveIndex = getStimulationActiveIndex(stream.ResponseStream.Current.Samples);
@@ -475,8 +482,6 @@ namespace RealtimeGraphing
                         // if we've filled up the buffer
                         if (currPulseBuffer[0].Count >= stimPeriodSamples)
                         {
-                            // increment num pulses
-                            currNumPulses++;
                             // filter and add to running totals
                             for (int channelNum = 0; channelNum < currPulseBuffer.Length; channelNum++)
                             {
