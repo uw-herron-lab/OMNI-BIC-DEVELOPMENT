@@ -5,8 +5,7 @@ This application has two modes:
 2. Single Experiment: A user can upload the source/destination channel in the configuration file and/or select specific source/destination channels manually.
 
 ## Functionalities
-1. **Upload a configuation file**, scanning example at `test_config_ep_scan.json` and single experiment example at `test_config_ep.json`. 
-Parameters:
+1. **Upload a .json configuation file**, scanning example at `test_config_ep_scan.json` and single experiment example at `test_config_ep.json`. 
 * scanMode: true if scanning mode, false if single experiment mode.
 * monopolar: false for bipolar stimulation, true for monopolar stim.
 * stimChannelsQueue: list of source channels to scan in sequence. Defaults to first element of list if scanMode = false.
