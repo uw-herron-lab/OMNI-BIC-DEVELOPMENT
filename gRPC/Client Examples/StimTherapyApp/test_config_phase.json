@@ -5,12 +5,13 @@
   "stimChannel": 4,
   "returnChannel": 12,
   "stimPeriod": 50000,
-  "stimAmplitude": -1500,
+  "stimAmplitude": -2000,
   "stimDuration": 250,
-  "stimThreshold": 9,
+  "stimThreshold": 50,
   "filterCoefficients_B": [ 0.0305, 0, -0.0305 ],
-  "filterCoefficients_A": [ 1, -1.9142, 0.9391 ],
+  "filterCoefficients_A": [ 1, -1.9290, 0.9391 ],
   "triggerPhase": 45,
+  "targetPhase": 210,
   "nStimBlankWindow": 10,
   "nStimTrigLimit": 2
 }

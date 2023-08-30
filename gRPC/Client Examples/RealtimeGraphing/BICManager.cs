@@ -242,7 +242,7 @@ namespace RealtimeGraphing
 
                 // Enqueue the stimulation waveform
                 deviceClient.bicEnqueueStimulation(aNewWaveformRequest);
-                deviceClient.enableOpenLoopStimulation(new openLoopStimEnableRequest() { DeviceAddress = DeviceName, Enable = true, WatchdogInterval = 5000, TriggerStimThreshold = stimThreshold });
+                deviceClient.enableOpenLoopStimulation(new openLoopStimEnableRequest() { DeviceAddress = DeviceName, Enable = true, WatchdogInterval = (interPulseInterval/1000)*255, TriggerStimThreshold = stimThreshold }); // originally 5000 sine we were only thinking of doing 50 Hz stim
             }
             else
             {
@@ -251,7 +251,7 @@ namespace RealtimeGraphing
             }
         }
 
-        public void enableDistributedStim(bool closedStimEn, bool monopolar, uint stimChannel, uint returnChannel, uint senseChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, List<double> filterCoefficients_B, List<double> filterCoefficients_A, double stimThreshold, double initTriggerPhase, uint stimBlankWindow, uint stimTriggerLimit)
+        public void enableDistributedStim(bool closedStimEn, bool monopolar, uint stimChannel, uint returnChannel, uint senseChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, List<double> filterCoefficients_B, List<double> filterCoefficients_A, double stimThreshold, double initTriggerPhase, double userTargetPhase, uint stimBlankWindow, uint stimTriggerLimit)
         {
             if (closedStimEn)
             {
@@ -292,6 +292,7 @@ namespace RealtimeGraphing
                 FilterCoefficientsA = { filterCoefficients_A },
                 TriggerStimThreshold = stimThreshold,
                 InitTriggerStimPhase = initTriggerPhase,
+                TargetPhase = userTargetPhase,
                 NStimBlankWindow = stimBlankWindow,
                 NStimTrigLimit = stimTriggerLimit
                 
@@ -373,7 +374,7 @@ namespace RealtimeGraphing
         /// <returns>Task completion information</returns>
         async Task neuralMonitorTaskAsync()
         {
-            var stream = deviceClient.bicNeuralStream(new bicNeuralSetStreamingEnable() { DeviceAddress = DeviceName, Enable = true, BufferSize = 100, MaxInterpolationPoints = 10, AmplificationFactor = RecordingAmplificationFactor.Amplification395DB, RefChannels = { 24 }, UseGroundReference = true });
+            var stream = deviceClient.bicNeuralStream(new bicNeuralSetStreamingEnable() { DeviceAddress = DeviceName, Enable = true, BufferSize = 100, MaxInterpolationPoints = 10, AmplificationFactor = RecordingAmplificationFactor.Amplification395DB, RefChannels = { 2 }, UseGroundReference = true });
             // Create performance-tracking interpacket variables
             Stopwatch aStopwatch = new Stopwatch();
             newLoggingThread = new Thread(loggingThread);

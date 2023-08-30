@@ -747,6 +747,12 @@ namespace BICGRPCHelperNamespace
             return grpc::Status(grpc::StatusCode::INVALID_ARGUMENT, "Arguments out of range");
         }
 
+        // Check that target phase is valid
+        if (request->targetphase() < 0 || request->targetphase() > 360)
+        {
+            return grpc::Status(grpc::StatusCode::INVALID_ARGUMENT, "Arguments out of range");
+        }
+
         // Grab all coefficient values and store in a vector
         std::vector<double> coefficients_B;
         std::vector<double> coefficients_A;
@@ -760,7 +766,7 @@ namespace BICGRPCHelperNamespace
         }
 
         // Perform the operation
-        deviceDirectory[request->deviceaddress()]->listener->enableDistributedStim(request->enable(), request->sensingchannel(), coefficients_B, coefficients_A, request->triggeredfunctionindex(), request->triggerstimthreshold(), request->inittriggerstimphase(), request->nstimblankwindow(), request->nstimtriglimit());
+        deviceDirectory[request->deviceaddress()]->listener->enableDistributedStim(request->enable(), request->sensingchannel(), coefficients_B, coefficients_A, request->triggeredfunctionindex(), request->triggerstimthreshold(), request->inittriggerstimphase(), request->targetphase(), request->nstimblankwindow(), request->nstimtriglimit());
 
         // Respond to client
         return grpc::Status::OK;
