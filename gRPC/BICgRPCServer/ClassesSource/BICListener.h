@@ -28,7 +28,7 @@ namespace BICGRPCHelperNamespace
 
         // ************************* Public Distributed Algorithm Stimulation Management *************************
         void enableOpenLoopStim(bool enableOpenLoop, uint32_t watchdogInterval);
-        void enableDistributedStim(bool enableDistributed, int phaseSensingChannel, std::vector<double> filtCoeff_B, std::vector<double> filtCoeff_A, uint32_t triggeredFunctionIndex, double stimThreshold, double triggerPhase, int nStimHistory, int nSelfTrigLimit);
+        void enableDistributedStim(bool enableDistributed, int phaseSensingChannel, std::vector<double> filtCoeff_B, std::vector<double> filtCoeff_A, uint32_t triggeredFunctionIndex, double stimThreshold, double triggerPhase, double targetPhase, int nStimHistory, int nSelfTrigLimit);
         void addImplantPointer(cortec::implantapi::IImplant* theImplantedDevice);
         void enableStimTimeLogging(bool enableSensing);
         double processingHelper(double newData, std::vector<double>* dataHistory, std::vector<double>* stimHistory, std::vector<double>* hampelDataHistory, std::vector<double>* dcFiltHistory, double filterGain);
@@ -180,12 +180,11 @@ namespace BICGRPCHelperNamespace
         int nStimTrigLimit = 2;                                             // Limit of consecutive pulses that the system can send (self-triggering limit)
         std::vector<double> stimOnset = std::vector<double>(nStimWindowSize, 0);    // history of stimulation output to facilitate blanking                                      
         std::vector<int> stimSampStamp = std::vector<int>(nStimTrigLimit, 0);// history of sample number for stim onset
-        
 
-        
         // Phase Calculation Variables
         uint64_t zeroSamp = 0;                              // Phase calculation timestamp for first negative zero crossing
         double stimTriggerPhase = 45;                       // Phase calculation phase for triggering stimulation
+        double stimTargetPhase = 210;
         bool prevStimActive = false;                        // Phase calculation state for previous stimulation 
         std::vector<double> sigFreqData = { 0, 0, 0, 0 };   // History of frequency estimates 
         std::vector<double> phaseData = { 0, 0, 0 };        // History for previous estimated phase calculations

@@ -680,21 +680,27 @@ namespace BICGRPCHelperNamespace
     }
 
     //*************************************************** Microservice Triggered Stimulation Functions ***************************************************
+    
     /// <summary>
-    /// Function that enables phase-locked stimulation functionality on a output channel based on an input channel's sensed neural activity
-    /// TODO: add stim parameters?
-    /// TODO: add to protobuf
+    /// Function that enables phase-locked stimulation functionality on an output channel based on an input channel's sensed neural activity
     /// </summary>
     /// <param name="enableDistributed">A boolean indicating if phasic stim should be enabled or disabled</param>
-    /// <param name="phaseSensingChannel">The channel to sense phase on</param>
-    /// <param name="phaseStimChannel">The channel to stimulate after negative zero crossings of phase sensing channel</param>
-    void BICListener::enableDistributedStim(bool enableDistributed, int sensingChannel, std::vector<double> filtCoeff_B, std::vector<double> filtCoeff_A, uint32_t triggeredFunctionIndex, double stimThreshold, double triggerPhase, int nStimHistory, int nSelfTrigLimit)
+    /// <param name="sensingChannel">The channel to sense neural activity on</param>
+    /// <param name="filtCoeff_B">B-array with constants for IIR filter</param>
+    /// <param name="filtCoeff_A">A-array with constants for IIR filter</param>
+    /// <param name="triggeredFunctionIndex"></param>
+    /// <param name="stimThreshold">Amplitude threshold condition to send stimulation</param>
+    /// <param name="triggerPhase">Triggering phase condition to send stimulation</param>
+    /// <param name="nStimHistory">Size of window to sample-and-hold stimulation artifact</param>
+    /// <param name="nSelfTrigLimit">Upper limit of consecutive stimulation pulses to trigger a lockout period</param>
+    void BICListener::enableDistributedStim(bool enableDistributed, int sensingChannel, std::vector<double> filtCoeff_B, std::vector<double> filtCoeff_A, uint32_t triggeredFunctionIndex, double stimThreshold, double triggerPhase, double targetPhase, int nStimHistory, int nSelfTrigLimit)
     {
         distributedInputChannel = sensingChannel;
         betaBandPassIIR_B = filtCoeff_B;
         betaBandPassIIR_A = filtCoeff_A;
         distributedStimThreshold = stimThreshold;
         stimTriggerPhase = triggerPhase;
+        stimTargetPhase = targetPhase;
         stimOnset = std::vector<double>(nStimHistory, 0);
         stimSampStamp = std::vector<int>(nSelfTrigLimit, 0);
 
@@ -839,11 +845,16 @@ namespace BICGRPCHelperNamespace
     /// <summary>
     /// Handles the time-domain processing to be performed on each new datapoint
     /// </summary>
-    /// <param name="newData">latest datapoint to be processed for potential triggering of stimulation</param>
+    /// <param name="newData">Latest datapoint to be processed for potential triggering of stimulation</param>
+    /// <param name="dataHistory">History of raw datapoints</param>
+    /// <param name="stimHistory">History of stimulation onsets</param>
+    /// <param name="hampelDataHistory">History of samples after going through Hampel filter</param>
+    /// <param name="dcFiltHistory">History of samples after going through DC Block filter</param>
+    /// <param name="filterGain">Gain of the IIR bandpass filter</param>
     /// <returns></returns>
     double BICListener::processingHelper(double newData, std::vector<double>* dataHistory, std::vector<double>* stimHistory, std::vector<double>* hampelDataHistory, std::vector<double>* dcFiltHistory, double filterGain)
     {   
-        double dummySamp = 0;
+        double stimCount = 0;
         double dcFiltSamp;
         double hampelSamp;
         double MAD;
@@ -851,7 +862,6 @@ namespace BICGRPCHelperNamespace
         
         std::vector<double> modifier(dataHistory->size());
         std::vector<double> sorted(dataHistory->size());
-        std::vector<double> medWindow(15);
 
         // store most recent raw sample
         dataHistory->insert(dataHistory->begin(), newData);
@@ -861,14 +871,13 @@ namespace BICGRPCHelperNamespace
         // check if the sum of stimHistory is greater than 0- are we far enough away from stim onset?
         for (int i = 0; i < stimHistory->size(); i++)
         {
-            dummySamp += stimHistory->at(i);
+            stimCount += stimHistory->at(i);
         }
 
-        if (dummySamp > 0)
+        if (stimCount > 0)
         {
             // Blank if artifact or near artifact
             dcFiltSamp = hampelDataHistory->at(0);
-            //vRef = hampelDataHistory->at(0);
         }
         else
         {
@@ -902,7 +911,7 @@ namespace BICGRPCHelperNamespace
         MAD = 1.4826 * modifier[((modifier.size() - 1) / 2) + 1];
 
         // check if the DC filtered sample is outside of threshold, and considered an outlier
-        if (abs(dcFiltSamp - medianVal) <= 1 * MAD) // maybe make more lenient or remove..?
+        if (abs(dcFiltSamp - medianVal) <= 3 * MAD) // maybe make more lenient or remove..?
         {
             hampelSamp = dcFiltSamp;
         }
@@ -936,15 +945,17 @@ namespace BICGRPCHelperNamespace
         return filtSamp;
     }
 
+
     /// <summary>
     /// Private function that applies an IIR filter to incoming neural data
     /// </summary>
-    /// <param name="currSamp">latest neural sample</param>
-    /// <param name="prevFiltOut">history of filtered data samples</param>
-    /// <param name="prevInput">history of raw data samples</param>
-    /// <param name="b">b-array for IIR constants</param>
-    /// <param name="a">a-array for IIR constants</param>
-    /// <returns>current filtered output</returns>
+    /// <param name="currSamp">Latest neural sample</param>
+    /// <param name="prevFiltOut">History of filtered data samples</param>
+    /// <param name="prevInput">History of raw data samples</param>
+    /// <param name="b">B-array for IIR constants</param>
+    /// <param name="a">A-array for IIR constants</param>
+    /// <param name="gainVal">Gain for IIR bandpass filter</param>
+    /// <returns>Current filtered output sample</returns>
     double BICListener::filterIIR(double currSamp, std::vector<double>* prevFiltOut, std::vector<double>* prevInput, std::vector<double>* b, std::vector<double>* a, double gainVal)
     {
        double filtTemp;
@@ -966,7 +977,7 @@ namespace BICGRPCHelperNamespace
     /// <summary>
     /// Helper function for identifying if the latest point is a positive zero crossing
     /// </summary>
-    /// <param name="dataArray">vector of sensing data to assess for zero crossing</param>
+    /// <param name="dataArray">Vector of sensing data to assess for zero crossing</param>
     /// <returns>Boolean indicating if the latest point is a positive zero crossing</returns>
     bool BICListener::isZeroCrossing(std::vector<double> dataArray)
     {
@@ -987,7 +998,7 @@ namespace BICGRPCHelperNamespace
     /// <summary>
     /// Helper function for identifying if the latest point indicates if a local maxima was found.
     /// </summary>
-    /// <param name="dataArray">vector of sensing data to assess for local maxima</param>
+    /// <param name="dataArray">Vector of sensing data to assess for local maxima</param>
     /// <returns>Boolean indicating if the latest point indicates that the previous point was a local maxima</returns>
     bool BICListener::detectLocalMaxima(std::vector<double> dataArray)
     {
@@ -1003,8 +1014,8 @@ namespace BICGRPCHelperNamespace
     /// <summary>
     /// Helper function to identify if a certain phase has passed
     /// </summary>
-    /// <param name="prevPhase">vector of previous phase data</param>
-    /// <param name="triggerPhase">current triggering phase value</param>
+    /// <param name="prevPhase">Vector of previous phase data</param>
+    /// <param name="triggerPhase">Current triggering phase value</param>
     /// <returns>Boolean indicating if the phase for triggering stim has passed</returns>
     bool BICListener::detectTriggerPhase(std::vector<double> prevPhase, double triggerPhase)
     {
@@ -1019,11 +1030,12 @@ namespace BICGRPCHelperNamespace
 
     /// <summary>
     /// Function for calculating the phase of a sample
-    /// <param name="dataArray">vector of filtered sensing data</param>
-    /// <param name="currTimeStamp">timestamp of the current sample</param>
-    /// <param name="prevSigFreq">vector of previously calculated frequencies</param>
-    /// <param name="prevPhase">vector of previously calculated phases</param>
-    /// <returns>calculated phase of the current sample</returns>
+    /// </summary>
+    /// <param name="dataArray">Vector of filtered sensing data</param>
+    /// <param name="currTimeStamp">Timestamp of the current sample</param>
+    /// <param name="prevSigFreq">Vector of previously calculated frequencies</param>
+    /// <param name="prevPhase">Vector of previously calculated phases</param>
+    /// <returns>Calculated phase of the current sample</returns>
     double BICListener::calcPhase(std::vector<double> dataArray, uint64_t currSamp, std::vector<double>* prevSigFreq, std::vector<double>* prevPhase)
     {
         double avgSigFreq = 0;
@@ -1089,7 +1101,7 @@ namespace BICGRPCHelperNamespace
         double phaseDiff = 0;
 
         // find phase difference and use that to update stimTriggerPhase alongside arbitrary gain
-        phaseDiff = prevStimPhase - 200; // due to slight delay, shift desired points earlier by 10 degrees
+        phaseDiff = prevStimPhase - stimTargetPhase; 
         stimTriggerPhase -= (0.1) * phaseDiff;
 
         // Checks to reset stimTriggerPhase if out of bounds
