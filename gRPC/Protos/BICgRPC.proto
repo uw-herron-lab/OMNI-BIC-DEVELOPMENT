@@ -251,8 +251,6 @@ message distributedStimEnableRequest{
 	double triggerStimThreshold = 7;
 	double initTriggerStimPhase = 8;
 	double targetPhase = 9;
-	uint32 nStimBlankWindow = 10;
-	uint32 nStimTrigLimit = 11;
 }
 
 // *************************** Device Streaming Service Messages ***************************

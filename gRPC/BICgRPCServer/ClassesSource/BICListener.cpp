@@ -693,7 +693,7 @@ namespace BICGRPCHelperNamespace
     /// <param name="triggerPhase">Triggering phase condition to send stimulation</param>
     /// <param name="nStimHistory">Size of window to sample-and-hold stimulation artifact</param>
     /// <param name="nSelfTrigLimit">Upper limit of consecutive stimulation pulses to trigger a lockout period</param>
-    void BICListener::enableDistributedStim(bool enableDistributed, int sensingChannel, std::vector<double> filtCoeff_B, std::vector<double> filtCoeff_A, uint32_t triggeredFunctionIndex, double stimThreshold, double triggerPhase, double targetPhase, int nStimHistory, int nSelfTrigLimit)
+    void BICListener::enableDistributedStim(bool enableDistributed, int sensingChannel, std::vector<double> filtCoeff_B, std::vector<double> filtCoeff_A, uint32_t triggeredFunctionIndex, double stimThreshold, double triggerPhase, double targetPhase)
     {
         distributedInputChannel = sensingChannel;
         betaBandPassIIR_B = filtCoeff_B;
@@ -701,8 +701,6 @@ namespace BICGRPCHelperNamespace
         distributedStimThreshold = stimThreshold;
         stimTriggerPhase = triggerPhase;
         stimTargetPhase = targetPhase;
-        stimOnset = std::vector<double>(nStimHistory, 0);
-        stimSampStamp = std::vector<int>(nSelfTrigLimit, 0);
 
         if (enableDistributed && !isTriggeringStimulation() && !isStimulating())
         {
@@ -961,7 +959,8 @@ namespace BICGRPCHelperNamespace
        double filtTemp;
 
         // check if n-1 is negative, then n-2 would also be negative
-        filtTemp = gainVal * b->at(0) * currSamp + gainVal * b->at(1) * prevInput->at(0) + gainVal * b->at(2) * prevInput->at(1) - a->at(1) * prevFiltOut->at(0) - a->at(2) * prevFiltOut->at(1);
+        filtTemp = gainVal * b->at(0) * currSamp + gainVal * b->at(1) * prevInput->at(0) + gainVal * b->at(2) * prevInput->at(1) + gainVal * b->at(3) * prevInput->at(2) + gainVal * b->at(4) * prevInput->at(3)
+            - a->at(1) * prevFiltOut->at(0) - a->at(2) * prevFiltOut->at(1) - a->at(3) * prevFiltOut->at(2) - a->at(4) * prevFiltOut->at(3);
 
         // remove the last sample and insert the most recent sample to the front of the vector
         prevFiltOut->insert(prevFiltOut->begin(), filtTemp);
@@ -1107,7 +1106,7 @@ namespace BICGRPCHelperNamespace
         // Checks to reset stimTriggerPhase if out of bounds
         if (stimTriggerPhase < 1 || stimTriggerPhase > 170)
         {
-            stimTriggerPhase = 45;
+            stimTriggerPhase = 25;
         }
     }
 

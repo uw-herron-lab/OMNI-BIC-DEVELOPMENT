@@ -57,8 +57,6 @@ namespace StimTherapyApp
             public List<double> filterCoefficients_A { get; set; }
             public double triggerPhase { get; set; }
             public double targetPhase { get; set; }
-            public uint nStimBlankWindow { get; set; }
-            public uint nStimTrigLimit { get; set; }
         }
 
         public MainWindow()
@@ -258,8 +256,6 @@ namespace StimTherapyApp
                             OutputConsole.Inlines.Add("\n");
                             OutputConsole.Inlines.Add("Starting Trigger Phase: " + configInfo.triggerPhase + "\n");
                             OutputConsole.Inlines.Add("Target Phase: " + configInfo.targetPhase+ "\n");
-                            OutputConsole.Inlines.Add("Stim Blanking Window Size: " + configInfo.nStimBlankWindow + "\n");
-                            OutputConsole.Inlines.Add("Stim Trigger Limit: " + configInfo.nStimTrigLimit + "\n");
                             Scroller.ScrollToEnd();
                         }
 
@@ -294,7 +290,7 @@ namespace StimTherapyApp
                 // start phase triggered stim and update status
                 try
                 {
-                    aBICManager.enableDistributedStim(true, configInfo.monopolar, (uint)configInfo.stimChannel - 1, (uint)configInfo.returnChannel - 1, (uint)configInfo.senseChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, configInfo.filterCoefficients_B, configInfo.filterCoefficients_A, configInfo.stimThreshold, configInfo.triggerPhase, configInfo.targetPhase, configInfo.nStimBlankWindow, configInfo.nStimTrigLimit);
+                    aBICManager.enableDistributedStim(true, configInfo.monopolar, (uint)configInfo.stimChannel - 1, (uint)configInfo.returnChannel - 1, (uint)configInfo.senseChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, configInfo.filterCoefficients_B, configInfo.filterCoefficients_A, configInfo.stimThreshold, configInfo.triggerPhase, configInfo.targetPhase);
                 }
                 catch
                 {
@@ -381,7 +377,7 @@ namespace StimTherapyApp
                 if (phasicStimState)
                 {
                     // disable beta and open loop stim
-                    aBICManager.enableDistributedStim(false, configInfo.monopolar, (uint)configInfo.stimChannel - 1, (uint)configInfo.returnChannel - 1, (uint)configInfo.senseChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, configInfo.filterCoefficients_B, configInfo.filterCoefficients_A, configInfo.stimThreshold, configInfo.triggerPhase, configInfo.targetPhase, configInfo.nStimBlankWindow, configInfo.nStimTrigLimit);
+                    aBICManager.enableDistributedStim(false, configInfo.monopolar, (uint)configInfo.stimChannel - 1, (uint)configInfo.returnChannel - 1, (uint)configInfo.senseChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, configInfo.filterCoefficients_B, configInfo.filterCoefficients_A, configInfo.stimThreshold, configInfo.triggerPhase, configInfo.targetPhase);
                     phasicStimState = false;
                 }
                 if (openStimState)
