@@ -766,7 +766,7 @@ namespace BICGRPCHelperNamespace
         }
 
         // Perform the operation
-        deviceDirectory[request->deviceaddress()]->listener->enableDistributedStim(request->enable(), request->sensingchannel(), coefficients_B, coefficients_A, request->triggeredfunctionindex(), request->triggerstimthreshold(), request->inittriggerstimphase(), request->targetphase(), request->nstimblankwindow(), request->nstimtriglimit());
+        deviceDirectory[request->deviceaddress()]->listener->enableDistributedStim(request->enable(), request->sensingchannel(), coefficients_B, coefficients_A, request->triggeredfunctionindex(), request->triggerstimthreshold(), request->inittriggerstimphase(), request->targetphase());
 
         // Respond to client
         return grpc::Status::OK;

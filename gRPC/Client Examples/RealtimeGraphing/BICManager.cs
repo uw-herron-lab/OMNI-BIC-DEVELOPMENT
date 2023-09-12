@@ -251,7 +251,7 @@ namespace RealtimeGraphing
             }
         }
 
-        public void enableDistributedStim(bool closedStimEn, bool monopolar, uint stimChannel, uint returnChannel, uint senseChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, List<double> filterCoefficients_B, List<double> filterCoefficients_A, double stimThreshold, double initTriggerPhase, double userTargetPhase, uint stimBlankWindow, uint stimTriggerLimit)
+        public void enableDistributedStim(bool closedStimEn, bool monopolar, uint stimChannel, uint returnChannel, uint senseChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, List<double> filterCoefficients_B, List<double> filterCoefficients_A, double stimThreshold, double initTriggerPhase, double userTargetPhase)
         {
             if (closedStimEn)
             {
@@ -293,8 +293,6 @@ namespace RealtimeGraphing
                 TriggerStimThreshold = stimThreshold,
                 InitTriggerStimPhase = initTriggerPhase,
                 TargetPhase = userTargetPhase,
-                NStimBlankWindow = stimBlankWindow,
-                NStimTrigLimit = stimTriggerLimit
                 
             });
         }
