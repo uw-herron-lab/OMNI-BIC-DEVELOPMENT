@@ -45,17 +45,6 @@ namespace RealtimeGraphing
         // Task pointers for streaming methods
         private Task neuroMonitor = null;
 
-        // Random class used for jitter
-        private static readonly Random random = new Random();
-        private static readonly object syncLock = new object();
-        public static int RandomNumber(int min, int max)
-        {
-            lock (syncLock)
-            {
-                return random.Next(min, max);
-            }
-        }
-
         // Constructor
         public BICManager(int definedDataBufferLength, uint stimPeriod, uint baselinePeriod) 
         {
@@ -440,7 +429,6 @@ namespace RealtimeGraphing
                     int stimulationActiveIndex = getStimulationActiveIndex(stream.ResponseStream.Current.Samples);
                     if (currPulseBuffer[0].Count == 0 && stimulationActiveIndex > -1)
                     {
-                        double testElapsedTime = (double)aStopwatch.ElapsedTicks / (double)Stopwatch.Frequency;
                         int transferBufferSize = (int)(baselinePeriodSamples - stimulationActiveIndex); // how much data to take from the end of the buffer to get to baselinePeriodSamples before stim
                         int currDataBufferSize = dataBuffer[0].Count;
                         int dataBufferStartI = (int)(currDataBufferSize - transferBufferSize); // starting i in dataBuffer to transfer to currPulseBuffer
