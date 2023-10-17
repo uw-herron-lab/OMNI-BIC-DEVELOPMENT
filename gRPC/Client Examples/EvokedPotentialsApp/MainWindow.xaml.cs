@@ -31,7 +31,7 @@ namespace EvokedPotentialsApp
         private bool scanMode = false;
         
         private RealtimeGraphing.BICManager aBICManager;
-        private int numChannels = 32;
+        private int numChannels = 33;
         private Configuration configInfo;
         private int? stimChannel = null;
         private int? returnChannel = null;
@@ -94,7 +94,7 @@ namespace EvokedPotentialsApp
             channelList = new List<Channel>();
             channelNumList = new List<int>();
 
-            for (int i = 1; i < numChannels + 1; i++)
+            for (int i = 1; i < numChannels; i++)
             {
                 channelList.Add(new Channel { IsSelected = false, Name = i.ToString() });
                 channelNumList.Add(i);
@@ -315,6 +315,7 @@ namespace EvokedPotentialsApp
                         monopolar = configInfo.monopolar;
                         stimThreshold = configInfo.stimThreshold;
 
+                        // enable certain buttons depending on stimulation experiment mode
                         if (scanMode)
                         {
                             mode.SelectedIndex = 1;
@@ -404,7 +405,7 @@ namespace EvokedPotentialsApp
                     // start stim and update status
                     try
                     {
-                        uint interPulseInterval = stimPeriod - (5 * stimDuration); // removed the - 3500
+                        uint interPulseInterval = stimPeriod - (5 * stimDuration); 
                         enableEvokedPotentialPulses(monopolar, (uint)stimChannel, (uint)returnChannel, stimAmplitude, stimDuration, 4, interPulseInterval, stimThreshold, numPulses, jitterMax);
                     }
                     catch
@@ -626,10 +627,10 @@ namespace EvokedPotentialsApp
                 }
             }));
 
-            // update legend for newest selection of channels
+            // update legend for data streaming chart for newest selection of channels
             for (int i = 0; i < selectedChannels.Count; i++)
             {                
-                chanString = "Channel " + selectedChannels[i].ToString();                
+                chanString = "Channel " + selectedChannels[i].ToString();
                 neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
                 delegate
                 {
@@ -637,6 +638,8 @@ namespace EvokedPotentialsApp
                     neuroStreamChart.Series[chanString].Enabled = true;
                 }));
             }
+
+            // update legend for averages chart with newest selection of channels
             for (int i = 0; i < selectedChannels.Count; i++)
             {
                 chanString = "Channel " + selectedChannels[i].ToString();
@@ -682,6 +685,7 @@ namespace EvokedPotentialsApp
         /// <param name="e"></param>
         private void sources_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            // get a list of items selected and grab the most recent one
             stimChannel = (int)e.AddedItems[0];
             if (!scanMode && stimChannel != null && returnChannel != null)
             {
@@ -696,7 +700,7 @@ namespace EvokedPotentialsApp
         /// <param name="e"></param>
         private void destinations_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
+            // get a list of items selected and grab the most recent one
             returnChannel = (int)e.AddedItems[0];
             if (!scanMode && stimChannel != null && returnChannel != null)
             {
@@ -711,7 +715,8 @@ namespace EvokedPotentialsApp
         /// <param name="e"></param>
         private void mode_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            scanMode = mode.SelectedIndex == 1; // is this doing what I think?
+            // Check if we are in scanning (1) or single experiment mode (0)
+            scanMode = mode.SelectedIndex == 1; 
             if (scanMode)
             {
                 neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
