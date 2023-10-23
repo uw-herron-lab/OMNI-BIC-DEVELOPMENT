@@ -39,7 +39,7 @@ Setting up the Protobuf build instructions:
 3) USE "export MY_INSTALL_DIR=/d/gitbuilds" (or whatever the directory is where you set grpc to install to)
 4) use "cmake -DCMAKE_PREFIX_PATH=$MY_INSTALL_DIR ../.."
 5) Open the BICgRPCdev.sln in the base BrainInterchange-Development/gRPC directory
-6) Open the BICgRPCmicroserver properties and add the following for both RELEASE and DEBUG configurations:
+6) Open the BICgRPCmicroserver properties and add the following for either RELEASE and DEBUG configurations (based on choice in GRPC install):
 	6a) add BIC API cpp include folder to project C/C++ Additional Include Directories
 	 Example: C:\Program Files\Cortec\Bicapi\cppapi\include;
 	6b) add BIC Libs to Linker General Additional Libary Directories
