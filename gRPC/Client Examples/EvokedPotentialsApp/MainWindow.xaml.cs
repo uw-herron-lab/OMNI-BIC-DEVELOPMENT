@@ -31,7 +31,7 @@ namespace EvokedPotentialsApp
         private bool scanMode = false;
         
         private RealtimeGraphing.BICManager aBICManager;
-        private int numChannels = 33;
+        private int numChannels = 32;
         private Configuration configInfo;
         private int? stimChannel = null;
         private int? returnChannel = null;
@@ -94,7 +94,7 @@ namespace EvokedPotentialsApp
             channelList = new List<Channel>();
             channelNumList = new List<int>();
 
-            for (int i = 1; i < numChannels; i++)
+            for (int i = 1; i <= numChannels; i++)
             {
                 channelList.Add(new Channel { IsSelected = false, Name = i.ToString() });
                 channelNumList.Add(i);
@@ -149,7 +149,7 @@ namespace EvokedPotentialsApp
 
             neuroStreamChart.Series.Clear();
             avgsChart.Series.Clear();
-            for (int i = 1; i < numChannels; i++)
+            for (int i = 1; i <= numChannels; i++)
             {
                 seriesName = "Channel " + i.ToString();
                 neuroStreamChart.Series.Add(
