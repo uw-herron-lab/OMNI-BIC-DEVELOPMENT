@@ -6,8 +6,8 @@
 6) right click project file, edit it.
 7) add the following item group:
   <ItemGroup>
-    <Protobuf Include="..\..\protos\helloworld.proto">
-      <Link>protos\helloworld.proto</Link>
+    <Protobuf Include="..\..\protos\BICgRPC.proto">
+      <Link>protos\BICgRPC.proto</Link>
     </Protobuf>
     <None Include="packages.config" />
   </ItemGroup>
