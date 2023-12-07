@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32616.157
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BICgRPCmicroserver", "BICgRPCServer\cmake\build\BICgRPCmicroserver.vcxproj", "{532CCAC0-DAAF-37C5-BFAB-9C38B95E40B3}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BICgRPCmicroserver", "BICgRPCServer\cmake\build\BICgRPCmicroserver.vcxproj", "{E1E67DB9-6ECD-3BD1-8423-CF96620D6C60}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gRPCClient_ConsoleTest", "Client Examples\gRPCClient\gRPCClient\gRPCClient_ConsoleTest.csproj", "{AA72DD57-AE89-464C-9B05-4A6CABF9A408}"
 EndProject
@@ -18,8 +18,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BICgRPC_wpfLib", "Client Ex
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StimTherapyApp", "Client Examples\StimTherapyApp\StimTherapyApp.csproj", "{8148C8EA-986F-42C0-976C-0CEB1BFB8100}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvokedPotentialsApp", "Client Examples\EvokedPotentialsApp\EvokedPotentialsApp.csproj", "{3D04B370-07EC-41CA-80A1-1EFE479ABFC9}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,14 +30,14 @@ Global
 		RelWithDebInfo|x64 = RelWithDebInfo|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{532CCAC0-DAAF-37C5-BFAB-9C38B95E40B3}.Debug|x64.ActiveCfg = Debug|x64
-		{532CCAC0-DAAF-37C5-BFAB-9C38B95E40B3}.Debug|x64.Build.0 = Debug|x64
-		{532CCAC0-DAAF-37C5-BFAB-9C38B95E40B3}.MinSizeRel|x64.ActiveCfg = MinSizeRel|x64
-		{532CCAC0-DAAF-37C5-BFAB-9C38B95E40B3}.MinSizeRel|x64.Build.0 = MinSizeRel|x64
-		{532CCAC0-DAAF-37C5-BFAB-9C38B95E40B3}.Release|x64.ActiveCfg = Release|x64
-		{532CCAC0-DAAF-37C5-BFAB-9C38B95E40B3}.Release|x64.Build.0 = Release|x64
-		{532CCAC0-DAAF-37C5-BFAB-9C38B95E40B3}.RelWithDebInfo|x64.ActiveCfg = RelWithDebInfo|x64
-		{532CCAC0-DAAF-37C5-BFAB-9C38B95E40B3}.RelWithDebInfo|x64.Build.0 = RelWithDebInfo|x64
+		{E1E67DB9-6ECD-3BD1-8423-CF96620D6C60}.Debug|x64.ActiveCfg = Debug|x64
+		{E1E67DB9-6ECD-3BD1-8423-CF96620D6C60}.Debug|x64.Build.0 = Debug|x64
+		{E1E67DB9-6ECD-3BD1-8423-CF96620D6C60}.MinSizeRel|x64.ActiveCfg = MinSizeRel|x64
+		{E1E67DB9-6ECD-3BD1-8423-CF96620D6C60}.MinSizeRel|x64.Build.0 = MinSizeRel|x64
+		{E1E67DB9-6ECD-3BD1-8423-CF96620D6C60}.Release|x64.ActiveCfg = Release|x64
+		{E1E67DB9-6ECD-3BD1-8423-CF96620D6C60}.Release|x64.Build.0 = Release|x64
+		{E1E67DB9-6ECD-3BD1-8423-CF96620D6C60}.RelWithDebInfo|x64.ActiveCfg = RelWithDebInfo|x64
+		{E1E67DB9-6ECD-3BD1-8423-CF96620D6C60}.RelWithDebInfo|x64.Build.0 = RelWithDebInfo|x64
 		{AA72DD57-AE89-464C-9B05-4A6CABF9A408}.Debug|x64.ActiveCfg = Debug|Any CPU
 		{AA72DD57-AE89-464C-9B05-4A6CABF9A408}.Debug|x64.Build.0 = Debug|Any CPU
 		{AA72DD57-AE89-464C-9B05-4A6CABF9A408}.MinSizeRel|x64.ActiveCfg = Release|Any CPU
@@ -72,14 +70,6 @@ Global
 		{8148C8EA-986F-42C0-976C-0CEB1BFB8100}.Release|x64.Build.0 = Release|Any CPU
 		{8148C8EA-986F-42C0-976C-0CEB1BFB8100}.RelWithDebInfo|x64.ActiveCfg = Release|Any CPU
 		{8148C8EA-986F-42C0-976C-0CEB1BFB8100}.RelWithDebInfo|x64.Build.0 = Release|Any CPU
-		{3D04B370-07EC-41CA-80A1-1EFE479ABFC9}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{3D04B370-07EC-41CA-80A1-1EFE479ABFC9}.Debug|x64.Build.0 = Debug|Any CPU
-		{3D04B370-07EC-41CA-80A1-1EFE479ABFC9}.MinSizeRel|x64.ActiveCfg = Debug|Any CPU
-		{3D04B370-07EC-41CA-80A1-1EFE479ABFC9}.MinSizeRel|x64.Build.0 = Debug|Any CPU
-		{3D04B370-07EC-41CA-80A1-1EFE479ABFC9}.Release|x64.ActiveCfg = Release|Any CPU
-		{3D04B370-07EC-41CA-80A1-1EFE479ABFC9}.Release|x64.Build.0 = Release|Any CPU
-		{3D04B370-07EC-41CA-80A1-1EFE479ABFC9}.RelWithDebInfo|x64.ActiveCfg = Release|Any CPU
-		{3D04B370-07EC-41CA-80A1-1EFE479ABFC9}.RelWithDebInfo|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
