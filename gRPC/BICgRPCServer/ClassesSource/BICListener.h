@@ -177,7 +177,7 @@ namespace BICGRPCHelperNamespace
         bool isSelfTrig = false;                                            // State tracking boolean to determine if system is self-triggering
         bool isValidTarget = false;                                         // State tracking boolean to determine if the system is in a state to be stimulating (limit self-triggering)
         std::vector<double> stimOnset = std::vector<double>(15, 0);         // history of stimulation output to facilitate blanking                                      
-        std::vector<int> stimSampStamp = std::vector<int>(2, 0);            // history of sample number for stim onset
+        std::vector<int> stimSampStamp = std::vector<int>(4, 0);            // history of sample number for stim onset
 
         // Phase Calculation Variables
         uint64_t zeroSamp = 0;                              // Phase calculation timestamp for first negative zero crossing

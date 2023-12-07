@@ -546,7 +546,7 @@ namespace BICGRPCHelperNamespace
                                         else
                                         {
                                             // check how much time has passed and reset the flag if enough samples/time has passed
-                                            if (lastNeuroCount + interpolatedPointNum - stimSampStamp[i] > 150) // check if 150 samples/ms has passed
+                                            if (lastNeuroCount + interpolatedPointNum - stimSampStamp[0] > 150) // check if 150 samples/ms has passed
                                             {
                                                 isSelfTrig = false;
                                             }
@@ -639,7 +639,7 @@ namespace BICGRPCHelperNamespace
                         else
                         {
                             // check how much time has passed and reset the flag if enough samples/time has passed
-                            if (sampleCounter - stimSampStamp[i] > 150) // check if 150 samples/ms has passed
+                            if (sampleCounter - stimSampStamp[0] > 150) // check if 150 samples/ms has passed
                             {
                                 isSelfTrig = false;
                             }
