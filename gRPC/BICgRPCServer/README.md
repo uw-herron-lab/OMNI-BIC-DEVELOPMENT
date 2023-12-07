@@ -19,6 +19,8 @@ gRPC Install/Update Instructions:
       		../..
 7) Without closing gitbash, go into cmake/build and open up the "Install.vcxproj" in visual studio
 8) Build the install project
+	-default will be 'all build', so navigate using solution explorer to INSTALL, right click and build
+	-build x64 version, choose either debug or release (THIS CHOICE DRIVES HOW YOU WILL BUILD OMNI)
 9) Next:
 	$ popd
 	$ mkdir -p third_party/abseil-cpp/cmake/build
@@ -28,6 +30,8 @@ gRPC Install/Update Instructions:
       		../..
 10) Without closing gitbash, go into cmake/build and open up the "Install.vcxproj" in visual studio
 11) Build the install project
+	-default will be 'all build', so navigate using solution explorer to INSTALL, right click and build
+	-build x64 version and either debug or release (MUST BE SAME CHOICE AS IN STEP 8)
 
 Setting up the Protobuf build instructions:
 1) Create cmake/build subdirectory (starting from this directory)
@@ -35,12 +39,12 @@ Setting up the Protobuf build instructions:
 3) USE "export MY_INSTALL_DIR=/d/gitbuilds" (or whatever the directory is where you set grpc to install to)
 4) use "cmake -DCMAKE_PREFIX_PATH=$MY_INSTALL_DIR ../.."
 5) Open the BICgRPCdev.sln in the base BrainInterchange-Development/gRPC directory
-6) Open the BICgRPCmicroserver properties
-7) add BIC API cpp include folder to project C/C++ Additional Include Directories
-	a) C:\Program Files\Cortec\Bicapi\cppapi\include
-8) add BIC Libs to Linker General Additional Libary Directories
-	b) C:\Program Files\Cortec\Bicapi\cppapi\lib64
-9) add "bicapid.lib;" to Additional Dependencies on Linker Input Properties
-10) right click on the BICgRPCmicroserver project and selected Add->Add Existing
-11) select all source files in BICgRPCServer\ClassesSource\ and add to the project
-11) copy cortec provided DLLs into build/debug
+6) Open the BICgRPCmicroserver properties and add the following for either RELEASE and DEBUG configurations (based on choice in GRPC install):
+	6a) add BIC API cpp include folder to project C/C++ Additional Include Directories
+	 Example: C:\Program Files\Cortec\Bicapi\cppapi\include;
+	6b) add BIC Libs to Linker General Additional Libary Directories
+	 Example: C:\Program Files\Cortec\Bicapi\cppapi\lib64;
+	6c) add "bicapid.lib;" to Additional Dependencies on Linker Input Properties
+7) right click on the BICgRPCmicroserver project and selected Add->Add Existing
+8) select all source files in BICgRPCServer\ClassesSource\ and add to the project
+9) copy cortec provided DLLs into build/debug
