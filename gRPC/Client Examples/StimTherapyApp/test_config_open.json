@@ -1,6 +1,6 @@
 {
   "stimType": "open",
-  "monopolar": true,
+  "monopolar": false,
   "senseChannel": 1,
   "stimChannel": 4,
   "returnChannel": 12,
