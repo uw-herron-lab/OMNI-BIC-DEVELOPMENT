@@ -18,6 +18,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StimTherapyApp", "Client Ex
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp", "Client Examples\ConsoleApp\ConsoleApp.csproj", "{32E37419-6807-428B-B21D-1503AD1D7E93}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvokedPotentialsApp", "Client Examples\EvokedPotentialsApp\EvokedPotentialsApp.csproj", "{3D04B370-07EC-41CA-80A1-1EFE479ABFC9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -44,6 +46,10 @@ Global
 		{32E37419-6807-428B-B21D-1503AD1D7E93}.Debug|x64.Build.0 = Debug|Any CPU
 		{32E37419-6807-428B-B21D-1503AD1D7E93}.Release|x64.ActiveCfg = Release|Any CPU
 		{32E37419-6807-428B-B21D-1503AD1D7E93}.Release|x64.Build.0 = Release|Any CPU
+		{3D04B370-07EC-41CA-80A1-1EFE479ABFC9}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{3D04B370-07EC-41CA-80A1-1EFE479ABFC9}.Debug|x64.Build.0 = Debug|Any CPU
+		{3D04B370-07EC-41CA-80A1-1EFE479ABFC9}.Release|x64.ActiveCfg = Release|Any CPU
+		{3D04B370-07EC-41CA-80A1-1EFE479ABFC9}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
