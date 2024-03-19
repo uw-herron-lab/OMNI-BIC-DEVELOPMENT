@@ -436,6 +436,8 @@ namespace BICGRPCHelperNamespace
                 newSample->set_filtchannel(distributedInputChannel);
                 newSample->set_timestamp(sampleTime);
                 newSample->set_triggerphase(stimTriggerPhase);
+                newSample->set_isinputtrighigh(samples->at(i).isMeasurementTriggerHigh());
+
 
                 // Check if we've lost packets, if so interpolate
                 if (lastNeuroCount + 1 != sampleCounter)
@@ -493,8 +495,8 @@ namespace BICGRPCHelperNamespace
                                 newInterpolatedSample->set_filtchannel(distributedInputChannel);
                                 newInterpolatedSample->set_timestamp(latestTimeStamp);
                                 newInterpolatedSample->set_triggerphase(stimTriggerPhase);
+                                newInterpolatedSample->set_isinputtrighigh(newSample->isinputtrighigh());
                                 
-
                                 // Copy in the time domain data in
                                 for (int interChannelPoint = 0; interChannelPoint < sampleNum; interChannelPoint++)
                                 {

@@ -68,7 +68,7 @@ namespace RealtimeGraphing
                 chanHeader += ", CH" + (chNum + 1).ToString();
             }
             logFileWriter.WriteLine("PacketNum, TimeStamp, FilteredChannelNum, RawChannelData, PreFilteredChannelData, HampelFilteredChannelData, " +
-                "FilteredChannelData, boolInterpolated, StimChannelData, StimActive, CalcPhase, TriggerPhase, validTarget" + chanHeader);
+                "FilteredChannelData, boolInterpolated, StimChannelData, StimActive, CalcPhase, TriggerPhase, validTarget, InputTrigger" + chanHeader);
         }
         public bool BICConnect()
         {
@@ -478,7 +478,8 @@ namespace RealtimeGraphing
                             stream.ResponseStream.Current.Samples[sampleNum].StimulationActive.ToString() + ", " +
                             stream.ResponseStream.Current.Samples[sampleNum].Phase.ToString() + ", " +
                             stream.ResponseStream.Current.Samples[sampleNum].TriggerPhase.ToString() + ", " + 
-                            stream.ResponseStream.Current.Samples[sampleNum].IsValidTarget.ToString();
+                            stream.ResponseStream.Current.Samples[sampleNum].IsValidTarget.ToString() + ", " +
+                            stream.ResponseStream.Current.Samples[sampleNum].IsInputTrigHigh.ToString();
                         for (int chNum = 0; chNum < numSensingChannelsDef; chNum++)
                         {
                             logString += ", " + stream.ResponseStream.Current.Samples[sampleNum].Measurements[chNum].ToString();

@@ -285,6 +285,7 @@ message NeuralSample{
 	double preFiltSample = 14;
 	double hampelFiltSample = 15;
 	bool isValidTarget = 16;
+	bool isInputTrigHigh = 17;
 }
 
 message ConnectionUpdate{
