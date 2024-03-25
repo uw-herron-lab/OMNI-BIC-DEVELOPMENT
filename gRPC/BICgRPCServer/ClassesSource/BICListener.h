@@ -52,6 +52,7 @@ namespace BICGRPCHelperNamespace
             const uint16_t radioCrcErrors, const uint16_t otherRxErrors,
             const uint32_t rxQueueOverflows, const uint32_t txQueueOverflows);
         void onChannelUpdate(const uint8_t rfChannel);
+        void onLastStimulationFunctionId(const uint16_t id);
   
         // ************************* Public Boolean State Accessors *************************
         bool isStimulating();

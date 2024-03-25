@@ -120,6 +120,19 @@ namespace BICGRPCHelperNamespace
         std::cout << "\tSTATE CHANGE: Rf Channel Update: " << rfChannel << std::endl;
     }
 
+    /// <summary>
+    /// Event handler to report the ID of the last stimulation function executed
+    /// </summary>
+    /// <param name="id"></param>
+    void BICListener::onLastStimulationFunctionId(const uint16_t id)
+    {
+        if (m_isStimulating)
+        {
+            // Write Event Information to Console
+        std::cout << "\tSTATE INFO: Stimulation Function ID: " << id << " ." << std::endl;
+        }
+    }
+
     //*************************************************** Connection Streaming Functions ***************************************************
     /// <summary>
     /// Enable or disable connection streaming to a gRPC client. 
@@ -514,48 +527,34 @@ namespace BICGRPCHelperNamespace
                                         newInterpolatedSample->set_hampelfiltsample(hampelPrevData[0]);
                                         newInterpolatedSample->set_isvalidtarget(isValidTarget);
 
-                                        // Check if this sample is at stimulation onset
+                                        // Update stimulation history window
                                         if (newInterpolatedSample->stimulationactive() == true && prevStimActive == false)
                                         {
-                                            // Save the stim output for this sample
                                             stimOnset.insert(stimOnset.begin(), 1);
-
-                                            // Update stimTriggerPhase based on previous stim phase
                                             updateTriggerPhase(newInterpolatedSample->phase());
-
-
-                                            // update state variable on stimActive state
                                             prevStimActive = true;
-
-                                            // save the sample number when stimulation onset occurs
                                             stimSampStamp.insert(stimSampStamp.begin(), lastNeuroCount + interpolatedPointNum);
                                             stimSampStamp.pop_back();
                                         }
-
-                                        // Otherwise, we aren't at stim onset
                                         else
                                         {
-                                            // Save the stim output for this sample
                                             stimOnset.insert(stimOnset.begin(), 0);
                                         }
 
-                                        // Process to reset self triggering flag
+                                        // Mitigate self-triggering
                                         if (isSelfTrig == false)
                                         {
-                                            // Perform check to see if this stimulation pulse is surpassing the self-triggering limit
                                             detectSelfTriggering(stimSampStamp, 1.25 * 1 / (sigFreqData[0]) * 1000);
                                         }
                                         else
                                         {
-                                            // check how much time has passed and reset the flag if enough samples/time has passed
-                                            if (lastNeuroCount + interpolatedPointNum - stimSampStamp[0] > 150) // check if 150 samples/ms has passed
+                                            if (lastNeuroCount + interpolatedPointNum - stimSampStamp[0] > 150) 
                                             {
                                                 isSelfTrig = false;
                                             }
 
                                         }
 
-                                        // If stim is no longer active- stim is going from high to low
                                         if (newInterpolatedSample->stimulationactive() == false && prevStimActive == true)
                                         {
                                             // update state variable on stimActive state
@@ -601,7 +600,7 @@ namespace BICGRPCHelperNamespace
                     latestData[j] = theData[j];
                     if (j == distributedInputChannel)
                     {
-                        // Call calcPhase to estimate current sample's phase
+                        // Estimate current sample's phase
                         newSample->set_phase(calcPhase(bpFiltData, sampleCounter, &sigFreqData, &phaseData));
 
                         // Call Processing Helper, take output and send to client
@@ -610,45 +609,34 @@ namespace BICGRPCHelperNamespace
                         newSample->set_hampelfiltsample(hampelPrevData[0]);
                         newSample->set_isvalidtarget(isValidTarget);
 
-                        // If stim is active
+                        // Update stimulation history window
                         if (newSample->stimulationactive() == true && prevStimActive == false)
                         {
-                            // Save the stim output for this sample
                             stimOnset.insert(stimOnset.begin(), 1);
-
-                            // Update stimTriggerPhase based on previous stim phase
                             updateTriggerPhase(newSample->phase());
-
-                            // update state variable to avoid over updating trigger phase
                             prevStimActive = true;
-
-                            // save the sample number when stimulation onset occurs
                             stimSampStamp.insert(stimSampStamp.begin(), sampleCounter);
                             stimSampStamp.pop_back();
                         }
                         else
                         {
-                            // Save the stim output for this sample
                             stimOnset.insert(stimOnset.begin(), 0);
                         }
 
-                        // Process to reset self triggering flag
+                        // Mitigate self-triggering
                         if (isSelfTrig == false)
                         {
-                            // Perform check to see if this stimulation pulse is surpassing the self-triggering limit
                             detectSelfTriggering(stimSampStamp, 1.25 * 1 / (sigFreqData[0]) * 1000);
                         }
                         else
                         {
-                            // check how much time has passed and reset the flag if enough samples/time has passed
-                            if (sampleCounter - stimSampStamp[0] > 150) // check if 150 samples/ms has passed
+                            if (sampleCounter - stimSampStamp[0] > 150) 
                             {
                                 isSelfTrig = false;
                             }
 
                         }
 
-                        // If stim is no longer active
                         if (newSample->stimulationactive() == false && prevStimActive == true)
                         {
                             prevStimActive = false;
@@ -776,7 +764,7 @@ namespace BICGRPCHelperNamespace
                 after = std::chrono::system_clock::now();
                 startStimulationTimes.afterStimTimeStamp = after.time_since_epoch().count();
 
-                // No exception encountered, so label as "0"
+                // If no exception encountered, mark it 0
                 startStimulationTimes.recordedException = "0";
 #ifdef DEBUG_CONSOLE_ENABLE
                 std::cout << "DEBUG: finished stim in " << elapsed_sec.count() << "s\n";
@@ -867,62 +855,43 @@ namespace BICGRPCHelperNamespace
         dataHistory->insert(dataHistory->begin(), newData);
         dataHistory->pop_back();
 
-        // Artifact suppression/rejection
-        // check if the sum of stimHistory is greater than 0- are we far enough away from stim onset?
+        // Artifact rejection
         for (int i = 0; i < stimHistory->size(); i++)
         {
             stimCount += stimHistory->at(i);
         }
 
+        // Blank artifact or send data through DC block filter
         if (stimCount > 0)
         {
-            // Blank if artifact or near artifact
             dcFiltSamp = hampelDataHistory->at(0);
         }
         else
         {
-            // Send data through DC block filter
             dcFiltSamp = 0.945 * dcFiltHistory->at(0) + dataHistory->at(0) - dataHistory->at(1);
         }
-
-        // store DC block filtered sample
         dcFiltHistory->insert(dcFiltHistory->begin(), dcFiltSamp);
         dcFiltHistory->pop_back();
 
         // Hampel filter for outlier detection
         sorted = *dcFiltHistory;
-
-        // sort in ascending order
         sort(sorted.begin(), sorted.end());
-
-        // find the median of sorted rawPrevData
         medianVal = sorted[((sorted.size() - 1) / 2) + 1];
-
-        // find modifier by subtracting median from all elements in rawPrevData
         for (int i = 0; i < dcFiltHistory->size(); i++)
         {
             modifier[i] = abs(dcFiltHistory->at(i) - medianVal);
-        }
+        }        
 
-        // sort modifier in ascending order
         sort(modifier.begin(), modifier.end());
-
-        // find median absolute deviation
         MAD = 1.4826 * modifier[((modifier.size() - 1) / 2) + 1];
-
-        // check if the DC filtered sample is outside of threshold, and considered an outlier
-        if (abs(dcFiltSamp - medianVal) <= 3 * MAD) // maybe make more lenient or remove..?
+        if (abs(dcFiltSamp - medianVal) <= 3 * MAD) 
         {
             hampelSamp = dcFiltSamp;
         }
         else
         {
-            // if outside (i.e. outlier), replace with median
             hampelSamp = medianVal;
         }
-
-        // If we want to skip Hampel filter, comment out portions of above and uncomment below
-        //hampelSamp = dcFiltSamp;
 
         // Band pass filter for beta activity
         double filtSamp = filterIIR(hampelSamp, &bpFiltData, hampelDataHistory, &betaBandPassIIR_B, &betaBandPassIIR_A, 1);
@@ -960,15 +929,15 @@ namespace BICGRPCHelperNamespace
     {
        double filtTemp;
 
-        // check if n-1 is negative, then n-2 would also be negative
-        filtTemp = gainVal * b->at(0) * currSamp + gainVal * b->at(1) * prevInput->at(0) + gainVal * b->at(2) * prevInput->at(1) + gainVal * b->at(3) * prevInput->at(2) + gainVal * b->at(4) * prevInput->at(3)
+       // 2nd order IIR filter
+       filtTemp = gainVal * b->at(0) * currSamp + gainVal * b->at(1) * prevInput->at(0) + gainVal * b->at(2) * prevInput->at(1) + gainVal * b->at(3) * prevInput->at(2) + gainVal * b->at(4) * prevInput->at(3)
             - a->at(1) * prevFiltOut->at(0) - a->at(2) * prevFiltOut->at(1) - a->at(3) * prevFiltOut->at(2) - a->at(4) * prevFiltOut->at(3);
 
         // remove the last sample and insert the most recent sample to the front of the vector
         prevFiltOut->insert(prevFiltOut->begin(), filtTemp);
         prevFiltOut->pop_back();
 
-        // prevData[0] holds the most recent sample while prevData[1] keeps older sample
+        // Store most recent sample at the beginning of history window
         prevInput->insert(prevInput->begin(), currSamp);
         prevInput->pop_back();
 
@@ -984,10 +953,9 @@ namespace BICGRPCHelperNamespace
     {
         bool isZeroCrossing = false;
 
-        // check if most recent filtered sample is positive
+        // Check neighboring samples to determine for a zero-crossing
         if (dataArray[0] > 0)
         {
-            // then check if older filtered sample was negative
             if (dataArray[1] < 0)
             {
                 isZeroCrossing = true;
@@ -1048,6 +1016,7 @@ namespace BICGRPCHelperNamespace
         sampDiff = currSamp - zeroSamp;
 
         // Check if there is a negative zero crossing
+        // Estimate oscillation frequency
         if (isZeroCrossing(dataArray))
         {
             // If so, calculate the  frequency
@@ -1056,12 +1025,9 @@ namespace BICGRPCHelperNamespace
             // Check that the calculated frequency is within reasonable bounds
             if (sigFreq > 10 && sigFreq < 30) 
             {
-                // If so, add calculated frequency to history
                 prevSigFreq->insert(prevSigFreq->begin(), sigFreq);
                 prevSigFreq->pop_back();
             }
-
-            // Update zeroPhaseTimeStamp, regardless if it passed bounds check
             zeroSamp = currSamp;
 
             // Phase is 0 since it's a zero crossing
