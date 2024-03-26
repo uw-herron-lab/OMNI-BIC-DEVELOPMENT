@@ -409,63 +409,6 @@ namespace StimTherapyApp
             Scroller.ScrollToEnd();
         }
 
-        private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            OutputConsole.Inlines.Add("Channel was selected/de-selected"); // not going through this function.. selecting doesn't invoke this function 
-            Scroller.ScrollToEnd();
-
-            // grab the most recent data
-            List<double>[] neuroData = aBICManager.getData();
-
-            // look for the selected items in the listbox
-            List<int> selectedChannels = new List<int>();
-            string chanString = "";
-            int chanVal;
-            bool valConvert = false;
-
-            // get a list of selected channels
-            var selected = from item in channelList
-                           where item.IsSelected == true
-                           select item.Name.ToString();
-
-            // get list of selected channels and convert from string to int type
-            foreach (String item in selected)
-            {
-                valConvert = Int32.TryParse(item, out chanVal);
-                if (valConvert)
-                {
-                    selectedChannels.Add(chanVal);
-                }
-                else
-                {
-                    selectedChannels.Add(33);
-                }
-            }
-
-            // clear the current legend
-            neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
-            delegate
-            {
-                foreach (var series in neuroStreamChart.Series)
-                {
-                    series.IsVisibleInLegend = false;
-                    series.Enabled = false;
-                }
-            }));
-
-            // Plot newly selected channels and show new legend
-            for (int i = 0; i < selectedChannels.Count; i++)
-            {
-                chanString = "Channel " + selectedChannels[i].ToString();
-                neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
-                delegate
-                {
-                    neuroStreamChart.Series[chanString].Points.DataBindY(neuroData[selectedChannels[i] - 1]);
-                    neuroStreamChart.Series[chanString].IsVisibleInLegend = true;
-                    neuroStreamChart.Series[chanString].Enabled = true;
-                }));
-            }
-        }
         private void MainWindow_Closed(object sender, EventArgs e)
         {
             neuroChartUpdateTimer.Dispose();

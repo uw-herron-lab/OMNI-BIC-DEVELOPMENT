@@ -963,22 +963,6 @@ namespace BICGRPCHelperNamespace
         }
         return isZeroCrossing;
     }
-
-    /// <summary>
-    /// Helper function for identifying if the latest point indicates if a local maxima was found.
-    /// </summary>
-    /// <param name="dataArray">Vector of sensing data to assess for local maxima</param>
-    /// <returns>Boolean indicating if the latest point indicates that the previous point was a local maxima</returns>
-    bool BICListener::detectLocalMaxima(std::vector<double> dataArray)
-    {
-        bool wasLocalMaxima = false;
-
-        if (dataArray[0] < dataArray[1] && dataArray[1] > dataArray[2])
-        {
-            wasLocalMaxima = true;
-        }
-        return wasLocalMaxima;
-    }
     
     /// <summary>
     /// Helper function to identify if a certain phase has passed
@@ -1087,7 +1071,7 @@ namespace BICGRPCHelperNamespace
     {
         int counter = 0;
 
-        // Loop through the sample stamps and see if they are close/back to back
+        // Identify consecutive stimulation pulses
         for (int i = 0; i < stimSampArray.size() - 1; i++)
         {
             if ((stimSampArray[i] - stimSampArray[i + 1]) <= selfTrigThresh)
@@ -1246,9 +1230,9 @@ namespace BICGRPCHelperNamespace
 
     void BICListener::openLoopStimLoopThread(void)
     {
-        // create instance of stimTimes to keep track of before and after stim timestamps
+        // Create instance of stimTimes to keep track of before and after stim timestamps
         StimTimes startStimulationTimes;
-        // enable stim time logging
+        // Enable stim time logging
         enableStimTimeLogging(true);
 
         // initialize before and after timestamps

@@ -148,7 +148,6 @@ namespace BICGRPCHelperNamespace
         void openLoopStimLoopThread(void);
         double filterIIR(double currSamp, std::vector<double>* prevFiltOut, std::vector<double>* prevInput, std::vector<double>* b, std::vector<double>* a, double gainVal);
         bool isZeroCrossing(std::vector<double> dataArray);
-        bool detectLocalMaxima(std::vector<double> dataArray);
         double calcPhase(std::vector<double> dataArray, uint64_t currSamp, std::vector<double>* prevSigFreq, std::vector<double>* prevPhase);
         bool detectTriggerPhase(std::vector<double> prevPhase, double triggerPhase);
         void updateTriggerPhase(double prevStimPhase);
@@ -168,23 +167,23 @@ namespace BICGRPCHelperNamespace
         double distributedStimThreshold = 10;       // Distributed algorithm threshold to trigger stimulation (input)
 
         // Signal Processing Variables
-        std::vector<double> bpFiltData = { 0, 0, 0, 0, 0 };                       // IIR filter output history
-        std::vector<double> rawPrevData = std::vector<double>(15, 0);       // Data history for raw input samples
-        std::vector<double> hampelPrevData = std::vector<double>(15, 0);    // Data history for hampel filtered input samples
+        std::vector<double> bpFiltData = { 0, 0, 0, 0, 0 };                     // IIR filter output history
+        std::vector<double> rawPrevData = std::vector<double>(15, 0);           // Data history for raw input samples
+        std::vector<double> hampelPrevData = std::vector<double>(15, 0);        // Data history for hampel filtered input samples
         std::vector<double> dcFiltPrevData = std::vector<double>(15, 0);    
-        std::vector<double> betaBandPassIIR_B = { 0.0009447, 0, -0.001889, 0, 0.0009447 };     // IIR "B" filter coefficients for a beta-range band-pass
-        std::vector<double> betaBandPassIIR_A = { 1, -3.8610, 5.6398, -3.6932, 0.9150 };     // IIR "A" filter coefficients for a beta-range band-pass
-        double sampGain = 1;
+        std::vector<double> betaBandPassIIR_B = { 0.0009447, 0, -0.001889, 0, 0.0009447 };      // IIR "B" filter coefficients for a beta-range band-pass
+        std::vector<double> betaBandPassIIR_A = { 1, -3.8610, 5.6398, -3.6932, 0.9150 };        // IIR "A" filter coefficients for a beta-range band-pass
+        double sampGain = 1;                                                // Filter gain
         bool isSelfTrig = false;                                            // State tracking boolean to determine if system is self-triggering
         bool isValidTarget = false;                                         // State tracking boolean to determine if the system is in a state to be stimulating (limit self-triggering)
         std::vector<double> stimOnset = std::vector<double>(15, 0);         // history of stimulation output to facilitate blanking                                      
         std::vector<int> stimSampStamp = std::vector<int>(4, 0);            // history of sample number for stim onset
 
-        // Phase Calculation Variables
-        uint64_t zeroSamp = 0;                              // Phase calculation timestamp for first negative zero crossing
-        double stimTriggerPhase = 25;                       // Phase calculation phase for triggering stimulation
-        double stimTargetPhase = 210;
-        bool prevStimActive = false;                        // Phase calculation state for previous stimulation 
+        // Phase-Locked Loop (PLL) Variables
+        uint64_t zeroSamp = 0;                              // Timestamp for first negative zero crossing
+        double stimTriggerPhase = 25;                       // Phase for triggering stimulation
+        double stimTargetPhase = 210;                       // Ideal phase to deliver stimulation
+        bool prevStimActive = false;                        // State for previous stimulation 
         std::vector<double> sigFreqData = { 0, 0, 0, 0 };   // History of frequency estimates 
         std::vector<double> phaseData = { 0, 0, 0 };        // History for previous estimated phase calculations
     };

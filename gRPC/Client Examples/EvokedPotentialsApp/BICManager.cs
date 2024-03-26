@@ -21,14 +21,14 @@ namespace RealtimeGraphing
         private BICInfoService.BICInfoServiceClient infoClient;
         private string DeviceName;
         private List<double>[] dataBuffer;
-        private List<double>[] runningTotals; // Keeps track of a running total for each channel. This is divided by currNumPulses to compute our running average.
+        private List<double>[] runningTotals;   // Keeps track of a running total for each channel. This is divided by currNumPulses to compute our running average.
         private List<double>[] currPulseBuffer; // Stores data for current pulse. Begin filling when stimulation detected, stops when reaches length of stimPeriodSampels.
-        public int currNumPulses { get; set; } = 0; // Keeps track of how many pulses have occured for the current source/destination condition. Used to compute running average.
+        public int currNumPulses { get; set; } = 0;     // Keeps track of how many pulses have occured for the current source/destination condition. Used to compute running average.
         private const int numSensingChannelsDef = 32;
         private object dataBufferLock = new object();
-        private uint stimPeriodSamples; // number of samples in the stimulation period
-        private uint baselinePeriodSamples; // number of samples in the baseline period (time before stimulation pulse to include in signal average)
-        private uint samplingRate = 1000; // Hz
+        private uint stimPeriodSamples;                 // number of samples in the stimulation period
+        private uint baselinePeriodSamples;             // number of samples in the baseline period (time before stimulation pulse to include in signal average)
+        private uint samplingRate = 1000;               // [Hz]
 
         // Logging Objects
         FileStream logFileStream;
