@@ -416,7 +416,6 @@ namespace BICGRPCHelperNamespace
 
         // Clean up the buffer
         delete bufferedNeuroUpdate;
-        delete bufferedNeuroUpdate;
     }
 
     /// <summary>
@@ -552,9 +551,7 @@ namespace BICGRPCHelperNamespace
                                             {
                                                 isSelfTrig = false;
                                             }
-
                                         }
-
                                         if (newInterpolatedSample->stimulationactive() == false && prevStimActive == true)
                                         {
                                             // update state variable on stimActive state
@@ -563,7 +560,6 @@ namespace BICGRPCHelperNamespace
                                         stimOnset.pop_back();
                                     }
                                 }
-
                                 // Add it to the buffer if there is room
                                 if (neuralSampleQueue.size() < 1000)
                                 {
@@ -874,9 +870,12 @@ namespace BICGRPCHelperNamespace
         dcFiltHistory->pop_back();
 
         // Hampel filter for outlier detection
+        // Identify median of a given window
         sorted = *dcFiltHistory;
         sort(sorted.begin(), sorted.end());
         medianVal = sorted[((sorted.size() - 1) / 2) + 1];
+
+        // Calculate median absolute deviation (MAD)
         for (int i = 0; i < dcFiltHistory->size(); i++)
         {
             modifier[i] = abs(dcFiltHistory->at(i) - medianVal);
@@ -884,6 +883,8 @@ namespace BICGRPCHelperNamespace
 
         sort(modifier.begin(), modifier.end());
         MAD = 1.4826 * modifier[((modifier.size() - 1) / 2) + 1];
+
+        // Determine if a sample is an outlier and needs to be replaced by calculated median value
         if (abs(dcFiltSamp - medianVal) <= 3 * MAD) 
         {
             hampelSamp = dcFiltSamp;
