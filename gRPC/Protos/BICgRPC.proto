@@ -249,6 +249,8 @@ message distributedStimEnableRequest{
 	repeated double filterCoefficients_A = 5;
 	uint32 triggeredFunctionIndex = 6;
 	double triggerStimThreshold = 7;
+	double initTriggerStimPhase = 8;
+	double targetPhase = 9;
 }
 
 // *************************** Device Streaming Service Messages ***************************
@@ -278,6 +280,12 @@ message NeuralSample{
 	double filtSample = 9;
 	uint32 filtChannel = 10;
 	uint64 timeStamp = 11;
+	double phase = 12;
+	double triggerPhase = 13;
+	double preFiltSample = 14;
+	double hampelFiltSample = 15;
+	bool isValidTarget = 16;
+	bool isInputTrigHigh = 17;
 }
 
 message ConnectionUpdate{

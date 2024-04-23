@@ -28,10 +28,10 @@ namespace BICGRPCHelperNamespace
 
         // ************************* Public Distributed Algorithm Stimulation Management *************************
         void enableOpenLoopStim(bool enableOpenLoop, uint32_t watchdogInterval);
-        void enableDistributedStim(bool enableDistributed, int phaseSensingChannel, std::vector<double> filtCoeff_B, std::vector<double> filtCoeff_A, uint32_t triggeredFunctionIndex, double stimThreshold);
+        void enableDistributedStim(bool enableDistributed, int phaseSensingChannel, std::vector<double> filtCoeff_B, std::vector<double> filtCoeff_A, uint32_t triggeredFunctionIndex, double stimThreshold, double triggerPhase, double targetPhase);
         void addImplantPointer(cortec::implantapi::IImplant* theImplantedDevice);
         void enableStimTimeLogging(bool enableSensing);
-        double processingHelper(double newData);
+        double processingHelper(double newData, std::vector<double>* dataHistory, std::vector<double>* stimHistory, std::vector<double>* hampelDataHistory, std::vector<double>* dcFiltHistory, double filterGain);
 
         // ************************* Public Event Handlers *************************
         void onStimulationStateChanged(const bool isStimulating);
@@ -52,6 +52,7 @@ namespace BICGRPCHelperNamespace
             const uint16_t radioCrcErrors, const uint16_t otherRxErrors,
             const uint32_t rxQueueOverflows, const uint32_t txQueueOverflows);
         void onChannelUpdate(const uint8_t rfChannel);
+        void onLastStimulationFunctionId(const uint16_t id);
   
         // ************************* Public Boolean State Accessors *************************
         bool isStimulating();
@@ -145,9 +146,12 @@ namespace BICGRPCHelperNamespace
         // Distributed Stim Functions
         void triggeredSendStimThread(void);
         void openLoopStimLoopThread(void);
-        double filterIIR(double currSamp, std::vector<double>* prevFiltOut, std::vector<double>* prevInput, std::vector<double>* b, std::vector<double>* a);
+        double filterIIR(double currSamp, std::vector<double>* prevFiltOut, std::vector<double>* prevInput, std::vector<double>* b, std::vector<double>* a, double gainVal);
         bool isZeroCrossing(std::vector<double> dataArray);
-        bool detectLocalMaxima(std::vector<double> dataArray);
+        double calcPhase(std::vector<double> dataArray, uint64_t currSamp, std::vector<double>* prevSigFreq, std::vector<double>* prevPhase);
+        bool detectTriggerPhase(std::vector<double> prevPhase, double triggerPhase);
+        void updateTriggerPhase(double prevStimPhase);
+        void detectSelfTriggering(std::vector<int> stimSampArray, double selfTrigThresh);
 
         // Generic Distributed Variables
         bool isCLStimEn = false;                    // State tracking boolean indicates whether distributed stim is active or not
@@ -163,9 +167,24 @@ namespace BICGRPCHelperNamespace
         double distributedStimThreshold = 10;       // Distributed algorithm threshold to trigger stimulation (input)
 
         // Signal Processing Variables
-        std::vector<double> bpFiltData = { 0, 0, 0 };                   // IIR filter output history
-        std::vector<double> rawPrevData = { 0, 0 };                     // Data history for raw input samples
-        std::vector<double> betaBandPassIIR_B = { 0.0305, 0, -0.0305 }; // IIR "B" filter coefficients for a beta-range band-pass
-        std::vector<double> betaBandPassIIR_A = { 1, -1.9247, 0.9391 }; // IIR "A" filter coefficients for a beta-range band-pass
+        std::vector<double> bpFiltData = { 0, 0, 0, 0, 0 };                     // IIR filter output history
+        std::vector<double> rawPrevData = std::vector<double>(15, 0);           // Data history for raw input samples
+        std::vector<double> hampelPrevData = std::vector<double>(15, 0);        // Data history for hampel filtered input samples
+        std::vector<double> dcFiltPrevData = std::vector<double>(15, 0);    
+        std::vector<double> betaBandPassIIR_B = { 0.0009447, 0, -0.001889, 0, 0.0009447 };      // IIR "B" filter coefficients for a beta-range band-pass
+        std::vector<double> betaBandPassIIR_A = { 1, -3.8610, 5.6398, -3.6932, 0.9150 };        // IIR "A" filter coefficients for a beta-range band-pass
+        double sampGain = 1;                                                // Filter gain
+        bool isSelfTrig = false;                                            // State tracking boolean to determine if system is self-triggering
+        bool isValidTarget = false;                                         // State tracking boolean to determine if the system is in a state to be stimulating (limit self-triggering)
+        std::vector<double> stimOnset = std::vector<double>(15, 0);         // history of stimulation output to facilitate blanking                                      
+        std::vector<int> stimSampStamp = std::vector<int>(4, 0);            // history of sample number for stim onset
+
+        // Phase-Locked Loop (PLL) Variables
+        uint64_t zeroSamp = 0;                              // Timestamp for first negative zero crossing
+        double stimTriggerPhase = 25;                       // Phase for triggering stimulation
+        double stimTargetPhase = 210;                       // Ideal phase to deliver stimulation
+        bool prevStimActive = false;                        // State for previous stimulation 
+        std::vector<double> sigFreqData = { 0, 0, 0, 0 };   // History of frequency estimates 
+        std::vector<double> phaseData = { 0, 0, 0 };        // History for previous estimated phase calculations
     };
 }

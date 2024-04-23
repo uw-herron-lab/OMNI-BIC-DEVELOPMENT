@@ -741,6 +741,18 @@ namespace BICGRPCHelperNamespace
             return grpc::Status(grpc::StatusCode::INVALID_ARGUMENT, "Need at least 3 values for filter coefficients");
         }
 
+        // Check that starting trigger phase is valid
+        if (request->inittriggerstimphase() < 0 || request->inittriggerstimphase() > 360)
+        {
+            return grpc::Status(grpc::StatusCode::INVALID_ARGUMENT, "Arguments out of range");
+        }
+
+        // Check that target phase is valid
+        if (request->targetphase() < 0 || request->targetphase() > 360)
+        {
+            return grpc::Status(grpc::StatusCode::INVALID_ARGUMENT, "Arguments out of range");
+        }
+
         // Grab all coefficient values and store in a vector
         std::vector<double> coefficients_B;
         std::vector<double> coefficients_A;
@@ -754,7 +766,7 @@ namespace BICGRPCHelperNamespace
         }
 
         // Perform the operation
-        deviceDirectory[request->deviceaddress()]->listener->enableDistributedStim(request->enable(), request->sensingchannel(), coefficients_B, coefficients_A, request->triggeredfunctionindex(), request->triggerstimthreshold());
+        deviceDirectory[request->deviceaddress()]->listener->enableDistributedStim(request->enable(), request->sensingchannel(), coefficients_B, coefficients_A, request->triggeredfunctionindex(), request->triggerstimthreshold(), request->inittriggerstimphase(), request->targetphase());
 
         // Respond to client
         return grpc::Status::OK;

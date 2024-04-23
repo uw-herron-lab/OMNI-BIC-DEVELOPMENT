@@ -2,12 +2,14 @@
   "stimType": "beta",
   "monopolar": false,
   "senseChannel": 1,
-  "stimChannel": 5,
-  "returnChannel": 16, 
+  "stimChannel": 4,
+  "returnChannel": 12,
   "stimPeriod": 50000,
-  "stimAmplitude": -1000,
+  "stimAmplitude": -4500,
   "stimDuration": 250,
-  "stimThreshold": 100,
-  "filterCoefficients_B": [ 0.0305, 0, -0.0305 ],
-  "filterCoefficients_A": [ 1, -1.9247, 0.9391 ]
+  "stimThreshold": 20,
+  "filterCoefficients_B": [ 0.0009447, 0, -0.001889, 0, 0.0009447 ],
+  "filterCoefficients_A": [ 1, -3.8610, 5.6398, -3.6932, 0.9150 ],
+  "triggerPhase": 25,
+  "targetPhase": 210
 }

@@ -120,6 +120,19 @@ namespace BICGRPCHelperNamespace
         std::cout << "\tSTATE CHANGE: Rf Channel Update: " << rfChannel << std::endl;
     }
 
+    /// <summary>
+    /// Event handler to report the ID of the last stimulation function executed
+    /// </summary>
+    /// <param name="id"></param>
+    void BICListener::onLastStimulationFunctionId(const uint16_t id)
+    {
+        if (m_isStimulating)
+        {
+            // Write Event Information to Console
+        std::cout << "\tSTATE INFO: Stimulation Function ID: " << id << " ." << std::endl;
+        }
+    }
+
     //*************************************************** Connection Streaming Functions ***************************************************
     /// <summary>
     /// Enable or disable connection streaming to a gRPC client. 
@@ -434,6 +447,10 @@ namespace BICGRPCHelperNamespace
                 newSample->set_isinterpolated(false);
                 newSample->set_filtchannel(distributedInputChannel);
                 newSample->set_timestamp(sampleTime);
+                newSample->set_triggerphase(stimTriggerPhase);
+                newSample->set_isinputtrighigh(samples->at(i).isMeasurementTriggerHigh());
+
+
                 // Check if we've lost packets, if so interpolate
                 if (lastNeuroCount + 1 != sampleCounter)
                 {
@@ -489,7 +506,9 @@ namespace BICGRPCHelperNamespace
                                 newInterpolatedSample->set_isinterpolated(true);
                                 newInterpolatedSample->set_filtchannel(distributedInputChannel);
                                 newInterpolatedSample->set_timestamp(latestTimeStamp);
-
+                                newInterpolatedSample->set_triggerphase(stimTriggerPhase);
+                                newInterpolatedSample->set_isinputtrighigh(newSample->isinputtrighigh());
+                                
                                 // Copy in the time domain data in
                                 for (int interChannelPoint = 0; interChannelPoint < sampleNum; interChannelPoint++)
                                 {
@@ -497,8 +516,48 @@ namespace BICGRPCHelperNamespace
                                     newInterpolatedSample->add_measurements(interpolatedSample);
                                     if (interChannelPoint == distributedInputChannel)
                                     {
-                                        // call the processing helper, take output and send to client
-                                        newInterpolatedSample->set_filtsample(processingHelper(interpolatedSample)); // set the filtered sample in the neural sample 
+
+                                        // Call calcPhase to estimate current sample's phase
+                                        newInterpolatedSample->set_phase(calcPhase(bpFiltData, lastNeuroCount + interpolatedPointNum, &sigFreqData, &phaseData));
+
+                                        // Call Processing Helper, take output and send to client
+                                        newInterpolatedSample->set_filtsample(processingHelper(interpolatedSample, &rawPrevData, &stimOnset, &hampelPrevData, &dcFiltPrevData, sampGain));
+                                        newInterpolatedSample->set_prefiltsample(dcFiltPrevData[0]);
+                                        newInterpolatedSample->set_hampelfiltsample(hampelPrevData[0]);
+                                        newInterpolatedSample->set_isvalidtarget(isValidTarget);
+
+                                        // Update stimulation history window
+                                        if (newInterpolatedSample->stimulationactive() == true && prevStimActive == false)
+                                        {
+                                            stimOnset.insert(stimOnset.begin(), 1);
+                                            updateTriggerPhase(newInterpolatedSample->phase());
+                                            prevStimActive = true;
+                                            stimSampStamp.insert(stimSampStamp.begin(), lastNeuroCount + interpolatedPointNum);
+                                            stimSampStamp.pop_back();
+                                        }
+                                        else
+                                        {
+                                            stimOnset.insert(stimOnset.begin(), 0);
+                                        }
+
+                                        // Mitigate self-triggering
+                                        if (isSelfTrig == false)
+                                        {
+                                            detectSelfTriggering(stimSampStamp, 1.25 * 1 / (sigFreqData[0]) * 1000);
+                                        }
+                                        else
+                                        {
+                                            if (lastNeuroCount + interpolatedPointNum - stimSampStamp[0] > 150) 
+                                            {
+                                                isSelfTrig = false;
+                                            }
+                                        }
+                                        if (newInterpolatedSample->stimulationactive() == false && prevStimActive == true)
+                                        {
+                                            // update state variable on stimActive state
+                                            prevStimActive = false;
+                                        }
+                                        stimOnset.pop_back();
                                     }
                                 }
                                 // Add it to the buffer if there is room
@@ -537,10 +596,51 @@ namespace BICGRPCHelperNamespace
                     latestData[j] = theData[j];
                     if (j == distributedInputChannel)
                     {
+                        // Estimate current sample's phase
+                        newSample->set_phase(calcPhase(bpFiltData, sampleCounter, &sigFreqData, &phaseData));
+
                         // Call Processing Helper, take output and send to client
-                        newSample->set_filtsample(processingHelper(theData[j]));
+                        newSample->set_filtsample(processingHelper(theData[j], &rawPrevData, &stimOnset, &hampelPrevData, &dcFiltPrevData, sampGain));
+                        newSample->set_prefiltsample(dcFiltPrevData[0]);
+                        newSample->set_hampelfiltsample(hampelPrevData[0]);
+                        newSample->set_isvalidtarget(isValidTarget);
+
+                        // Update stimulation history window
+                        if (newSample->stimulationactive() == true && prevStimActive == false)
+                        {
+                            stimOnset.insert(stimOnset.begin(), 1);
+                            updateTriggerPhase(newSample->phase());
+                            prevStimActive = true;
+                            stimSampStamp.insert(stimSampStamp.begin(), sampleCounter);
+                            stimSampStamp.pop_back();
+                        }
+                        else
+                        {
+                            stimOnset.insert(stimOnset.begin(), 0);
+                        }
+
+                        // Mitigate self-triggering
+                        if (isSelfTrig == false)
+                        {
+                            detectSelfTriggering(stimSampStamp, 1.25 * 1 / (sigFreqData[0]) * 1000);
+                        }
+                        else
+                        {
+                            if (sampleCounter - stimSampStamp[0] > 150) 
+                            {
+                                isSelfTrig = false;
+                            }
+
+                        }
+
+                        if (newSample->stimulationactive() == false && prevStimActive == true)
+                        {
+                            prevStimActive = false;
+                        }
+                        stimOnset.pop_back();
                     }
                 }
+
                 delete theData;
 
                 // Add latest received data packet to the buffer if there is room
@@ -566,21 +666,27 @@ namespace BICGRPCHelperNamespace
     }
 
     //*************************************************** Microservice Triggered Stimulation Functions ***************************************************
+    
     /// <summary>
-    /// Function that enables phase-locked stimulation functionality on a output channel based on an input channel's sensed neural activity
-    /// TODO: add stim parameters?
-    /// TODO: add to protobuf
+    /// Function that enables phase-locked stimulation functionality on an output channel based on an input channel's sensed neural activity
     /// </summary>
     /// <param name="enableDistributed">A boolean indicating if phasic stim should be enabled or disabled</param>
-    /// <param name="phaseSensingChannel">The channel to sense phase on</param>
-    /// <param name="phaseStimChannel">The channel to stimulate after negative zero crossings of phase sensing channel</param>
-    void BICListener::enableDistributedStim(bool enableDistributed, int sensingChannel, std::vector<double> filtCoeff_B, std::vector<double> filtCoeff_A, uint32_t triggeredFunctionIndex, double stimThreshold)
+    /// <param name="sensingChannel">The channel to sense neural activity on</param>
+    /// <param name="filtCoeff_B">B-array with constants for IIR filter</param>
+    /// <param name="filtCoeff_A">A-array with constants for IIR filter</param>
+    /// <param name="triggeredFunctionIndex"></param>
+    /// <param name="stimThreshold">Amplitude threshold condition to send stimulation</param>
+    /// <param name="triggerPhase">Triggering phase condition to send stimulation</param>
+    /// <param name="nStimHistory">Size of window to sample-and-hold stimulation artifact</param>
+    /// <param name="nSelfTrigLimit">Upper limit of consecutive stimulation pulses to trigger a lockout period</param>
+    void BICListener::enableDistributedStim(bool enableDistributed, int sensingChannel, std::vector<double> filtCoeff_B, std::vector<double> filtCoeff_A, uint32_t triggeredFunctionIndex, double stimThreshold, double triggerPhase, double targetPhase)
     {
-        // could potentially add filter coefficients to be updated here..?
         distributedInputChannel = sensingChannel;
         betaBandPassIIR_B = filtCoeff_B;
         betaBandPassIIR_A = filtCoeff_A;
         distributedStimThreshold = stimThreshold;
+        stimTriggerPhase = triggerPhase;
+        stimTargetPhase = targetPhase;
 
         if (enableDistributed && !isTriggeringStimulation() && !isStimulating())
         {
@@ -654,7 +760,7 @@ namespace BICGRPCHelperNamespace
                 after = std::chrono::system_clock::now();
                 startStimulationTimes.afterStimTimeStamp = after.time_since_epoch().count();
 
-                // No exception encountered, so label as "0"
+                // If no exception encountered, mark it 0
                 startStimulationTimes.recordedException = "0";
 #ifdef DEBUG_CONSOLE_ENABLE
                 std::cout << "DEBUG: finished stim in " << elapsed_sec.count() << "s\n";
@@ -675,7 +781,6 @@ namespace BICGRPCHelperNamespace
                 {
                     std::cout << "WARNING: Before Stim Time Log Queue Size Overflow, streaming data skipped" << std::endl;
                 }
-
             }
             catch (std::exception& anyException)
             {
@@ -724,45 +829,116 @@ namespace BICGRPCHelperNamespace
     /// <summary>
     /// Handles the time-domain processing to be performed on each new datapoint
     /// </summary>
-    /// <param name="newData">latest datapoint to be processed for potential triggering of stimulation</param>
+    /// <param name="newData">Latest datapoint to be processed for potential triggering of stimulation</param>
+    /// <param name="dataHistory">History of raw datapoints</param>
+    /// <param name="stimHistory">History of stimulation onsets</param>
+    /// <param name="hampelDataHistory">History of samples after going through Hampel filter</param>
+    /// <param name="dcFiltHistory">History of samples after going through DC Block filter</param>
+    /// <param name="filterGain">Gain of the IIR bandpass filter</param>
     /// <returns></returns>
-    double BICListener::processingHelper(double newData)
+    double BICListener::processingHelper(double newData, std::vector<double>* dataHistory, std::vector<double>* stimHistory, std::vector<double>* hampelDataHistory, std::vector<double>* dcFiltHistory, double filterGain)
     {   
-        // Band pass filter for beta activity
-        double filtSamp = filterIIR(newData, &bpFiltData, &rawPrevData, &betaBandPassIIR_B, &betaBandPassIIR_A);
+        double stimCount = 0;
+        double dcFiltSamp;
+        double hampelSamp;
+        double MAD;
+        double medianVal;
+        
+        std::vector<double> modifier(dataHistory->size());
+        std::vector<double> sorted(dataHistory->size());
 
-        // if at a local maxima above an arbitrary threshold and closed loop stim is enabled, send stimulation
-        if (isCLStimEn && detectLocalMaxima(bpFiltData) && bpFiltData[1] > distributedStimThreshold)
+        // store most recent raw sample
+        dataHistory->insert(dataHistory->begin(), newData);
+        dataHistory->pop_back();
+
+        // Artifact rejection
+        for (int i = 0; i < stimHistory->size(); i++)
         {
+            stimCount += stimHistory->at(i);
+        }
+
+        // Blank artifact or send data through DC block filter
+        if (stimCount > 0)
+        {
+            dcFiltSamp = hampelDataHistory->at(0);
+        }
+        else
+        {
+            dcFiltSamp = 0.945 * dcFiltHistory->at(0) + dataHistory->at(0) - dataHistory->at(1);
+        }
+        dcFiltHistory->insert(dcFiltHistory->begin(), dcFiltSamp);
+        dcFiltHistory->pop_back();
+
+        // Hampel filter for outlier detection
+        // Identify median of a given window
+        sorted = *dcFiltHistory;
+        sort(sorted.begin(), sorted.end());
+        medianVal = sorted[((sorted.size() - 1) / 2) + 1];
+
+        // Calculate median absolute deviation (MAD)
+        for (int i = 0; i < dcFiltHistory->size(); i++)
+        {
+            modifier[i] = abs(dcFiltHistory->at(i) - medianVal);
+        }        
+
+        sort(modifier.begin(), modifier.end());
+        MAD = 1.4826 * modifier[((modifier.size() - 1) / 2) + 1];
+
+        // Determine if a sample is an outlier and needs to be replaced by calculated median value
+        if (abs(dcFiltSamp - medianVal) <= 3 * MAD) 
+        {
+            hampelSamp = dcFiltSamp;
+        }
+        else
+        {
+            hampelSamp = medianVal;
+        }
+
+        // Band pass filter for beta activity
+        double filtSamp = filterIIR(hampelSamp, &bpFiltData, hampelDataHistory, &betaBandPassIIR_B, &betaBandPassIIR_A, 1);
+
+        // if at a particular phase, above an arbitrary threshold, and closed loop stim is enabled, send stimulation
+        if (!isSelfTrig && isCLStimEn && detectTriggerPhase(phaseData, stimTriggerPhase) && bpFiltData[0] > distributedStimThreshold)
+        {
+            // log that a valid target has been found
+            isValidTarget = true;
+
             // start thread to execute stim command
             stimTrigger->notify_all();
+        }
+        else
+        {
+            isValidTarget = false;
         }
 
         // Return the filtered sample for visualization purposes
         return filtSamp;
     }
 
+
     /// <summary>
     /// Private function that applies an IIR filter to incoming neural data
     /// </summary>
-    /// <param name="currSamp">latest neural sample</param>
-    /// <param name="prevFiltOut">history of filtered data samples</param>
-    /// <param name="prevInput">history of raw data samples</param>
-    /// <param name="b">b-array for IIR constants</param>
-    /// <param name="a">a-array for IIR constants</param>
-    /// <returns>current filtered output</returns>
-    double BICListener::filterIIR(double currSamp, std::vector<double>* prevFiltOut, std::vector<double>* prevInput, std::vector<double>* b, std::vector<double>* a)
+    /// <param name="currSamp">Latest neural sample</param>
+    /// <param name="prevFiltOut">History of filtered data samples</param>
+    /// <param name="prevInput">History of raw data samples</param>
+    /// <param name="b">B-array for IIR constants</param>
+    /// <param name="a">A-array for IIR constants</param>
+    /// <param name="gainVal">Gain for IIR bandpass filter</param>
+    /// <returns>Current filtered output sample</returns>
+    double BICListener::filterIIR(double currSamp, std::vector<double>* prevFiltOut, std::vector<double>* prevInput, std::vector<double>* b, std::vector<double>* a, double gainVal)
     {
        double filtTemp;
 
-        // check if n-1 is negative, then n-2 would also be negative
-        filtTemp = b->at(0) * currSamp + b->at(1) * prevInput->at(0) + b->at(2) * prevInput->at(1) - a->at(1) * prevFiltOut->at(0) - a->at(2) * prevFiltOut->at(1);
+       // 2nd order IIR filter
+       filtTemp = gainVal * b->at(0) * currSamp + gainVal * b->at(1) * prevInput->at(0) + gainVal * b->at(2) * prevInput->at(1) + gainVal * b->at(3) * prevInput->at(2) + gainVal * b->at(4) * prevInput->at(3)
+            - a->at(1) * prevFiltOut->at(0) - a->at(2) * prevFiltOut->at(1) - a->at(3) * prevFiltOut->at(2) - a->at(4) * prevFiltOut->at(3);
 
         // remove the last sample and insert the most recent sample to the front of the vector
         prevFiltOut->insert(prevFiltOut->begin(), filtTemp);
         prevFiltOut->pop_back();
 
-        // prevData[0] holds the most recent sample while prevData[1] keeps older sample
+        // Store most recent sample at the beginning of history window
         prevInput->insert(prevInput->begin(), currSamp);
         prevInput->pop_back();
 
@@ -770,40 +946,151 @@ namespace BICGRPCHelperNamespace
     }
 
     /// <summary>
-    /// Helper function for identifying if the latest point is a negative zero crossing
+    /// Helper function for identifying if the latest point is a positive zero crossing
     /// </summary>
-    /// <param name="dataArray">vector of sensing data to assess for zero crossing</param>
-    /// <returns>Boolean indicating if the latest point is a negative zero crossing</returns>
+    /// <param name="dataArray">Vector of sensing data to assess for zero crossing</param>
+    /// <returns>Boolean indicating if the latest point is a positive zero crossing</returns>
     bool BICListener::isZeroCrossing(std::vector<double> dataArray)
     {
         bool isZeroCrossing = false;
 
-        // check if most recent filtered sample is negative
-        if (dataArray[0] < 0)
+        // Check neighboring samples to determine for a zero-crossing
+        if (dataArray[0] > 0)
         {
-            // then check if older filtered sample was positive
-            if (dataArray[1] > 0)
+            if (dataArray[1] < 0)
             {
                 isZeroCrossing = true;
             }
         }
         return isZeroCrossing;
     }
+    
+    /// <summary>
+    /// Helper function to identify if a certain phase has passed
+    /// </summary>
+    /// <param name="prevPhase">Vector of previous phase data</param>
+    /// <param name="triggerPhase">Current triggering phase value</param>
+    /// <returns>Boolean indicating if the phase for triggering stim has passed</returns>
+    bool BICListener::detectTriggerPhase(std::vector<double> prevPhase, double triggerPhase)
+    {
+        bool wasTriggerPhase = false;
+
+        if (prevPhase[0] > triggerPhase && prevPhase[2] < triggerPhase)
+        {
+            wasTriggerPhase = true;
+        }
+        return wasTriggerPhase;
+    }
 
     /// <summary>
-    /// Helper function for identifying if the latest point indicates if a local maxima was found.
+    /// Function for calculating the phase of a sample
     /// </summary>
-    /// <param name="dataArray">vector of sensing data to assess for local maxima</param>
-    /// <returns>Boolean indicating if the latest point indicates that the previous point was a local maxima</returns>
-    bool BICListener::detectLocalMaxima(std::vector<double> dataArray)
+    /// <param name="dataArray">Vector of filtered sensing data</param>
+    /// <param name="currTimeStamp">Timestamp of the current sample</param>
+    /// <param name="prevSigFreq">Vector of previously calculated frequencies</param>
+    /// <param name="prevPhase">Vector of previously calculated phases</param>
+    /// <returns>Calculated phase of the current sample</returns>
+    double BICListener::calcPhase(std::vector<double> dataArray, uint64_t currSamp, std::vector<double>* prevSigFreq, std::vector<double>* prevPhase)
     {
-        bool wasLocalMaxima = false;
+        double avgSigFreq = 0;
+        double sigFreq = 0;
+        double currPhase = 0;
+        uint64_t sampDiff = 0;
 
-        if (dataArray[0] < dataArray[1] && dataArray[1] > dataArray[2])
+        // Identify sample difference 
+        sampDiff = currSamp - zeroSamp;
+
+        // Check if there is a negative zero crossing
+        // Estimate oscillation frequency
+        if (isZeroCrossing(dataArray))
         {
-            wasLocalMaxima = true;
+            // If so, calculate the  frequency
+            sigFreq = 1 / (sampDiff * 0.001);
+
+            // Check that the calculated frequency is within reasonable bounds
+            if (sigFreq > 10 && sigFreq < 30) 
+            {
+                prevSigFreq->insert(prevSigFreq->begin(), sigFreq);
+                prevSigFreq->pop_back();
+            }
+            zeroSamp = currSamp;
+
+            // Phase is 0 since it's a zero crossing
+            currPhase = 0;
         }
-        return wasLocalMaxima;
+
+        // Calculate the phase value using previously recorded signal frequencies
+        else
+        {
+            for (int i = 0; i < prevSigFreq->size(); i++)
+            {
+                avgSigFreq += prevSigFreq->at(i);
+            }
+            avgSigFreq /= prevSigFreq->size();
+
+            currPhase = 0.001 * sampDiff * avgSigFreq * 360;
+        }
+
+        // Save the calculated phase
+        prevPhase->insert(prevPhase->begin(), currPhase);
+        prevPhase->pop_back();
+
+        // Check stimTriggerPhase is within range
+        if (stimTriggerPhase <= 0 || stimTriggerPhase > 360)
+        {
+            // If not, reset stimTriggerPhase
+            stimTriggerPhase = 45;
+        }
+        return currPhase;
+    }
+
+    /// <summary>
+    /// Function for updating the triggering phase value
+    /// </summary>
+    /// <param name="prevStimPhase">phase of current sample that just triggered stimulation</param>
+    void BICListener::updateTriggerPhase(double prevStimPhase)
+    {
+        double phaseDiff = 0;
+
+        // find phase difference and use that to update stimTriggerPhase alongside arbitrary gain
+        phaseDiff = prevStimPhase - stimTargetPhase; 
+        stimTriggerPhase -= (0.1) * phaseDiff;
+
+        // Checks to reset stimTriggerPhase if out of bounds
+        if (stimTriggerPhase < 1 || stimTriggerPhase > 170)
+        {
+            stimTriggerPhase = 25;
+        }
+    }
+
+    /// <summary>
+    /// Function for detecting if too many stimulation pulses have been sent out consecutively
+    /// </summary>
+    /// <param name="stimSampArray">Container of sample numbers indicating the onset of stimulation</param>
+    /// <param name="selfTrigThresh">Value dictating the maximum amount of time between two stimulation onsets to be considered self triggering </param>
+    void BICListener::detectSelfTriggering(std::vector<int> stimSampArray, double selfTrigThresh)
+    {
+        int counter = 0;
+
+        // Identify consecutive stimulation pulses
+        for (int i = 0; i < stimSampArray.size() - 1; i++)
+        {
+            if ((stimSampArray[i] - stimSampArray[i + 1]) <= selfTrigThresh)
+            {
+                // For every instance they are back to back, increase the counter
+                counter++;
+            }
+        }
+
+        // Check if the number of self-triggering pulses exceeds the threshold limit and return boolean state
+        if (counter < stimSampArray.size() - 1)
+        {
+            isSelfTrig = false;
+        }
+        else
+        {
+            isSelfTrig = true;
+        }
     }
 
     /// <summary>
@@ -830,6 +1117,9 @@ namespace BICGRPCHelperNamespace
 
         // Append to the name of the stim logging file 
         std::string fileName = "stimTimeLog_" + timeStamp + ".csv";
+        myFile.open(fileName, std::ios_base::app);
+        myFile << "BeforeStim, AfterStim, Exception, triggerPhase" << "\n";
+        myFile.close();
 
         // Loop while streaming is active
         while (stimTimeLoggingState)
@@ -847,7 +1137,7 @@ namespace BICGRPCHelperNamespace
                     // Write out new line to file
                     myFile.open(fileName, std::ios_base::app);
                     // log timestamp before and after stim command and exception
-                    myFile << stimTimeSampleQueue.front().beforeStimTimeStamp << ", " << stimTimeSampleQueue.front().afterStimTimeStamp << ", " << stimTimeSampleQueue.front().recordedException << "\n";
+                    myFile << stimTimeSampleQueue.front().beforeStimTimeStamp << ", " << stimTimeSampleQueue.front().afterStimTimeStamp << ", " << stimTimeSampleQueue.front().recordedException << ", " << stimTriggerPhase << "\n";
                     myFile.close();
                     // Clean up the current sample from the list
                     stimTimeSampleQueue.pop(); // take out first item of queue
@@ -941,9 +1231,9 @@ namespace BICGRPCHelperNamespace
 
     void BICListener::openLoopStimLoopThread(void)
     {
-        // create instance of stimTimes to keep track of before and after stim timestamps
+        // Create instance of stimTimes to keep track of before and after stim timestamps
         StimTimes startStimulationTimes;
-        // enable stim time logging
+        // Enable stim time logging
         enableStimTimeLogging(true);
 
         // initialize before and after timestamps

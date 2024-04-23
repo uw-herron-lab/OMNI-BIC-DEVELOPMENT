@@ -55,6 +55,8 @@ namespace StimTherapyApp
             public double stimThreshold { get; set; }
             public List<double> filterCoefficients_B { get; set; }
             public List<double> filterCoefficients_A { get; set; }
+            public double triggerPhase { get; set; }
+            public double targetPhase { get; set; }
         }
 
         public MainWindow()
@@ -252,6 +254,8 @@ namespace StimTherapyApp
                                 OutputConsole.Inlines.Add(configInfo.filterCoefficients_A[i] + " ");
                             }
                             OutputConsole.Inlines.Add("\n");
+                            OutputConsole.Inlines.Add("Starting Trigger Phase: " + configInfo.triggerPhase + "\n");
+                            OutputConsole.Inlines.Add("Target Phase: " + configInfo.targetPhase+ "\n");
                             Scroller.ScrollToEnd();
                         }
 
@@ -286,7 +290,7 @@ namespace StimTherapyApp
                 // start phase triggered stim and update status
                 try
                 {
-                    aBICManager.enableDistributedStim(true, configInfo.monopolar, (uint)configInfo.stimChannel - 1, (uint)configInfo.returnChannel - 1, (uint)configInfo.senseChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, configInfo.filterCoefficients_B, configInfo.filterCoefficients_A, configInfo.stimThreshold);
+                    aBICManager.enableDistributedStim(true, configInfo.monopolar, (uint)configInfo.stimChannel - 1, (uint)configInfo.returnChannel - 1, (uint)configInfo.senseChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, configInfo.filterCoefficients_B, configInfo.filterCoefficients_A, configInfo.stimThreshold, configInfo.triggerPhase, configInfo.targetPhase);
                 }
                 catch
                 {
@@ -340,6 +344,7 @@ namespace StimTherapyApp
                         OutputConsole.Inlines.Add("Open loop stimulation NOT started: " + timeStamp + ", load new configuration\n");
                         Scroller.ScrollToEnd();
                     }));
+
                     return;
                 }
 
@@ -372,7 +377,7 @@ namespace StimTherapyApp
                 if (phasicStimState)
                 {
                     // disable beta and open loop stim
-                    aBICManager.enableDistributedStim(false, configInfo.monopolar, (uint)configInfo.stimChannel - 1, (uint)configInfo.returnChannel - 1, (uint)configInfo.senseChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, configInfo.filterCoefficients_B, configInfo.filterCoefficients_A, configInfo.stimThreshold);
+                    aBICManager.enableDistributedStim(false, configInfo.monopolar, (uint)configInfo.stimChannel - 1, (uint)configInfo.returnChannel - 1, (uint)configInfo.senseChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, configInfo.filterCoefficients_B, configInfo.filterCoefficients_A, configInfo.stimThreshold, configInfo.triggerPhase, configInfo.targetPhase);
                     phasicStimState = false;
                 }
                 if (openStimState)
@@ -404,63 +409,6 @@ namespace StimTherapyApp
             Scroller.ScrollToEnd();
         }
 
-        private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            OutputConsole.Inlines.Add("Channel was selected/de-selected"); // not going through this function.. selecting doesn't invoke this function 
-            Scroller.ScrollToEnd();
-
-            // grab the most recent data
-            List<double>[] neuroData = aBICManager.getData();
-
-            // look for the selected items in the listbox
-            List<int> selectedChannels = new List<int>();
-            string chanString = "";
-            int chanVal;
-            bool valConvert = false;
-
-            // get a list of selected channels
-            var selected = from item in channelList
-                           where item.IsSelected == true
-                           select item.Name.ToString();
-
-            // get list of selected channels and convert from string to int type
-            foreach (String item in selected)
-            {
-                valConvert = Int32.TryParse(item, out chanVal);
-                if (valConvert)
-                {
-                    selectedChannels.Add(chanVal);
-                }
-                else
-                {
-                    selectedChannels.Add(33);
-                }
-            }
-
-            // clear the current legend
-            neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
-            delegate
-            {
-                foreach (var series in neuroStreamChart.Series)
-                {
-                    series.IsVisibleInLegend = false;
-                    series.Enabled = false;
-                }
-            }));
-
-            // Plot newly selected channels and show new legend
-            for (int i = 0; i < selectedChannels.Count; i++)
-            {
-                chanString = "Channel " + selectedChannels[i].ToString();
-                neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
-                delegate
-                {
-                    neuroStreamChart.Series[chanString].Points.DataBindY(neuroData[selectedChannels[i] - 1]);
-                    neuroStreamChart.Series[chanString].IsVisibleInLegend = true;
-                    neuroStreamChart.Series[chanString].Enabled = true;
-                }));
-            }
-        }
         private void MainWindow_Closed(object sender, EventArgs e)
         {
             neuroChartUpdateTimer.Dispose();
