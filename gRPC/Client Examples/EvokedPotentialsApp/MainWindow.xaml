@@ -23,7 +23,7 @@
             <ColumnDefinition Width="125*"/>
             <ColumnDefinition Width="500*"/>
         </Grid.ColumnDefinitions>
-        
+
         <Button x:Name="btn_load" Content="Load Config" VerticalAlignment="Top" Click="btn_load_Click" Grid.ColumnSpan="2" Margin="5"/>
 
         <Label Grid.Row="1" Grid.Column="0">Mode:</Label>
@@ -39,8 +39,10 @@
 
         <Button x:Name="btn_start" Content="Start Stim" Click="btn_start_Click" VerticalAlignment="Top" Grid.Row="4" Grid.Column="0" Margin="5"/>
         <Button x:Name="btn_stop" Content="Stop Stim" Click="btn_stop_Click" VerticalAlignment="Top" Grid.Row="4" Grid.Column="1" Margin="5"/>
-
         <Button x:Name="btn_diagnostic" Content="Diagnostic" Click="btn_diagnostic_Click" Grid.Row="5" Margin="5"/>
+        <Button x:Name="btn_impedance" Content="Check Impedance" Click="btn_impedance_Click" Grid.Column="1" Margin="5,5,5,5" Grid.Row="5"/>
+
+
         <Grid Grid.Row="6" Grid.ColumnSpan="2" Margin="20">
             <Grid.RowDefinitions>
                 <RowDefinition Height="2*"/>
@@ -102,13 +104,12 @@
                 </winformchart:Chart>
             </WindowsFormsHost>
         </Grid>
-            
-        
+
+
         <TextBlock TextWrapping="Wrap" Text="y-axis min:" Grid.Column="2" Margin="0,0,192.6,12.6" Height="16" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="61"/>
         <TextBox x:Name="y_min" TextWrapping="Wrap" Margin="0,0,141.6,9.6" Grid.Column="2" TextChanged="y_min_TextChanged" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="50"/>
         <TextBlock TextWrapping="Wrap" Text="y-axis max:" Grid.Column="2" Margin="0,0,65.6,12.6" HorizontalAlignment="Right" Width="63" Height="16" VerticalAlignment="Bottom"/>
         <TextBox x:Name="y_max" TextWrapping="Wrap" Margin="0,0,15.6,9.6" Grid.Column="2" TextChanged="y_max_TextChanged" HorizontalAlignment="Right" Width="50" Height="20" VerticalAlignment="Bottom"/>
-
 
     </Grid>
 </Window>

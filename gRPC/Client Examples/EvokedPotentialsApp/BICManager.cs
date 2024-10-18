@@ -23,6 +23,8 @@ namespace RealtimeGraphing
         private List<double>[] dataBuffer;
         private List<double>[] runningTotals;   // Keeps track of a running total for each channel. This is divided by currNumPulses to compute our running average.
         private List<double>[] currPulseBuffer; // Stores data for current pulse. Begin filling when stimulation detected, stops when reaches length of stimPeriodSampels.
+        private List<double> impedanceValues;
+
         public int currNumPulses { get; set; } = 0;     // Keeps track of how many pulses have occured for the current source/destination condition. Used to compute running average.
         private const int numSensingChannelsDef = 32;
         private object dataBufferLock = new object();
@@ -188,6 +190,21 @@ namespace RealtimeGraphing
             logFileWriter.Flush();
             logFileWriter.Dispose();
             logFileStream.Dispose();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public List<double> performImpedanceCheck()
+        {
+            impedanceValues = new List<double>();
+            for (uint chan = 0; chan < numSensingChannelsDef; chan++)
+            {
+                bicGetImpedanceRequest impedanceRequest = new bicGetImpedanceRequest() { DeviceAddress = DeviceName, Channel = chan };
+                var impedanceReply = deviceClient.bicGetImpedance(impedanceRequest);
+                impedanceValues.Add(impedanceReply.ChannelImpedance);
+            }
+            return impedanceValues;
         }
 
         /// <summary>
