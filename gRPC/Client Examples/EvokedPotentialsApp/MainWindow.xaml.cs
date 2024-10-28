@@ -587,7 +587,7 @@ namespace EvokedPotentialsApp
                 for (int i = 0; i < impedanceValues.Count; i++)
                 {
                     // Print out the impedances
-                    OutputConsole.Inlines.Add("CH " + i.ToString() + ": " + impedanceValues[i].ToString() + " ohms" + "\n");
+                    OutputConsole.Inlines.Add("CH " + (i+1).ToString() + ": " + impedanceValues[i].ToString() + " ohms" + "\n");
                     Scroller.ScrollToEnd();
                 }
             }));

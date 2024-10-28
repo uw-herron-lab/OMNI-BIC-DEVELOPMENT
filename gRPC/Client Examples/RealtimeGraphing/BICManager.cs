@@ -22,6 +22,7 @@ namespace RealtimeGraphing
         private string DeviceName;
         private List<double>[] dataBuffer;
         private List<double>[] filtDataBuffer;
+        private List<string> impedBuffer;
         private const int numSensingChannelsDef = 32;
         private object dataBufferLock = new object();
 
@@ -49,6 +50,7 @@ namespace RealtimeGraphing
             DataBufferMaxSampleNumber = definedDataBufferLength;
             dataBuffer = new List<double>[numSensingChannelsDef];
             filtDataBuffer = new List<double>[1];
+            impedBuffer = new List<string>();
             for (int i = 0; i < numSensingChannelsDef; i++)
             {
                 dataBuffer[i] = new List<double>();
@@ -142,6 +144,14 @@ namespace RealtimeGraphing
             // Connect to the device
             Console.WriteLine("Connecting to implantable device.");
             var connectDeviceReply = deviceClient.ConnectDevice(new ConnectDeviceRequest() { DeviceAddress = DeviceName, LogFileName = "./deviceLog.txt" });
+
+            
+            // Print out impedances of electrodes
+            for (uint channelNum = 0; channelNum < numSensingChannelsDef; channelNum++)
+            {
+                bicGetImpedanceReply chanImpedValue = deviceClient.bicGetImpedance(new bicGetImpedanceRequest() { DeviceAddress = DeviceName, Channel = channelNum });
+                impedBuffer.Add(chanImpedValue.ChannelImpedance.ToString() + chanImpedValue.Units);
+            }
 
             // Start up the neural stream
             neuroMonitor = Task.Run(neuralMonitorTaskAsync);
@@ -320,6 +330,11 @@ namespace RealtimeGraphing
             // have something similar for filtered data buffer
 
             return outputBuffer;
+        }
+
+        public List<string> getImpedances()
+        {
+            return impedBuffer;
         }
 
         private void loggingThread()

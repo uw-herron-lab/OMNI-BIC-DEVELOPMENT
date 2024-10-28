@@ -498,5 +498,15 @@ namespace StimTherapyApp
                 }
             }
         }
+
+        private void btn_impedances_Click(object sender, RoutedEventArgs e)
+        {
+            List<string> impValues = aBICManager.getImpedances();
+            for (int i = 0; i < impValues.Count; i++)
+            {
+                OutputConsole.Inlines.Add("CH: " + (i+1).ToString()+ impValues[i] + "\n");
+            }
+            Scroller.ScrollToEnd();
+        }
     }
 }
