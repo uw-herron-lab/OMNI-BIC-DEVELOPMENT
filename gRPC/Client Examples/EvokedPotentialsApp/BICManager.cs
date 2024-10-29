@@ -23,7 +23,7 @@ namespace RealtimeGraphing
         private List<double>[] dataBuffer;
         private List<double>[] runningTotals;   // Keeps track of a running total for each channel. This is divided by currNumPulses to compute our running average.
         private List<double>[] currPulseBuffer; // Stores data for current pulse. Begin filling when stimulation detected, stops when reaches length of stimPeriodSampels.
-        private List<double> impedanceValues;
+        private List<string> impedBuffer;
 
         public int currNumPulses { get; set; } = 0;     // Keeps track of how many pulses have occured for the current source/destination condition. Used to compute running average.
         private const int numSensingChannelsDef = 32;
@@ -61,6 +61,7 @@ namespace RealtimeGraphing
             dataBuffer = new List<double>[numSensingChannelsDef];
             currPulseBuffer = new List<double>[numSensingChannelsDef];
             runningTotals = new List<double>[numSensingChannelsDef];
+            impedBuffer = new List<string>();
             for(int i = 0; i < numSensingChannelsDef; i++)
             {
                 dataBuffer[i] = new List<double>();
@@ -170,6 +171,23 @@ namespace RealtimeGraphing
             Console.WriteLine("Connecting to implantable device.");
             var connectDeviceReply = deviceClient.ConnectDevice(new ConnectDeviceRequest() { DeviceAddress = DeviceName, LogFileName = "./deviceLog.txt" });
 
+            // Print out impedances of electrodes
+            for (uint channelNum = 0; channelNum < numSensingChannelsDef; channelNum++)
+            {
+                bicGetImpedanceReply chanImpedValue = deviceClient.bicGetImpedance(new bicGetImpedanceRequest() { DeviceAddress = DeviceName, Channel = channelNum });
+                Console.WriteLine("CH " + (channelNum + 1).ToString() + ": " + chanImpedValue.Success);
+                if (chanImpedValue.Success == "success")
+                {
+                    // add impedance value and units to buffer
+                    impedBuffer.Add(chanImpedValue.ChannelImpedance.ToString() + chanImpedValue.Units);
+                }
+                else
+                {
+                    // note error in retrieiving impedance 
+                    impedBuffer.Add(chanImpedValue.Success);
+                }
+            }
+
             // Start up the neural stream
             neuroMonitor = Task.Run(neuralMonitorTaskAsync);
 
@@ -190,21 +208,6 @@ namespace RealtimeGraphing
             logFileWriter.Flush();
             logFileWriter.Dispose();
             logFileStream.Dispose();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public List<double> performImpedanceCheck()
-        {
-            impedanceValues = new List<double>();
-            for (uint chan = 0; chan < numSensingChannelsDef; chan++)
-            {
-                bicGetImpedanceRequest impedanceRequest = new bicGetImpedanceRequest() { DeviceAddress = DeviceName, Channel = chan };
-                var impedanceReply = deviceClient.bicGetImpedance(impedanceRequest);
-                impedanceValues.Add(impedanceReply.ChannelImpedance);
-            }
-            return impedanceValues;
         }
 
         /// <summary>
@@ -321,6 +324,11 @@ namespace RealtimeGraphing
                 }
 
             }
+        }
+
+        public List<string> getImpedances()
+        {
+            return impedBuffer;
         }
 
         private bool validBufferOrderCheck(Google.Protobuf.Collections.RepeatedField<NeuralSample> sampleBuffer)

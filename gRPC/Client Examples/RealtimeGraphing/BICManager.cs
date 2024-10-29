@@ -145,12 +145,21 @@ namespace RealtimeGraphing
             Console.WriteLine("Connecting to implantable device.");
             var connectDeviceReply = deviceClient.ConnectDevice(new ConnectDeviceRequest() { DeviceAddress = DeviceName, LogFileName = "./deviceLog.txt" });
 
-            
             // Print out impedances of electrodes
             for (uint channelNum = 0; channelNum < numSensingChannelsDef; channelNum++)
             {
                 bicGetImpedanceReply chanImpedValue = deviceClient.bicGetImpedance(new bicGetImpedanceRequest() { DeviceAddress = DeviceName, Channel = channelNum });
-                impedBuffer.Add(chanImpedValue.ChannelImpedance.ToString() + chanImpedValue.Units);
+                Console.WriteLine("CH " + (channelNum + 1).ToString() + ": " + chanImpedValue.Success);
+                if (chanImpedValue.Success == "success")
+                {
+                    // add impedance value and units to buffer
+                    impedBuffer.Add(chanImpedValue.ChannelImpedance.ToString() + chanImpedValue.Units);
+                }
+                else
+                {
+                    // note error in retrieiving impedance 
+                    impedBuffer.Add(chanImpedValue.Success);
+                }
             }
 
             // Start up the neural stream

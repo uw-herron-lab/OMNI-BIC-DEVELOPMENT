@@ -153,11 +153,8 @@ namespace StimTherapyApp
                     // disable buttons
                     btn_beta.IsEnabled = false; // beta stim button; have to use method invoker
                     btn_open.IsEnabled = false; // open loop stim button
-                    btn_diagnostic.IsEnabled = false; // diagnostics button
                     btn_stop.IsEnabled = false; // stop stim button
 
-                    // temporary- hide diagnostic buttons
-                    btn_diagnostic.Visibility = Visibility.Hidden;
                 }));
 
             // Start update timer
@@ -266,7 +263,7 @@ namespace StimTherapyApp
                             btn_beta.IsEnabled = true; // beta stim button; have to use method invoker
                             btn_open.IsEnabled = true; // open loop stim button
                             btn_load.IsEnabled = true; // load config button
-                            btn_diagnostic.IsEnabled = true; // diagnostics button
+                            btn_impedance.IsEnabled = true; // impedance button
                             btn_stop.IsEnabled = true; // stop stim button
                         }));
                     }
@@ -313,7 +310,7 @@ namespace StimTherapyApp
                     btn_beta.IsEnabled = false; // beta stim button; have to use method invoker
                     btn_open.IsEnabled = false; // open loop stim button
                     btn_load.IsEnabled = false; // load config button
-                    btn_diagnostic.IsEnabled = false; // diagnostics button
+                    btn_impedance.IsEnabled = false; // impedance button
                 }));
 
                 // notify user of beta stimulation starting
@@ -358,7 +355,7 @@ namespace StimTherapyApp
                     btn_beta.IsEnabled = false; // beta stim button; have to use method invoker
                     btn_open.IsEnabled = false; // open loop stim button
                     btn_load.IsEnabled = false; // load config button
-                    btn_diagnostic.IsEnabled = false; // diagnostics button
+                    btn_impedance.IsEnabled = false; // impedance button
                 }));
 
                 // notify user of open loop stimulation starting
@@ -394,18 +391,11 @@ namespace StimTherapyApp
                     btn_beta.IsEnabled = true;
                     btn_open.IsEnabled = true; 
                     btn_load.IsEnabled = true;
-                    btn_diagnostic.IsEnabled = true;
+                    btn_impedance.IsEnabled = true;
                 }));
 
             string timeStamp = DateTime.Now.ToString("h:mm:ss tt");
             OutputConsole.Inlines.Add("All stimulation stopped: " + timeStamp + "\n");
-            Scroller.ScrollToEnd();
-        }
-
-        private void btn_diagnostic_Click(object sender, RoutedEventArgs e)
-        {
-            // start diagnostic pattern
-            OutputConsole.Inlines.Add("Performing diagnostics...\n");
             Scroller.ScrollToEnd();
         }
 
@@ -501,12 +491,15 @@ namespace StimTherapyApp
 
         private void btn_impedances_Click(object sender, RoutedEventArgs e)
         {
+            ImpedanceWindow impWindow = new ImpedanceWindow();
+
             List<string> impValues = aBICManager.getImpedances();
             for (int i = 0; i < impValues.Count; i++)
             {
-                OutputConsole.Inlines.Add("CH: " + (i+1).ToString()+ impValues[i] + "\n");
+                impWindow.ImpedanceOutputConsole.Inlines.Add("CH " + (i + 1).ToString() + ": " + impValues[i] + "\n");
             }
-            Scroller.ScrollToEnd();
+            impWindow.Show();
+            impWindow.impScroller.ScrollToEnd();
         }
     }
 }

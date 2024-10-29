@@ -49,7 +49,6 @@ namespace EvokedPotentialsApp
 
         private List<int> stimChannelsQueue = new List<int> { 1, 7, 2, 8, 3, 9, 4, 10 };
         private List<int> returnChannelsQueue = new List<int> { 7, 1, 8, 2, 9, 3, 10, 4 };
-        private List<double> impedanceValues = new List<double>(); 
 
         public class Channel
         {
@@ -578,20 +577,16 @@ namespace EvokedPotentialsApp
 
         private void btn_impedance_Click(object sender, RoutedEventArgs e)
         {
-            impedanceValues = aBICManager.performImpedanceCheck(); // perform impedance check
-            //create new window that lists the impedance values ?
-            string timeStamp = DateTime.Now.ToString("h:mm:ss tt");
-            Application.Current.Dispatcher.Invoke(new Action(() =>
-            {
-                OutputConsole.Inlines.Add("Impedance check at: " + timeStamp + "\n");
-                for (int i = 0; i < impedanceValues.Count; i++)
-                {
-                    // Print out the impedances
-                    OutputConsole.Inlines.Add("CH " + (i+1).ToString() + ": " + impedanceValues[i].ToString() + " ohms" + "\n");
-                    Scroller.ScrollToEnd();
-                }
-            }));
+            ImpedanceWindow impWindow = new ImpedanceWindow();
 
+            List<string> impValues = aBICManager.getImpedances();
+
+            for (int i = 0; i < impValues.Count; i++)
+            {
+                impWindow.ImpedanceOutputConsole.Inlines.Add("CH " + (i+1).ToString() + ": " + impValues[i] + "\n");
+            }
+            impWindow.Show();
+            impWindow.impScroller.ScrollToEnd();
         }
 
         private void MainWindow_Closed(object sender, EventArgs e)
