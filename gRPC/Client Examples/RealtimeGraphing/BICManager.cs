@@ -25,6 +25,7 @@ namespace RealtimeGraphing
         private List<string> impedBuffer;
         private const int numSensingChannelsDef = 32;
         private object dataBufferLock = new object();
+        private object connectLock = new object();
 
         // Logging Objects
         FileStream logFileStream;
@@ -39,6 +40,7 @@ namespace RealtimeGraphing
 
         // Task pointers for streaming methods
         private Task neuroMonitor = null;
+        private Task connectMonitor = null;
 
         // Constructor
         public BICManager(int definedDataBufferLength)
@@ -164,6 +166,9 @@ namespace RealtimeGraphing
 
             // Start up the neural stream
             neuroMonitor = Task.Run(neuralMonitorTaskAsync);
+
+            // Start up the connection stream
+            connectMonitor = Task.Run(connectionMonitorTaskAsync);
 
             // Success, return true
             return true;
@@ -396,7 +401,7 @@ namespace RealtimeGraphing
         /// <returns>Task completion information</returns>
         async Task neuralMonitorTaskAsync()
         {
-            var stream = deviceClient.bicNeuralStream(new bicNeuralSetStreamingEnable() { DeviceAddress = DeviceName, Enable = true, BufferSize = 100, MaxInterpolationPoints = 10, AmplificationFactor = RecordingAmplificationFactor.Amplification395DB, RefChannels = { 31 }, UseGroundReference = true });
+            var stream = deviceClient.bicNeuralStream(new bicNeuralSetStreamingEnable() { DeviceAddress = DeviceName, Enable = true, BufferSize = 100, MaxInterpolationPoints = 10, AmplificationFactor = RecordingAmplificationFactor.Amplification395DB, RefChannels = { 31 }, UseGroundReference = true });         
             // Create performance-tracking interpacket variables
             Stopwatch aStopwatch = new Stopwatch();
             newLoggingThread = new Thread(loggingThread);
@@ -531,6 +536,22 @@ namespace RealtimeGraphing
                 Console.WriteLine("Implant Stream Neural Samples Received: " + stream.ResponseStream.Current.Samples.Count + "copyTime: " + elapsedTime.ToString());
             }
             Console.WriteLine("(Neural Monitor Task Exited)");
+        }
+
+        async Task connectionMonitorTaskAsync()
+        {
+            var connectStream = deviceClient.bicConnectionStream(new bicSetStreamEnable() { DeviceAddress = DeviceName, Enable = true });
+
+            while (await connectStream.ResponseStream.MoveNext())
+            { 
+                lock (connectLock)
+                {
+                    string connectionType = connectStream.ResponseStream.Current.ConnectionType;
+                    string connectionState = connectStream.ResponseStream.Current.IsConnected.ToString();
+
+                    Console.WriteLine("Connection State: " + connectionType + "; " + connectionState);
+                }
+            }
         }
     }
 }
