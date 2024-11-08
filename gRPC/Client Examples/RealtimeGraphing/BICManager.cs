@@ -35,6 +35,10 @@ namespace RealtimeGraphing
         Thread newLoggingThread;
         bool loggingNotDisposed = true;
 
+        FileStream impedFileStream;
+        StreamWriter impedFileWriter;
+        string impedFilePath = "./impedances" + DateTime.Now.ToString("_MMddyyyy_HHmmss") + ".csv";
+
         // Public Class Properties
         public int DataBufferMaxSampleNumber { get; set; }
 
@@ -155,7 +159,7 @@ namespace RealtimeGraphing
                 if (chanImpedValue.Success == "success")
                 {
                     // add impedance value and units to buffer
-                    impedBuffer.Add(chanImpedValue.ChannelImpedance.ToString() + chanImpedValue.Units);
+                    impedBuffer.Add(Math.Ceiling(chanImpedValue.ChannelImpedance).ToString() + " " + chanImpedValue.Units);
                 }
                 else
                 {
@@ -163,6 +167,26 @@ namespace RealtimeGraphing
                     impedBuffer.Add(chanImpedValue.Success);
                 }
             }
+
+            // Check that impedances can be logged
+            if (File.Exists(impedFilePath))
+            {
+                File.Delete(impedFilePath);
+            }
+            impedFileStream = new FileStream(impedFilePath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, FileOptions.Asynchronous);
+            impedFileWriter = new StreamWriter(impedFileStream);
+            string impedEntry = "";
+            for (int chNum = 0; chNum < impedBuffer.Count; chNum++)
+            {
+                impedEntry = "CH" + (chNum + 1).ToString();
+                impedEntry += ", " + impedBuffer[chNum];
+                impedFileWriter.WriteLine(impedEntry);
+            }
+            
+            // Close impedance logging items
+            impedFileWriter.Flush();
+            impedFileWriter.Dispose();
+            impedFileStream.Dispose();
 
             // Start up the neural stream
             neuroMonitor = Task.Run(neuralMonitorTaskAsync);
