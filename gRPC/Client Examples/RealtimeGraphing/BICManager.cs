@@ -23,6 +23,7 @@ namespace RealtimeGraphing
         private List<double>[] dataBuffer;
         private List<double>[] filtDataBuffer;
         private List<string> impedBuffer;
+        private List<string> connectionInfoBuffer;
         private const int numSensingChannelsDef = 32;
         private object dataBufferLock = new object();
         private object connectLock = new object();
@@ -57,6 +58,8 @@ namespace RealtimeGraphing
             dataBuffer = new List<double>[numSensingChannelsDef];
             filtDataBuffer = new List<double>[1];
             impedBuffer = new List<string>();
+            connectionInfoBuffer = new List<string>();
+
             for (int i = 0; i < numSensingChannelsDef; i++)
             {
                 dataBuffer[i] = new List<double>();
@@ -150,12 +153,12 @@ namespace RealtimeGraphing
             // Connect to the device
             Console.WriteLine("Connecting to implantable device.");
             var connectDeviceReply = deviceClient.ConnectDevice(new ConnectDeviceRequest() { DeviceAddress = DeviceName, LogFileName = "./deviceLog.txt" });
-
-            // Print out impedances of electrodes
+            /*
+            // Get electrode impedances
             for (uint channelNum = 0; channelNum < numSensingChannelsDef; channelNum++)
             {
                 bicGetImpedanceReply chanImpedValue = deviceClient.bicGetImpedance(new bicGetImpedanceRequest() { DeviceAddress = DeviceName, Channel = channelNum });
-                Console.WriteLine("CH " + (channelNum + 1).ToString() + ": " + chanImpedValue.Success);
+                //Console.WriteLine("CH " + (channelNum + 1).ToString() + ": " + chanImpedValue.Success);
                 if (chanImpedValue.Success == "success")
                 {
                     // add impedance value and units to buffer
@@ -187,7 +190,7 @@ namespace RealtimeGraphing
             impedFileWriter.Flush();
             impedFileWriter.Dispose();
             impedFileStream.Dispose();
-
+            */
             // Start up the neural stream
             neuroMonitor = Task.Run(neuralMonitorTaskAsync);
 
@@ -198,11 +201,14 @@ namespace RealtimeGraphing
             return true;
         }
 
-        public void Dispose()
+            public void Dispose()
         {
             // Tell BIC that we want to close!
             deviceClient.bicNeuralStream(new bicNeuralSetStreamingEnable() { DeviceAddress = DeviceName, Enable = false });
+            deviceClient.bicConnectionStream(new bicSetStreamEnable() { DeviceAddress= DeviceName, Enable = false });
+
             var disposeReply = deviceClient.bicDispose(new RequestDeviceAddress() { DeviceAddress = DeviceName });
+            deviceClient = null;
             Console.WriteLine("Dispose BIC Response: " + disposeReply.ToString());
             aGRPChannel.ShutdownAsync().Wait();
 
@@ -211,6 +217,7 @@ namespace RealtimeGraphing
             logFileWriter.Flush();
             logFileWriter.Dispose();
             logFileStream.Dispose();
+            
         }
 
         public void enableOpenLoopStimulation(bool openStimEn, bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold)
@@ -369,10 +376,18 @@ namespace RealtimeGraphing
 
             return outputBuffer;
         }
-
+        /// <summary>
+        /// Get impedances collected on startup
+        /// </summary>
+        /// <returns>A list of impedance values with units</returns>
         public List<string> getImpedances()
         {
             return impedBuffer;
+        }
+
+        public List<string> getConnectionInfo()
+        {
+            return connectionInfoBuffer;
         }
 
         private void loggingThread()
@@ -425,6 +440,9 @@ namespace RealtimeGraphing
         /// <returns>Task completion information</returns>
         async Task neuralMonitorTaskAsync()
         {
+            // Sytem.InvalidOperationException- Shutdown has already been called
+            // var testStream = deviceClient.bicPowerStream(new bicSetStreamEnable() { DeviceAddress = DeviceName, Enable = true });
+            // System.ObjectDisposedException- Safe handle has been closed
             var stream = deviceClient.bicNeuralStream(new bicNeuralSetStreamingEnable() { DeviceAddress = DeviceName, Enable = true, BufferSize = 100, MaxInterpolationPoints = 10, AmplificationFactor = RecordingAmplificationFactor.Amplification395DB, RefChannels = { 31 }, UseGroundReference = true });         
             // Create performance-tracking interpacket variables
             Stopwatch aStopwatch = new Stopwatch();
@@ -564,16 +582,24 @@ namespace RealtimeGraphing
 
         async Task connectionMonitorTaskAsync()
         {
+            // System.ObjectDisposedException- Safe handle has been closed
             var connectStream = deviceClient.bicConnectionStream(new bicSetStreamEnable() { DeviceAddress = DeviceName, Enable = true });
 
             while (await connectStream.ResponseStream.MoveNext())
             { 
                 lock (connectLock)
                 {
+                    // When connection state changes, get the streamed information
                     string connectionType = connectStream.ResponseStream.Current.ConnectionType;
                     string connectionState = connectStream.ResponseStream.Current.IsConnected.ToString();
 
+                    // Also write out to console for debugging
                     Console.WriteLine("Connection State: " + connectionType + "; " + connectionState);
+
+                    if (connectionState == "False")
+                    {
+                        connectionInfoBuffer.Add(connectionType);
+                    }
                 }
             }
         }
