@@ -164,9 +164,9 @@ namespace StimTherapyApp
             neuroChartUpdateTimer.Elapsed += neuroChartUpdateTimer_Elapsed;
             neuroChartUpdateTimer.Start();
 
-            //connectionUpdateTimer = new System.Timers.Timer(200);
-            //connectionUpdateTimer.Elapsed += connectionUpdateTimer_Elapsed;
-            //connectionUpdateTimer.Start();
+            connectionUpdateTimer = new System.Timers.Timer(200);
+            connectionUpdateTimer.Elapsed += connectionUpdateTimer_Elapsed;
+            connectionUpdateTimer.Start();
         }
         
         private void connectionUpdateTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -188,36 +188,40 @@ namespace StimTherapyApp
                         //connectionUpdateTimer.Stop();
 
                         // Notify user about disconnection event
-                        OutputConsole.Inlines.Add("Disconnection at " + connectionInfo[0] + "\n");
+                        OutputConsole.Inlines.Add("Disconnection at " + connectionInfo[0] + " connection. ");
+                        OutputConsole.Inlines.Add("Check the magnetic head piece then use the 'Reconnect' button to reestablish connection!\n");
+                        neuroChartUpdateTimer.Stop();
+                        connectionUpdateTimer.Stop();
                         aBICManager.Dispose(); // Shut down connection 
+                        connectState = false;
 
-                        // In same window, notify that reconnection attempt is being made
-                        for (int i = 0; i < reconnectAttempts; i++)
-                        {
-                            // Attempt to reconnect
-                            OutputConsole.Inlines.Add("Reconnecting...\n");
-                            reconnectState = aBICManager.BICConnect();
-                            await Task.Delay(2000);
-                            if (reconnectState)
-                            {
-                                break;
-                            }
-                        }
+                        //// In same window, notify that reconnection attempt is being made
+                        //for (int i = 0; i < reconnectAttempts; i++)
+                        //{
+                        //    // Attempt to reconnect
+                        //    OutputConsole.Inlines.Add("Reconnecting...\n");
+                        //    reconnectState = aBICManager.BICConnect();
+                        //    await Task.Delay(2000);
+                        //    if (reconnectState)
+                        //    {
+                        //        break;
+                        //    }
+                        //}
 
-                        if (reconnectState)
-                        {
-                            // Reconnection was successful, notify user
-                            OutputConsole.Inlines.Add("Reconnection was successful!\n");
-                            //connectionUpdateTimer.Start();
+                        //if (reconnectState)
+                        //{
+                        //    // Reconnection was successful, notify user
+                        //    OutputConsole.Inlines.Add("Reconnection was successful!\n");
+                        //    //connectionUpdateTimer.Start();
 
-                            // Have user decide what to do
-                        }
+                        //    // Have user decide what to do
+                        //}
 
-                        else
-                        {
-                            // Reconnection was unsuccessful, notify usesr
-                            OutputConsole.Inlines.Add("Reconnection was unsuccessful!\n");
-                        }
+                        //else
+                        //{
+                        //    // Reconnection was unsuccessful, notify usesr
+                        //    OutputConsole.Inlines.Add("Reconnection was unsuccessful!\n");
+                        //}
 
                     }
                     Scroller.ScrollToEnd();
@@ -469,7 +473,7 @@ namespace StimTherapyApp
         private void btn_disconnect_Click(object sender, RoutedEventArgs e)
         {
             neuroChartUpdateTimer.Stop();
-            //connectionUpdateTimer.Stop();
+            connectionUpdateTimer.Stop();
 
             Console.WriteLine("Disposing...");
             aBICManager.Dispose(); // Shut down connection 
@@ -482,6 +486,14 @@ namespace StimTherapyApp
             aBICManager = new RealtimeGraphing.BICManager(neuroStreamChart.Width);
             connectState = aBICManager.BICConnect(); // Try reestablishing connection
 
+            if (connectState)
+            {
+                OutputConsole.Inlines.Add("Reconnection successful!\n");
+            }
+            else
+            {
+                OutputConsole.Inlines.Add("Reconnection unsuccessful!\n");
+            }
             neuroChartUpdateTimer.Start();
             connectionUpdateTimer.Start();
         }
