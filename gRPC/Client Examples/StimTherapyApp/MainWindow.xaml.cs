@@ -171,63 +171,27 @@ namespace StimTherapyApp
         
         private void connectionUpdateTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-
             List<string> connectionInfo = aBICManager.getConnectionInfo();
 
-            ThreadPool.QueueUserWorkItem(a =>
+            // When connectionInfo is populated with information about disconnection
+            if (connectionInfo.Any())
             {
-                Application.Current.Dispatcher.Invoke(new Action(async () =>
+                ThreadPool.QueueUserWorkItem(a =>
                 {
-                    bool reconnectState = false;
-                    int reconnectAttempts = 5;
-
-                    // When connectionInfo is populated with information about disconnection
-                    if (connectionInfo.Any())
+                    Application.Current.Dispatcher.Invoke(new Action(() =>
                     {
-                        // Pause timer
-                        //connectionUpdateTimer.Stop();
-
                         // Notify user about disconnection event
                         OutputConsole.Inlines.Add("Disconnection at " + connectionInfo[0] + " connection. ");
-                        OutputConsole.Inlines.Add("Check the magnetic head piece then use the 'Reconnect' button to reestablish connection!\n");
+                        OutputConsole.Inlines.Add("Check connections then use the 'Reconnect' button to reestablish connection!\n");
                         neuroChartUpdateTimer.Stop();
                         connectionUpdateTimer.Stop();
                         aBICManager.Dispose(); // Shut down connection 
                         connectState = false;
-
-                        //// In same window, notify that reconnection attempt is being made
-                        //for (int i = 0; i < reconnectAttempts; i++)
-                        //{
-                        //    // Attempt to reconnect
-                        //    OutputConsole.Inlines.Add("Reconnecting...\n");
-                        //    reconnectState = aBICManager.BICConnect();
-                        //    await Task.Delay(2000);
-                        //    if (reconnectState)
-                        //    {
-                        //        break;
-                        //    }
-                        //}
-
-                        //if (reconnectState)
-                        //{
-                        //    // Reconnection was successful, notify user
-                        //    OutputConsole.Inlines.Add("Reconnection was successful!\n");
-                        //    //connectionUpdateTimer.Start();
-
-                        //    // Have user decide what to do
-                        //}
-
-                        //else
-                        //{
-                        //    // Reconnection was unsuccessful, notify usesr
-                        //    OutputConsole.Inlines.Add("Reconnection was unsuccessful!\n");
-                        //}
-
-                    }
-                    Scroller.ScrollToEnd();
-                }));
-                return;
-            });
+                        Scroller.ScrollToEnd();
+                    }));
+                    return;
+                });
+            }
         }
 
         private void neuroChartUpdateTimer_Elapsed(object sender, ElapsedEventArgs e)
