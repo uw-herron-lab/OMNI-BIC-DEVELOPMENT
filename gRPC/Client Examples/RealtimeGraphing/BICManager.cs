@@ -153,7 +153,7 @@ namespace RealtimeGraphing
             // Connect to the device
             Console.WriteLine("Connecting to implantable device.");
             var connectDeviceReply = deviceClient.ConnectDevice(new ConnectDeviceRequest() { DeviceAddress = DeviceName, LogFileName = "./deviceLog.txt" });
-            /*
+
             // Get electrode impedances
             for (uint channelNum = 0; channelNum < numSensingChannelsDef; channelNum++)
             {
@@ -185,12 +185,12 @@ namespace RealtimeGraphing
                 impedEntry += ", " + impedBuffer[chNum];
                 impedFileWriter.WriteLine(impedEntry);
             }
-            
+
             // Close impedance logging items
             impedFileWriter.Flush();
             impedFileWriter.Dispose();
             impedFileStream.Dispose();
-            */
+
             // Start up the neural stream
             neuroMonitor = Task.Run(neuralMonitorTaskAsync);
 
