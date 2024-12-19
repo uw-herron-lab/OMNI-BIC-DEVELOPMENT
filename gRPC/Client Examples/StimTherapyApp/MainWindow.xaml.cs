@@ -298,7 +298,6 @@ namespace StimTherapyApp
                             btn_beta.IsEnabled = true; // beta stim button; have to use method invoker
                             btn_open.IsEnabled = true; // open loop stim button
                             btn_load.IsEnabled = true; // load config button
-                            btn_impedance.IsEnabled = true; // impedance button
                             btn_stop.IsEnabled = true; // stop stim button
                         }));
                     }
@@ -345,7 +344,6 @@ namespace StimTherapyApp
                     btn_beta.IsEnabled = false; // beta stim button; have to use method invoker
                     btn_open.IsEnabled = false; // open loop stim button
                     btn_load.IsEnabled = false; // load config button
-                    btn_impedance.IsEnabled = false; // impedance button
                 }));
 
                 // notify user of beta stimulation starting
@@ -390,7 +388,6 @@ namespace StimTherapyApp
                     btn_beta.IsEnabled = false; // beta stim button; have to use method invoker
                     btn_open.IsEnabled = false; // open loop stim button
                     btn_load.IsEnabled = false; // load config button
-                    btn_impedance.IsEnabled = false; // impedance button
                 }));
 
                 // notify user of open loop stimulation starting
@@ -426,7 +423,6 @@ namespace StimTherapyApp
                     btn_beta.IsEnabled = true;
                     btn_open.IsEnabled = true; 
                     btn_load.IsEnabled = true;
-                    btn_impedance.IsEnabled = true;
                 }));
 
             string timeStamp = DateTime.Now.ToString("h:mm:ss tt");
@@ -549,19 +545,6 @@ namespace StimTherapyApp
                     neuroStreamChart.ChartAreas[0].AxisY.Maximum = yMaxVal;
                 }
             }
-        }
-
-        private void btn_impedances_Click(object sender, RoutedEventArgs e)
-        {
-            ImpedanceWindow impWindow = new ImpedanceWindow();
-
-            List<string> impValues = aBICManager.getImpedances();
-            for (int i = 0; i < impValues.Count; i++)
-            {
-                impWindow.ImpedanceOutputConsole.Inlines.Add("CH " + (i + 1).ToString() + ": " + impValues[i] + "\n");
-            }
-            impWindow.Show();
-            impWindow.impScroller.ScrollToEnd();
         }
     }
 }

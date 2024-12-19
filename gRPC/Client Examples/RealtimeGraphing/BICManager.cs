@@ -22,7 +22,6 @@ namespace RealtimeGraphing
         private string DeviceName;
         private List<double>[] dataBuffer;
         private List<double>[] filtDataBuffer;
-        private List<string> impedBuffer;
         private List<string> connectionInfoBuffer;
         private const int numSensingChannelsDef = 32;
         private object dataBufferLock = new object();
@@ -35,10 +34,6 @@ namespace RealtimeGraphing
         ConcurrentQueue<string> logLineQueue = new ConcurrentQueue<string>();
         Thread newLoggingThread;
         bool loggingNotDisposed = true;
-
-        FileStream impedFileStream;
-        StreamWriter impedFileWriter;
-        string impedFilePath = "./impedances" + DateTime.Now.ToString("_MMddyyyy_HHmmss") + ".csv";
 
         // Public Class Properties
         public int DataBufferMaxSampleNumber { get; set; }
@@ -57,7 +52,6 @@ namespace RealtimeGraphing
             DataBufferMaxSampleNumber = definedDataBufferLength;
             dataBuffer = new List<double>[numSensingChannelsDef];
             filtDataBuffer = new List<double>[1];
-            impedBuffer = new List<string>();
             connectionInfoBuffer = new List<string>();
 
             for (int i = 0; i < numSensingChannelsDef; i++)
@@ -153,43 +147,6 @@ namespace RealtimeGraphing
             // Connect to the device
             Console.WriteLine("Connecting to implantable device.");
             var connectDeviceReply = deviceClient.ConnectDevice(new ConnectDeviceRequest() { DeviceAddress = DeviceName, LogFileName = "./deviceLog.txt" });
-
-            // Get electrode impedances
-            for (uint channelNum = 0; channelNum < numSensingChannelsDef; channelNum++)
-            {
-                bicGetImpedanceReply chanImpedValue = deviceClient.bicGetImpedance(new bicGetImpedanceRequest() { DeviceAddress = DeviceName, Channel = channelNum });
-                //Console.WriteLine("CH " + (channelNum + 1).ToString() + ": " + chanImpedValue.Success);
-                if (chanImpedValue.Success == "success")
-                {
-                    // add impedance value and units to buffer
-                    impedBuffer.Add(Math.Ceiling(chanImpedValue.ChannelImpedance).ToString() + " " + chanImpedValue.Units);
-                }
-                else
-                {
-                    // note error in retrieiving impedance 
-                    impedBuffer.Add(chanImpedValue.Success);
-                }
-            }
-
-            // Check that impedances can be logged
-            if (File.Exists(impedFilePath))
-            {
-                File.Delete(impedFilePath);
-            }
-            impedFileStream = new FileStream(impedFilePath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, FileOptions.Asynchronous);
-            impedFileWriter = new StreamWriter(impedFileStream);
-            string impedEntry = "";
-            for (int chNum = 0; chNum < impedBuffer.Count; chNum++)
-            {
-                impedEntry = "CH" + (chNum + 1).ToString();
-                impedEntry += ", " + impedBuffer[chNum];
-                impedFileWriter.WriteLine(impedEntry);
-            }
-
-            // Close impedance logging items
-            impedFileWriter.Flush();
-            impedFileWriter.Dispose();
-            impedFileStream.Dispose();
 
             // Start up the neural stream
             neuroMonitor = Task.Run(neuralMonitorTaskAsync);
@@ -375,14 +332,6 @@ namespace RealtimeGraphing
             // have something similar for filtered data buffer
 
             return outputBuffer;
-        }
-        /// <summary>
-        /// Get impedances collected on startup
-        /// </summary>
-        /// <returns>A list of impedance values with units</returns>
-        public List<string> getImpedances()
-        {
-            return impedBuffer;
         }
 
         public List<string> getConnectionInfo()

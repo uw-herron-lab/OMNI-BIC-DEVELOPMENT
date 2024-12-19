@@ -575,20 +575,6 @@ namespace EvokedPotentialsApp
             Scroller.ScrollToEnd();
         }
 
-        private void btn_impedance_Click(object sender, RoutedEventArgs e)
-        {
-            ImpedanceWindow impWindow = new ImpedanceWindow();
-
-            List<string> impValues = aBICManager.getImpedances();
-
-            for (int i = 0; i < impValues.Count; i++)
-            {
-                impWindow.ImpedanceOutputConsole.Inlines.Add("CH " + (i+1).ToString() + ": " + impValues[i] + "\n");
-            }
-            impWindow.Show();
-            impWindow.impScroller.ScrollToEnd();
-        }
-
         private void MainWindow_Closed(object sender, EventArgs e)
         {
             neuroChartUpdateTimer.Dispose();

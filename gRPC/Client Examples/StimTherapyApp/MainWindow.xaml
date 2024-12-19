@@ -21,7 +21,6 @@
         <Button x:Name="btn_beta" Content="Beta Stim" Margin="10,65,10.2,0" VerticalAlignment="Top" Click="btn_beta_Click" Height="20"/>
         <Button x:Name="btn_open" Content="Open Loop Stim" Margin="19.8,65,16,0" VerticalAlignment="Top" Click="btn_open_Click" Grid.Column="1"/>
         <Button x:Name="btn_stop" Content="Stop Stim" Margin="10,111,10.2,0" VerticalAlignment="Top" Click="btn_stop_Click" Height="20"/>
-        <Button x:Name="btn_impedance" Content="Check Impedances" Margin="0,111,16,0" VerticalAlignment="Top" Click="btn_impedances_Click" Grid.Column="1" Height="20"/>
         <Button x:Name="btn_disconnect" Content="Disconnect" HorizontalAlignment="Left" Margin="12,305,0,0" VerticalAlignment="Top" Click="btn_disconnect_Click" Width="74"/>
         <Button x:Name="btn_reconnect" Content="Reconnect" Grid.Column="1" HorizontalAlignment="Left" Margin="10,305,0,0" VerticalAlignment="Top" Click="btn_reconnect_Click" Width="68"/>
 

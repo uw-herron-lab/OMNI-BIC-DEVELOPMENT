@@ -23,7 +23,6 @@ namespace RealtimeGraphing
         private List<double>[] dataBuffer;
         private List<double>[] runningTotals;   // Keeps track of a running total for each channel. This is divided by currNumPulses to compute our running average.
         private List<double>[] currPulseBuffer; // Stores data for current pulse. Begin filling when stimulation detected, stops when reaches length of stimPeriodSampels.
-        private List<string> impedBuffer;
 
         public int currNumPulses { get; set; } = 0;     // Keeps track of how many pulses have occured for the current source/destination condition. Used to compute running average.
         private const int numSensingChannelsDef = 32;
@@ -39,10 +38,6 @@ namespace RealtimeGraphing
         ConcurrentQueue<string> logLineQueue = new ConcurrentQueue<string>();
         Thread newLoggingThread;
         bool loggingNotDisposed = true;
-
-        FileStream impedFileStream;
-        StreamWriter impedFileWriter;
-        string impedFilePath = "./impedances" + DateTime.Now.ToString("_MMddyyyy_HHmmss") + ".csv";
 
         // Public Class Properties
         public int DataBufferMaxSampleNumber { get; set; }
@@ -65,7 +60,6 @@ namespace RealtimeGraphing
             dataBuffer = new List<double>[numSensingChannelsDef];
             currPulseBuffer = new List<double>[numSensingChannelsDef];
             runningTotals = new List<double>[numSensingChannelsDef];
-            impedBuffer = new List<string>();
             for(int i = 0; i < numSensingChannelsDef; i++)
             {
                 dataBuffer[i] = new List<double>();
@@ -174,43 +168,6 @@ namespace RealtimeGraphing
             // Connect to the device
             Console.WriteLine("Connecting to implantable device.");
             var connectDeviceReply = deviceClient.ConnectDevice(new ConnectDeviceRequest() { DeviceAddress = DeviceName, LogFileName = "./deviceLog.txt" });
-
-            // Print out impedances of electrodes
-            for (uint channelNum = 0; channelNum < numSensingChannelsDef; channelNum++)
-            {
-                bicGetImpedanceReply chanImpedValue = deviceClient.bicGetImpedance(new bicGetImpedanceRequest() { DeviceAddress = DeviceName, Channel = channelNum });
-                Console.WriteLine("CH " + (channelNum + 1).ToString() + ": " + chanImpedValue.Success);
-                if (chanImpedValue.Success == "success")
-                {
-                    // add impedance value and units to buffer
-                    impedBuffer.Add(chanImpedValue.ChannelImpedance.ToString() + " " + chanImpedValue.Units);
-                }
-                else
-                {
-                    // note error in retrieiving impedance 
-                    impedBuffer.Add(chanImpedValue.Success);
-                }
-            }
-
-            // Check that impedances can be logged
-            if (File.Exists(impedFilePath))
-            {
-                File.Delete(impedFilePath);
-            }
-            impedFileStream = new FileStream(impedFilePath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, FileOptions.Asynchronous);
-            impedFileWriter = new StreamWriter(impedFileStream);
-            string impedEntry = "";
-            for (int chNum = 0; chNum < impedBuffer.Count; chNum++)
-            {
-                impedEntry = "CH" + (chNum + 1).ToString();
-                impedEntry += ", " + impedBuffer[chNum];
-                impedFileWriter.WriteLine(impedEntry);
-            }
-
-            // Close impedance logging items
-            impedFileWriter.Flush();
-            impedFileWriter.Dispose();
-            impedFileStream.Dispose();
 
             // Start up the neural stream
             neuroMonitor = Task.Run(neuralMonitorTaskAsync);
@@ -348,11 +305,6 @@ namespace RealtimeGraphing
                 }
 
             }
-        }
-
-        public List<string> getImpedances()
-        {
-            return impedBuffer;
         }
 
         private bool validBufferOrderCheck(Google.Protobuf.Collections.RepeatedField<NeuralSample> sampleBuffer)
