@@ -389,9 +389,6 @@ namespace RealtimeGraphing
         /// <returns>Task completion information</returns>
         async Task neuralMonitorTaskAsync()
         {
-            // Sytem.InvalidOperationException- Shutdown has already been called
-            // var testStream = deviceClient.bicPowerStream(new bicSetStreamEnable() { DeviceAddress = DeviceName, Enable = true });
-            // System.ObjectDisposedException- Safe handle has been closed
             var stream = deviceClient.bicNeuralStream(new bicNeuralSetStreamingEnable() { DeviceAddress = DeviceName, Enable = true, BufferSize = 100, MaxInterpolationPoints = 10, AmplificationFactor = RecordingAmplificationFactor.Amplification395DB, RefChannels = { 31 }, UseGroundReference = true });         
             // Create performance-tracking interpacket variables
             Stopwatch aStopwatch = new Stopwatch();

@@ -126,7 +126,7 @@ namespace BICGRPCHelperNamespace
     /// <param name="id"></param>
     void BICListener::onLastStimulationFunctionId(const uint16_t id)
     {
-        /*try
+        try
         {
             std::cout << "\tSTATE INFO: Stimulation Function ID: " << id << " ." << std::endl;
 
@@ -134,7 +134,7 @@ namespace BICGRPCHelperNamespace
         catch (const std::exception& anyException)
         {
             std::cout << "Stimulation Failed. " << anyException.what() << std::endl;
-        } */
+        } 
     }
 
     //*************************************************** Connection Streaming Functions ***************************************************
