@@ -41,7 +41,7 @@ namespace StimTherapyApp
         }
 
         private System.Timers.Timer neuroChartUpdateTimer;
-        private System.Timers.Timer connectionUpdateTimer;
+        //private System.Timers.Timer connectionUpdateTimer;
         public List<Channel> channelList { get; set; }
 
         public class Configuration
@@ -164,34 +164,8 @@ namespace StimTherapyApp
             neuroChartUpdateTimer.Elapsed += neuroChartUpdateTimer_Elapsed;
             neuroChartUpdateTimer.Start();
 
-            connectionUpdateTimer = new System.Timers.Timer(200);
-            connectionUpdateTimer.Elapsed += connectionUpdateTimer_Elapsed;
-            connectionUpdateTimer.Start();
-        }
-        
-        private void connectionUpdateTimer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            List<string> connectionInfo = aBICManager.getConnectionInfo();
-
-            // When connectionInfo is populated with information about disconnection
-            if (connectionInfo.Any())
-            {
-                ThreadPool.QueueUserWorkItem(a =>
-                {
-                    Application.Current.Dispatcher.Invoke(new Action(() =>
-                    {
-                        // Notify user about disconnection event
-                        OutputConsole.Inlines.Add("Disconnection at " + connectionInfo[0] + " connection. ");
-                        OutputConsole.Inlines.Add("Check connections then use the 'Reconnect' button to reestablish connection!\n");
-                        neuroChartUpdateTimer.Stop();
-                        connectionUpdateTimer.Stop();
-                        aBICManager.Dispose(); // Shut down connection 
-                        connectState = false;
-                        Scroller.ScrollToEnd();
-                    }));
-                    return;
-                });
-            }
+            // subscribe to disconnection event
+            aBICManager.disconnected += onDisconnected;
         }
 
         private void neuroChartUpdateTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -247,6 +221,24 @@ namespace StimTherapyApp
             } 
         }
 
+        private void onDisconnected(List<string> connectionUpdate)
+        {
+            if (connectionUpdate.Any())
+            {
+                ThreadPool.QueueUserWorkItem(a =>
+                {
+                    Application.Current.Dispatcher.Invoke(new Action(() =>
+                    {
+                        // Notify user about disconnection event
+                        OutputConsole.Inlines.Add("Disconnection at " + connectionUpdate[0] + " connection. ");
+                        OutputConsole.Inlines.Add("Check connections then use the 'Reconnect' button to reestablish connection!\n");
+                        connectState = false;
+                        Scroller.ScrollToEnd();
+                    }));
+                    return;
+                });
+            }
+        }
         private void btn_load_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -433,9 +425,9 @@ namespace StimTherapyApp
         private void btn_disconnect_Click(object sender, RoutedEventArgs e)
         {
             neuroChartUpdateTimer.Stop();
-            connectionUpdateTimer.Stop();
+            //connectionUpdateTimer.Stop();
 
-            Console.WriteLine("Disposing...");
+            OutputConsole.Inlines.Add("Disconnecting...\n");
             aBICManager.Dispose(); // Shut down connection 
             connectState = false;
         }
@@ -455,7 +447,7 @@ namespace StimTherapyApp
                 OutputConsole.Inlines.Add("Reconnection unsuccessful!\n");
             }
             neuroChartUpdateTimer.Start();
-            connectionUpdateTimer.Start();
+            //connectionUpdateTimer.Start();
         }
         private void MainWindow_Closed(object sender, EventArgs e)
         {

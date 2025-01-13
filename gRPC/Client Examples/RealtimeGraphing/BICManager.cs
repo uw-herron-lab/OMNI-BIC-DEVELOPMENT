@@ -37,6 +37,8 @@ namespace RealtimeGraphing
 
         // Public Class Properties
         public int DataBufferMaxSampleNumber { get; set; }
+        public delegate void disconnectEventHandler(List<string> disconnectionInfo);
+        public event disconnectEventHandler disconnected;
 
         // Task pointers for streaming methods
         private Task neuroMonitor = null;
@@ -163,7 +165,7 @@ namespace RealtimeGraphing
             // Tell BIC that we want to close!
             deviceClient.bicNeuralStream(new bicNeuralSetStreamingEnable() { DeviceAddress = DeviceName, Enable = false });
             deviceClient.bicConnectionStream(new bicSetStreamEnable() { DeviceAddress= DeviceName, Enable = false });
-
+            Console.WriteLine("Disposing...");
             var disposeReply = deviceClient.bicDispose(new RequestDeviceAddress() { DeviceAddress = DeviceName });
             deviceClient = null;
             Console.WriteLine("Dispose BIC Response: " + disposeReply.ToString());
@@ -174,7 +176,6 @@ namespace RealtimeGraphing
             logFileWriter.Flush();
             logFileWriter.Dispose();
             logFileStream.Dispose();
-            
         }
 
         public void enableOpenLoopStimulation(bool openStimEn, bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold)
@@ -528,7 +529,6 @@ namespace RealtimeGraphing
 
         async Task connectionMonitorTaskAsync()
         {
-            // System.ObjectDisposedException- Safe handle has been closed
             var connectStream = deviceClient.bicConnectionStream(new bicSetStreamEnable() { DeviceAddress = DeviceName, Enable = true });
 
             while (await connectStream.ResponseStream.MoveNext())
@@ -545,6 +545,9 @@ namespace RealtimeGraphing
                     if (connectionState == "False")
                     {
                         connectionInfoBuffer.Add(connectionType);
+                        connectionInfoBuffer.Add(connectionState);
+                        disconnected.Invoke(connectionInfoBuffer);
+                        Dispose(); // shut down connection since there is a disconnect
                     }
                 }
             }
