@@ -335,11 +335,6 @@ namespace RealtimeGraphing
             return outputBuffer;
         }
 
-        public List<string> getConnectionInfo()
-        {
-            return connectionInfoBuffer;
-        }
-
         private void loggingThread()
         {
             // Declare output from concurrent queue
