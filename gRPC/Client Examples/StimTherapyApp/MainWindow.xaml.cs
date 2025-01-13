@@ -425,16 +425,16 @@ namespace StimTherapyApp
         private void btn_disconnect_Click(object sender, RoutedEventArgs e)
         {
             neuroChartUpdateTimer.Stop();
-            //connectionUpdateTimer.Stop();
 
             OutputConsole.Inlines.Add("Disconnecting...\n");
             aBICManager.Dispose(); // Shut down connection 
             connectState = false;
+            OutputConsole.Inlines.Add("Disconnection successful!\n");
         }
 
         private void btn_reconnect_Click(object sender, RoutedEventArgs e)
         {
-            Console.WriteLine("Reconnecting...");
+            OutputConsole.Inlines.Add("Reconnecting...");
             aBICManager = new RealtimeGraphing.BICManager(neuroStreamChart.Width);
             connectState = aBICManager.BICConnect(); // Try reestablishing connection
 
@@ -447,7 +447,7 @@ namespace StimTherapyApp
                 OutputConsole.Inlines.Add("Reconnection unsuccessful!\n");
             }
             neuroChartUpdateTimer.Start();
-            //connectionUpdateTimer.Start();
+            aBICManager.disconnected += onDisconnected;
         }
         private void MainWindow_Closed(object sender, EventArgs e)
         {
