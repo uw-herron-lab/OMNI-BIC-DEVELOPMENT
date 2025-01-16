@@ -40,9 +40,9 @@
 
         <Button x:Name="btn_start" Content="Start Stim" Click="btn_start_Click" VerticalAlignment="Center" Grid.Row="4" Grid.Column="0" Margin="5,0,5,0" Height="20"/>
         <Button x:Name="btn_stop" Content="Stop Stim" Click="btn_stop_Click" VerticalAlignment="Center" Grid.Row="4" Grid.Column="1" Margin="5,0,5,0" Height="20"/>
-        <Button x:Name="btn_diagnostic" Content="Diagnostic" Click="btn_diagnostic_Click" Grid.Row="5" Margin="5,5,5,5"/>
-        <Button x:Name="btn_disconnect" Content="Disconnect" Grid.Row="6" Click="btn_disconnect_Click" Margin="5,5,5,5"/>
-        <Button x:Name="btn_reconnect" Content="Reconnect" Grid.Row="6" Grid.Column="1" Click="btn_reconnect_Click" Margin="5,5,6,5"/>
+        <Button x:Name="btn_diagnostic" Content="Diagnostic" Click="btn_diagnostic_Click" Grid.Row="5" Margin="5,5,5,0" Height="21" VerticalAlignment="Top"/>
+        <Button x:Name="btn_disconnect" Content="Disconnect" Grid.Row="6" Click="btn_disconnect_Click" Margin="5,5,5,0" Height="20" VerticalAlignment="Top"/>
+        <Button x:Name="btn_reconnect" Content="Reconnect" Grid.Row="6" Grid.Column="1" Click="btn_reconnect_Click" Margin="5,5,6,0" Height="20" VerticalAlignment="Top"/>
 
         <Grid Grid.Row="7" Grid.ColumnSpan="2" Margin="20,20,20,20">
             <Grid.RowDefinitions>

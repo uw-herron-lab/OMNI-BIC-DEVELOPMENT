@@ -9,7 +9,7 @@
         Title="MainWindow" Height="450" Width="800" Loaded="MainWindow_Loaded" Closed="MainWindow_Closed">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="23*"/>
+            <RowDefinition Height="25*"/>
             <RowDefinition Height="7*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -17,12 +17,12 @@
             <ColumnDefinition Width="129*"/>
             <ColumnDefinition Width="570*"/>
         </Grid.ColumnDefinitions>
-        <Button x:Name="btn_load" Content="Load Config" Margin="12,24,16,0" VerticalAlignment="Top" Click="btn_load_Click" Height="20" Grid.ColumnSpan="2"/>
-        <Button x:Name="btn_beta" Content="Beta Stim" Margin="10,65,10.2,0" VerticalAlignment="Top" Click="btn_beta_Click" Height="20"/>
-        <Button x:Name="btn_open" Content="Open Loop Stim" Margin="19.8,65,16,0" VerticalAlignment="Top" Click="btn_open_Click" Grid.Column="1"/>
-        <Button x:Name="btn_stop" Content="Stop Stim" Margin="10,111,10.2,0" VerticalAlignment="Top" Click="btn_stop_Click" Height="20"/>
-        <Button x:Name="btn_disconnect" Content="Disconnect" HorizontalAlignment="Left" Margin="12,305,0,0" VerticalAlignment="Top" Click="btn_disconnect_Click" Width="74"/>
-        <Button x:Name="btn_reconnect" Content="Reconnect" Grid.Column="1" HorizontalAlignment="Left" Margin="10,305,0,0" VerticalAlignment="Top" Click="btn_reconnect_Click" Width="68"/>
+        <Button x:Name="btn_load" Content="Load Config" Margin="12,11,16,0" VerticalAlignment="Top" Click="btn_load_Click" Height="20" Grid.ColumnSpan="2"/>
+        <Button x:Name="btn_beta" Content="Beta Stim" Margin="10,52,10,0" VerticalAlignment="Top" Click="btn_beta_Click" Height="20"/>
+        <Button x:Name="btn_open" Content="Open Loop Stim" Margin="20,52,16,0" VerticalAlignment="Top" Click="btn_open_Click" Grid.Column="1"/>
+        <Button x:Name="btn_stop" Content="Stop Stim" Margin="10,98,10,0" VerticalAlignment="Top" Click="btn_stop_Click" Height="20"/>
+        <Button x:Name="btn_disconnect" Content="Disconnect" Margin="12,0,0,10" Click="btn_disconnect_Click" HorizontalAlignment="Left" Width="74" Height="21" VerticalAlignment="Bottom"/>
+        <Button x:Name="btn_reconnect" Content="Reconnect" Grid.Column="1" Margin="10,0,0,10" Click="btn_reconnect_Click" HorizontalAlignment="Left" Width="68" Height="21" VerticalAlignment="Bottom"/>
 
         <ScrollViewer Name="Scroller" Margin="0,0.4,-0.4,0" Background="White" Grid.ColumnSpan="3" VerticalScrollBarVisibility="Auto" Grid.Row="1">
             <Border BorderThickness="1" BorderBrush="Black">
@@ -42,7 +42,7 @@
                 </winformchart:Chart.Legends>
             </winformchart:Chart>
         </WindowsFormsHost>
-        <ListBox ItemsSource="{Binding channelList}" Margin="10,144,16,37.6" Grid.ColumnSpan="2">
+        <ListBox ItemsSource="{Binding channelList}" Margin="10,138,16,43" Grid.ColumnSpan="2">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <CheckBox IsChecked="{Binding IsSelected}" Content="{Binding Name}" Checked="CheckBox_Changed" Unchecked="CheckBox_Changed"/>
@@ -53,6 +53,6 @@
         <TextBox x:Name="y_min" TextWrapping="Wrap" Margin="0,0,141.6,9.6" Grid.Column="2" TextChanged="y_min_TextChanged" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="50"/>
         <TextBlock TextWrapping="Wrap" Text="y-axis max:" Grid.Column="2" Margin="0,0,65.6,12.6" HorizontalAlignment="Right" Width="63" Height="16" VerticalAlignment="Bottom"/>
         <TextBox x:Name="y_max" TextWrapping="Wrap" Margin="0,0,15.6,9.6" Grid.Column="2" TextChanged="y_max_TextChanged" HorizontalAlignment="Right" Width="50" Height="20" VerticalAlignment="Bottom"/>
-        
+
     </Grid>
 </Window>
