@@ -42,6 +42,7 @@ namespace EvokedPotentialsApp
         private uint stimDuration = 250;
         private int jitterMax = 300000; // uS
         private bool monopolar = false;
+        private bool reversePolarity = false;
         private double stimThreshold = 100;
         
         private bool stopStimClicked = false; // set to true when stop is clicked. Flag to exit from for loops that would send more stimulation
@@ -81,6 +82,7 @@ namespace EvokedPotentialsApp
             public uint stimDuration { get; set; }
             public int jitterMax { get; set; } // uS
             public bool monopolar { get; set; }
+            public bool reversePolarity { get; set; }
             public double stimThreshold { get; set; }
             public List<int> stimChannelsQueue { get; set; }
             public List<int> returnChannelsQueue { get; set; }
@@ -299,6 +301,7 @@ namespace EvokedPotentialsApp
                             OutputConsole.Inlines.Add("Stim period: " + (configInfo.stimPeriod) + " us\n");
                             OutputConsole.Inlines.Add("Stim Pulse Amplitude: " + configInfo.stimAmplitude + " uA\n");
                             OutputConsole.Inlines.Add("stimDuration: " + configInfo.stimDuration + " us\n");
+                            OutputConsole.Inlines.Add("Reversing polarity: " + configInfo.reversePolarity + "\n");
                             Scroller.ScrollToEnd();
                         }
 
@@ -313,6 +316,7 @@ namespace EvokedPotentialsApp
                         stimDuration = configInfo.stimDuration;
                         jitterMax = configInfo.jitterMax;
                         monopolar = configInfo.monopolar;
+                        reversePolarity = configInfo.reversePolarity;
                         stimThreshold = configInfo.stimThreshold;
 
                         // enable certain buttons depending on stimulation experiment mode
@@ -406,7 +410,7 @@ namespace EvokedPotentialsApp
                     try
                     {
                         uint interPulseInterval = stimPeriod - (5 * stimDuration); 
-                        enableEvokedPotentialPulses(monopolar, (uint)stimChannel, (uint)returnChannel, stimAmplitude, stimDuration, 4, interPulseInterval, stimThreshold, numPulses, jitterMax);
+                        enableEvokedPotentialPulses(monopolar, (uint)stimChannel, (uint)returnChannel, stimAmplitude, stimDuration, 4, interPulseInterval, stimThreshold, numPulses, jitterMax, reversePolarity);
                     }
                     catch
                     {
@@ -480,29 +484,71 @@ namespace EvokedPotentialsApp
         /// <param name="stimThreshold"></param>
         /// <param name="numPulses"></param>
         /// <param name="jitterMax"></param>
-        private async void enableEvokedPotentialPulses(bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold, uint numPulses, int jitterMax)
+        /// <param name="reversePolarity"></param>
+        private async void enableEvokedPotentialPulses(bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold, uint numPulses, int jitterMax, bool reversePolarity)
         {
+            uint configStim;
+            uint configReturn;
+
             // clear running totals and num pulses before starting each condition
             aBICManager.zeroAvgsBuffers();
             aBICManager.currNumPulses = 0;
 
+            // items for randomizing polarity configuration
+            Random random = new Random();
+            List<int> stimPool = new List<int>();
+            int randomConfig;
+
+            // populate the list with values to determine the polarity configuration
             for (int i = 0; i < numPulses; i++)
+            {
+                stimPool.Add(i);
+            }
+
+            for (int trial = 0; trial < numPulses; trial++)
             {
                 if (stopStimClicked)
                 {
-                    return;
+                    return; // end any stimulation occuring
                 }
                 else
                 {
-                    aBICManager.enableStimulationPulse(monopolar, stimChannel - 1, returnChannel - 1, stimAmplitude, stimDuration, 4, interPulseInterval, stimThreshold);
-                    
-                    int randomJitter = RandomNumber(0, jitterMax);
-                    await Task.Delay((int)((stimPeriod + randomJitter) / 1000));
+                    if (reversePolarity) // perform randomization process to randomize configuration
+                    {
+                        // select a value from the list to randomly decide the polarity configuration
+                        randomConfig = random.Next(0, stimPool.Count);
 
-                    // Increment currNumPulses and update avgs chart after pulse completed
-                    aBICManager.currNumPulses++;
-                    updateAvgsChart();
+                        if (randomConfig % 2 == 0)
+                        {
+                            // choose original configuration
+                            configStim = stimChannel - 1;
+                            configReturn = returnChannel - 1;
+                        }
+                        else
+                        {
+                            // reverse the configuration
+                            configStim = returnChannel - 1; 
+                            configReturn = stimChannel - 1;
+                        }
+
+                    }
+                    else // only use one configuration
+                    {
+                        configStim = stimChannel - 1;
+                        configReturn = returnChannel - 1;
+                    }
                 }
+
+                // deliver stingle pulse of stimulation
+                aBICManager.enableStimulationPulse(monopolar, configStim, configReturn, stimAmplitude, stimDuration, 4, interPulseInterval, stimThreshold);
+
+                // add random jitter to 
+                int randomJitter = RandomNumber(0, jitterMax);
+                await Task.Delay((int)((stimPeriod + randomJitter) / 1000));
+
+                // Increment currNumPulses and update avgs chart after pulse completed
+                aBICManager.currNumPulses++;
+                updateAvgsChart();
             }
         }
 
