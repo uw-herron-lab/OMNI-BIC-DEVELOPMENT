@@ -29,7 +29,6 @@ namespace ImpedanceCheckApp
     {
         private RealtimeGraphing.BICManager aBICManager;
         private bool connectState = false;
-        
 
         // Logging
         FileStream impedFileStream;
@@ -43,11 +42,38 @@ namespace ImpedanceCheckApp
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
 
-            // Start impedance check
+            // Establish connection
             aBICManager = new RealtimeGraphing.BICManager((int)MainWindow1.Width, true); // additional parameter that is set to default otherwise?
             connectState = aBICManager.BICConnect();
 
-            if (connectState)
+            // Perform impedance check upon startup
+            performImpCheck(connectState);
+        }
+
+        private void MainWindow_Closed(object sender, EventArgs e)
+        {
+            aBICManager.Dispose();
+        }
+
+        private void btn_repeatcheck_Click(object sender, RoutedEventArgs e)
+        {
+            ImpedanceOutputConsole.Inlines.Add("Repeating impedance check... \n");
+
+            // Dispose
+            aBICManager.Dispose();
+            connectState = false;
+
+            // Re-establish connection
+            aBICManager = new RealtimeGraphing.BICManager((int)MainWindow1.Width, true); // additional parameter that is set to default otherwise?
+            connectState = aBICManager.BICConnect();
+
+            // Repeat impedance check
+            performImpCheck(connectState);
+
+        }
+        private void performImpCheck(bool currConnectState)
+        {
+            if (currConnectState)
             {
                 string timestamp = DateTime.Now.ToString("hh:mm:ss tt");
 
@@ -59,7 +85,7 @@ namespace ImpedanceCheckApp
 
                 // Display impedances to the console window
                 ImpedanceOutputConsole.Inlines.Add("Impedance check at: " + timestamp + "\n");
-
+                
                 string impedEntry = "";
                 for (int channelNum = 0; channelNum < impValues.Count; channelNum++)
                 {
@@ -79,22 +105,6 @@ namespace ImpedanceCheckApp
             {
                 ImpedanceOutputConsole.Inlines.Add("Unable to perform impedance check due to connection issues!");
             }
-        }
-
-        private void MainWindow_Closed(object sender, EventArgs e)
-        {
-            aBICManager.Dispose();
-        }
-
-        private void btn_repeatcheck_Click(object sender, RoutedEventArgs e)
-        {
-            ImpedanceOutputConsole.Inlines.Add("Button repeat check was pressed \n");
-
-            aBICManager.Dispose();
-            connectState = false;
-
-            ImpedanceOutputConsole.Text = String.Empty; // clear the textbox 
-            
         }
     }
 }
