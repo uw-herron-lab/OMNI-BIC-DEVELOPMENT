@@ -9,5 +9,6 @@
   "stimDuration": 250,
   "stimThreshold": 100,
   "jitterMax": 100000,
+  "reversePolarity": true,
   "baselinePeriod": 100000
 }
