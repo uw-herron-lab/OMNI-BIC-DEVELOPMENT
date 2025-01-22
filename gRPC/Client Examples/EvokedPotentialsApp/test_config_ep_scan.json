@@ -2,12 +2,13 @@
   "scanMode": true,
   "monopolar": false,
   "numPulses": 20,
-  "stimChannelsQueue": [4, 5, 6],
-  "returnChannelsQueue": [12, 13, 14],
+  "stimChannelsQueue": [ 4, 5, 6 ],
+  "returnChannelsQueue": [ 12, 13, 14 ],
   "stimPeriod": 1000000,
   "stimAmplitude": -1000,
   "stimDuration": 250,
   "stimThreshold": 100,
   "jitterMax": 100000,
+  "reversePolarity": true,
   "baselinePeriod": 100000
 }
