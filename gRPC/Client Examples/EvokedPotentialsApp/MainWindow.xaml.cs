@@ -519,7 +519,7 @@ namespace EvokedPotentialsApp
             // items for randomizing polarity configuration
             Random random = new Random();
             List<int> stimPool = new List<int>();
-            int randomConfig;
+            int randomInd;
 
             // populate the list with values to determine the polarity configuration
             for (int i = 0; i < numPulses; i++)
@@ -535,12 +535,12 @@ namespace EvokedPotentialsApp
                 }
                 else
                 {
-                    if (reversePolarity) // perform randomization process to randomize configuration
+                    if (reversePolarity) // use original and reverse polarities
                     {
                         // select a value from the list to randomly decide the polarity configuration
-                        randomConfig = random.Next(0, stimPool.Count);
+                        randomInd = random.Next(0, stimPool.Count);
 
-                        if (randomConfig % 2 == 0)
+                        if (stimPool[randomInd] % 2 == 0)
                         {
                             // choose original configuration
                             configStim = stimChannel - 1;
@@ -552,6 +552,8 @@ namespace EvokedPotentialsApp
                             configStim = returnChannel - 1; 
                             configReturn = stimChannel - 1;
                         }
+                        // remove to ensure even distribution of the two polarity configurations
+                        stimPool.RemoveAt(randomInd);
 
                     }
                     else // only use one configuration
