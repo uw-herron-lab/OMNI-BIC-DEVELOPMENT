@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -43,6 +44,7 @@ namespace EvokedPotentialsApp
         private int jitterMax = 300000; // uS
         private bool monopolar = false;
         private double stimThreshold = 100;
+        private bool connectState = false;
         
         private bool stopStimClicked = false; // set to true when stop is clicked. Flag to exit from for loops that would send more stimulation
         private CancellationTokenSource cancellationTokenSource;
@@ -193,6 +195,8 @@ namespace EvokedPotentialsApp
             neuroChartUpdateTimer = new System.Timers.Timer(200);
             neuroChartUpdateTimer.Elapsed += neuroChartUpdateTimer_Elapsed;
             neuroChartUpdateTimer.Start();
+
+            aBICManager.disconnected += onDisconnected;
         }
 
         private void neuroChartUpdateTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -268,6 +272,24 @@ namespace EvokedPotentialsApp
             }
         }
 
+        private void onDisconnected(List<string> connectionUpdate)
+        {
+            if (connectionUpdate.Any())
+            {
+                ThreadPool.QueueUserWorkItem(a =>
+                {
+                    Application.Current.Dispatcher.Invoke(new Action(() =>
+                    {
+                        // Notify user about disconnection event
+                        OutputConsole.Inlines.Add("Disconnection at " + connectionUpdate[0] + " connection. ");
+                        OutputConsole.Inlines.Add("Check connections then use the 'Reconnect' button to reestablish connection!\n");
+                        connectState = false;
+                        Scroller.ScrollToEnd();
+                    }));
+                    return;
+                });
+            }
+        }
         /// <summary>
         /// Read in config file
         /// </summary>
@@ -573,6 +595,34 @@ namespace EvokedPotentialsApp
             // start diagnostic pattern
             OutputConsole.Inlines.Add("Performing diagnostics...\n");
             Scroller.ScrollToEnd();
+        }
+
+        private void btn_disconnect_Click(object sender, RoutedEventArgs e)
+        {
+            neuroChartUpdateTimer.Stop();
+
+            OutputConsole.Inlines.Add("Disconnecting...\n");
+            aBICManager.Dispose();  // Shut down connection
+            connectState = false;
+            OutputConsole.Inlines.Add("Disconnection successful!\n");
+        }
+
+        private void btn_reconnect_Click(object sender, RoutedEventArgs e)
+        {
+            OutputConsole.Inlines.Add("Reconnecting...\n");
+            aBICManager = new RealtimeGraphing.BICManager(neuroStreamChart.Width, stimPeriod, baselinePeriod);
+            connectState = aBICManager.BICConnect();    // Try to reestablish connection
+
+            if (connectState)
+            {
+                OutputConsole.Inlines.Add("Reconnection successful!\n");
+            }
+            else
+            {
+                OutputConsole.Inlines.Add("Reconnection unsuccessful!\n");
+            }
+            neuroChartUpdateTimer.Start();
+            aBICManager.disconnected += onDisconnected;
         }
 
         private void MainWindow_Closed(object sender, EventArgs e)

@@ -23,9 +23,12 @@ namespace RealtimeGraphing
         private List<double>[] dataBuffer;
         private List<double>[] runningTotals;   // Keeps track of a running total for each channel. This is divided by currNumPulses to compute our running average.
         private List<double>[] currPulseBuffer; // Stores data for current pulse. Begin filling when stimulation detected, stops when reaches length of stimPeriodSampels.
+        private List<string> connectionInfoBuffer;
+
         public int currNumPulses { get; set; } = 0;     // Keeps track of how many pulses have occured for the current source/destination condition. Used to compute running average.
         private const int numSensingChannelsDef = 32;
         private object dataBufferLock = new object();
+        private object connectLock = new object();
         private uint stimPeriodSamples;                 // number of samples in the stimulation period
         private uint baselinePeriodSamples;             // number of samples in the baseline period (time before stimulation pulse to include in signal average)
         private uint samplingRate = 1000;               // [Hz]
@@ -40,10 +43,14 @@ namespace RealtimeGraphing
 
         // Public Class Properties
         public int DataBufferMaxSampleNumber { get; set; }
+        public delegate void disconnectEventHandler(List<string> disconnectionInfo);
+        public event disconnectEventHandler disconnected;
+
         public int deviceSampleRate {  get; set; }
         
         // Task pointers for streaming methods
         private Task neuroMonitor = null;
+        private Task connectMonitor = null;
 
         // Constructor
         public BICManager(int definedDataBufferLength, uint stimPeriod, uint baselinePeriod) 
@@ -53,12 +60,13 @@ namespace RealtimeGraphing
 
             // Set up variables for visualization: instantiate data buffers and length variables.
             DataBufferMaxSampleNumber = definedDataBufferLength;
-            //this.chartWidth = neuroStreamChartWidth;
             this.stimPeriodSamples = (uint)(stimPeriod / 1e6 * samplingRate);
             this.baselinePeriodSamples = (uint)(baselinePeriod / 1e6 * samplingRate);
             dataBuffer = new List<double>[numSensingChannelsDef];
             currPulseBuffer = new List<double>[numSensingChannelsDef];
             runningTotals = new List<double>[numSensingChannelsDef];
+            connectionInfoBuffer = new List<string>();
+
             for(int i = 0; i < numSensingChannelsDef; i++)
             {
                 dataBuffer[i] = new List<double>();
@@ -170,6 +178,9 @@ namespace RealtimeGraphing
 
             // Start up the neural stream
             neuroMonitor = Task.Run(neuralMonitorTaskAsync);
+
+            // Start up the connection  stream
+            connectMonitor = Task.Run(connectionMonitorTaskAsync);
 
             // Success, return true
             return true;
@@ -547,6 +558,32 @@ namespace RealtimeGraphing
                 Console.WriteLine("Implant Stream Neural Samples Received: " + stream.ResponseStream.Current.Samples.Count + "copyTime: " + elapsedTime.ToString());
             }
             Console.WriteLine("(Neural Monitor Task Exited)");
+        }
+
+        async Task connectionMonitorTaskAsync()
+        {
+            var connectStream = deviceClient.bicConnectionStream(new bicSetStreamEnable() { DeviceAddress = DeviceName, Enable = true });
+
+            while (await connectStream.ResponseStream.MoveNext())
+            {
+                lock (connectLock)
+                {
+                    // When connection state changes, get the streamed information
+                    string connectionType = connectStream.ResponseStream.Current.ConnectionType;
+                    string connectionState = connectStream.ResponseStream.Current.IsConnected.ToString();
+
+                    // Also write out to console for debugging
+                    Console.WriteLine("Connection State: " + connectionType + "; " + connectionState);
+
+                    if (connectionState == "False")
+                    {
+                        connectionInfoBuffer.Add(connectionType);
+                        connectionInfoBuffer.Add(connectionState);
+                        disconnected.Invoke(connectionInfoBuffer);
+                        Dispose(); // shut down connection since there is a disconnect
+                    }
+                }
+            }
         }
     }
 }
