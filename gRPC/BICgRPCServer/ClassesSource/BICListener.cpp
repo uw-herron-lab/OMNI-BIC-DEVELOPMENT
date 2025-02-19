@@ -129,7 +129,6 @@ namespace BICGRPCHelperNamespace
         try
         {
             std::cout << "\tSTATE INFO: Stimulation Function ID: " << id << " ." << std::endl;
-
         }
         catch (const std::exception& anyException)
         {
