@@ -27,12 +27,8 @@ namespace ImpedanceCheckApp
 
     public partial class MainWindow : Window
     {
-        private RealtimeGraphing.BICManager aBICManager;
+        private ImpedanceCheckApp.ImpedanceBICManager impBICManager;
         private bool connectState = false;
-
-        // Logging
-        FileStream impedFileStream;
-        StreamWriter impedFileWriter;
 
         public MainWindow()
         {
@@ -41,48 +37,30 @@ namespace ImpedanceCheckApp
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-
             // Establish connection
-            aBICManager = new RealtimeGraphing.BICManager((int)MainWindow1.Width, true); // additional parameter that is set to default otherwise?
-            connectState = aBICManager.BICConnect();
-
-            // Perform impedance check upon startup
-            performImpCheck(connectState);
+            impBICManager = new ImpedanceCheckApp.ImpedanceBICManager((int)MainWindow1.Width); // additional parameter that is set to default otherwise?
+            connectState = impBICManager.BICConnect();
         }
 
         private void MainWindow_Closed(object sender, EventArgs e)
         {
-            aBICManager.Dispose();
+            impBICManager.Dispose();
         }
 
-        private void btn_repeatcheck_Click(object sender, RoutedEventArgs e)
+        private void btn_impcheck_Click(object sender, RoutedEventArgs e)
         {
-            ImpedanceOutputConsole.Inlines.Add("Repeating impedance check... \n");
-
-            // Dispose
-            aBICManager.Dispose();
-            connectState = false;
-
-            // Re-establish connection
-            aBICManager = new RealtimeGraphing.BICManager((int)MainWindow1.Width, true); // additional parameter that is set to default otherwise?
-            connectState = aBICManager.BICConnect();
-
-            // Repeat impedance check
-            performImpCheck(connectState);
-
+            // Run impedance check
+            runImpCheck(connectState);
         }
-        private void performImpCheck(bool currConnectState)
+        private void runImpCheck(bool currConnectState)
         {
             if (currConnectState)
             {
+                // Get timestamp
                 string timestamp = DateTime.Now.ToString("hh:mm:ss tt");
-
-                // Perform impedance check and log the impedance values
-                string impedFilePath = "./impedances" + DateTime.Now.ToString("_MMddyyyy_HHmmss") + ".csv";
-                List<string> impValues = aBICManager.getImpedances();
-                impedFileStream = new FileStream(impedFilePath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, FileOptions.Asynchronous);
-                impedFileWriter = new StreamWriter(impedFileStream);
-
+                impBICManager.performImpCheck();
+                List<string> impValues = impBICManager.getImpedances();
+                
                 // Display impedances to the console window
                 ImpedanceOutputConsole.Inlines.Add("Impedance check at: " + timestamp + "\n");
                 
@@ -92,14 +70,8 @@ namespace ImpedanceCheckApp
                     ImpedanceOutputConsole.Inlines.Add("CH " + (channelNum + 1).ToString() + ": " + impValues[channelNum] + "\n");
                     impedEntry = "CH" + (channelNum + 1).ToString();
                     impedEntry += ", " + impValues[channelNum];
-                    impedFileWriter.WriteLine(impedEntry);
                 }
                 impScroller.ScrollToEnd();
-
-                // Close impedance logging items
-                impedFileWriter.Flush();
-                impedFileWriter.Dispose();
-                impedFileStream.Dispose();
             }
             else
             {
