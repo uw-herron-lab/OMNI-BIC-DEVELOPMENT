@@ -22,12 +22,10 @@ namespace RealtimeGraphing
         private string DeviceName;
         private List<double>[] dataBuffer;
         private List<double>[] filtDataBuffer;
-        private List<string> impBuffer;
         private List<string> connectionInfoBuffer;
         private const int numSensingChannelsDef = 32;
         private object dataBufferLock = new object();
         private object connectLock = new object();
-        private bool runImpTest;
 
         // Logging Objects
         FileStream logFileStream;
@@ -47,7 +45,7 @@ namespace RealtimeGraphing
         private Task connectMonitor = null;
 
         // Constructor
-        public BICManager(int definedDataBufferLength, bool performImpCheck = false)
+        public BICManager(int definedDataBufferLength)
         {
             // Open up the GRPC Channel to the BIC microservice
             aGRPChannel = new Channel("127.0.0.1:50051", ChannelCredentials.Insecure);
@@ -56,7 +54,6 @@ namespace RealtimeGraphing
             DataBufferMaxSampleNumber = definedDataBufferLength;
             dataBuffer = new List<double>[numSensingChannelsDef];
             filtDataBuffer = new List<double>[1];
-            runImpTest = performImpCheck;
             connectionInfoBuffer = new List<string>();
 
             for (int i = 0; i < numSensingChannelsDef; i++)
@@ -152,24 +149,6 @@ namespace RealtimeGraphing
             // Connect to the device
             Console.WriteLine("Connecting to implantable device.");
             var connectDeviceReply = deviceClient.ConnectDevice(new ConnectDeviceRequest() { DeviceAddress = DeviceName, LogFileName = "./deviceLog.txt" });
-
-            // Perform an impedance check if requested
-            if (runImpTest)
-            {
-                impBuffer = new List<string>();
-                for (uint channelNum = 0; channelNum < numSensingChannelsDef; channelNum++)
-                {
-                    bicGetImpedanceReply chanImpedValue = deviceClient.bicGetImpedance(new bicGetImpedanceRequest() { DeviceAddress = DeviceName, Channel = channelNum });
-                    if (chanImpedValue.Success == "success")
-                    {
-                        impBuffer.Add(chanImpedValue.ChannelImpedance.ToString() + chanImpedValue.Units);
-                    }
-                    else
-                    {
-                        impBuffer.Add("Unsuccessful impedance reading");
-                    }
-                }
-            }
 
             // Start up the neural stream
             neuroMonitor = Task.Run(neuralMonitorTaskAsync);
@@ -354,11 +333,6 @@ namespace RealtimeGraphing
             // have something similar for filtered data buffer
 
             return outputBuffer;
-        }
-
-        public List<string> getImpedances()
-        {
-            return impBuffer;
         }
 
         private void loggingThread()
