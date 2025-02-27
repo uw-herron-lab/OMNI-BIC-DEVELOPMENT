@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BICgRPCmicroserver", "BICgRPCServer\cmake\build\BICgRPCmicroserver.vcxproj", "{3BF30F56-2C42-36EC-BB75-8BB0EC24D2E1}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BICgRPCmicroserver", "BICgRPCServer\cmake\build\BICgRPCmicroserver.vcxproj", "{E1E67DB9-6ECD-3BD1-8423-CF96620D6C60}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Protos", "Protos", "{A76888E9-2F83-4C6C-B552-17DB59E1DCB3}"
 	ProjectSection(SolutionItems) = preProject
@@ -20,16 +20,18 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp", "Client Exampl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvokedPotentialsApp", "Client Examples\EvokedPotentialsApp\EvokedPotentialsApp.csproj", "{3D04B370-07EC-41CA-80A1-1EFE479ABFC9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImpedanceCheckApp", "Client Examples\ImpedanceCheckApp\ImpedanceCheckApp.csproj", "{4E80AF45-A52D-40A0-B8A9-71EB8FC1612A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{3BF30F56-2C42-36EC-BB75-8BB0EC24D2E1}.Debug|x64.ActiveCfg = Debug|x64
-		{3BF30F56-2C42-36EC-BB75-8BB0EC24D2E1}.Debug|x64.Build.0 = Debug|x64
-		{3BF30F56-2C42-36EC-BB75-8BB0EC24D2E1}.Release|x64.ActiveCfg = Release|x64
-		{3BF30F56-2C42-36EC-BB75-8BB0EC24D2E1}.Release|x64.Build.0 = Release|x64
+		{E1E67DB9-6ECD-3BD1-8423-CF96620D6C60}.Debug|x64.ActiveCfg = Debug|x64
+		{E1E67DB9-6ECD-3BD1-8423-CF96620D6C60}.Debug|x64.Build.0 = Debug|x64
+		{E1E67DB9-6ECD-3BD1-8423-CF96620D6C60}.Release|x64.ActiveCfg = Release|x64
+		{E1E67DB9-6ECD-3BD1-8423-CF96620D6C60}.Release|x64.Build.0 = Release|x64
 		{F288013B-9EA4-4BFF-8B22-A9FAD92C3134}.Debug|x64.ActiveCfg = Debug|Any CPU
 		{F288013B-9EA4-4BFF-8B22-A9FAD92C3134}.Debug|x64.Build.0 = Debug|Any CPU
 		{F288013B-9EA4-4BFF-8B22-A9FAD92C3134}.Release|x64.ActiveCfg = Release|Any CPU
@@ -50,6 +52,10 @@ Global
 		{3D04B370-07EC-41CA-80A1-1EFE479ABFC9}.Debug|x64.Build.0 = Debug|Any CPU
 		{3D04B370-07EC-41CA-80A1-1EFE479ABFC9}.Release|x64.ActiveCfg = Release|Any CPU
 		{3D04B370-07EC-41CA-80A1-1EFE479ABFC9}.Release|x64.Build.0 = Release|Any CPU
+		{4E80AF45-A52D-40A0-B8A9-71EB8FC1612A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4E80AF45-A52D-40A0-B8A9-71EB8FC1612A}.Debug|x64.Build.0 = Debug|Any CPU
+		{4E80AF45-A52D-40A0-B8A9-71EB8FC1612A}.Release|x64.ActiveCfg = Release|Any CPU
+		{4E80AF45-A52D-40A0-B8A9-71EB8FC1612A}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
