@@ -1247,10 +1247,10 @@ namespace BICGRPCHelperNamespace
             startStimulationTimes.beforeStimTimeStamp = before.time_since_epoch().count();
 
             try {
-                // Check if stimulation is already occuring. Stop it if so
-                if (isStimulating())
+                // Check if stimulation is already occuring- once stimulation is no longer active, retrigger
+                while (isStimulating())
                 {
-                    theImplantedDevice->stopStimulation();
+                    std::this_thread::sleep_for(std::chrono::milliseconds(1)); // sleep for 1 ms before checking again
                 }
 
                 // Re-trigger stimulation
