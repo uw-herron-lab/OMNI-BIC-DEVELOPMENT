@@ -1250,7 +1250,7 @@ namespace BICGRPCHelperNamespace
                 // Check if stimulation is already occuring- once stimulation is no longer active, retrigger
                 while (isStimulating())
                 {
-                    std::this_thread::sleep_for(std::chrono::milliseconds(1)); // sleep for 1 ms before checking again
+                    std::this_thread::sleep_for(std::chrono::milliseconds(10)); // sleep for 10 ms before checking again
                 }
 
                 // Re-trigger stimulation
