@@ -32,11 +32,83 @@ namespace BICGRPCHelperNamespace
         // Write Event Information to Console
         std::cout << "\tSTATE CHANGE: Stimulation state changed: " << isStimulating << std::endl;
 
-        // Grab a local-scoped lock before updating multi-threaded accessable state variables
-        std::lock_guard<std::mutex> lock(m_mutex);
+        //// Grab a local-scoped lock before updating multi-threaded accessable state variables
+        //std::lock_guard<std::mutex> lock(m_mutex);
 
         // Update the value, local-scoped locked is released at end of function
         m_isStimulating = isStimulating;
+
+        if (!isStimulating && isOLStimEn) // if open loop stim is enabled and isStimulating is false
+        {
+            StimTimes startStimulationTimes;
+
+            // initialize before and after timestamps
+            std::chrono::system_clock::time_point before;
+            std::chrono::system_clock::time_point after;
+
+            // Enable stim time logging
+            enableStimTimeLogging(true);
+
+            // Get time before start stimulation command (UTC)
+            before = std::chrono::system_clock::now();
+            startStimulationTimes.beforeStimTimeStamp = before.time_since_epoch().count();
+
+            try
+            {
+                // Re-trigger stimulation
+                theImplantedDevice->startStimulation();
+
+                //Get time after start stimulation command (UTC)
+                after = std::chrono::system_clock::now();
+                startStimulationTimes.afterStimTimeStamp = after.time_since_epoch().count();
+
+                // No exception encountered, so label as "0"
+                startStimulationTimes.recordedException = "0";
+
+                // Add latest received data packet to the buffer if there is room
+                if (stimTimeSampleQueue.size() < 1000)
+                {
+                    // Lock the stim time buffer, add data, unlock
+                    this->m_stimTimeBufferLock.lock();
+                    stimTimeSampleQueue.push(startStimulationTimes); // add struct with timestamps and exception to queue
+                    this->m_stimTimeBufferLock.unlock();
+
+                    // Notify the streaming function that new data exists
+                    stimTimeDataNotify->notify_all();
+                }
+                else
+                {
+                    std::cout << "WARNING: Before Stim Time Log Queue Size Overflow, streaming data skipped" << std::endl;
+                }
+            }
+            catch (std::exception& anyException)
+            {
+                std::cout << "STIM CHANGE EVENT ERROR: Open Loop Management Exception Encountered. Reason: " << anyException.what() << std::endl;
+
+                // If exception occurred, after is the time the exception occurred
+                after = std::chrono::system_clock::now();
+                startStimulationTimes.afterStimTimeStamp = after.time_since_epoch().count();
+
+                // Also keep track of exception encountered
+                startStimulationTimes.recordedException = anyException.what();
+
+                if (stimTimeSampleQueue.size() < 1000)
+                {
+                    // Lock the stim time buffer, add data, unlock
+                    this->m_stimTimeBufferLock.lock();
+                    stimTimeSampleQueue.push(startStimulationTimes); // add struct with timestamps and exception to queue
+                    this->m_stimTimeBufferLock.unlock();
+                }
+                else
+                {
+                    std::cout << "WARNING: Before Stim Time Log Queue Size Overflow, streaming data skipped" << std::endl;
+                }
+            }
+            catch (...)
+            {
+                std::cout << "ERROR: Open Loop Management Exception Encountered. No reason." << std::endl;
+            }
+        }
     }
 
     /// <summary>
@@ -1201,17 +1273,20 @@ namespace BICGRPCHelperNamespace
         {
             // Update state tracking variable
             isOLStimEn = true;
-            if (watchdogInterval > 10)
-            {
-                openLoopSleepTimeDuration = watchdogInterval;
-            }
-            else
-            {
-                openLoopSleepTimeDuration = 10;
-            }
 
-            // Start thread up
-            openLoopStimThread = new std::thread(&BICListener::openLoopStimLoopThread, this);
+            // Kick off stimulation
+            theImplantedDevice->startStimulation();
+            //if (watchdogInterval > 10)
+            //{
+            //    openLoopSleepTimeDuration = watchdogInterval;
+            //}
+            //else
+            //{
+            //    openLoopSleepTimeDuration = 10;
+            //}
+
+            //// Start thread up
+            //openLoopStimThread = new std::thread(&BICListener::openLoopStimLoopThread, this);
         }
         else if (!enableOpenLoop && isOLStimEn)
         {
@@ -1221,11 +1296,11 @@ namespace BICGRPCHelperNamespace
             // Ensure stimulation is stopped
             theImplantedDevice->stopStimulation();
 
-            // Disable Closed Loop since it is enabled and request is to disable
-            openLoopStimThread->join();
-            openLoopStimThread->~thread();
-            delete openLoopStimThread;
-            openLoopStimThread = NULL;
+            //// Disable Closed Loop since it is enabled and request is to disable
+            //openLoopStimThread->join();
+            //openLoopStimThread->~thread();
+            //delete openLoopStimThread;
+            //openLoopStimThread = NULL;
         }
     }
 
