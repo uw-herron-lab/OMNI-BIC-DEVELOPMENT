@@ -334,6 +334,7 @@ namespace MotorEvokedPotentialsApp
                         neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
                             delegate
                             {
+                                btn_start.IsEnabled = true;
                                 btn_load.IsEnabled = true;
                             }));
                     }
@@ -367,7 +368,7 @@ namespace MotorEvokedPotentialsApp
                     // start stim and update status
                     try
                     {
-                        enableEvokedPotentialPulses(monopolar, (uint)stimChannel, (uint)returnChannel, stimAmplitude, stimDuration, 4, interPulseInterval, stimThreshold, numPulses, jitterMax);
+                        enableEvokedPotentialPulses(monopolar, (uint)stimChannel, (uint)returnChannel, stimAmplitude, stimDuration, 4, interPulseInterval, stimThreshold, numTrains, jitterMax);
                     }
                     catch
                     {
@@ -380,19 +381,13 @@ namespace MotorEvokedPotentialsApp
                         return;
                     }
 
-                    /*// update UI on first iteration
-                    if (i == 0)
-                    {
-                        // Succesfully enabled stim, update UI elements
-                        neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
+                    neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
                         delegate
                         {
-                            // disable buttons
-                            btn_start.IsEnabled = false; // stim button
-                            btn_load.IsEnabled = false; // load config button
+                            btn_start.IsEnabled = false;
                             btn_stop.IsEnabled = true;
+                            btn_load.IsEnabled = false;
                         }));
-                    }*/
 
                     // notify user of stimulation starting
                     Application.Current.Dispatcher.Invoke(new Action(() =>
@@ -407,7 +402,7 @@ namespace MotorEvokedPotentialsApp
             // Wait until end of condition before continuing to next condition (waiting for numPulses pulses for current source/destination condition), or wait until Stop is clicked.
             try
             {
-                await Task.Delay((int)((interTrainInterval + jitterMax) / 1000 * numPulses), cancellationTokenSource.Token);
+                await Task.Delay((int)((interTrainInterval + jitterMax) / 1000 * numTrains), cancellationTokenSource.Token);
             }
             catch (TaskCanceledException)
             {
@@ -438,13 +433,13 @@ namespace MotorEvokedPotentialsApp
         /// <param name="stimThreshold"></param>
         /// <param name="numPulses"></param>
         /// <param name="jitterMax"></param>
-        private async void enableEvokedPotentialPulses(bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold, uint numPulses, int jitterMax)
+        private async void enableEvokedPotentialPulses(bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold, uint numTrains, int jitterMax)
         {
             // clear running totals and num pulses before starting each condition
             aBICManagerMEP.zeroAvgsBuffers();
             aBICManagerMEP.currNumPulses = 0;
 
-            for (int i = 0; i < numPulses; i++)
+            for (int i = 0; i < numTrains; i++)
             {
                 if (stopStimClicked)
                 {
