@@ -30,6 +30,7 @@ namespace StimTherapyApp
         private RealtimeGraphing.BICManager aBICManager;
         private bool phasicStimState = false;
         private bool openStimState = false;
+        private bool connectState = false;
         private int numChannels = 34;
         private Configuration configInfo;
 
@@ -40,6 +41,7 @@ namespace StimTherapyApp
         }
 
         private System.Timers.Timer neuroChartUpdateTimer;
+        //private System.Timers.Timer connectionUpdateTimer;
         public List<Channel> channelList { get; set; }
 
         public class Configuration
@@ -85,7 +87,7 @@ namespace StimTherapyApp
         {
             string seriesName;
             aBICManager = new RealtimeGraphing.BICManager(neuroStreamChart.Width);
-            aBICManager.BICConnect();
+            connectState = aBICManager.BICConnect();
 
             var colors_list = new System.Drawing.Color[]
             {
@@ -153,68 +155,90 @@ namespace StimTherapyApp
                     // disable buttons
                     btn_beta.IsEnabled = false; // beta stim button; have to use method invoker
                     btn_open.IsEnabled = false; // open loop stim button
-                    btn_diagnostic.IsEnabled = false; // diagnostics button
                     btn_stop.IsEnabled = false; // stop stim button
 
-                    // temporary- hide diagnostic buttons
-                    btn_diagnostic.Visibility = Visibility.Hidden;
                 }));
 
             // Start update timer
             neuroChartUpdateTimer = new System.Timers.Timer(200);
             neuroChartUpdateTimer.Elapsed += neuroChartUpdateTimer_Elapsed;
             neuroChartUpdateTimer.Start();
+
+            // subscribe to disconnection event
+            aBICManager.disconnected += onDisconnected;
         }
 
         private void neuroChartUpdateTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            // grab latest data
-            List<double>[] neuroData = aBICManager.getData();
 
-            // look for the selected items in the listbox
-            List<int> selectedChannels = new List<int>();
-            string chanString = "";
-            int chanVal;
-            bool valConvert = false;
-
-            // get a list of selected channels
-            var selected = from item in channelList
-                           where item.IsSelected == true
-                           select item.Name.ToString();
-
-            // convert from string to int type
-            foreach (String item in selected)
+            if (connectState)
             {
-                valConvert = Int32.TryParse(item, out chanVal);
-                if (valConvert)
-                {
-                    selectedChannels.Add(chanVal);
-                }
-                else
-                {
-                    selectedChannels.Add(33);
-                }
-            }
+                // grab latest data
+                List<double>[] neuroData = aBICManager.getData();
 
-            // update plot with newest data for selected channels
-            for (int i = 0; i < selectedChannels.Count; i++)
-            {
-                if (selectedChannels[i] == 33)
+                // look for the selected items in the listbox
+                List<int> selectedChannels = new List<int>();
+                string chanString = "";
+                int chanVal;
+                bool valConvert = false;
+
+                // get a list of selected channels
+                var selected = from item in channelList
+                               where item.IsSelected == true
+                               select item.Name.ToString();
+
+                // convert from string to int type
+                foreach (String item in selected)
                 {
-                    chanString = "Filtered Channel";
+                    valConvert = Int32.TryParse(item, out chanVal);
+                    if (valConvert)
+                    {
+                        selectedChannels.Add(chanVal);
+                    }
+                    else
+                    {
+                        selectedChannels.Add(33);
+                    }
                 }
-                else
+
+                // update plot with newest data for selected channels
+                for (int i = 0; i < selectedChannels.Count; i++)
                 {
-                    chanString = "Channel " + selectedChannels[i].ToString();
+                    if (selectedChannels[i] == 33)
+                    {
+                        chanString = "Filtered Channel";
+                    }
+                    else
+                    {
+                        chanString = "Channel " + selectedChannels[i].ToString();
+                    }
+                    neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
+                    delegate
+                    {
+                        neuroStreamChart.Series[chanString].Points.DataBindY(neuroData[selectedChannels[i] - 1]);
+                    }));
                 }
-                neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
-                delegate
-                {
-                    neuroStreamChart.Series[chanString].Points.DataBindY(neuroData[selectedChannels[i] - 1]);
-                }));
-            }
+            } 
         }
 
+        private void onDisconnected(List<string> connectionUpdate)
+        {
+            if (connectionUpdate.Any())
+            {
+                ThreadPool.QueueUserWorkItem(a =>
+                {
+                    Application.Current.Dispatcher.Invoke(new Action(() =>
+                    {
+                        // Notify user about disconnection event
+                        OutputConsole.Inlines.Add("Disconnection at " + connectionUpdate[0] + " connection. ");
+                        OutputConsole.Inlines.Add("Check connections then use the 'Reconnect' button to reestablish connection!\n");
+                        connectState = false;
+                        Scroller.ScrollToEnd();
+                    }));
+                    return;
+                });
+            }
+        }
         private void btn_load_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -266,7 +290,6 @@ namespace StimTherapyApp
                             btn_beta.IsEnabled = true; // beta stim button; have to use method invoker
                             btn_open.IsEnabled = true; // open loop stim button
                             btn_load.IsEnabled = true; // load config button
-                            btn_diagnostic.IsEnabled = true; // diagnostics button
                             btn_stop.IsEnabled = true; // stop stim button
                         }));
                     }
@@ -313,7 +336,6 @@ namespace StimTherapyApp
                     btn_beta.IsEnabled = false; // beta stim button; have to use method invoker
                     btn_open.IsEnabled = false; // open loop stim button
                     btn_load.IsEnabled = false; // load config button
-                    btn_diagnostic.IsEnabled = false; // diagnostics button
                 }));
 
                 // notify user of beta stimulation starting
@@ -358,7 +380,6 @@ namespace StimTherapyApp
                     btn_beta.IsEnabled = false; // beta stim button; have to use method invoker
                     btn_open.IsEnabled = false; // open loop stim button
                     btn_load.IsEnabled = false; // load config button
-                    btn_diagnostic.IsEnabled = false; // diagnostics button
                 }));
 
                 // notify user of open loop stimulation starting
@@ -394,7 +415,6 @@ namespace StimTherapyApp
                     btn_beta.IsEnabled = true;
                     btn_open.IsEnabled = true; 
                     btn_load.IsEnabled = true;
-                    btn_diagnostic.IsEnabled = true;
                 }));
 
             string timeStamp = DateTime.Now.ToString("h:mm:ss tt");
@@ -402,13 +422,33 @@ namespace StimTherapyApp
             Scroller.ScrollToEnd();
         }
 
-        private void btn_diagnostic_Click(object sender, RoutedEventArgs e)
+        private void btn_disconnect_Click(object sender, RoutedEventArgs e)
         {
-            // start diagnostic pattern
-            OutputConsole.Inlines.Add("Performing diagnostics...\n");
-            Scroller.ScrollToEnd();
+            neuroChartUpdateTimer.Stop();
+
+            OutputConsole.Inlines.Add("Disconnecting...\n");
+            aBICManager.Dispose(); // Shut down connection 
+            connectState = false;
+            OutputConsole.Inlines.Add("Disconnection successful!\n");
         }
 
+        private void btn_reconnect_Click(object sender, RoutedEventArgs e)
+        {
+            OutputConsole.Inlines.Add("Reconnecting...");
+            aBICManager = new RealtimeGraphing.BICManager(neuroStreamChart.Width);
+            connectState = aBICManager.BICConnect(); // Try reestablishing connection
+
+            if (connectState)
+            {
+                OutputConsole.Inlines.Add("Reconnection successful!\n");
+            }
+            else
+            {
+                OutputConsole.Inlines.Add("Reconnection unsuccessful!\n");
+            }
+            neuroChartUpdateTimer.Start();
+            aBICManager.disconnected += onDisconnected;
+        }
         private void MainWindow_Closed(object sender, EventArgs e)
         {
             neuroChartUpdateTimer.Dispose();

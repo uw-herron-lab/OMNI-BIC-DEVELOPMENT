@@ -126,11 +126,15 @@ namespace BICGRPCHelperNamespace
     /// <param name="id"></param>
     void BICListener::onLastStimulationFunctionId(const uint16_t id)
     {
-        if (m_isStimulating)
+        try
         {
-            // Write Event Information to Console
-        std::cout << "\tSTATE INFO: Stimulation Function ID: " << id << " ." << std::endl;
+            std::cout << "\tSTATE INFO: Stimulation Function ID: " << id << " ." << std::endl;
+
         }
+        catch (const std::exception& anyException)
+        {
+            std::cout << "Stimulation Failed. " << anyException.what() << std::endl;
+        } 
     }
 
     //*************************************************** Connection Streaming Functions ***************************************************
