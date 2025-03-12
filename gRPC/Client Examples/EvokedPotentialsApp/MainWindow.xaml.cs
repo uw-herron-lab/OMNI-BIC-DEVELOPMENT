@@ -31,7 +31,7 @@ namespace EvokedPotentialsApp
     {
         private bool scanMode = false;
         
-        private RealtimeGraphing.BICManager aBICManager;
+        private EvokedPotentialsApp.BICManagerEP aBICManagerEP;
         private int numChannels = 32;
         private Configuration configInfo;
         private int? stimChannel = null;
@@ -111,8 +111,8 @@ namespace EvokedPotentialsApp
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             string seriesName;
-            aBICManager = new RealtimeGraphing.BICManager(neuroStreamChart.Width, stimPeriod, baselinePeriod); // initialize buffer to the width we need! or maybe whichever is bigger. might need to do something later for the display, if buffer is diff length
-            aBICManager.BICConnect();
+            aBICManagerEP = new EvokedPotentialsApp.BICManagerEP(neuroStreamChart.Width, stimPeriod, baselinePeriod); // initialize buffer to the width we need! or maybe whichever is bigger. might need to do something later for the display, if buffer is diff length
+            aBICManagerEP.BICConnect();
 
             var colors_list = new System.Drawing.Color[]
             {
@@ -198,13 +198,13 @@ namespace EvokedPotentialsApp
             neuroChartUpdateTimer.Elapsed += neuroChartUpdateTimer_Elapsed;
             neuroChartUpdateTimer.Start();
 
-            aBICManager.disconnected += onDisconnected;
+            aBICManagerEP.disconnected += onDisconnected;
         }
 
         private void neuroChartUpdateTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             // grab latest data
-            List<double>[] neuroData = aBICManager.getData();
+            List<double>[] neuroData = aBICManagerEP.getData();
 
             // look for the selected items in the listbox
             List<int> selectedChannels = new List<int>();
@@ -242,7 +242,7 @@ namespace EvokedPotentialsApp
         private void updateAvgsChart()
         {
             // grab latest data
-            List<double>[] avgsData = aBICManager.getAvgsData();
+            List<double>[] avgsData = aBICManagerEP.getAvgsData();
 
             // look for the selected items in the listbox
             List<int> selectedChannels = new List<int>();
@@ -513,8 +513,8 @@ namespace EvokedPotentialsApp
             uint configReturn;
 
             // clear running totals and num pulses before starting each condition
-            aBICManager.zeroAvgsBuffers();
-            aBICManager.currNumPulses = 0;
+            aBICManagerEP.zeroAvgsBuffers();
+            aBICManagerEP.currNumPulses = 0;
 
             // items for randomizing polarity configuration
             Random random = new Random();
@@ -564,14 +564,14 @@ namespace EvokedPotentialsApp
                 }
 
                 // deliver stingle pulse of stimulation
-                aBICManager.enableStimulationPulse(monopolar, configStim, configReturn, stimAmplitude, stimDuration, 4, interPulseInterval, stimThreshold);
+                aBICManagerEP.enableStimulationPulse(monopolar, configStim, configReturn, stimAmplitude, stimDuration, 4, interPulseInterval, stimThreshold);
 
                 // add random jitter to 
                 int randomJitter = RandomNumber(0, jitterMax);
                 await Task.Delay((int)((stimPeriod + randomJitter) / 1000));
 
                 // Increment currNumPulses and update avgs chart after pulse completed
-                aBICManager.currNumPulses++;
+                aBICManagerEP.currNumPulses++;
                 updateAvgsChart();
             }
         }
@@ -627,7 +627,7 @@ namespace EvokedPotentialsApp
         private void btn_stop_Click(object sender, RoutedEventArgs e)
         {
             stopStimClicked = true; // We use this flag to stop sending pulses for current condition, and to stop from cycling to next condition. 
-            aBICManager.stopEvokedPotentialStimulation();
+            aBICManagerEP.stopEvokedPotentialStimulation();
             cancellationTokenSource.Cancel();
             string timeStamp = DateTime.Now.ToString("h:mm:ss tt");
             Application.Current.Dispatcher.Invoke(new Action(() =>
@@ -650,7 +650,7 @@ namespace EvokedPotentialsApp
             neuroChartUpdateTimer.Stop();
 
             OutputConsole.Inlines.Add("Disconnecting...\n");
-            aBICManager.Dispose();  // Shut down connection
+            aBICManagerEP.Dispose();  // Shut down connection
             connectState = false;
             OutputConsole.Inlines.Add("Disconnection successful!\n");
         }
@@ -658,8 +658,8 @@ namespace EvokedPotentialsApp
         private void btn_reconnect_Click(object sender, RoutedEventArgs e)
         {
             OutputConsole.Inlines.Add("Reconnecting...\n");
-            aBICManager = new RealtimeGraphing.BICManager(neuroStreamChart.Width, stimPeriod, baselinePeriod);
-            connectState = aBICManager.BICConnect();    // Try to reestablish connection
+            aBICManagerEP = new EvokedPotentialsApp.BICManagerEP(neuroStreamChart.Width, stimPeriod, baselinePeriod);
+            connectState = aBICManagerEP.BICConnect();    // Try to reestablish connection
 
             if (connectState)
             {
@@ -670,13 +670,13 @@ namespace EvokedPotentialsApp
                 OutputConsole.Inlines.Add("Reconnection unsuccessful!\n");
             }
             neuroChartUpdateTimer.Start();
-            aBICManager.disconnected += onDisconnected;
+            aBICManagerEP.disconnected += onDisconnected;
         }
 
         private void MainWindow_Closed(object sender, EventArgs e)
         {
             neuroChartUpdateTimer.Dispose();
-            aBICManager.Dispose();
+            aBICManagerEP.Dispose();
         }
 
         /// <summary>

@@ -10,9 +10,9 @@ using System.IO;
 using Grpc.Core;
 using BICgRPC;
 // D:\gitbuilds\OMNI - BIC - DEVELOPMENT\gRPC\Client Examples\EvokedPotentialsApp\BICManager.cs
-namespace RealtimeGraphing
+namespace EvokedPotentialsApp
 {
-    class BICManager : IDisposable
+    class BICManagerEP : IDisposable
     {
         // Private class objects
         private Channel aGRPChannel;
@@ -36,7 +36,7 @@ namespace RealtimeGraphing
         // Logging Objects
         FileStream logFileStream;
         StreamWriter logFileWriter;
-        string filePath = "./filterLog" + DateTime.Now.ToString("_MMMdyyyy_HHmmss") + ".csv";
+        string filePath = "./epLog" + DateTime.Now.ToString("_MMMdyyyy_HHmmss") + ".csv";
         ConcurrentQueue<string> logLineQueue = new ConcurrentQueue<string>();
         Thread newLoggingThread;
         bool loggingNotDisposed = true;
@@ -53,7 +53,7 @@ namespace RealtimeGraphing
         private Task connectMonitor = null;
 
         // Constructor
-        public BICManager(int definedDataBufferLength, uint stimPeriod, uint baselinePeriod) 
+        public BICManagerEP(int definedDataBufferLength, uint stimPeriod, uint baselinePeriod) 
         {
             // Open up the GRPC Channel to the BIC microservice
             aGRPChannel = new Channel("127.0.0.1:50051", ChannelCredentials.Insecure);
