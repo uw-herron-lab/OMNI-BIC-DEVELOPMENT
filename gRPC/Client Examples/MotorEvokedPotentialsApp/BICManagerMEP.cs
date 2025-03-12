@@ -36,7 +36,7 @@ namespace MotorEvokedPotentialsApp
         // Logging Objects
         FileStream logFileStream;
         StreamWriter logFileWriter;
-        string filePath = "./filterLog" + DateTime.Now.ToString("_MMMdyyyy_HHmmss") + ".csv";
+        string filePath = "./mepLog" + DateTime.Now.ToString("_MMMdyyyy_HHmmss") + ".csv";
         ConcurrentQueue<string> logLineQueue = new ConcurrentQueue<string>();
         Thread newLoggingThread;
         bool loggingNotDisposed = true;
@@ -217,14 +217,15 @@ namespace MotorEvokedPotentialsApp
         /// <param name="stimThreshold"></param>
         public void enableStimulationPulse(bool monopolar, uint stimChannel, uint returnChannel, uint numPulses, uint numTrains, uint interPulseInterval, uint interTrainInterval, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, double stimThreshold)
         {
-            bicEnqueueStimulationRequest aNewWaveformRequest = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.PersistentWaveform, WaveformRepititions = numTrains };
+            uint dz1Dur = interPulseInterval - (5 * stimDuration) - 20; // DZ1 = IPI - 5 * stimDuration - 2 * DZ0
+            bicEnqueueStimulationRequest aNewWaveformRequest = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.PersistentWaveform, WaveformRepititions = 1 };
             if (monopolar)
             {
                 // Create a pulse function for monopolar
                 StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
                 {
-                    FunctionName = "evokedPotentialStim",
-                    StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 10, PulseWidth = stimDuration, PulseRepetitions = numPulses, SourceElectrodes = { stimChannel }, SinkElectrodes = { }, UseGround = true, BurstRepetitions = 1 }
+                    FunctionName = "motorEvokedPotentialStim",
+                    StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = dz1Dur, PulseWidth = stimDuration, PulseRepetitions = numPulses, SourceElectrodes = { stimChannel }, SinkElectrodes = { }, UseGround = true, BurstRepetitions = 1 }
 
                 };
                 aNewWaveformRequest.Functions.Add(pulseFunction0);
@@ -233,7 +234,7 @@ namespace MotorEvokedPotentialsApp
                 StimulationFunctionDefinition interTrainPause = new StimulationFunctionDefinition()
                 {
                     FunctionName = "pausePulse",
-                    Pause = new pauseFunction() { Duration = interTrainInterval - (5*stimDuration) }
+                    Pause = new pauseFunction() { Duration = interTrainInterval - numPulses * ((5 * stimDuration) + 20 + dz1Dur) } // pauseDuration = interTrainInterval - numPulses * ((5 * stimDuration) + (2 * DZ0) + DZ1))
                 };
                 aNewWaveformRequest.Functions.Add(interTrainPause);
             }
@@ -242,21 +243,20 @@ namespace MotorEvokedPotentialsApp
                 // Create a pulse function for bipolar stimulation
                 StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
                 {
-                    FunctionName = "evokedPotentialStim",
-                    StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 10, PulseWidth = stimDuration, PulseRepetitions = numPulses, SourceElectrodes = { stimChannel }, SinkElectrodes = { }, UseGround = true, BurstRepetitions = 1 }
+                    FunctionName = "motorEvokedPotentialStim",
+                    StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = dz1Dur, PulseWidth = stimDuration, PulseRepetitions = numPulses, SourceElectrodes = { stimChannel }, SinkElectrodes = { returnChannel }, UseGround = true, BurstRepetitions = 1 }
 
                 };
                 aNewWaveformRequest.Functions.Add(pulseFunction0);
 
-                // Create a intertrain pause for monopolar stimulation
+                // Create a intertrain pause for bipolar stimulation
                 StimulationFunctionDefinition interTrainPause = new StimulationFunctionDefinition()
                 {
                     FunctionName = "pausePulse",
-                    Pause = new pauseFunction() { Duration = interTrainInterval - (5 * stimDuration) }
+                    Pause = new pauseFunction() { Duration = interTrainInterval - numPulses * ((5 * stimDuration) + 20 + dz1Dur) }
                 };
                 aNewWaveformRequest.Functions.Add(interTrainPause);
             }
-
 
             deviceClient.bicEnqueueStimulation(aNewWaveformRequest);
             deviceClient.bicStartStimulation(new bicStartStimulationRequest() { DeviceAddress = DeviceName });
