@@ -22,8 +22,10 @@ namespace RealtimeGraphing
         private string DeviceName;
         private List<double>[] dataBuffer;
         private List<double>[] filtDataBuffer;
+        private List<string> connectionInfoBuffer;
         private const int numSensingChannelsDef = 32;
         private object dataBufferLock = new object();
+        private object connectLock = new object();
 
         // Logging Objects
         FileStream logFileStream;
@@ -35,9 +37,12 @@ namespace RealtimeGraphing
 
         // Public Class Properties
         public int DataBufferMaxSampleNumber { get; set; }
+        public delegate void disconnectEventHandler(List<string> disconnectionInfo);
+        public event disconnectEventHandler disconnected;
 
         // Task pointers for streaming methods
         private Task neuroMonitor = null;
+        private Task connectMonitor = null;
 
         // Constructor
         public BICManager(int definedDataBufferLength)
@@ -49,6 +54,8 @@ namespace RealtimeGraphing
             DataBufferMaxSampleNumber = definedDataBufferLength;
             dataBuffer = new List<double>[numSensingChannelsDef];
             filtDataBuffer = new List<double>[1];
+            connectionInfoBuffer = new List<string>();
+
             for (int i = 0; i < numSensingChannelsDef; i++)
             {
                 dataBuffer[i] = new List<double>();
@@ -146,15 +153,21 @@ namespace RealtimeGraphing
             // Start up the neural stream
             neuroMonitor = Task.Run(neuralMonitorTaskAsync);
 
+            // Start up the connection stream
+            connectMonitor = Task.Run(connectionMonitorTaskAsync);
+
             // Success, return true
             return true;
         }
 
-        public void Dispose()
+            public void Dispose()
         {
             // Tell BIC that we want to close!
             deviceClient.bicNeuralStream(new bicNeuralSetStreamingEnable() { DeviceAddress = DeviceName, Enable = false });
+            deviceClient.bicConnectionStream(new bicSetStreamEnable() { DeviceAddress= DeviceName, Enable = false });
+            Console.WriteLine("Disposing...");
             var disposeReply = deviceClient.bicDispose(new RequestDeviceAddress() { DeviceAddress = DeviceName });
+            deviceClient = null;
             Console.WriteLine("Dispose BIC Response: " + disposeReply.ToString());
             aGRPChannel.ShutdownAsync().Wait();
 
@@ -372,7 +385,7 @@ namespace RealtimeGraphing
         /// <returns>Task completion information</returns>
         async Task neuralMonitorTaskAsync()
         {
-            var stream = deviceClient.bicNeuralStream(new bicNeuralSetStreamingEnable() { DeviceAddress = DeviceName, Enable = true, BufferSize = 100, MaxInterpolationPoints = 10, AmplificationFactor = RecordingAmplificationFactor.Amplification395DB, RefChannels = { 31 }, UseGroundReference = true });
+            var stream = deviceClient.bicNeuralStream(new bicNeuralSetStreamingEnable() { DeviceAddress = DeviceName, Enable = true, BufferSize = 100, MaxInterpolationPoints = 10, AmplificationFactor = RecordingAmplificationFactor.Amplification395DB, RefChannels = { 31 }, UseGroundReference = true });         
             // Create performance-tracking interpacket variables
             Stopwatch aStopwatch = new Stopwatch();
             newLoggingThread = new Thread(loggingThread);
@@ -507,6 +520,32 @@ namespace RealtimeGraphing
                 Console.WriteLine("Implant Stream Neural Samples Received: " + stream.ResponseStream.Current.Samples.Count + "copyTime: " + elapsedTime.ToString());
             }
             Console.WriteLine("(Neural Monitor Task Exited)");
+        }
+
+        async Task connectionMonitorTaskAsync()
+        {
+            var connectStream = deviceClient.bicConnectionStream(new bicSetStreamEnable() { DeviceAddress = DeviceName, Enable = true });
+
+            while (await connectStream.ResponseStream.MoveNext())
+            { 
+                lock (connectLock)
+                {
+                    // When connection state changes, get the streamed information
+                    string connectionType = connectStream.ResponseStream.Current.ConnectionType;
+                    string connectionState = connectStream.ResponseStream.Current.IsConnected.ToString();
+
+                    // Also write out to console for debugging
+                    Console.WriteLine("Connection State: " + connectionType + "; " + connectionState);
+
+                    if (connectionState == "False")
+                    {
+                        connectionInfoBuffer.Add(connectionType);
+                        connectionInfoBuffer.Add(connectionState);
+                        disconnected.Invoke(connectionInfoBuffer);
+                        Dispose(); // shut down connection since there is a disconnect
+                    }
+                }
+            }
         }
     }
 }
