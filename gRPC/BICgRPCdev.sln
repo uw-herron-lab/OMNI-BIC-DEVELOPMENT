@@ -22,9 +22,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvokedPotentialsApp", "Clie
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImpedanceCheckApp", "Client Examples\ImpedanceCheckApp\ImpedanceCheckApp.csproj", "{4E80AF45-A52D-40A0-B8A9-71EB8FC1612A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MotorEvokedPotentialsApp", "Client Examples\MotorEvokedPotentialsApp\MotorEvokedPotentialsApp.csproj", "{6AA05DC4-D743-44A8-AE46-FE02EC1DC447}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
 		Debug|x64 = Debug|x64
+		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
@@ -56,6 +60,10 @@ Global
 		{4E80AF45-A52D-40A0-B8A9-71EB8FC1612A}.Debug|x64.Build.0 = Debug|Any CPU
 		{4E80AF45-A52D-40A0-B8A9-71EB8FC1612A}.Release|x64.ActiveCfg = Release|Any CPU
 		{4E80AF45-A52D-40A0-B8A9-71EB8FC1612A}.Release|x64.Build.0 = Release|Any CPU
+		{6AA05DC4-D743-44A8-AE46-FE02EC1DC447}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6AA05DC4-D743-44A8-AE46-FE02EC1DC447}.Debug|x64.Build.0 = Debug|Any CPU
+		{6AA05DC4-D743-44A8-AE46-FE02EC1DC447}.Release|x64.ActiveCfg = Release|Any CPU
+		{6AA05DC4-D743-44A8-AE46-FE02EC1DC447}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
