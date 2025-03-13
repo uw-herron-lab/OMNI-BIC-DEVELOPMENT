@@ -209,12 +209,9 @@ namespace EvokedPotentialsApp
         /// <param name="returnChannel"></param>
         /// <param name="stimAmplitude"></param>
         /// <param name="stimDuration"></param>
-        /// <param name="chargeBalancePWRatio"></param>
-        /// <param name="interPulseInterval"></param>
-        /// <param name="stimThreshold"></param>
-        public void enableStimulationPulse(bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold)
+        public void enableStimulationPulse(bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration)
         {
-            bicEnqueueStimulationRequest aNewWaveformRequest = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.PersistentWaveform, WaveformRepititions = 1 }; // what are waveform reps?? burst? changed from 255 to numPulses...
+            bicEnqueueStimulationRequest aNewWaveformRequest = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.PersistentWaveform, WaveformRepititions = 1 };
             if (monopolar)
             {
                 // Create a pulse function for monopolar
