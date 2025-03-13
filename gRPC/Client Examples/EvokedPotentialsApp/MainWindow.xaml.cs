@@ -44,7 +44,6 @@ namespace EvokedPotentialsApp
         private int jitterMax = 300000; // uS
         private bool monopolar = false;
         private bool reversePolarity = false;
-        private double stimThreshold = 100;
         private bool connectState = false;
         
         private bool stopStimClicked = false; // set to true when stop is clicked. Flag to exit from for loops that would send more stimulation
@@ -85,7 +84,6 @@ namespace EvokedPotentialsApp
             public int jitterMax { get; set; } // uS
             public bool monopolar { get; set; }
             public bool reversePolarity { get; set; }
-            public double stimThreshold { get; set; }
             public List<int> stimChannelsQueue { get; set; }
             public List<int> returnChannelsQueue { get; set; }
         }
@@ -273,7 +271,10 @@ namespace EvokedPotentialsApp
                 }));
             }
         }
-
+        /// <summary>
+        /// Update user about disconnection event
+        /// </summary>
+        /// <param name="connectionUpdate"></param>
         private void onDisconnected(List<string> connectionUpdate)
         {
             if (connectionUpdate.Any())
@@ -339,7 +340,6 @@ namespace EvokedPotentialsApp
                         jitterMax = configInfo.jitterMax;
                         monopolar = configInfo.monopolar;
                         reversePolarity = configInfo.reversePolarity;
-                        stimThreshold = configInfo.stimThreshold;
 
                         // enable certain buttons depending on stimulation experiment mode
                         if (scanMode)
@@ -432,7 +432,7 @@ namespace EvokedPotentialsApp
                     try
                     {
                         uint interPulseInterval = stimPeriod - (5 * stimDuration); 
-                        enableEvokedPotentialPulses(monopolar, (uint)stimChannel, (uint)returnChannel, stimAmplitude, stimDuration, 4, interPulseInterval, stimThreshold, numPulses, jitterMax, reversePolarity);
+                        enableEvokedPotentialPulses(monopolar, (uint)stimChannel, (uint)returnChannel, stimAmplitude, stimDuration, numPulses, jitterMax, reversePolarity);
                     }
                     catch
                     {
@@ -501,13 +501,10 @@ namespace EvokedPotentialsApp
         /// <param name="returnChannel"></param>
         /// <param name="stimAmplitude"></param>
         /// <param name="stimDuration"></param>
-        /// <param name="chargeBalancePWRatio"></param>
-        /// <param name="interPulseInterval"></param>
-        /// <param name="stimThreshold"></param>
         /// <param name="numPulses"></param>
         /// <param name="jitterMax"></param>
         /// <param name="reversePolarity"></param>
-        private async void enableEvokedPotentialPulses(bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold, uint numPulses, int jitterMax, bool reversePolarity)
+        private async void enableEvokedPotentialPulses(bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint numPulses, int jitterMax, bool reversePolarity)
         {
             uint configStim;
             uint configReturn;
@@ -564,7 +561,7 @@ namespace EvokedPotentialsApp
                 }
 
                 // deliver stingle pulse of stimulation
-                aBICManagerEP.enableStimulationPulse(monopolar, configStim, configReturn, stimAmplitude, stimDuration, 4, interPulseInterval, stimThreshold);
+                aBICManagerEP.enableStimulationPulse(monopolar, configStim, configReturn, stimAmplitude, stimDuration);
 
                 // add random jitter to 
                 int randomJitter = RandomNumber(0, jitterMax);
@@ -645,6 +642,11 @@ namespace EvokedPotentialsApp
             Scroller.ScrollToEnd();
         }
 
+        /// <summary>
+        /// Shut down connection to BIC
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btn_disconnect_Click(object sender, RoutedEventArgs e)
         {
             neuroChartUpdateTimer.Stop();
@@ -655,6 +657,11 @@ namespace EvokedPotentialsApp
             OutputConsole.Inlines.Add("Disconnection successful!\n");
         }
 
+        /// <summary>
+        /// Reinitiate connection to BIC
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btn_reconnect_Click(object sender, RoutedEventArgs e)
         {
             OutputConsole.Inlines.Add("Reconnecting...\n");
@@ -750,6 +757,11 @@ namespace EvokedPotentialsApp
             }
         }
 
+        /// <summary>
+        /// Adjust minimum limit of y-scale of real-time streaming chart
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void y_min_TextChanged(object sender, TextChangedEventArgs e)
         {
             double yMinVal = 0;
@@ -763,6 +775,11 @@ namespace EvokedPotentialsApp
             }
         }
 
+        /// <summary>
+        /// Adjust maximum limit of y-scale of real-time streaming chart
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void y_max_TextChanged(object sender, TextChangedEventArgs e)
         {
             double yMaxVal = 0;
