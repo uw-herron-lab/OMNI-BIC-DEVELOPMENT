@@ -209,7 +209,7 @@ namespace EvokedPotentialsApp
         /// <param name="returnChannel"></param>
         /// <param name="stimAmplitude"></param>
         /// <param name="stimDuration"></param>
-        public void enableStimulationPulse(bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration)
+        public void enableStimulationPulse(bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, bool useStimGround)
         {
             bicEnqueueStimulationRequest aNewWaveformRequest = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.PersistentWaveform, WaveformRepititions = 1 };
             if (monopolar)
@@ -225,14 +225,28 @@ namespace EvokedPotentialsApp
             }
             else
             {
-                // Create a pulse function for bipolar stimulation
-                StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
+                if (useStimGround)
                 {
-                    FunctionName = "evokedPotentialStim",
-                    StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 10, PulseWidth = stimDuration, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { returnChannel }, UseGround = false, BurstRepetitions = 1 }
+                    // Create a pulse function for bipolar stimulation with a connection to ground
+                    StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
+                    {
+                        FunctionName = "evokedPotentialStim",
+                        StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 10, PulseWidth = stimDuration, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { returnChannel }, UseGround = true, BurstRepetitions = 1 }
 
-                };
-                aNewWaveformRequest.Functions.Add(pulseFunction0);
+                    };
+                    aNewWaveformRequest.Functions.Add(pulseFunction0);
+                }
+                else
+                {
+                    // Create a pulse function for bipolar stimulation without a connection to ground
+                    StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
+                    {
+                        FunctionName = "evokedPotentialStim",
+                        StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 10, PulseWidth = stimDuration, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { returnChannel }, UseGround = false, BurstRepetitions = 1 }
+
+                    };
+                    aNewWaveformRequest.Functions.Add(pulseFunction0);
+                }
             }
             deviceClient.bicEnqueueStimulation(aNewWaveformRequest);
             deviceClient.bicStartStimulation(new bicStartStimulationRequest() { DeviceAddress = DeviceName });
