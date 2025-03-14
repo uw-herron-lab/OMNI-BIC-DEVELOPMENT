@@ -42,6 +42,7 @@ namespace EvokedPotentialsApp
         private int stimAmplitude = -3000; // uV
         private uint stimDuration = 250;
         private int jitterMax = 300000; // uS
+        private bool useGround = false;
         private bool monopolar = false;
         private bool reversePolarity = false;
         private bool connectState = false;
@@ -82,6 +83,7 @@ namespace EvokedPotentialsApp
             public int stimAmplitude { get; set; } // uV
             public uint stimDuration { get; set; }
             public int jitterMax { get; set; } // uS
+            public bool useGround { get; set; }
             public bool monopolar { get; set; }
             public bool reversePolarity { get; set; }
             public List<int> stimChannelsQueue { get; set; }
@@ -325,6 +327,7 @@ namespace EvokedPotentialsApp
                             OutputConsole.Inlines.Add("Stim Pulse Amplitude: " + configInfo.stimAmplitude + " uA\n");
                             OutputConsole.Inlines.Add("stimDuration: " + configInfo.stimDuration + " us\n");
                             OutputConsole.Inlines.Add("Reversing polarity: " + configInfo.reversePolarity + "\n");
+                            OutputConsole.Inlines.Add("Using ground during stim: " + configInfo.useGround + "\n");
                             Scroller.ScrollToEnd();
                         }
 
@@ -338,6 +341,7 @@ namespace EvokedPotentialsApp
                         stimAmplitude = configInfo.stimAmplitude;
                         stimDuration = configInfo.stimDuration;
                         jitterMax = configInfo.jitterMax;
+                        useGround = configInfo.useGround;
                         monopolar = configInfo.monopolar;
                         reversePolarity = configInfo.reversePolarity;
 
@@ -432,7 +436,7 @@ namespace EvokedPotentialsApp
                     try
                     {
                         uint interPulseInterval = stimPeriod - (5 * stimDuration); 
-                        enableEvokedPotentialPulses(monopolar, (uint)stimChannel, (uint)returnChannel, stimAmplitude, stimDuration, numPulses, jitterMax, reversePolarity);
+                        enableEvokedPotentialPulses(monopolar, (uint)stimChannel, (uint)returnChannel, stimAmplitude, stimDuration, numPulses, jitterMax, reversePolarity, useGround);
                     }
                     catch
                     {
@@ -504,7 +508,7 @@ namespace EvokedPotentialsApp
         /// <param name="numPulses"></param>
         /// <param name="jitterMax"></param>
         /// <param name="reversePolarity"></param>
-        private async void enableEvokedPotentialPulses(bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint numPulses, int jitterMax, bool reversePolarity)
+        private async void enableEvokedPotentialPulses(bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint numPulses, int jitterMax, bool reversePolarity, bool useGround)
         {
             uint configStim;
             uint configReturn;
@@ -561,7 +565,7 @@ namespace EvokedPotentialsApp
                 }
 
                 // deliver stingle pulse of stimulation
-                aBICManagerEP.enableStimulationPulse(monopolar, configStim, configReturn, stimAmplitude, stimDuration);
+                aBICManagerEP.enableStimulationPulse(monopolar, configStim, configReturn, stimAmplitude, stimDuration, useGround);
 
                 // add random jitter to 
                 int randomJitter = RandomNumber(0, jitterMax);
