@@ -1,5 +1,6 @@
 {
   "monopolar": false,
+  "stimMode": 1,
   "stimChannel": 5,
   "returnChannel": 13,
   "numPulses": 10,

@@ -33,14 +33,15 @@ namespace MotorEvokedPotentialsApp
         private MotorEvokedPotentialsApp.BICManagerMEP aBICManagerMEP;
         private int numChannels = 32;
         private Configuration configInfo;
+        private int stimMode = 0;
         private int stimChannel = 1;
         private int returnChannel = 9;
-        private uint numPulses = 10;                    // number of pulses per train to deliver
-        private uint numTrains = 10;                    // number of trains to deliver
-        private uint interPulseInterval = 2000;         // time interval between pulses [us]
-        private uint interTrainInterval = 100000;       // time interval between trains [us]
+        private uint numPulses = 1;                    // number of pulses per train to deliver
+        private uint numTrains = 1;                    // number of trains to deliver
+        private uint interPulseInterval = 0;         // time interval between pulses [us]
+        private uint interTrainInterval = 0;       // time interval between trains [us]
         private uint baselinePeriod = 100000;           // pre-stimulus period for calculating average [us]
-        private int stimAmplitude = -3000;              // pulse amplitude of initial phase of stimulation pulse [uA]
+        private int stimAmplitude = 0;                  // pulse amplitude of initial phase of stimulation pulse [uA]
         private uint stimDuration = 250;                // pulse duration of initial phase of stimulation pulse [us]
         private int jitterMax = 300000;                 // upper limit of jitter [us]
         private bool monopolar = false;                 // stimulation configuration
@@ -74,6 +75,7 @@ namespace MotorEvokedPotentialsApp
         public class Configuration
         {
             public int numChannels { get; set; }
+            public int stimMode { get; set; }
             public int stimChannel { get; set; }
             public int returnChannel { get; set; }
             public uint numPulses { get; set; }
@@ -306,6 +308,7 @@ namespace MotorEvokedPotentialsApp
                             configInfo = System.Text.Json.JsonSerializer.Deserialize<Configuration>(configJson);
 
                             OutputConsole.Inlines.Add("Loaded " + fileName + "\n");
+                            OutputConsole.Inlines.Add("StimMode: " + configInfo.stimMode+ "\n");
                             OutputConsole.Inlines.Add("Stim channel: " + String.Join(", ", configInfo.stimChannel) + "\n");
                             OutputConsole.Inlines.Add("Return channel: " + String.Join(", ", configInfo.returnChannel) + "\n");
                             OutputConsole.Inlines.Add("Number of pulses: " + configInfo.numPulses + "\n");
@@ -318,6 +321,7 @@ namespace MotorEvokedPotentialsApp
                             Scroller.ScrollToEnd();
                         }
 
+                        stimMode = configInfo.stimMode;
                         stimChannel = configInfo.stimChannel;
                         returnChannel = configInfo.returnChannel;
                         numPulses = configInfo.numPulses;
@@ -360,7 +364,13 @@ namespace MotorEvokedPotentialsApp
 
             stopStimClicked = false;
 
-            ThreadPool.QueueUserWorkItem(a =>
+            if (stimMode == 0) // motor threshold mode
+            {
+                aBICManagerMEP.enableOpenLoopStimulation(true, monopolar, (uint) stimChannel-1, (uint) returnChannel-1, stimAmplitude, stimDuration, 4, 20000, stimThreshold);
+            }
+            else if (stimMode == 1) // motor evoked potential mode
+            {
+                ThreadPool.QueueUserWorkItem(a =>
                 {
                     // Keep the time for console output writing
                     string timeStamp = DateTime.Now.ToString("h:mm:ss tt");
@@ -384,9 +394,17 @@ namespace MotorEvokedPotentialsApp
                     neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
                         delegate
                         {
+                            // disable any controls that can change stimulation parameters
+                            mode.IsEnabled = false;
+                            amp.IsEnabled = false;
+                            sources.IsEnabled = false;
+                            destinations.IsEnabled = false;
+
+                            // update buttons
                             btn_start.IsEnabled = false;
                             btn_stop.IsEnabled = true;
                             btn_load.IsEnabled = false;
+
                         }));
 
                     // notify user of stimulation starting
@@ -399,24 +417,25 @@ namespace MotorEvokedPotentialsApp
 
                 });
 
-            // Wait until end of condition before continuing to next condition (waiting for numPulses pulses for current source/destination condition), or wait until Stop is clicked.
-            try
-            {
-                await Task.Delay((int)((interTrainInterval + jitterMax) / 1000 * numTrains), cancellationTokenSource.Token);
-            }
-            catch (TaskCanceledException)
-            {
-                // Cancelled if stop_stim_clicked
-                return;
-            }
+                // Wait until end of condition before continuing to next condition (waiting for numPulses pulses for current source/destination condition), or wait until Stop is clicked.
+                try
+                {
+                    await Task.Delay((int)((interTrainInterval + jitterMax) / 1000 * numTrains), cancellationTokenSource.Token);
+                }
+                catch (TaskCanceledException)
+                {
+                    // Cancelled if stop_stim_clicked
+                    return;
+                }
 
-            
-            // notify user and update UI
-            Application.Current.Dispatcher.Invoke(new Action(() =>
-            {
-                OutputConsole.Inlines.Add("Evoked potential stimulation completed.\n");
-                Scroller.ScrollToEnd();
-            }));
+
+                // notify user and update UI
+                Application.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    OutputConsole.Inlines.Add("Motor evoked potential stimulation completed.\n");
+                    Scroller.ScrollToEnd();
+                }));
+            }
             stop_stim_UI_update();
         }
 
@@ -467,6 +486,13 @@ namespace MotorEvokedPotentialsApp
             neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
                    delegate
                    {
+                       // re-enable any controls that can change stimulation parameters
+                       mode.IsEnabled = false;
+                       amp.IsEnabled = false;
+                       sources.IsEnabled = false;
+                       destinations.IsEnabled = false;
+
+                       // update buttons once stimulation is complete
                        btn_start.IsEnabled = true;
                        btn_stop.IsEnabled = false;
                        btn_load.IsEnabled = true;
@@ -482,12 +508,20 @@ namespace MotorEvokedPotentialsApp
         private void btn_stop_Click(object sender, RoutedEventArgs e)
         {
             stopStimClicked = true; // We use this flag to stop sending pulses for current condition, and to stop from cycling to next condition. 
-            aBICManagerMEP.stopEvokedPotentialStimulation();
-            cancellationTokenSource.Cancel();
+            if (stimMode == 0)
+            {
+                aBICManagerMEP.enableOpenLoopStimulation(false, configInfo.monopolar, (uint)configInfo.stimChannel - 1, (uint)configInfo.returnChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 1, 20000, configInfo.stimThreshold);
+            }
+            else if (stimMode == 1)
+            {
+                aBICManagerMEP.stopEvokedPotentialStimulation();
+                cancellationTokenSource.Cancel();
+            }
+
             string timeStamp = DateTime.Now.ToString("h:mm:ss tt");
             Application.Current.Dispatcher.Invoke(new Action(() =>
             {
-                OutputConsole.Inlines.Add("Evoked potential stimulation cancelled at " + timeStamp + "\n");
+                OutputConsole.Inlines.Add("Stimulation cancelled at " + timeStamp + "\n");
                 Scroller.ScrollToEnd();
             }));
             stop_stim_UI_update();
@@ -622,6 +656,26 @@ namespace MotorEvokedPotentialsApp
                     neuroStreamChart.ChartAreas[0].AxisY.Maximum = yMaxVal;
                 }
             }
+        }
+
+        private void stim_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            int inputStimAmplitude = 0;
+            bool valEntry = int.TryParse(amp.Text, out inputStimAmplitude);
+            if (valEntry)
+            {
+                if (inputStimAmplitude > -5400 && inputStimAmplitude < 0)
+                {
+                    stimAmplitude = inputStimAmplitude;
+                    OutputConsole.Inlines.Add("Stim amplitude changed to: " + stimAmplitude.ToString());
+                }
+            }
+        }
+
+        private void mode_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // Check if user selected motor thresholds (0) or motor evoked potentials (1)
+            stimMode = mode.SelectedIndex;
         }
     }
 }
