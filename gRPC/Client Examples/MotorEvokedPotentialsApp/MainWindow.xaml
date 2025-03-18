@@ -18,8 +18,8 @@
             <ColumnDefinition Width="574*"/>
         </Grid.ColumnDefinitions>
         <Button x:Name="btn_load" Content="Load Config" Margin="16,24,16,0" VerticalAlignment="Top" Click="btn_load_Click" Height="20" Grid.ColumnSpan="2"/>
-        <Button x:Name="btn_start" Content="Start Stim" Margin="16,65,10,0" VerticalAlignment="Top" Click="btn_start_Click" Height="20"/>
-        <Button x:Name="btn_stop" Content="Stop Stim" Margin="10,65,16,0" VerticalAlignment="Top" Click="btn_stop_Click" Height="20" Grid.Column="1"/>
+        <Button x:Name="btn_start" Content="Start Stim" Margin="16,211,10,0" VerticalAlignment="Top" Click="btn_start_Click" Height="20"/>
+        <Button x:Name="btn_stop" Content="Stop Stim" Margin="10,211,16,0" VerticalAlignment="Top" Click="btn_stop_Click" Height="20" Grid.Column="1"/>
         <Button x:Name="btn_disconnect" Content="Disconnect" HorizontalAlignment="Center" Margin="0,305,0,0" VerticalAlignment="Top" Click="btn_disconnect_Click" Width="74" Height="20"/>
         <Button x:Name="btn_reconnect" Content="Reconnect" Grid.Column="1" HorizontalAlignment="Left" Margin="10,305,0,0" VerticalAlignment="Top" Click="btn_reconnect_Click" Width="68" Height="20"/>
 
@@ -42,8 +42,8 @@
                 </winformchart:Chart.Legends>
             </winformchart:Chart>
         </WindowsFormsHost>
-        <Label Content="Display Channels" Margin="10,103,103,470" Grid.ColumnSpan="2"/>
-        <ListBox ItemsSource="{Binding channelList}" Margin="10,131,16,38" Grid.ColumnSpan="2">
+        <Label Content="Display Channels" Margin="10,255,103,318" Grid.ColumnSpan="2"/>
+        <ListBox ItemsSource="{Binding channelList}" Margin="10,283,16,38" Grid.ColumnSpan="2">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <CheckBox IsChecked="{Binding IsSelected}" Content="{Binding Name}" Checked="CheckBox_Changed" Unchecked="CheckBox_Changed"/>
@@ -69,5 +69,16 @@
             </winformchart:Chart>
         </WindowsFormsHost>
 
+        <Label Content="Stim Mode:" HorizontalAlignment="Left" Margin="16,59,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="mode" SelectedIndex="{Binding Path=stimMode}" HorizontalAlignment="Left" Margin="0,61,0,0" VerticalAlignment="Top" Width="97" Grid.Column="1" SelectionChanged="mode_SelectionChanged">
+            <ComboBoxItem Content="(MT) Motor Thresholds"/>
+            <ComboBoxItem Content="(MEP) Motor Evoked Potentials"/>
+        </ComboBox>
+        <Label Content="Amplitude:" HorizontalAlignment="Left" Margin="16,94,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="amp" HorizontalAlignment="Left" Margin="0,98,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="97" Grid.Column="1" TextChanged="stim_TextChanged"/>
+        <Label Content="Source:" HorizontalAlignment="Left" Margin="16,129,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="sources" ItemsSource="{Binding Path=channelNumList}" SelectedItem="{Binding Path=stimChannel}" HorizontalAlignment="Left" Margin="0,131,0,0" VerticalAlignment="Top" Width="97" Grid.Column="1"/>
+        <Label Content="Destination:" HorizontalAlignment="Left" Margin="16,167,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="destinations" ItemsSource="{Binding Path=channelNumList}" SelectedItem="{Binding Path=returnChannel}" HorizontalAlignment="Left" Margin="0,169,0,0" VerticalAlignment="Top" Width="97" Grid.Column="1"/>
     </Grid>
 </Window>
