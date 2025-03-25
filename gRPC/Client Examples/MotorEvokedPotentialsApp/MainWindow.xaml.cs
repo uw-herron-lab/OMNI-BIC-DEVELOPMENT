@@ -48,6 +48,11 @@ namespace MotorEvokedPotentialsApp
         private double stimThreshold = 100;             // threshold for determining stimulation onset for calculating average [uV]
         private bool connectState = false;
 
+        private bool modeSetFlag = false;
+        private bool ampSetFlag = false;
+        private bool sourceSetFlag = false;
+        private bool destinationSetFlag = false;
+
         private bool stopStimClicked = false; // set to true when stop is clicked. Flag to exit from for loops that would send more stimulation
         private CancellationTokenSource cancellationTokenSource;
 
@@ -284,6 +289,7 @@ namespace MotorEvokedPotentialsApp
                 });
             }
         }
+
         /// <summary>
         /// Read in config file
         /// </summary>
@@ -366,7 +372,49 @@ namespace MotorEvokedPotentialsApp
 
             if (stimMode == 0) // motor threshold mode
             {
-                aBICManagerMEP.enableOpenLoopStimulation(true, monopolar, (uint) stimChannel-1, (uint) returnChannel-1, stimAmplitude, stimDuration, 4, 20000, stimThreshold);
+                ThreadPool.QueueUserWorkItem(a =>
+                {
+                    // Keep the time for console output writing
+                    string timeStamp = DateTime.Now.ToString("h:mm:ss tt");
+
+                    try
+                    {
+                        aBICManagerMEP.enableMotorThresholdStimulation(true, false, (uint)stimChannel - 1, (uint)returnChannel - 1, stimAmplitude, 250, 4, 20000, stimThreshold);
+                    }
+                    catch
+                    {
+                        // Exception occured, gRPC command did not succeed, do not update UI button elements
+                        Application.Current.Dispatcher.Invoke(new Action(() =>
+                        {
+                            OutputConsole.Inlines.Add("Open loop stimulation NOT started: " + timeStamp + ", load new configuration\n");
+                            Scroller.ScrollToEnd();
+                        }));
+                        return;
+                    }
+                    neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
+                        delegate
+                        {
+                            // disable any controls that can change stimulation parameters
+                            mode.IsEnabled = false;
+                            amp.IsEnabled = false;
+                            sources.IsEnabled = false;
+                            destinations.IsEnabled = false;
+
+                            // update buttons
+                            btn_start.IsEnabled = false;
+                            btn_stop.IsEnabled = true;
+                            btn_load.IsEnabled = false;
+
+                        }));
+
+                    // notify user of stimulation starting
+                    Application.Current.Dispatcher.Invoke(new Action(() =>
+                    {
+                        OutputConsole.Inlines.Add("Motor threshold stimulation started: " + timeStamp + "\n");
+                        Scroller.ScrollToEnd();
+                    }));
+                });
+                
             }
             else if (stimMode == 1) // motor evoked potential mode
             {
@@ -487,10 +535,10 @@ namespace MotorEvokedPotentialsApp
                    delegate
                    {
                        // re-enable any controls that can change stimulation parameters
-                       mode.IsEnabled = false;
-                       amp.IsEnabled = false;
-                       sources.IsEnabled = false;
-                       destinations.IsEnabled = false;
+                       mode.IsEnabled = true;
+                       amp.IsEnabled = true;
+                       sources.IsEnabled = true;
+                       destinations.IsEnabled = true;
 
                        // update buttons once stimulation is complete
                        btn_start.IsEnabled = true;
@@ -510,7 +558,7 @@ namespace MotorEvokedPotentialsApp
             stopStimClicked = true; // We use this flag to stop sending pulses for current condition, and to stop from cycling to next condition. 
             if (stimMode == 0)
             {
-                aBICManagerMEP.enableOpenLoopStimulation(false, configInfo.monopolar, (uint)configInfo.stimChannel - 1, (uint)configInfo.returnChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 1, 20000, configInfo.stimThreshold);
+                aBICManagerMEP.enableMotorThresholdStimulation(false, monopolar, (uint)stimChannel - 1, (uint)returnChannel - 1, stimAmplitude, stimDuration, 1, 20000, stimThreshold);
             }
             else if (stimMode == 1)
             {
@@ -658,6 +706,15 @@ namespace MotorEvokedPotentialsApp
             }
         }
 
+        private void mode_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // Check if user selected motor thresholds (0) or motor evoked potentials (1)
+            stimMode = mode.SelectedIndex;
+            OutputConsole.Inlines.Add("Stim mode changed to: " + stimMode.ToString() + "\n");
+            modeSetFlag = true;
+            allParametersSet();
+        }
+
         private void stim_TextChanged(object sender, TextChangedEventArgs e)
         {
             int inputStimAmplitude = 0;
@@ -667,15 +724,44 @@ namespace MotorEvokedPotentialsApp
                 if (inputStimAmplitude > -5400 && inputStimAmplitude < 0)
                 {
                     stimAmplitude = inputStimAmplitude;
-                    OutputConsole.Inlines.Add("Stim amplitude changed to: " + stimAmplitude.ToString());
+                    OutputConsole.Inlines.Add("Stim amplitude changed to: " + stimAmplitude.ToString() + " uA\n");
+                    ampSetFlag = true;
+                    allParametersSet();
                 }
+                OutputConsole.Inlines.Add("Stim amplitude set to " + stimAmplitude.ToString() + " uA\n");
+                
             }
         }
 
-        private void mode_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void sources_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            // Check if user selected motor thresholds (0) or motor evoked potentials (1)
-            stimMode = mode.SelectedIndex;
+            stimChannel = sources.SelectedIndex + 1;
+            OutputConsole.Inlines.Add("Source channel changed to: " + stimChannel.ToString() + "\n");
+            sourceSetFlag = true;
+            allParametersSet();
+        }
+
+        private void destinations_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            returnChannel = destinations.SelectedIndex + 1;
+            OutputConsole.Inlines.Add("Destination channel changed to: " + returnChannel.ToString() + "\n");
+            destinationSetFlag = true;
+            allParametersSet();
+        }
+
+        private bool allParametersSet()
+        {
+            // once all parameters have been set, enable the start stim button
+            if (modeSetFlag && ampSetFlag && sourceSetFlag && destinationSetFlag)
+            {
+                neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
+                    delegate
+                    {
+                        btn_start.IsEnabled = true;
+                    }));
+                return true;
+            }
+            return false;
         }
     }
 }
