@@ -74,11 +74,11 @@
             <ComboBoxItem Content="(MT) Motor Thresholds"/>
             <ComboBoxItem Content="(MEP) Motor Evoked Potentials"/>
         </ComboBox>
-        <Label Content="Amplitude:" HorizontalAlignment="Left" Margin="16,94,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="amp" HorizontalAlignment="Left" Margin="0,98,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="97" Grid.Column="1" TextChanged="stim_TextChanged"/>
+        <Label Content="Amplitude (uA):" HorizontalAlignment="Left" Margin="16,94,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="amp" HorizontalAlignment="Left" Margin="0,98,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="97" Grid.Column="1" TextChanged="stim_TextChanged"/>
         <Label Content="Source:" HorizontalAlignment="Left" Margin="16,129,0,0" VerticalAlignment="Top"/>
-        <ComboBox x:Name="sources" ItemsSource="{Binding Path=channelNumList}" SelectedItem="{Binding Path=stimChannel}" HorizontalAlignment="Left" Margin="0,131,0,0" VerticalAlignment="Top" Width="97" Grid.Column="1"/>
+        <ComboBox x:Name="sources" ItemsSource="{Binding Path=channelNumList}" SelectedItem="{Binding Path=stimChannel}" HorizontalAlignment="Left" Margin="0,131,0,0" VerticalAlignment="Top" Width="97" Grid.Column="1" SelectionChanged="sources_SelectionChanged"/>
         <Label Content="Destination:" HorizontalAlignment="Left" Margin="16,167,0,0" VerticalAlignment="Top"/>
-        <ComboBox x:Name="destinations" ItemsSource="{Binding Path=channelNumList}" SelectedItem="{Binding Path=returnChannel}" HorizontalAlignment="Left" Margin="0,169,0,0" VerticalAlignment="Top" Width="97" Grid.Column="1"/>
+        <ComboBox x:Name="destinations" ItemsSource="{Binding Path=channelNumList}" SelectedItem="{Binding Path=returnChannel}" HorizontalAlignment="Left" Margin="0,169,0,0" VerticalAlignment="Top" Width="97" Grid.Column="1" SelectionChanged="destinations_SelectionChanged"/>
     </Grid>
 </Window>
