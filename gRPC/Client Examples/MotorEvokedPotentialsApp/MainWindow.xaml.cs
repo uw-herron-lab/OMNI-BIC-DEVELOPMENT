@@ -379,7 +379,7 @@ namespace MotorEvokedPotentialsApp
 
                     try
                     {
-                        aBICManagerMEP.enableMotorThresholdStimulation(true, false, (uint)stimChannel - 1, (uint)returnChannel - 1, stimAmplitude, 250, 4, 20000, stimThreshold);
+                        aBICManagerMEP.enableMotorThresholdStimulation(false, monopolar, (uint)stimChannel - 1, (uint)returnChannel - 1, stimAmplitude, stimDuration, 4, 20000, stimThreshold);
                     }
                     catch
                     {
@@ -556,15 +556,18 @@ namespace MotorEvokedPotentialsApp
         private void btn_stop_Click(object sender, RoutedEventArgs e)
         {
             stopStimClicked = true; // We use this flag to stop sending pulses for current condition, and to stop from cycling to next condition. 
-            if (stimMode == 0)
+            ThreadPool.QueueUserWorkItem(a =>
             {
-                aBICManagerMEP.enableMotorThresholdStimulation(false, monopolar, (uint)stimChannel - 1, (uint)returnChannel - 1, stimAmplitude, stimDuration, 1, 20000, stimThreshold);
-            }
-            else if (stimMode == 1)
-            {
-                aBICManagerMEP.stopEvokedPotentialStimulation();
-                cancellationTokenSource.Cancel();
-            }
+                if (stimMode == 0)
+                {
+                    aBICManagerMEP.enableMotorThresholdStimulation(false, monopolar, (uint)stimChannel - 1, (uint)returnChannel - 1, stimAmplitude, stimDuration, 1, 20000, stimThreshold);
+                }
+                else if (stimMode == 1)
+                {
+                    aBICManagerMEP.stopEvokedPotentialStimulation();
+                    cancellationTokenSource.Cancel();
+                }
+            });
 
             string timeStamp = DateTime.Now.ToString("h:mm:ss tt");
             Application.Current.Dispatcher.Invoke(new Action(() =>
