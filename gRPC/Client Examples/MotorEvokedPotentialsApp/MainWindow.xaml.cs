@@ -36,16 +36,16 @@ namespace MotorEvokedPotentialsApp
         private int stimMode = 0;
         private int stimChannel = 1;
         private int returnChannel = 9;
-        private uint numPulses = 1;                    // number of pulses per train to deliver
-        private uint numTrains = 1;                    // number of trains to deliver
-        private uint interPulseInterval = 0;         // time interval between pulses [us]
-        private uint interTrainInterval = 0;       // time interval between trains [us]
-        private uint baselinePeriod = 100000;           // pre-stimulus period for calculating average [us]
-        private int stimAmplitude = 0;                  // pulse amplitude of initial phase of stimulation pulse [uA]
-        private uint stimDuration = 250;                // pulse duration of initial phase of stimulation pulse [us]
-        private int jitterMax = 300000;                 // upper limit of jitter [us]
-        private bool monopolar = false;                 // stimulation configuration
-        private double stimThreshold = 100;             // threshold for determining stimulation onset for calculating average [uV]
+        private uint numPulses = 5;                         // number of pulses per train to deliver
+        private uint numTrains = 10;                        // number of trains to deliver
+        private uint interPulseInterval = 2000;             // time interval between pulses [us]
+        private uint interTrainInterval = 10000000;         // time interval between trains [us]
+        private uint baselinePeriod = 100000;               // pre-stimulus period for calculating average [us]
+        private int stimAmplitude = 0;                      // pulse amplitude of initial phase of stimulation pulse [uA]
+        private uint stimDuration = 250;                    // pulse duration of initial phase of stimulation pulse [us]
+        private int jitterMax = 300000;                     // upper limit of jitter [us]
+        private bool monopolar = false;                     // stimulation configuration
+        private double stimThreshold = 100;                 // threshold for determining stimulation onset for calculating average [uV]
         private bool connectState = false;
 
         private bool modeSetFlag = false;
@@ -379,7 +379,7 @@ namespace MotorEvokedPotentialsApp
 
                     try
                     {
-                        aBICManagerMEP.enableMotorThresholdStimulation(false, monopolar, (uint)stimChannel - 1, (uint)returnChannel - 1, stimAmplitude, stimDuration, 4, 20000, stimThreshold);
+                        aBICManagerMEP.enableMotorThresholdStimulation(true, monopolar, (uint) stimChannel-1, (uint) returnChannel-1, stimAmplitude, stimDuration, 4, 20000, stimThreshold);
                     }
                     catch
                     {
@@ -426,7 +426,7 @@ namespace MotorEvokedPotentialsApp
                     // start stim and update status
                     try
                     {
-                        enableEvokedPotentialPulses(monopolar, (uint)stimChannel, (uint)returnChannel, stimAmplitude, stimDuration, 4, interPulseInterval, stimThreshold, numTrains, jitterMax);
+                        enableEvokedPotentialPulses(false, (uint)stimChannel, (uint)returnChannel, stimAmplitude, 250, 4, interPulseInterval, stimThreshold, numTrains, jitterMax);
                     }
                     catch
                     {
