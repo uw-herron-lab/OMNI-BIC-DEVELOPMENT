@@ -47,6 +47,7 @@ namespace MotorEvokedPotentialsApp
         private bool monopolar = false;                     // stimulation configuration
         private double stimThreshold = 100;                 // threshold for determining stimulation onset for calculating average [uV]
         private bool connectState = false;
+        private int ampToSet = 0;
 
         private bool modeSetFlag = false;
         private bool ampSetFlag = false;
@@ -188,6 +189,8 @@ namespace MotorEvokedPotentialsApp
                     // disable buttons
                     btn_start.IsEnabled = false; // open loop stim button
                     btn_stop.IsEnabled = false;
+                    btn_set.IsEnabled = false;
+                    btn_update.IsEnabled = false;
                 }));
 
             // Start update timer
@@ -319,11 +322,11 @@ namespace MotorEvokedPotentialsApp
                             OutputConsole.Inlines.Add("Return channel: " + String.Join(", ", configInfo.returnChannel) + "\n");
                             OutputConsole.Inlines.Add("Number of pulses: " + configInfo.numPulses + "\n");
                             OutputConsole.Inlines.Add("Number of trains: " + configInfo.numTrains + "\n");
-                            OutputConsole.Inlines.Add("Interpulse interval: " + configInfo.interPulseInterval + "\n");
-                            OutputConsole.Inlines.Add("Intertrain interval: " + configInfo.interTrainInterval + "\n");
+                            OutputConsole.Inlines.Add("Interpulse interval: " + configInfo.interPulseInterval + " us\n");
+                            OutputConsole.Inlines.Add("Intertrain interval: " + configInfo.interTrainInterval + " us\n");
                             OutputConsole.Inlines.Add("Stim duration: " + (configInfo.stimDuration) + " us\n");
                             OutputConsole.Inlines.Add("Stim amplitude: " + configInfo.stimAmplitude + " uA\n");
-                            OutputConsole.Inlines.Add("Stim configuration: " + configInfo.monopolar + "\n");
+                            OutputConsole.Inlines.Add("Monopolar stim: " + configInfo.monopolar + "\n");
                             Scroller.ScrollToEnd();
                         }
 
@@ -340,6 +343,12 @@ namespace MotorEvokedPotentialsApp
                         jitterMax = configInfo.jitterMax;
                         monopolar = configInfo.monopolar;
                         stimThreshold = configInfo.stimThreshold;
+
+                        // Update UI elements
+                        mode.SelectedIndex = stimMode;
+                        amp.Text = stimAmplitude.ToString();
+                        sources.SelectedIndex = stimChannel - 1;
+                        destinations.SelectedIndex = returnChannel - 1;
 
                         neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
                             delegate
@@ -396,7 +405,6 @@ namespace MotorEvokedPotentialsApp
                         {
                             // disable any controls that can change stimulation parameters
                             mode.IsEnabled = false;
-                            amp.IsEnabled = false;
                             sources.IsEnabled = false;
                             destinations.IsEnabled = false;
 
@@ -404,6 +412,8 @@ namespace MotorEvokedPotentialsApp
                             btn_start.IsEnabled = false;
                             btn_stop.IsEnabled = true;
                             btn_load.IsEnabled = false;
+                            btn_set.IsEnabled = false;
+                            btn_update.IsEnabled = true;
 
                         }));
 
@@ -452,6 +462,8 @@ namespace MotorEvokedPotentialsApp
                             btn_start.IsEnabled = false;
                             btn_stop.IsEnabled = true;
                             btn_load.IsEnabled = false;
+                            btn_set.IsEnabled = false;
+                            btn_update.IsEnabled = false;
 
                         }));
 
@@ -544,6 +556,8 @@ namespace MotorEvokedPotentialsApp
                        btn_start.IsEnabled = true;
                        btn_stop.IsEnabled = false;
                        btn_load.IsEnabled = true;
+                       btn_set.IsEnabled = false;
+                       btn_update.IsEnabled = false;
                    }));
         }
 
@@ -604,6 +618,31 @@ namespace MotorEvokedPotentialsApp
             }
             neuroChartUpdateTimer.Start();
             aBICManagerMEP.disconnected += onDisconnected;
+        }
+
+        private void btn_update_Click(object sender, RoutedEventArgs e)
+        {
+            //
+            btn_update.IsEnabled = false;
+            // send an updated stimulation waveform
+            ThreadPool.QueueUserWorkItem(a =>
+            {
+                // stop stimulation
+                //aBICManagerMEP.enableMotorThresholdStimulation(false, monopolar, (uint)stimChannel - 1, (uint)returnChannel - 1, stimAmplitude, stimDuration, 1, 20000, stimThreshold);
+
+                // send updated stimulation waveform request
+                aBICManagerMEP.enableMotorThresholdStimulation(true, monopolar, (uint)stimChannel - 1, (uint)returnChannel - 1, stimAmplitude, stimDuration, 1, 20000, stimThreshold);
+            });
+        }
+
+        private void btn_set_Click(object sender, RoutedEventArgs e)
+        {
+            stimAmplitude = ampToSet;
+            ampSetFlag = true;
+            allParametersSet();
+
+            OutputConsole.Inlines.Add("Stim amplitude set to " + stimAmplitude.ToString() + " uA\n");
+            btn_update.IsEnabled = true;
         }
 
         private void MainWindow_Closed(object sender, EventArgs e)
@@ -726,13 +765,9 @@ namespace MotorEvokedPotentialsApp
             {
                 if (inputStimAmplitude > -5400 && inputStimAmplitude < 0)
                 {
-                    stimAmplitude = inputStimAmplitude;
-                    OutputConsole.Inlines.Add("Stim amplitude changed to: " + stimAmplitude.ToString() + " uA\n");
-                    ampSetFlag = true;
-                    allParametersSet();
+                    ampToSet = inputStimAmplitude;
+                    btn_set.IsEnabled = true;
                 }
-                OutputConsole.Inlines.Add("Stim amplitude set to " + stimAmplitude.ToString() + " uA\n");
-                
             }
         }
 

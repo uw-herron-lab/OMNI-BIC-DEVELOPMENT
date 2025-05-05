@@ -18,17 +18,19 @@
             <ColumnDefinition Width="574*"/>
         </Grid.ColumnDefinitions>
         <Button x:Name="btn_load" Content="Load Config" Margin="16,24,16,0" VerticalAlignment="Top" Click="btn_load_Click" Height="20" Grid.ColumnSpan="2"/>
-        <Button x:Name="btn_start" Content="Start Stim" Margin="16,211,10,0" VerticalAlignment="Top" Click="btn_start_Click" Height="20"/>
-        <Button x:Name="btn_stop" Content="Stop Stim" Margin="10,211,16,0" VerticalAlignment="Top" Click="btn_stop_Click" Height="20" Grid.Column="1"/>
+        <Button x:Name="btn_start" Content="Start Stim" Margin="16,230,10,0" VerticalAlignment="Top" Click="btn_start_Click" Height="20"/>
+        <Button x:Name="btn_stop" Content="Stop Stim" Margin="10,230,16,0" VerticalAlignment="Top" Click="btn_stop_Click" Height="20" Grid.Column="1"/>
         <Button x:Name="btn_disconnect" Content="Disconnect" HorizontalAlignment="Center" Margin="0,305,0,0" VerticalAlignment="Top" Click="btn_disconnect_Click" Width="74" Height="20"/>
         <Button x:Name="btn_reconnect" Content="Reconnect" Grid.Column="1" HorizontalAlignment="Left" Margin="10,305,0,0" VerticalAlignment="Top" Click="btn_reconnect_Click" Width="68" Height="20"/>
+        <Button x:Name="btn_update" Content="Update" Grid.Column="1" Margin="49,121,16,0" VerticalAlignment="Top" Click="btn_update_Click"/>
+        <Button x:Name="btn_set" Content="Set" Margin="6,121,69,0" Grid.Column="1" Click="btn_set_Click" Height="20" VerticalAlignment="Top"/>
 
         <ScrollViewer Name="Scroller" Background="White" Grid.ColumnSpan="3" VerticalScrollBarVisibility="Auto" Grid.Row="1">
             <Border BorderThickness="1" BorderBrush="Black">
                 <TextBlock Name="OutputConsole" Foreground="Black" FontFamily="Consolas" FontSize="15" Padding="10" TextWrapping="Wrap"/>
             </Border>
         </ScrollViewer>
-        <Label Content="Real time streaming" Margin="10,0,445,575" Grid.Column="2"/>
+        <Label Content="Real time streaming" Margin="10,0,0,0" Grid.Column="2" Height="26" VerticalAlignment="Top" HorizontalAlignment="Left" Width="119"/>
         <WindowsFormsHost x:Name="formHost" Margin="0,23,0,318" Grid.Column="2">
             <winformchart:Chart x:Name="neuroStreamChart" Dock="Fill">
                 <winformchart:Chart.Series>
@@ -42,7 +44,7 @@
                 </winformchart:Chart.Legends>
             </winformchart:Chart>
         </WindowsFormsHost>
-        <Label Content="Display Channels" Margin="10,255,103,318" Grid.ColumnSpan="2"/>
+        <Label Content="Display Channels" Margin="10,255,103,0" Grid.ColumnSpan="2" Height="28" VerticalAlignment="Top"/>
         <ListBox ItemsSource="{Binding channelList}" Margin="10,283,16,38" Grid.ColumnSpan="2">
             <ListBox.ItemTemplate>
                 <DataTemplate>
@@ -54,7 +56,7 @@
         <TextBox x:Name="y_min" TextWrapping="Wrap" Margin="0,0,136,5" Grid.Column="2" TextChanged="y_min_TextChanged" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="50"/>
         <TextBlock TextWrapping="Wrap" Text="y-axis max:" Grid.Column="2" Margin="0,0,60,8" HorizontalAlignment="Right" Width="63" Height="16" VerticalAlignment="Bottom"/>
         <TextBox x:Name="y_max" TextWrapping="Wrap" Margin="0,0,10,5" Grid.Column="2" TextChanged="y_max_TextChanged" HorizontalAlignment="Right" Width="50" Height="20" VerticalAlignment="Bottom"/>
-        <Label Content="Raw MEP Response" Margin="10,288,451,288" Grid.Column="2"/>
+        <Label Content="Raw MEP Response" Margin="10,0,0,0" Grid.Column="2" Height="25" VerticalAlignment="Center" HorizontalAlignment="Left" Width="113"/>
         <WindowsFormsHost Margin="0,312,0,29" Grid.Column="2">
             <winformchart:Chart x:Name="avgsChart" Dock="Fill">
                 <winformchart:Chart.Series>
@@ -76,9 +78,9 @@
         </ComboBox>
         <Label Content="Amplitude (uA):" HorizontalAlignment="Left" Margin="16,94,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="amp" HorizontalAlignment="Left" Margin="0,98,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="97" Grid.Column="1" TextChanged="stim_TextChanged"/>
-        <Label Content="Source:" HorizontalAlignment="Left" Margin="16,129,0,0" VerticalAlignment="Top"/>
-        <ComboBox x:Name="sources" ItemsSource="{Binding Path=channelNumList}" SelectedItem="{Binding Path=stimChannel}" HorizontalAlignment="Left" Margin="0,131,0,0" VerticalAlignment="Top" Width="97" Grid.Column="1" SelectionChanged="sources_SelectionChanged"/>
-        <Label Content="Destination:" HorizontalAlignment="Left" Margin="16,167,0,0" VerticalAlignment="Top"/>
-        <ComboBox x:Name="destinations" ItemsSource="{Binding Path=channelNumList}" SelectedItem="{Binding Path=returnChannel}" HorizontalAlignment="Left" Margin="0,169,0,0" VerticalAlignment="Top" Width="97" Grid.Column="1" SelectionChanged="destinations_SelectionChanged"/>
+        <Label Content="Source:" HorizontalAlignment="Left" Margin="16,153,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="sources" ItemsSource="{Binding Path=channelNumList}" SelectedItem="{Binding Path=stimChannel}" HorizontalAlignment="Left" Margin="0,155,0,0" VerticalAlignment="Top" Width="97" Grid.Column="1" SelectionChanged="sources_SelectionChanged"/>
+        <Label Content="Destination:" HorizontalAlignment="Left" Margin="16,190,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="destinations" ItemsSource="{Binding Path=channelNumList}" SelectedItem="{Binding Path=returnChannel}" HorizontalAlignment="Left" Margin="0,192,0,0" VerticalAlignment="Top" Width="97" Grid.Column="1" SelectionChanged="destinations_SelectionChanged"/>
     </Grid>
 </Window>
