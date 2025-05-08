@@ -190,7 +190,6 @@ namespace MotorEvokedPotentialsApp
                     btn_start.IsEnabled = false; // open loop stim button
                     btn_stop.IsEnabled = false;
                     btn_set.IsEnabled = false;
-                    btn_update.IsEnabled = false;
                 }));
 
             // Start update timer
@@ -407,14 +406,13 @@ namespace MotorEvokedPotentialsApp
                             mode.IsEnabled = false;
                             sources.IsEnabled = false;
                             destinations.IsEnabled = false;
+                            amp.IsEnabled = false;
 
                             // update buttons
                             btn_start.IsEnabled = false;
                             btn_stop.IsEnabled = true;
                             btn_load.IsEnabled = false;
                             btn_set.IsEnabled = false;
-                            btn_update.IsEnabled = true;
-
                         }));
 
                     // notify user of stimulation starting
@@ -463,8 +461,6 @@ namespace MotorEvokedPotentialsApp
                             btn_stop.IsEnabled = true;
                             btn_load.IsEnabled = false;
                             btn_set.IsEnabled = false;
-                            btn_update.IsEnabled = false;
-
                         }));
 
                     // notify user of stimulation starting
@@ -556,8 +552,7 @@ namespace MotorEvokedPotentialsApp
                        btn_start.IsEnabled = true;
                        btn_stop.IsEnabled = false;
                        btn_load.IsEnabled = true;
-                       btn_set.IsEnabled = false;
-                       btn_update.IsEnabled = false;
+                       btn_set.IsEnabled = true;
                    }));
         }
 
@@ -620,21 +615,6 @@ namespace MotorEvokedPotentialsApp
             aBICManagerMEP.disconnected += onDisconnected;
         }
 
-        private void btn_update_Click(object sender, RoutedEventArgs e)
-        {
-            //
-            btn_update.IsEnabled = false;
-            // send an updated stimulation waveform
-            ThreadPool.QueueUserWorkItem(a =>
-            {
-                // stop stimulation
-                //aBICManagerMEP.enableMotorThresholdStimulation(false, monopolar, (uint)stimChannel - 1, (uint)returnChannel - 1, stimAmplitude, stimDuration, 1, 20000, stimThreshold);
-
-                // send updated stimulation waveform request
-                aBICManagerMEP.enableMotorThresholdStimulation(true, monopolar, (uint)stimChannel - 1, (uint)returnChannel - 1, stimAmplitude, stimDuration, 1, 20000, stimThreshold);
-            });
-        }
-
         private void btn_set_Click(object sender, RoutedEventArgs e)
         {
             stimAmplitude = ampToSet;
@@ -642,7 +622,6 @@ namespace MotorEvokedPotentialsApp
             allParametersSet();
 
             OutputConsole.Inlines.Add("Stim amplitude set to " + stimAmplitude.ToString() + " uA\n");
-            btn_update.IsEnabled = true;
         }
 
         private void MainWindow_Closed(object sender, EventArgs e)

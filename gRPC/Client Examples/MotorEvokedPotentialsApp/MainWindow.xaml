@@ -22,8 +22,7 @@
         <Button x:Name="btn_stop" Content="Stop Stim" Margin="10,230,16,0" VerticalAlignment="Top" Click="btn_stop_Click" Height="20" Grid.Column="1"/>
         <Button x:Name="btn_disconnect" Content="Disconnect" HorizontalAlignment="Center" Margin="0,305,0,0" VerticalAlignment="Top" Click="btn_disconnect_Click" Width="74" Height="20"/>
         <Button x:Name="btn_reconnect" Content="Reconnect" Grid.Column="1" HorizontalAlignment="Left" Margin="10,305,0,0" VerticalAlignment="Top" Click="btn_reconnect_Click" Width="68" Height="20"/>
-        <Button x:Name="btn_update" Content="Update" Grid.Column="1" Margin="49,121,16,0" VerticalAlignment="Top" Click="btn_update_Click"/>
-        <Button x:Name="btn_set" Content="Set" Margin="6,121,69,0" Grid.Column="1" Click="btn_set_Click" Height="20" VerticalAlignment="Top"/>
+        <Button x:Name="btn_set" Content="Set" Margin="59,121,16,0" Grid.Column="1" Click="btn_set_Click" Height="20" VerticalAlignment="Top"/>
 
         <ScrollViewer Name="Scroller" Background="White" Grid.ColumnSpan="3" VerticalScrollBarVisibility="Auto" Grid.Row="1">
             <Border BorderThickness="1" BorderBrush="Black">
