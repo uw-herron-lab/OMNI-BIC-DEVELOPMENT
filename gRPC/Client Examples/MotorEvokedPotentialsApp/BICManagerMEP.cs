@@ -46,9 +46,6 @@ namespace MotorEvokedPotentialsApp
         public delegate void disconnectEventHandler(List<string> disconnectionInfo);
         public event disconnectEventHandler disconnected;
 
-        public delegate void parameterSetEventHandler(bool parameterSet);
-        public event parameterSetEventHandler parameterSet;
-
         public int deviceSampleRate {  get; set; }
         
         // Task pointers for streaming methods
@@ -277,7 +274,6 @@ namespace MotorEvokedPotentialsApp
                 // Create a waveform defintion request 
                 bicEnqueueStimulationRequest aNewWaveformRequest = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.PersistentWaveform, WaveformRepititions = 255 };
 
-                // Perform 50 Hz stimulation
                 if (monopolar)
                 {
                     // Create a pulse function for monopolar stimulation
@@ -320,7 +316,6 @@ namespace MotorEvokedPotentialsApp
             deviceClient.bicStopStimulation(new RequestDeviceAddress() { DeviceAddress = DeviceName });
         }
 
-
         /// <summary>
         /// Provide a copy of the current data buffers
         /// </summary>
@@ -338,7 +333,6 @@ namespace MotorEvokedPotentialsApp
             }
             return outputBuffer;
         }
-
 
         /// <summary>
         /// Provide a copy of the current running averages
@@ -362,7 +356,6 @@ namespace MotorEvokedPotentialsApp
             }
             return outputBuffer;
         }
-
 
         private void loggingThread()
         {
