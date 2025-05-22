@@ -150,8 +150,9 @@ namespace BICGRPCHelperNamespace
         bool isZeroCrossing(std::vector<double> dataArray);
         double calcPhase(std::vector<double> dataArray, uint64_t currSamp, std::vector<double>* prevSigFreq, std::vector<double>* prevPhase);
         bool detectTriggerPhase(std::vector<double> prevPhase, double triggerPhase);
-        void updateTriggerPhase(double prevStimPhase);
+        void updateTriggerPhase(double prevStimPhase, std::vector<double>* prevTrigPhase);
         void detectSelfTriggering(std::vector<int> stimSampArray, double selfTrigThresh);
+        double findMedian(std::vector<double>* inputArray);
 
         // Generic Distributed Variables
         bool isCLStimEn = false;                    // State tracking boolean indicates whether distributed stim is active or not
@@ -183,8 +184,11 @@ namespace BICGRPCHelperNamespace
         uint64_t zeroSamp = 0;                              // Timestamp for first negative zero crossing
         double stimTriggerPhase = 25;                       // Phase for triggering stimulation
         double stimTargetPhase = 210;                       // Ideal phase to deliver stimulation
+        double lowerBound = 0;
+        double upperBound = 90;
         bool prevStimActive = false;                        // State for previous stimulation 
         std::vector<double> sigFreqData = { 0, 0, 0, 0 };   // History of frequency estimates 
         std::vector<double> phaseData = { 0, 0, 0 };        // History for previous estimated phase calculations
+        std::vector<double> triggerPhaseData = { 0, 0, 0, 0, 0 }; // History of previous trigger phases used 
     };
 }

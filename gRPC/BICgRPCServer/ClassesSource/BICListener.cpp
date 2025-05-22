@@ -533,7 +533,7 @@ namespace BICGRPCHelperNamespace
                                         if (newInterpolatedSample->stimulationactive() == true && prevStimActive == false)
                                         {
                                             stimOnset.insert(stimOnset.begin(), 1);
-                                            updateTriggerPhase(newInterpolatedSample->phase());
+                                            updateTriggerPhase(newInterpolatedSample->phase(), &triggerPhaseData);
                                             prevStimActive = true;
                                             stimSampStamp.insert(stimSampStamp.begin(), lastNeuroCount + interpolatedPointNum);
                                             stimSampStamp.pop_back();
@@ -612,7 +612,7 @@ namespace BICGRPCHelperNamespace
                         if (newSample->stimulationactive() == true && prevStimActive == false)
                         {
                             stimOnset.insert(stimOnset.begin(), 1);
-                            updateTriggerPhase(newSample->phase());
+                            updateTriggerPhase(newSample->phase(), &triggerPhaseData);
                             prevStimActive = true;
                             stimSampStamp.insert(stimSampStamp.begin(), sampleCounter);
                             stimSampStamp.pop_back();
@@ -690,6 +690,28 @@ namespace BICGRPCHelperNamespace
         distributedStimThreshold = stimThreshold;
         stimTriggerPhase = triggerPhase;
         stimTargetPhase = targetPhase;
+
+        // assign upper and lower bounds for determining trigger phase depending on target phase
+        if ((stimTargetPhase > 0) && (stimTargetPhase < 90)) // ascending hyperpolarizing
+        {
+            lowerBound = 180;
+            upperBound = 270;
+        }
+        else if ((stimTargetPhase > 90) && (stimTargetPhase < 180)) // descending hyperpolarizing
+        {
+            lowerBound = 270;
+            upperBound = 360;
+        }
+        else if ((stimTargetPhase > 180) && (stimTargetPhase < 270)) // descending depolarizing
+        {
+            lowerBound = 0;
+            upperBound = 90;
+        }
+        else if ((stimTargetPhase > 270) && (stimTargetPhase < 360)) // ascending depolarizing
+        {
+            lowerBound = 90;
+            upperBound = 180;
+        }
 
         if (enableDistributed && !isTriggeringStimulation() && !isStimulating())
         {
@@ -901,7 +923,7 @@ namespace BICGRPCHelperNamespace
         double filtSamp = filterIIR(hampelSamp, &bpFiltData, hampelDataHistory, &betaBandPassIIR_B, &betaBandPassIIR_A, 1);
 
         // if at a particular phase, above an arbitrary threshold, and closed loop stim is enabled, send stimulation
-        if (!isSelfTrig && isCLStimEn && detectTriggerPhase(phaseData, stimTriggerPhase) && bpFiltData[0] > distributedStimThreshold)
+        if (!isSelfTrig && isCLStimEn && detectTriggerPhase(phaseData, stimTriggerPhase) && abs(bpFiltData[0]) > distributedStimThreshold)
         {
             // log that a valid target has been found
             isValidTarget = true;
@@ -1038,12 +1060,12 @@ namespace BICGRPCHelperNamespace
         prevPhase->insert(prevPhase->begin(), currPhase);
         prevPhase->pop_back();
 
-        // Check stimTriggerPhase is within range
-        if (stimTriggerPhase <= 0 || stimTriggerPhase > 360)
-        {
-            // If not, reset stimTriggerPhase
-            stimTriggerPhase = 45;
-        }
+        //// Check stimTriggerPhase is within range- seems to be repetitive... maybe just keep in updateTriggerPhase method?
+        //if (stimTriggerPhase <= 0 || stimTriggerPhase > 360)
+        //{
+        //    // If not, reset stimTriggerPhase
+        //    stimTriggerPhase = findMedian(&triggerPhaseData);//45; // TODO: reset to the median of the history (see below?)
+        //}
         return currPhase;
     }
 
@@ -1051,18 +1073,28 @@ namespace BICGRPCHelperNamespace
     /// Function for updating the triggering phase value
     /// </summary>
     /// <param name="prevStimPhase">phase of current sample that just triggered stimulation</param>
-    void BICListener::updateTriggerPhase(double prevStimPhase)
+    void BICListener::updateTriggerPhase(double prevStimPhase, std::vector<double>* prevTrigPhase)
     {
+
+        // TODO- keep a history of trigger phases? if out of bounds, don't store in the history, but reset to the  mean/median of the history?
         double phaseDiff = 0;
 
         // find phase difference and use that to update stimTriggerPhase alongside arbitrary gain
         phaseDiff = prevStimPhase - stimTargetPhase; 
         stimTriggerPhase -= (0.1) * phaseDiff;
 
-        // Checks to reset stimTriggerPhase if out of bounds
-        if (stimTriggerPhase < 1 || stimTriggerPhase > 170)
+        // Checks to reset stimTriggerPhase if out of bounds- TODO modify how trigger bounds are defined
+        if ((stimTriggerPhase > lowerBound) && (stimTriggerPhase < upperBound))
         {
-            stimTriggerPhase = 25;
+            // if newly calculated trigger phase is within bounds, add to the history 
+            prevTrigPhase->insert(prevTrigPhase->begin(), stimTriggerPhase);
+            prevTrigPhase->pop_back();
+        }
+        else 
+        {
+            // otherwise, update the trigger phase to be the median of previous trigger phases
+            stimTriggerPhase = findMedian(prevTrigPhase);
+
         }
     }
 
@@ -1094,6 +1126,19 @@ namespace BICGRPCHelperNamespace
         {
             isSelfTrig = true;
         }
+    }
+
+    double BICListener::findMedian(std::vector<double>* inputArray)
+    {
+        // Copy the input and sort its contents
+        std::vector<double>sorted(inputArray->size());
+        sorted= *inputArray;
+        sort(sorted.begin(), sorted.end());
+
+        // Determine the median value for the input and return it
+        double medianVal = sorted[((sorted.size() - 1) / 2) + 1];
+
+        return medianVal;
     }
 
     /// <summary>
