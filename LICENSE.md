@@ -1,5 +1,5 @@
 OMNI-BIC Academic License
-Copyright (c) [2020-2024] University of Washington. 
+Copyright (c) [2020-2025] University of Washington. 
 
 UW has developed software for use by researchers at institutions of higher education and nonprofit research institutions (“You”). 
 
