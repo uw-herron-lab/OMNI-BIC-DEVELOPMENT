@@ -572,7 +572,7 @@ namespace MotorEvokedPotentialsApp
             {
                 if (stimMode == 0)
                 {
-                    aBICManagerMEP.enableMotorThresholdStimulation(false, monopolar, (uint)stimChannel - 1, (uint)returnChannel - 1, stimAmplitude, stimDuration, 1, 20000, stimThreshold);
+                    aBICManagerMEP.enableMotorThresholdStimulation(false, monopolar, useGround,(uint)stimChannel - 1, (uint)returnChannel - 1, stimAmplitude, stimDuration, 1, 20000, stimThreshold);
                 }
                 else if (stimMode == 1)
                 {
