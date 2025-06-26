@@ -262,7 +262,7 @@ namespace MotorEvokedPotentialsApp
             deviceClient.bicStartStimulation(new bicStartStimulationRequest() { DeviceAddress = DeviceName });
         }
 
-        public void enableMotorThresholdStimulation(bool openStimEn, bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold)
+        public void enableMotorThresholdStimulation(bool openStimEn, bool monopolar, bool useStimGround, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold)
         {
             // Timer interval for re-triggering train of stimulation 
             uint intervalDuration = ((interPulseInterval / 1000) * 255);
@@ -291,7 +291,7 @@ namespace MotorEvokedPotentialsApp
                     StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
                     {
                         FunctionName = "openLoopPulse",
-                        StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = addDuration, PulseWidth = stimDuration, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { returnChannel }, UseGround = true, BurstRepetitions = 1 }
+                        StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = addDuration, PulseWidth = stimDuration, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { returnChannel }, UseGround = useStimGround, BurstRepetitions = 1 }
 
                     };
                     aNewWaveformRequest.Functions.Add(pulseFunction0);

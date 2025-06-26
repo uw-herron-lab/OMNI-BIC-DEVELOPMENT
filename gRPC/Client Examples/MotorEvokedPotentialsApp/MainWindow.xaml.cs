@@ -44,6 +44,7 @@ namespace MotorEvokedPotentialsApp
         private int stimAmplitude = 0;                      // pulse amplitude of initial phase of stimulation pulse [uA]
         private uint stimDuration = 250;                    // pulse duration of initial phase of stimulation pulse [us]
         private int jitterMax = 300000;                     // upper limit of jitter [us]
+        private bool useGround = false;                     // use ground during stimulation
         private bool monopolar = false;                     // stimulation configuration
         private double stimThreshold = 100;                 // threshold for determining stimulation onset for calculating average [uV]
         private bool connectState = false;
@@ -80,7 +81,6 @@ namespace MotorEvokedPotentialsApp
 
         public class Configuration
         {
-            public int numChannels { get; set; }
             public int stimMode { get; set; }
             public int stimChannel { get; set; }
             public int returnChannel { get; set; }
@@ -89,11 +89,12 @@ namespace MotorEvokedPotentialsApp
             public uint interPulseInterval { get; set; }
             public uint interTrainInterval { get; set; }
             public uint baselinePeriod { get; set; }
-            public int stimAmplitude { get; set; } // uV
+            public int stimAmplitude { get; set; } 
             public uint stimDuration { get; set; }
-            public int jitterMax { get; set; } // uS
+            public int jitterMax { get; set; } 
             public bool monopolar { get; set; }
             public double stimThreshold { get; set; }
+            public bool useGround { get; set; }
         }
 
         public MainWindow()
@@ -326,6 +327,7 @@ namespace MotorEvokedPotentialsApp
                             OutputConsole.Inlines.Add("Stim duration: " + (configInfo.stimDuration) + " us\n");
                             OutputConsole.Inlines.Add("Stim amplitude: " + configInfo.stimAmplitude + " uA\n");
                             OutputConsole.Inlines.Add("Monopolar stim: " + configInfo.monopolar + "\n");
+                            OutputConsole.Inlines.Add("Using ground during stim: " + configInfo.useGround + "\n");
                             Scroller.ScrollToEnd();
                         }
 
@@ -342,6 +344,7 @@ namespace MotorEvokedPotentialsApp
                         jitterMax = configInfo.jitterMax;
                         monopolar = configInfo.monopolar;
                         stimThreshold = configInfo.stimThreshold;
+                        useGround = configInfo.useGround;
 
                         // Update UI elements
                         mode.SelectedIndex = stimMode;
@@ -387,7 +390,7 @@ namespace MotorEvokedPotentialsApp
 
                     try
                     {
-                        aBICManagerMEP.enableMotorThresholdStimulation(true, monopolar, (uint) stimChannel-1, (uint) returnChannel-1, stimAmplitude, stimDuration, 4, 20000, stimThreshold);
+                        aBICManagerMEP.enableMotorThresholdStimulation(true, monopolar, useGround,(uint) stimChannel-1, (uint) returnChannel-1, stimAmplitude, stimDuration, 4, 20000, stimThreshold);
                     }
                     catch
                     {
