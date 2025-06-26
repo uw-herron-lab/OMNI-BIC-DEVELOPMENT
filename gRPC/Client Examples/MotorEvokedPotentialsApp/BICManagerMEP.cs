@@ -334,29 +334,6 @@ namespace MotorEvokedPotentialsApp
             return outputBuffer;
         }
 
-        /// <summary>
-        /// Provide a copy of the current running averages
-        /// </summary>
-        /// <returns>A list of double-arrays, each array is composed of the latest running total from each BIC channel. </returns>
-        public List<double>[] getAvgsData()
-        {
-            List<double>[] outputBuffer = new List<double>[runningTotals.Length];
-
-            lock (dataBufferLock)
-            {
-                for (int i = 0; i < runningTotals.Length; i++)
-                {
-                    double[] chanBuffer = new double[stimPeriodSamples];
-                    for (int j = 0; j < stimPeriodSamples; j++)
-                    {
-                        chanBuffer[j] = runningTotals[i][j] / currNumPulses;
-                    }
-                    outputBuffer[i] = new List<double>(chanBuffer);
-                }
-            }
-            return outputBuffer;
-        }
-
         private void loggingThread()
         {
             // Declare output from concurrent queue

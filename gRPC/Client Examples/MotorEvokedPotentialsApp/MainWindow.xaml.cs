@@ -159,7 +159,6 @@ namespace MotorEvokedPotentialsApp
             };
 
             neuroStreamChart.Series.Clear();
-            avgsChart.Series.Clear();
             for (int i = 1; i <= numChannels; i++)
             {
                 seriesName = "Channel " + i.ToString();
@@ -171,17 +170,8 @@ namespace MotorEvokedPotentialsApp
                     ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastLine
                 });
 
-                avgsChart.Series.Add(
-                new System.Windows.Forms.DataVisualization.Charting.Series
-                {
-                    Name = seriesName,
-                    Color = colors_list[i - 1],
-                    ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastLine
-                });
-
                 // when loading window, make legend invisible
                 neuroStreamChart.Series[i - 1].IsVisibleInLegend = false;
-                avgsChart.Series[i - 1].IsVisibleInLegend = false;
             }
 
             neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
@@ -232,44 +222,6 @@ namespace MotorEvokedPotentialsApp
                 delegate
                 {
                     neuroStreamChart.Series[chanString].Points.DataBindY(neuroData[selectedChannels[i] - 1]);
-                }));
-            }
-        }
-
-        /// <summary>
-        /// Plot latest data in running averages chart.
-        /// </summary>
-        private void updateAvgsChart()
-        {
-            // grab latest data
-            List<double>[] avgsData = aBICManagerMEP.getAvgsData();
-
-            // look for the selected items in the listbox
-            List<int> selectedChannels = new List<int>();
-            string chanString = "";
-            int chanVal;
-            bool valConvert = false;
-
-            // get a list of selected channels
-            var selected = from item in channelList
-                           where item.IsSelected == true
-                           select item.Name.ToString();
-
-            // convert from string to int type
-            foreach (String item in selected)
-            {
-                valConvert = Int32.TryParse(item, out chanVal);
-                selectedChannels.Add(chanVal);
-            }
-
-            // update plot with newest data for selected channels
-            for (int i = 0; i < selectedChannels.Count; i++)
-            {
-                chanString = "Channel " + selectedChannels[i].ToString();
-                avgsChart.Invoke(new System.Windows.Forms.MethodInvoker(
-                delegate
-                {
-                    avgsChart.Series[chanString].Points.DataBindY(avgsData[selectedChannels[i] - 1]);
                 }));
             }
         }
@@ -513,9 +465,6 @@ namespace MotorEvokedPotentialsApp
         /// <param name="jitterMax"></param>
         private async void enableEvokedPotentialPulses(bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold, uint numTrains, int jitterMax)
         {
-            // clear running totals and num pulses before starting each condition
-            aBICManagerMEP.zeroAvgsBuffers();
-            aBICManagerMEP.currNumPulses = 0;
 
             for (int i = 0; i < numTrains; i++)
             {
@@ -529,10 +478,6 @@ namespace MotorEvokedPotentialsApp
 
                     int randomJitter = RandomNumber(0, jitterMax);
                     await Task.Delay((int)((interTrainInterval + randomJitter) / 1000));
-
-                    // Increment currNumPulses and update avgs chart after pulse completed
-                    aBICManagerMEP.currNumPulses++;
-                    updateAvgsChart();
                 }
             }
         }
@@ -669,16 +614,6 @@ namespace MotorEvokedPotentialsApp
                 }
             }));
 
-            avgsChart.Invoke(new System.Windows.Forms.MethodInvoker(
-            delegate
-            {
-                foreach (var series in avgsChart.Series)
-                {
-                    series.IsVisibleInLegend = false;
-                    series.Enabled = false;
-                }
-            }));
-
             // update legend for data streaming chart for newest selection of channels
             for (int i = 0; i < selectedChannels.Count; i++)
             {
@@ -688,18 +623,6 @@ namespace MotorEvokedPotentialsApp
                 {
                     neuroStreamChart.Series[chanString].IsVisibleInLegend = true;
                     neuroStreamChart.Series[chanString].Enabled = true;
-                }));
-            }
-
-            // update legend for averages chart with newest selection of channels
-            for (int i = 0; i < selectedChannels.Count; i++)
-            {
-                chanString = "Channel " + selectedChannels[i].ToString();
-                avgsChart.Invoke(new System.Windows.Forms.MethodInvoker(
-                delegate
-                {
-                    avgsChart.Series[chanString].IsVisibleInLegend = true;
-                    avgsChart.Series[chanString].Enabled = true;
                 }));
             }
         }
@@ -749,6 +672,10 @@ namespace MotorEvokedPotentialsApp
                 {
                     ampToSet = inputStimAmplitude;
                     btn_set.IsEnabled = true;
+                }
+                else
+                {
+                    OutputConsole.Inlines.Add("Entered text must be between -5400 and 0 [uA]!");
                 }
             }
         }
