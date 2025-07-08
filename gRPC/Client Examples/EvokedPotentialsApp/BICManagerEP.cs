@@ -225,28 +225,14 @@ namespace EvokedPotentialsApp
             }
             else
             {
-                if (useStimGround)
+                // Create a pulse function for bipolar stimulation
+                StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
                 {
-                    // Create a pulse function for bipolar stimulation with a connection to ground
-                    StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
-                    {
-                        FunctionName = "evokedPotentialStim",
-                        StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 10, PulseWidth = stimDuration, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { returnChannel }, UseGround = true, BurstRepetitions = 1 }
+                    FunctionName = "evokedPotentialStim",
+                    StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 10, PulseWidth = stimDuration, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { returnChannel }, UseGround = useStimGround, BurstRepetitions = 1 }
 
-                    };
-                    aNewWaveformRequest.Functions.Add(pulseFunction0);
-                }
-                else
-                {
-                    // Create a pulse function for bipolar stimulation without a connection to ground
-                    StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
-                    {
-                        FunctionName = "evokedPotentialStim",
-                        StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 10, PulseWidth = stimDuration, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { returnChannel }, UseGround = false, BurstRepetitions = 1 }
-
-                    };
-                    aNewWaveformRequest.Functions.Add(pulseFunction0);
-                }
+                };
+                aNewWaveformRequest.Functions.Add(pulseFunction0);
             }
             deviceClient.bicEnqueueStimulation(aNewWaveformRequest);
             deviceClient.bicStartStimulation(new bicStartStimulationRequest() { DeviceAddress = DeviceName });
