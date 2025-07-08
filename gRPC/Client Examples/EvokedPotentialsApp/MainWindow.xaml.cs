@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -30,7 +31,7 @@ namespace EvokedPotentialsApp
     {
         private bool scanMode = false;
         
-        private RealtimeGraphing.BICManager aBICManager;
+        private EvokedPotentialsApp.BICManagerEP aBICManagerEP;
         private int numChannels = 32;
         private Configuration configInfo;
         private int? stimChannel = null;
@@ -41,8 +42,10 @@ namespace EvokedPotentialsApp
         private int stimAmplitude = -3000; // uV
         private uint stimDuration = 250;
         private int jitterMax = 300000; // uS
+        private bool useGround = false;
         private bool monopolar = false;
-        private double stimThreshold = 100;
+        private bool reversePolarity = false;
+        private bool connectState = false;
         
         private bool stopStimClicked = false; // set to true when stop is clicked. Flag to exit from for loops that would send more stimulation
         private CancellationTokenSource cancellationTokenSource;
@@ -80,8 +83,9 @@ namespace EvokedPotentialsApp
             public int stimAmplitude { get; set; } // uV
             public uint stimDuration { get; set; }
             public int jitterMax { get; set; } // uS
+            public bool useGround { get; set; }
             public bool monopolar { get; set; }
-            public double stimThreshold { get; set; }
+            public bool reversePolarity { get; set; }
             public List<int> stimChannelsQueue { get; set; }
             public List<int> returnChannelsQueue { get; set; }
         }
@@ -107,8 +111,8 @@ namespace EvokedPotentialsApp
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             string seriesName;
-            aBICManager = new RealtimeGraphing.BICManager(neuroStreamChart.Width, stimPeriod, baselinePeriod); // initialize buffer to the width we need! or maybe whichever is bigger. might need to do something later for the display, if buffer is diff length
-            aBICManager.BICConnect();
+            aBICManagerEP = new EvokedPotentialsApp.BICManagerEP(neuroStreamChart.Width, stimPeriod, baselinePeriod); // initialize buffer to the width we need! or maybe whichever is bigger. might need to do something later for the display, if buffer is diff length
+            aBICManagerEP.BICConnect();
 
             var colors_list = new System.Drawing.Color[]
             {
@@ -193,12 +197,14 @@ namespace EvokedPotentialsApp
             neuroChartUpdateTimer = new System.Timers.Timer(200);
             neuroChartUpdateTimer.Elapsed += neuroChartUpdateTimer_Elapsed;
             neuroChartUpdateTimer.Start();
+
+            aBICManagerEP.disconnected += onDisconnected;
         }
 
         private void neuroChartUpdateTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             // grab latest data
-            List<double>[] neuroData = aBICManager.getData();
+            List<double>[] neuroData = aBICManagerEP.getData();
 
             // look for the selected items in the listbox
             List<int> selectedChannels = new List<int>();
@@ -236,7 +242,7 @@ namespace EvokedPotentialsApp
         private void updateAvgsChart()
         {
             // grab latest data
-            List<double>[] avgsData = aBICManager.getAvgsData();
+            List<double>[] avgsData = aBICManagerEP.getAvgsData();
 
             // look for the selected items in the listbox
             List<int> selectedChannels = new List<int>();
@@ -267,7 +273,28 @@ namespace EvokedPotentialsApp
                 }));
             }
         }
-
+        /// <summary>
+        /// Update user about disconnection event
+        /// </summary>
+        /// <param name="connectionUpdate"></param>
+        private void onDisconnected(List<string> connectionUpdate)
+        {
+            if (connectionUpdate.Any())
+            {
+                ThreadPool.QueueUserWorkItem(a =>
+                {
+                    Application.Current.Dispatcher.Invoke(new Action(() =>
+                    {
+                        // Notify user about disconnection event
+                        OutputConsole.Inlines.Add("Disconnection at " + connectionUpdate[0] + " connection. ");
+                        OutputConsole.Inlines.Add("Check connections then use the 'Reconnect' button to reestablish connection!\n");
+                        connectState = false;
+                        Scroller.ScrollToEnd();
+                    }));
+                    return;
+                });
+            }
+        }
         /// <summary>
         /// Read in config file
         /// </summary>
@@ -299,6 +326,8 @@ namespace EvokedPotentialsApp
                             OutputConsole.Inlines.Add("Stim period: " + (configInfo.stimPeriod) + " us\n");
                             OutputConsole.Inlines.Add("Stim Pulse Amplitude: " + configInfo.stimAmplitude + " uA\n");
                             OutputConsole.Inlines.Add("stimDuration: " + configInfo.stimDuration + " us\n");
+                            OutputConsole.Inlines.Add("Reversing polarity: " + configInfo.reversePolarity + "\n");
+                            OutputConsole.Inlines.Add("Using ground during stim: " + configInfo.useGround + "\n");
                             Scroller.ScrollToEnd();
                         }
 
@@ -312,8 +341,9 @@ namespace EvokedPotentialsApp
                         stimAmplitude = configInfo.stimAmplitude;
                         stimDuration = configInfo.stimDuration;
                         jitterMax = configInfo.jitterMax;
+                        useGround = configInfo.useGround;
                         monopolar = configInfo.monopolar;
-                        stimThreshold = configInfo.stimThreshold;
+                        reversePolarity = configInfo.reversePolarity;
 
                         // enable certain buttons depending on stimulation experiment mode
                         if (scanMode)
@@ -406,7 +436,7 @@ namespace EvokedPotentialsApp
                     try
                     {
                         uint interPulseInterval = stimPeriod - (5 * stimDuration); 
-                        enableEvokedPotentialPulses(monopolar, (uint)stimChannel, (uint)returnChannel, stimAmplitude, stimDuration, 4, interPulseInterval, stimThreshold, numPulses, jitterMax);
+                        enableEvokedPotentialPulses(monopolar, (uint)stimChannel, (uint)returnChannel, stimAmplitude, stimDuration, numPulses, jitterMax, reversePolarity, useGround);
                     }
                     catch
                     {
@@ -475,34 +505,75 @@ namespace EvokedPotentialsApp
         /// <param name="returnChannel"></param>
         /// <param name="stimAmplitude"></param>
         /// <param name="stimDuration"></param>
-        /// <param name="chargeBalancePWRatio"></param>
-        /// <param name="interPulseInterval"></param>
-        /// <param name="stimThreshold"></param>
         /// <param name="numPulses"></param>
         /// <param name="jitterMax"></param>
-        private async void enableEvokedPotentialPulses(bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold, uint numPulses, int jitterMax)
+        /// <param name="reversePolarity"></param>
+        private async void enableEvokedPotentialPulses(bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint numPulses, int jitterMax, bool reversePolarity, bool useGround)
         {
-            // clear running totals and num pulses before starting each condition
-            aBICManager.zeroAvgsBuffers();
-            aBICManager.currNumPulses = 0;
+            uint configStim;
+            uint configReturn;
 
+            // clear running totals and num pulses before starting each condition
+            aBICManagerEP.zeroAvgsBuffers();
+            aBICManagerEP.currNumPulses = 0;
+
+            // items for randomizing polarity configuration
+            Random random = new Random();
+            List<int> stimPool = new List<int>();
+            int randomInd;
+
+            // populate the list with values to determine the polarity configuration
             for (int i = 0; i < numPulses; i++)
+            {
+                stimPool.Add(i);
+            }
+
+            for (int trial = 0; trial < numPulses; trial++)
             {
                 if (stopStimClicked)
                 {
-                    return;
+                    return; // end any stimulation occuring
                 }
                 else
                 {
-                    aBICManager.enableStimulationPulse(monopolar, stimChannel - 1, returnChannel - 1, stimAmplitude, stimDuration, 4, interPulseInterval, stimThreshold);
-                    
-                    int randomJitter = RandomNumber(0, jitterMax);
-                    await Task.Delay((int)((stimPeriod + randomJitter) / 1000));
+                    if (reversePolarity) // use original and reverse polarities
+                    {
+                        // select a value from the list to randomly decide the polarity configuration
+                        randomInd = random.Next(0, stimPool.Count);
 
-                    // Increment currNumPulses and update avgs chart after pulse completed
-                    aBICManager.currNumPulses++;
-                    updateAvgsChart();
+                        if (stimPool[randomInd] % 2 == 0)
+                        {
+                            // choose original configuration
+                            configStim = stimChannel - 1;
+                            configReturn = returnChannel - 1;
+                        }
+                        else
+                        {
+                            // reverse the configuration
+                            configStim = returnChannel - 1; 
+                            configReturn = stimChannel - 1;
+                        }
+                        // remove to ensure even distribution of the two polarity configurations
+                        stimPool.RemoveAt(randomInd);
+
+                    }
+                    else // only use one configuration
+                    {
+                        configStim = stimChannel - 1;
+                        configReturn = returnChannel - 1;
+                    }
                 }
+
+                // deliver stingle pulse of stimulation
+                aBICManagerEP.enableStimulationPulse(monopolar, configStim, configReturn, stimAmplitude, stimDuration, useGround);
+
+                // add random jitter to 
+                int randomJitter = RandomNumber(0, jitterMax);
+                await Task.Delay((int)((stimPeriod + randomJitter) / 1000));
+
+                // Increment currNumPulses and update avgs chart after pulse completed
+                aBICManagerEP.currNumPulses++;
+                updateAvgsChart();
             }
         }
 
@@ -557,7 +628,7 @@ namespace EvokedPotentialsApp
         private void btn_stop_Click(object sender, RoutedEventArgs e)
         {
             stopStimClicked = true; // We use this flag to stop sending pulses for current condition, and to stop from cycling to next condition. 
-            aBICManager.stopEvokedPotentialStimulation();
+            aBICManagerEP.stopEvokedPotentialStimulation();
             cancellationTokenSource.Cancel();
             string timeStamp = DateTime.Now.ToString("h:mm:ss tt");
             Application.Current.Dispatcher.Invoke(new Action(() =>
@@ -575,10 +646,48 @@ namespace EvokedPotentialsApp
             Scroller.ScrollToEnd();
         }
 
+        /// <summary>
+        /// Shut down connection to BIC
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_disconnect_Click(object sender, RoutedEventArgs e)
+        {
+            neuroChartUpdateTimer.Stop();
+
+            OutputConsole.Inlines.Add("Disconnecting...\n");
+            aBICManagerEP.Dispose();  // Shut down connection
+            connectState = false;
+            OutputConsole.Inlines.Add("Disconnection successful!\n");
+        }
+
+        /// <summary>
+        /// Reinitiate connection to BIC
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_reconnect_Click(object sender, RoutedEventArgs e)
+        {
+            OutputConsole.Inlines.Add("Reconnecting...\n");
+            aBICManagerEP = new EvokedPotentialsApp.BICManagerEP(neuroStreamChart.Width, stimPeriod, baselinePeriod);
+            connectState = aBICManagerEP.BICConnect();    // Try to reestablish connection
+
+            if (connectState)
+            {
+                OutputConsole.Inlines.Add("Reconnection successful!\n");
+            }
+            else
+            {
+                OutputConsole.Inlines.Add("Reconnection unsuccessful!\n");
+            }
+            neuroChartUpdateTimer.Start();
+            aBICManagerEP.disconnected += onDisconnected;
+        }
+
         private void MainWindow_Closed(object sender, EventArgs e)
         {
             neuroChartUpdateTimer.Dispose();
-            aBICManager.Dispose();
+            aBICManagerEP.Dispose();
         }
 
         /// <summary>
@@ -652,6 +761,11 @@ namespace EvokedPotentialsApp
             }
         }
 
+        /// <summary>
+        /// Adjust minimum limit of y-scale of real-time streaming chart
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void y_min_TextChanged(object sender, TextChangedEventArgs e)
         {
             double yMinVal = 0;
@@ -665,6 +779,11 @@ namespace EvokedPotentialsApp
             }
         }
 
+        /// <summary>
+        /// Adjust maximum limit of y-scale of real-time streaming chart
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void y_max_TextChanged(object sender, TextChangedEventArgs e)
         {
             double yMaxVal = 0;

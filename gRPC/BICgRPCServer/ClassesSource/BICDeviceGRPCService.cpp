@@ -293,6 +293,9 @@ namespace BICGRPCHelperNamespace
         reply->set_channelimpedance(impedanceValue);
         reply->set_units("ohms");
         reply->set_success("success");
+
+        // Notify server about impedance check
+        std::cout << "CH " << request->channel() << ": success" << std::endl;
         return grpc::Status::OK;
     }
 
@@ -527,7 +530,7 @@ namespace BICGRPCHelperNamespace
     grpc::Status BICDeviceGRPCService::bicNeuralStream(grpc::ServerContext* context, const BICgRPC::bicNeuralSetStreamingEnable* request, grpc::ServerWriter<BICgRPC::NeuralUpdate>* writer)  {
         // Check requested stream state and current streaming state (don't want to destroy a previously requested stream without it being stopped first)
         if (!deviceDirectory[request->deviceaddress()]->listener->neuralStreamingState && request->enable())
-        {
+        { 
             // Not already streaming and requesting enable
             // Configure reference electrodes
             std::set<uint32_t> referenceElectrodes;
