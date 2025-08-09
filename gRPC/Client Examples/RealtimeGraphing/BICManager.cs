@@ -72,10 +72,10 @@ namespace RealtimeGraphing
             string chanHeader = "";
             for (int chNum = 0; chNum < numSensingChannelsDef; chNum++)
             {
-                chanHeader += ", CH" + (chNum + 1).ToString();
+                chanHeader += ",CH" + (chNum + 1).ToString();
             }
-            logFileWriter.WriteLine("PacketNum, TimeStamp, FilteredChannelNum, RawChannelData, PreFilteredChannelData, HampelFilteredChannelData, " +
-                "FilteredChannelData, boolInterpolated, StimChannelData, StimActive, CalcPhase, TriggerPhase, validTarget, InputTrigger" + chanHeader);
+            logFileWriter.WriteLine("PacketNum,TimeStamp,FilteredChannelNum,RawChannelData,PreFilteredChannelData,HampelFilteredChannelData," +
+                "FilteredChannelData,boolInterpolated,StimChannelData,StimActive,CalcPhase,TriggerPhase,validTarget,InputTrigger" + chanHeader);
         }
         public bool BICConnect()
         {
