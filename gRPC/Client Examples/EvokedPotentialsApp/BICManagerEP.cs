@@ -84,10 +84,10 @@ namespace EvokedPotentialsApp
             string chanHeader = "";
             for (int chNum = 0; chNum < numSensingChannelsDef; chNum++)
             {
-                chanHeader += ", CH" + (chNum + 1).ToString();
+                chanHeader += ",CH" + (chNum + 1).ToString();
             }
             // list of header names
-            logFileWriter.WriteLine("PacketNum, TimeStamp, FilteredChannelNum, RawChannelData, FilteredChannelData, boolInterpolated, StimChannelData, StimActive" + chanHeader);
+            logFileWriter.WriteLine("PacketNum,TimeStamp,FilteredChannelNum,RawChannelData,FilteredChannelData,boolInterpolated,StimChannelData,StimActive" + chanHeader);
         }
        
         // Resets currPulseBuffer and runningTotals
