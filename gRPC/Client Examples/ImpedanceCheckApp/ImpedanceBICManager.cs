@@ -133,7 +133,7 @@ namespace ImpedanceCheckApp
                 {
                     impBuffer.Add("Unsuccessful impedance reading");
                 }
-                impedEntry += ", " + impBuffer.Last();
+                impedEntry += "," + impBuffer.Last();
                 impedFileWriter.WriteLine(impedEntry);
             }
 
