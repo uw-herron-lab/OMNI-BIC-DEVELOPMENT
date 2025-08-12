@@ -111,7 +111,7 @@ namespace ImpedanceCheckApp
         public void performImpCheck()
         {
             // Logging impedance items
-            impedFilePath = "./impedances" + DateTime.Now.ToString("_MMddyyyy_HHmmss") + ".csv";
+            impedFilePath = "./impedances" + DateTime.Now.ToString("_yyyy-MM-dd_HH-mm-ss") + ".csv";
             impedFileStream = new FileStream(impedFilePath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, FileOptions.Asynchronous);
             impedFileWriter = new StreamWriter(impedFileStream);
 

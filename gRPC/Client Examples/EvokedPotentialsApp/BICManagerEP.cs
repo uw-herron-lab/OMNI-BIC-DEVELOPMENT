@@ -36,7 +36,7 @@ namespace EvokedPotentialsApp
         // Logging Objects
         FileStream logFileStream;
         StreamWriter logFileWriter;
-        string filePath = "./epLog" + DateTime.Now.ToString("_MMddyyyy_HHmmss") + ".csv";
+        string filePath = "./epLog" + DateTime.Now.ToString("_yyyy-MM-dd_HH-mm-ss") + ".csv";
         ConcurrentQueue<string> logLineQueue = new ConcurrentQueue<string>();
         Thread newLoggingThread;
         bool loggingNotDisposed = true;
