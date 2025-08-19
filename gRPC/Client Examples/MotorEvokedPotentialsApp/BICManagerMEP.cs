@@ -215,7 +215,7 @@ namespace MotorEvokedPotentialsApp
         /// <param name="stimDuration"></param>
         /// <param name="chargeBalancePWRatio"></param>
         /// <param name="stimThreshold"></param>
-        public void enableStimulationPulse(bool monopolar, uint stimChannel, uint returnChannel, uint numPulses, uint numTrains, uint interPulseInterval, uint interTrainInterval, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, double stimThreshold)
+        public void enableStimulationPulse(bool monopolar, bool useStimGround, uint stimChannel, uint returnChannel, uint numPulses, uint numTrains, uint interPulseInterval, uint interTrainInterval, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, double stimThreshold)
         {
             uint dz1Dur = interPulseInterval - (5 * stimDuration) - 20; // DZ1 = IPI - 5 * stimDuration - 2 * DZ0
             bicEnqueueStimulationRequest aNewWaveformRequest = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.PersistentWaveform, WaveformRepititions = 1 };
@@ -244,7 +244,7 @@ namespace MotorEvokedPotentialsApp
                 StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
                 {
                     FunctionName = "motorEvokedPotentialStim",
-                    StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = dz1Dur, PulseWidth = stimDuration, PulseRepetitions = numPulses, SourceElectrodes = { stimChannel }, SinkElectrodes = { returnChannel }, UseGround = true, BurstRepetitions = 1 }
+                    StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = dz1Dur, PulseWidth = stimDuration, PulseRepetitions = numPulses, SourceElectrodes = { stimChannel }, SinkElectrodes = { returnChannel }, UseGround = useStimGround, BurstRepetitions = 1 }
 
                 };
                 aNewWaveformRequest.Functions.Add(pulseFunction0);

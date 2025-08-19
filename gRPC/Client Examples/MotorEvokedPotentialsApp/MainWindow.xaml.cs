@@ -389,7 +389,7 @@ namespace MotorEvokedPotentialsApp
                     // start stim and update status
                     try
                     {
-                        enableEvokedPotentialPulses(false, (uint)stimChannel, (uint)returnChannel, stimAmplitude, 250, 4, interPulseInterval, stimThreshold, numTrains, jitterMax);
+                        enableEvokedPotentialPulses(monopolar, useGround, (uint)stimChannel, (uint)returnChannel, stimAmplitude, 250, 4, interPulseInterval, stimThreshold, numTrains, jitterMax);
                     }
                     catch
                     {
@@ -463,7 +463,7 @@ namespace MotorEvokedPotentialsApp
         /// <param name="stimThreshold"></param>
         /// <param name="numPulses"></param>
         /// <param name="jitterMax"></param>
-        private async void enableEvokedPotentialPulses(bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold, uint numTrains, int jitterMax)
+        private async void enableEvokedPotentialPulses(bool monopolar, bool useGround, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold, uint numTrains, int jitterMax)
         {
 
             for (int i = 0; i < numTrains; i++)
@@ -474,7 +474,7 @@ namespace MotorEvokedPotentialsApp
                 }
                 else
                 {
-                    aBICManagerMEP.enableStimulationPulse(monopolar, stimChannel - 1, returnChannel - 1, numPulses, numTrains, interPulseInterval, interTrainInterval, stimAmplitude, stimDuration, 4, stimThreshold);
+                    aBICManagerMEP.enableStimulationPulse(monopolar, useGround, stimChannel - 1, returnChannel - 1, numPulses, numTrains, interPulseInterval, interTrainInterval, stimAmplitude, stimDuration, 4, stimThreshold);
 
                     int randomJitter = RandomNumber(0, jitterMax);
                     await Task.Delay((int)((interTrainInterval + randomJitter) / 1000));
