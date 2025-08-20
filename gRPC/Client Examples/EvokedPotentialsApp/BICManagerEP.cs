@@ -36,7 +36,7 @@ namespace EvokedPotentialsApp
         // Logging Objects
         FileStream logFileStream;
         StreamWriter logFileWriter;
-        string filePath = "./epLog" + DateTime.Now.ToString("_MMMdyyyy_HHmmss") + ".csv";
+        string filePath = "./epLog" + DateTime.Now.ToString("_yyyy-MM-dd_HH-mm-ss") + ".csv";
         ConcurrentQueue<string> logLineQueue = new ConcurrentQueue<string>();
         Thread newLoggingThread;
         bool loggingNotDisposed = true;
@@ -84,10 +84,10 @@ namespace EvokedPotentialsApp
             string chanHeader = "";
             for (int chNum = 0; chNum < numSensingChannelsDef; chNum++)
             {
-                chanHeader += ", CH" + (chNum + 1).ToString();
+                chanHeader += ",CH" + (chNum + 1).ToString();
             }
             // list of header names
-            logFileWriter.WriteLine("PacketNum, TimeStamp, FilteredChannelNum, RawChannelData, FilteredChannelData, boolInterpolated, StimChannelData, StimActive" + chanHeader);
+            logFileWriter.WriteLine("PacketNum,TimeStamp,FilteredChannelNum,RawChannelData,FilteredChannelData,boolInterpolated,StimChannelData,StimActive" + chanHeader);
         }
        
         // Resets currPulseBuffer and runningTotals
