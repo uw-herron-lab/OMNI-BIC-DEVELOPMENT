@@ -36,7 +36,7 @@ namespace MotorEvokedPotentialsApp
         // Logging Objects
         FileStream logFileStream;
         StreamWriter logFileWriter;
-        string filePath = "./mepLog" + DateTime.Now.ToString("_MMMdyyyy_HHmmss") + ".csv";
+        string filePath = "./mepLog" + DateTime.Now.ToString("_yyyy-MM-dd_HH-mm-ss") + ".csv";
         ConcurrentQueue<string> logLineQueue = new ConcurrentQueue<string>();
         Thread newLoggingThread;
         bool loggingNotDisposed = true;
@@ -84,10 +84,10 @@ namespace MotorEvokedPotentialsApp
             string chanHeader = "";
             for (int chNum = 0; chNum < numSensingChannelsDef; chNum++)
             {
-                chanHeader += ", CH" + (chNum + 1).ToString();
+                chanHeader += ",CH" + (chNum + 1).ToString();
             }
             // list of header names
-            logFileWriter.WriteLine("PacketNum, TimeStamp, FilteredChannelNum, RawChannelData, FilteredChannelData, boolInterpolated, StimChannelData, StimActive" + chanHeader);
+            logFileWriter.WriteLine("PacketNum,TimeStamp,FilteredChannelNum,RawChannelData,FilteredChannelData,boolInterpolated,StimChannelData,StimActive,InputTrigger" + chanHeader);
         }
        
         // Resets currPulseBuffer and runningTotals
@@ -584,7 +584,8 @@ namespace MotorEvokedPotentialsApp
                             stream.ResponseStream.Current.Samples[sampleNum].FiltSample.ToString() + ", " +
                             stream.ResponseStream.Current.Samples[sampleNum].IsInterpolated.ToString() + ", " +
                             stream.ResponseStream.Current.Samples[sampleNum].Measurements[5].ToString() + ", " +
-                            stream.ResponseStream.Current.Samples[sampleNum].StimulationActive.ToString();
+                            stream.ResponseStream.Current.Samples[sampleNum].StimulationActive.ToString()+ ", " +
+                            stream.ResponseStream.Current.Samples[sampleNum].IsInputTrigHigh.ToString(); ;
                         for (int chNum = 0; chNum < numSensingChannelsDef; chNum++)
                         {
                             logString += ", " + stream.ResponseStream.Current.Samples[sampleNum].Measurements[chNum].ToString();
