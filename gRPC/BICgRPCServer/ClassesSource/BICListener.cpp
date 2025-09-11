@@ -40,6 +40,7 @@ namespace BICGRPCHelperNamespace
 
         if (!isStimulating && isOLStimEn) // if open loop stim is enabled and isStimulating is false
         {
+            int retryCount = 5;
             StimTimes startStimulationTimes;
 
             // initialize before and after timestamps
@@ -53,60 +54,71 @@ namespace BICGRPCHelperNamespace
             before = std::chrono::system_clock::now();
             startStimulationTimes.beforeStimTimeStamp = before.time_since_epoch().count();
 
-            try
+            while (retryCount > 0)
             {
-                // Re-trigger stimulation
-                theImplantedDevice->startStimulation();
-
-                //Get time after start stimulation command (UTC)
-                after = std::chrono::system_clock::now();
-                startStimulationTimes.afterStimTimeStamp = after.time_since_epoch().count();
-
-                // No exception encountered, so label as "0"
-                startStimulationTimes.recordedException = "0";
-
-                // Add latest received data packet to the buffer if there is room
-                if (stimTimeSampleQueue.size() < 1000)
+                try
                 {
-                    // Lock the stim time buffer, add data, unlock
-                    this->m_stimTimeBufferLock.lock();
-                    stimTimeSampleQueue.push(startStimulationTimes); // add struct with timestamps and exception to queue
-                    this->m_stimTimeBufferLock.unlock();
+                    // Re-trigger stimulation
+                    theImplantedDevice->startStimulation();
 
-                    // Notify the streaming function that new data exists
-                    stimTimeDataNotify->notify_all();
+                    //Get time after start stimulation command (UTC)
+                    after = std::chrono::system_clock::now();
+                    startStimulationTimes.afterStimTimeStamp = after.time_since_epoch().count();
+
+                    // No exception encountered, so label as "0"
+                    startStimulationTimes.recordedException = "0";
+
+                    // Add latest received data packet to the buffer if there is room
+                    if (stimTimeSampleQueue.size() < 1000)
+                    {
+                        // Lock the stim time buffer, add data, unlock
+                        this->m_stimTimeBufferLock.lock();
+                        stimTimeSampleQueue.push(startStimulationTimes); // add struct with timestamps and exception to queue
+                        this->m_stimTimeBufferLock.unlock();
+
+                        // Notify the streaming function that new data exists
+                        stimTimeDataNotify->notify_all();
+                    }
+                    else
+                    {
+                        std::cout << "WARNING: Before Stim Time Log Queue Size Overflow, streaming data skipped" << std::endl;
+                    }
+
+                    break; // once stim command has been successfully sent, break out of loop
                 }
-                else
+                catch (std::exception& anyException)
                 {
-                    std::cout << "WARNING: Before Stim Time Log Queue Size Overflow, streaming data skipped" << std::endl;
+                    retryCount--;
+                    std::cout << "STIM CHANGE EVENT ERROR: Open Loop Management Exception Encountered. Reason: " << anyException.what() << std::endl;
+
+                    // If exception occurred, after is the time the exception occurred
+                    after = std::chrono::system_clock::now();
+                    startStimulationTimes.afterStimTimeStamp = after.time_since_epoch().count();
+
+                    // Also keep track of exception encountered
+                    startStimulationTimes.recordedException = anyException.what();
+
+                    if (stimTimeSampleQueue.size() < 1000)
+                    {
+                        // Lock the stim time buffer, add data, unlock
+                        this->m_stimTimeBufferLock.lock();
+                        stimTimeSampleQueue.push(startStimulationTimes); // add struct with timestamps and exception to queue
+                        this->m_stimTimeBufferLock.unlock();
+                    }
+                    else
+                    {
+                        std::cout << "WARNING: Before Stim Time Log Queue Size Overflow, streaming data skipped" << std::endl;
+                    }
                 }
-            }
-            catch (std::exception& anyException)
-            {
-                std::cout << "STIM CHANGE EVENT ERROR: Open Loop Management Exception Encountered. Reason: " << anyException.what() << std::endl;
-
-                // If exception occurred, after is the time the exception occurred
-                after = std::chrono::system_clock::now();
-                startStimulationTimes.afterStimTimeStamp = after.time_since_epoch().count();
-
-                // Also keep track of exception encountered
-                startStimulationTimes.recordedException = anyException.what();
-
-                if (stimTimeSampleQueue.size() < 1000)
+                catch (...)
                 {
-                    // Lock the stim time buffer, add data, unlock
-                    this->m_stimTimeBufferLock.lock();
-                    stimTimeSampleQueue.push(startStimulationTimes); // add struct with timestamps and exception to queue
-                    this->m_stimTimeBufferLock.unlock();
+                    std::cout << "ERROR: Open Loop Management Exception Encountered. No reason." << std::endl;
                 }
-                else
+                if (retryCount == 0)
                 {
-                    std::cout << "WARNING: Before Stim Time Log Queue Size Overflow, streaming data skipped" << std::endl;
+                    std::cout << "ERROR: Maximum retries sent. Restart Open Loop." << std::endl;
+                    break; // after max retries, send message to user to restart and break out of loop
                 }
-            }
-            catch (...)
-            {
-                std::cout << "ERROR: Open Loop Management Exception Encountered. No reason." << std::endl;
             }
         }
     }
