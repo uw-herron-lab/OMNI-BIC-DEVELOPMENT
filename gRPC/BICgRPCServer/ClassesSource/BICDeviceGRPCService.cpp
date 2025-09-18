@@ -169,6 +169,7 @@ namespace BICGRPCHelperNamespace
             newKeyPair.second->listener.reset(new BICListener());
             newKeyPair.second->listener.get()->addImplantPointer(newKeyPair.second->theImplant.get());
             newKeyPair.second->theImplant->registerListener(newKeyPair.second->listener.get());
+            newKeyPair.second->theImplant->pushState();
             newKeyPair.second->theImplantInfo.reset(theImplantInfo);
             newKeyPair.second->deviceAddress = request->deviceaddress();
             newKeyPair.second->bridgeId = bridgeId;
