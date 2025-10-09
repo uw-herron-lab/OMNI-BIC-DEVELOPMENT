@@ -261,6 +261,10 @@ namespace RealtimeGraphing
                 // Enqueue the stimulation waveform
                 deviceClient.bicEnqueueStimulation(aNewWaveformRequest);
                 deviceClient.enableOpenLoopStimulation(new openLoopStimEnableRequest() { DeviceAddress = DeviceName, Enable = true, WatchdogInterval = intervalDuration, TriggerStimThreshold = stimThreshold }); // originally 5000 sine we were only thinking of doing 50 Hz stim
+                
+                //NEW
+                deviceClient.bicGetIsStimulating(new bicGetIsStimulatingRequest());    //check to see what the output of this line is
+                //
             }
             else
             {

@@ -44,6 +44,10 @@ namespace BICGRPCHelperNamespace
 
         grpc::Status bicSetImplantPower(grpc::ServerContext* context, const BICgRPC::bicSetImplantPowerRequest* request, BICgRPC::bicSuccessReply* reply) override;
 
+        //NEW
+        grpc::Status bicGetIsStimulating(grpc::ServerContext* context, const BICgRPC::bicGetIsStimulatingRequest* request, BICgRPC::bicGetIsStimulatingReply* reply) override;
+        //
+
         // ************************* Streaming Control Function Declarations *************************
         grpc::Status bicTemperatureStream(grpc::ServerContext* context, const BICgRPC::bicSetStreamEnable* request, grpc::ServerWriter<BICgRPC::TemperatureUpdate>* writer) override;
 
