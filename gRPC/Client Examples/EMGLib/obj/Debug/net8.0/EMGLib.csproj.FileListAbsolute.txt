@@ -1,0 +1,12 @@
+C:\gitbuilds\OMNI-BIC-DEVELOPMENT\gRPC\Client Examples\EMGLib\bin\Debug\net8.0\EMGLib.deps.json
+C:\gitbuilds\OMNI-BIC-DEVELOPMENT\gRPC\Client Examples\EMGLib\bin\Debug\net8.0\EMGLib.dll
+C:\gitbuilds\OMNI-BIC-DEVELOPMENT\gRPC\Client Examples\EMGLib\bin\Debug\net8.0\EMGLib.pdb
+C:\gitbuilds\OMNI-BIC-DEVELOPMENT\gRPC\Client Examples\EMGLib\obj\Debug\net8.0\EMGLib.GeneratedMSBuildEditorConfig.editorconfig
+C:\gitbuilds\OMNI-BIC-DEVELOPMENT\gRPC\Client Examples\EMGLib\obj\Debug\net8.0\EMGLib.AssemblyInfoInputs.cache
+C:\gitbuilds\OMNI-BIC-DEVELOPMENT\gRPC\Client Examples\EMGLib\obj\Debug\net8.0\EMGLib.AssemblyInfo.cs
+C:\gitbuilds\OMNI-BIC-DEVELOPMENT\gRPC\Client Examples\EMGLib\obj\Debug\net8.0\EMGLib.csproj.CoreCompileInputs.cache
+C:\gitbuilds\OMNI-BIC-DEVELOPMENT\gRPC\Client Examples\EMGLib\obj\Debug\net8.0\EMGLib.sourcelink.json
+C:\gitbuilds\OMNI-BIC-DEVELOPMENT\gRPC\Client Examples\EMGLib\obj\Debug\net8.0\EMGLib.dll
+C:\gitbuilds\OMNI-BIC-DEVELOPMENT\gRPC\Client Examples\EMGLib\obj\Debug\net8.0\refint\EMGLib.dll
+C:\gitbuilds\OMNI-BIC-DEVELOPMENT\gRPC\Client Examples\EMGLib\obj\Debug\net8.0\EMGLib.pdb
+C:\gitbuilds\OMNI-BIC-DEVELOPMENT\gRPC\Client Examples\EMGLib\obj\Debug\net8.0\ref\EMGLib.dll

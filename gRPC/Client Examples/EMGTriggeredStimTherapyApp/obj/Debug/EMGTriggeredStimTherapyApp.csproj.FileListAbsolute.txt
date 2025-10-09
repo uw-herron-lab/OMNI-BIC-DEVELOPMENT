@@ -1,0 +1,8 @@
+C:\gitbuilds\OMNI-BIC-DEVELOPMENT\gRPC\Client Examples\EMGTriggeredStimTherapyApp\obj\Debug\EMGTriggeredStimTherapyApp.csproj.AssemblyReference.cache
+C:\gitbuilds\OMNI-BIC-DEVELOPMENT\gRPC\Client Examples\EMGTriggeredStimTherapyApp\obj\Debug\EMGTriggeredStimTherapyApp.csproj.SuggestedBindingRedirects.cache
+C:\gitbuilds\OMNI-BIC-DEVELOPMENT\gRPC\Client Examples\EMGTriggeredStimTherapyApp\obj\Debug\EMGTriggeredStimTherapyApp.exe.config
+C:\gitbuilds\OMNI-BIC-DEVELOPMENT\gRPC\Client Examples\EMGTriggeredStimTherapyApp\obj\Debug\Stim_Controlwindow.g.cs
+C:\gitbuilds\OMNI-BIC-DEVELOPMENT\gRPC\Client Examples\EMGTriggeredStimTherapyApp\obj\Debug\App.g.cs
+C:\gitbuilds\OMNI-BIC-DEVELOPMENT\gRPC\Client Examples\EMGTriggeredStimTherapyApp\obj\Debug\EMGTriggeredStimTherapyApp_MarkupCompile.cache
+C:\gitbuilds\OMNI-BIC-DEVELOPMENT\gRPC\Client Examples\EMGTriggeredStimTherapyApp\obj\Debug\EMGTriggeredStimTherapyApp_MarkupCompile.lref
+C:\gitbuilds\OMNI-BIC-DEVELOPMENT\gRPC\Client Examples\EMGTriggeredStimTherapyApp\obj\Debug\EMGTriggeredStimTherapyApp_Content.g.cs
