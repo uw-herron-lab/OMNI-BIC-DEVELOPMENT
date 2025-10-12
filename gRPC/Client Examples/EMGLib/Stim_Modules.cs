@@ -18,13 +18,13 @@ namespace EMGLib
 
         // Calibration and threshold related
         public float[] maxSig;
-        public double[] thresh;
+        public float[] thresh;
 
         public Stim_Modules(int numChannels)
         {
             numberOfChannels = numChannels;
             maxSig = new float[numChannels];
-            thresh = new double[numChannels];
+            thresh = new float[numChannels];
         }
 
         public void setThresh()
@@ -48,7 +48,7 @@ namespace EMGLib
             return rectifiedSignal;
         }
 
-        public (int[] movementDetected, long[] movementDetectedTimestamp) trigerStim(float[] signal, double[] thresh)
+        public (int[] movementDetected, long[] movementDetectedTimestamp) trigerStim(float[] signal, float[] thresh)
         {
             // movement not detected = 0, movement detected = 1
             int[] stimulate = new int[thresh.Length];

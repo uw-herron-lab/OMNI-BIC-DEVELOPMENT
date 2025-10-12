@@ -452,7 +452,7 @@ namespace EMGTriggeredStimTherapyApp
                                 emgStreaming._stimMod.maxSig[ch] = maxVal;
                                 ch++;
                             }
-                            emgStreaming._stimMod.setThresh();
+                            
                         }
                         Console.WriteLine("Calibration Data was loaded");
 
@@ -461,9 +461,13 @@ namespace EMGTriggeredStimTherapyApp
                     {
                         Console.WriteLine("Calibration Data was not loaded");
                     }
-
+                    percentThresh_textbox.IsEnabled = true;
+                    btn_threshSave.IsEnabled = true;
                 }
-                percentThresh_textbox.IsEnabled = true;
+                else 
+                { 
+                //TO DO: what should happen if no file is selected? currently exception is thrown
+                }
             }
             catch (Exception ex)
             {
@@ -560,16 +564,23 @@ namespace EMGTriggeredStimTherapyApp
 
         bool OLstimON = false;
 
-        private void btn_thresh_Click(object sender, RoutedEventArgs e)
+        private void btn_threshSave_Click(object sender, RoutedEventArgs e)
         {
             //thresh = new float[numChannels];
-            //percentThresh = float.Parse(percentThresh_textbox.Text);
-            //for (int ch = 0; ch < numChannels; ch++)
-            //{
-            //    thresh[ch] = maxSig[ch] * percent / 100;
-            //}
-            emgStreaming._stimMod.percent = float.Parse(percentThresh_textbox.Text);
-        }
+            float percentThresh = float.Parse(percentThresh_textbox.Text);
+            if (percentThresh != null)
+            {
+                emgStreaming._stimMod.percent = percentThresh;
+				emgStreaming._stimMod.setThresh();
+
+                if (bicConnected == true & emgStreaming.logging == true)
+                {
+                    btn_startStim.IsEnabled = true;
+                }
+			}
+            
+		}
+
 
         private void btn_startStim_Click(object sender, RoutedEventArgs e)
         {
@@ -593,6 +604,8 @@ namespace EMGTriggeredStimTherapyApp
 
             emgStreaming._stimEnabled = true;
             startStimThread.Start();
+            btn_stopStim.IsEnabled = true;
+            btn_stopEMGlog.IsEnabled = false;
         }
 
         private void btn_stopStim_Click(Object sender, RoutedEventArgs e)
@@ -602,6 +615,7 @@ namespace EMGTriggeredStimTherapyApp
             aBICManager.enableOpenLoopStimulation(false, configInfo.monopolar, (uint)configInfo.stimChannel - 1, (uint)configInfo.returnChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 1, 20000, configInfo.stimThreshold);
 
             startStimThread.Abort();
+            btn_stopEMGlog.IsEnabled = true;
             //btn_stopStim.IsEnabled = false;
             //btn_startStim.IsEnabled = true;
             //btn_threshSave.IsEnabled = true;

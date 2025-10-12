@@ -33,8 +33,8 @@
         <Button Name="btn_startEMGlog" Content="Start EMG Log" Click="btn_startEMGlog_Click"  HorizontalAlignment="Left" Height="34" Margin="52,231,0,0" VerticalAlignment="Top" Width="178" IsEnabled="False"/>
         <Button Name="btn_stopEMGlog" Content="Stop EMG Log" Click="btn_stopEMGlog_Click"  HorizontalAlignment="Left" Height="34" Margin="248,231,0,0" VerticalAlignment="Top" Width="178" IsEnabled="False"/>
 
-        <TextBox x:Name="percentThresh_textbox"  Text="%" HorizontalAlignment="Left" Height="18" Margin="52,302,0,0" TextWrapping="WrapWithOverflow" VerticalAlignment="Top" Width="34" TextAlignment="Center" Background="#FFE6C0C0" IsEnabled="False"/>
-        <Button x:Name="btn_threshSave" Click ="btn_thresh_Click" Content="Save Percent Threshold"  HorizontalAlignment="Left" Height="34" Margin="98,294,0,0" VerticalAlignment="Top" Width="132" RenderTransformOrigin="0.4,0.531" IsEnabled="False"/>
+        <TextBox x:Name="percentThresh_textbox"  Text="" HorizontalAlignment="Left" Height="18" Margin="52,302,0,0" TextWrapping="WrapWithOverflow" VerticalAlignment="Top" Width="34" TextAlignment="Center" Background="#FFE6C0C0" IsEnabled="False"/>
+		<Button x:Name="btn_threshSave" Content="Save Percent Threshold" Click ="btn_threshSave_Click" HorizontalAlignment="Left" Height="34" Margin="98,294,0,0" VerticalAlignment="Top" Width="132" RenderTransformOrigin="0.4,0.531" IsEnabled="False"/>
         <Button x:Name="btn_startStim" Content="Start Stimulation" Click="btn_startStim_Click"  HorizontalAlignment="Left" Height="34" Margin="52,348,0,0" VerticalAlignment="Top" Width="178" IsEnabled="False"/>
         <Button x:Name="btn_stopStim" Content="Stop Stimulation" Click="btn_stopStim_Click"  HorizontalAlignment="Left" Height="34" Margin="248,348,0,0" VerticalAlignment="Top" Width="178" IsEnabled="False"/>
 
