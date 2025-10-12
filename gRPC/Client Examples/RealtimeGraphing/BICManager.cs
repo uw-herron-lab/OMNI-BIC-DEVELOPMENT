@@ -261,12 +261,20 @@ namespace RealtimeGraphing
                 // Enqueue the stimulation waveform
                 deviceClient.bicEnqueueStimulation(aNewWaveformRequest);
                 deviceClient.enableOpenLoopStimulation(new openLoopStimEnableRequest() { DeviceAddress = DeviceName, Enable = true, WatchdogInterval = intervalDuration, TriggerStimThreshold = stimThreshold }); // originally 5000 sine we were only thinking of doing 50 Hz stim
-                
+
                 //NEW
                 deviceClient.bicGetIsStimulating(new bicGetIsStimulatingRequest());    //check to see what the output of this line is
-                //
-            }
-            else
+																					   //exception thrown
+				/*
+                 * Grpc.Core.RpcException: 'Status(StatusCode="FailedPrecondition", Detail="p�p�'
+                 * 
+                 * Inner Exception
+                 * CoreErrorDetailException: {"created":"@1760296143.565000000","description":"Error received from peer ipv4:127.0.0.1:50051","file":"..\..\..\src\core\lib\surface\call.cc","file_line":953,"grpc_message":"Not Initialized","grpc_status":9}
+                 *
+                */
+				//
+			}
+			else
             {
                 // Stop the stim
                 deviceClient.enableOpenLoopStimulation(new openLoopStimEnableRequest() { DeviceAddress = DeviceName, Enable = false });
