@@ -20,6 +20,7 @@ namespace EMGLib
         private List<float>[] band_prevInput; // initial previous inputs (zero-padding)
         private List<float>[] band_prevFiltOut; // initial previous outputs (zero-padding)
 
+        // TO DO: should be included in the config file - should they be modified based on the filter output of the calibration?
         // Filter coefficients: **currently copied from bandpass butterworth from python**
         private List<float> band_b = new List<float> { 0.231f, 0f, -0.4626f, 0f, 0.231f }; // numerator coefficients
         private List<float> band_a = new List<float> { 1f, -2.14f, 1.553f, -0.592f, 0.1834f }; // denominator coefficients

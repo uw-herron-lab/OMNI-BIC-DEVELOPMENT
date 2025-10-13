@@ -281,6 +281,9 @@ namespace EMGLib
                     if (rawSamplesAvailable > 0)
                     {
                         rawPacket rawSampPacket = new rawPacket();
+                        // theoretically this should take the data as it becomes available quickly,
+                        // but this process might create a latency that later on should be fixed -> maybe should be incorporated into the same thread for raw data being logged?
+                        // or maybe the most recent data available should be processed for stimulation and the rest, if not processed already, should be ignored. but this process is needed for plotting
                         rawSampPacket = rawSamplesQueueForProcc.Take();
                         float[] rawSamples = rawSampPacket.samples;
                         long timestampForAllSamples = rawSampPacket.stamp;

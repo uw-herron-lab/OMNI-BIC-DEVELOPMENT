@@ -48,12 +48,14 @@ namespace EMGLib
             return rectifiedSignal;
         }
 
+        // the name of this method is misleading, it should be changed to e.g. identifyMovement, 
         public (int[] movementDetected, long[] movementDetectedTimestamp) trigerStim(float[] signal, float[] thresh)
         {
             // movement not detected = 0, movement detected = 1
             int[] stimulate = new int[thresh.Length];
             long[] movementDetectedTimestamp = new long[thresh.Length];
             generateStim = false;
+            // TO DO: check to make sure stim isn't set to true for channels other than 1
             for (int ch = 0; ch < thresh.Length; ch++)
             {
                 if (signal[ch] >= thresh[ch] & signal[ch] != 0)
@@ -69,6 +71,8 @@ namespace EMGLib
                 {
                     movementDetectedTimestamp[ch] = DateTime.Now.Ticks;
                     stimulate[ch] = 0;
+                    //NEW: this is redundant but just in case for testing
+                    generateStim = false;
 
                 }
             }
