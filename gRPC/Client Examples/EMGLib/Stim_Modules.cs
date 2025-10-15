@@ -32,7 +32,7 @@ namespace EMGLib
             // calculate threshold for each channel
             for (int ch = 0; ch < numberOfChannels; ch++)
             {
-                thresh[ch] = maxSig[ch] * (100-percent) / 100;
+                thresh[ch] = maxSig[ch] * percent / 100;
                 Console.WriteLine("max sig/thresh: " + maxSig[ch].ToString()
                     + "/" + thresh[ch].ToString());
             }

@@ -1023,6 +1023,7 @@ namespace EMGTriggeredStimTherapyApp
                             aBICManager.enableOpenLoopStimulation(false, configInfo.monopolar, (uint)configInfo.stimChannel - 1, (uint)configInfo.returnChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 1, 20000, configInfo.stimThreshold);
                             OLstimON = false;
                             Console.WriteLine("OL enabled, " + OLstimON);
+                            Thread.Sleep(5000);
 
                         }
                         catch
