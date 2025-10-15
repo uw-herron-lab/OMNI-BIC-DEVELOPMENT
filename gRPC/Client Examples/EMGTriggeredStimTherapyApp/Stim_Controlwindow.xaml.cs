@@ -447,9 +447,10 @@ namespace EMGTriggeredStimTherapyApp
                                 var line = fileReader.ReadLine();
                                 var values = line.Split(',');
                                 float maxVal;
-                                float.TryParse(values[1], out maxVal);
-                                //maxSig[ch] = maxVal;
-                                emgStreaming._stimMod.maxSig[ch] = maxVal;
+								//float.TryParse(values[1], out maxVal);
+								float.TryParse(values[0], out maxVal);
+								//maxSig[ch] = maxVal;
+								emgStreaming._stimMod.maxSig[ch] = maxVal;
                                 ch++;
                             }
                             
@@ -588,19 +589,19 @@ namespace EMGTriggeredStimTherapyApp
             startStimThread = new Thread(() => Stimulator());
 
             var configInfo = aBICManager.configInfo;
-            try
-            {
+            //try
+            //{
 
-                aBICManager.enableOpenLoopStimulation(true, configInfo.monopolar, (uint)configInfo.stimChannel - 1, (uint)configInfo.returnChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, configInfo.stimPeriod - (5 * configInfo.stimDuration) - 3500, configInfo.stimThreshold);
-                Console.WriteLine("OL enabled");
-            }
-            catch
-            {
-                // Exception occured, gRPC command did not succeed, do not update UI button elements
-                Console.WriteLine("Open loop stimulation NOT started: load new configuration\n");
+            //    aBICManager.enableOpenLoopStimulation(true, configInfo.monopolar, (uint)configInfo.stimChannel - 1, (uint)configInfo.returnChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, configInfo.stimPeriod - (5 * configInfo.stimDuration) - 3500, configInfo.stimThreshold);
+            //    Console.WriteLine("OL enabled");
+            //}
+            //catch
+            //{
+            //    // Exception occured, gRPC command did not succeed, do not update UI button elements
+            //    Console.WriteLine("Open loop stimulation NOT started: load new configuration\n");
 
-                return;
-            }
+            //    return;
+            //}
 
             emgStreaming._stimEnabled = true;
             startStimThread.Start();

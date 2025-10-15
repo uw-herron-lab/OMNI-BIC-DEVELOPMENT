@@ -308,25 +308,29 @@ namespace EMGLib
                         }
                         else
                         {
-                            _stimMod.stimEnabled = _stimEnabled;
-
-                            (int[] movementDetected, long[] movementDetectedTimestamp) = _stimMod.trigerStim(envelopedSamples, _stimMod.thresh);
-
-                            _generateStim = _stimMod.generateStim;
-                            //rawSamplesQueue.Add(emgSamples);
-                            lock (plotFiltLock)
+                            if (_stimEnabled)
                             {
-                                filtSamplesQueueForPlot.Add(filtSamples);
+                                _stimMod.stimEnabled = _stimEnabled;
 
-                            }
-                            //threshSamplesQueueForPlot.Add(_stimMod.thresh);
-                            //stimSamplesQueueForPlot.Add(movementDetected);
+                                (int[] movementDetected, long[] movementDetectedTimestamp) = _stimMod.trigerStim(envelopedSamples, 0, _stimMod.thresh);
 
-                            for (int i = 0; i < filtSamples.Length; ++i)
-                            {
-                                emgFiltSW.WriteLine(string.Join(",", $"{i + 1}", filtSamples[i].ToString(), timestampForAllSamples));
-                                emgEnvelopedSW.WriteLine(string.Join(",", $"{i + 1}", envelopedSamples[i].ToString(), _stimEnabled, _generateStim, movementDetected[i], movementDetectedTimestamp[i], _stimMod.percent, _stimMod.thresh[i]));
+                                _generateStim = _stimMod.generateStim;
+                                //rawSamplesQueue.Add(emgSamples);
+                                lock (plotFiltLock)
+                                {
+                                    filtSamplesQueueForPlot.Add(filtSamples);
+
+                                }
+                                //threshSamplesQueueForPlot.Add(_stimMod.thresh);
+                                //stimSamplesQueueForPlot.Add(movementDetected);
+
+                                for (int i = 0; i < filtSamples.Length; ++i)
+                                {
+                                    emgFiltSW.WriteLine(string.Join(",", $"{i + 1}", filtSamples[i].ToString(), timestampForAllSamples));
+                                    emgEnvelopedSW.WriteLine(string.Join(",", $"{i + 1}", envelopedSamples[i].ToString(), _stimEnabled, _generateStim, movementDetected[i], movementDetectedTimestamp[i], _stimMod.percent, _stimMod.thresh[i]));
+                                }
                             }
+
                         }
                     }
                 }

@@ -32,7 +32,7 @@ namespace EMGLib
             // calculate threshold for each channel
             for (int ch = 0; ch < numberOfChannels; ch++)
             {
-                thresh[ch] = maxSig[ch] * percent / 100;
+                thresh[ch] = maxSig[ch] * (100-percent) / 100;
                 Console.WriteLine("max sig/thresh: " + maxSig[ch].ToString()
                     + "/" + thresh[ch].ToString());
             }
@@ -49,22 +49,29 @@ namespace EMGLib
         }
 
         // the name of this method is misleading, it should be changed to e.g. identifyMovement, 
-        public (int[] movementDetected, long[] movementDetectedTimestamp) trigerStim(float[] signal, float[] thresh)
+        public (int[] movementDetected, long[] movementDetectedTimestamp) trigerStim(float[] signal, int ch, float[] thresh)
         {
+            
             // movement not detected = 0, movement detected = 1
             int[] stimulate = new int[thresh.Length];
             long[] movementDetectedTimestamp = new long[thresh.Length];
             generateStim = false;
             // TO DO: check to make sure stim isn't set to true for channels other than 1
-            for (int ch = 0; ch < thresh.Length; ch++)
-            {
+            //for (int ch = 0; ch < thresh.Length; ch++)
+            //{
                 if (signal[ch] >= thresh[ch] & signal[ch] != 0)
+                //if (1 >= thresh[ch] & signal[ch] != 0)
+
                 {
                     // timestamp for when signal above threshold was detected
                     movementDetectedTimestamp[ch] = DateTime.Now.Ticks;
                     stimulate[ch] = 1;
 
                     generateStim = true;
+                    /*need to change the way filtered data is being outputted, 
+					    * and also need to implement loading of filter coefficients with calibration data. 
+					    * for some reason signal[ch] is not currently greater than thresh[ch]
+                        */
 
                 }
                 else
@@ -75,9 +82,10 @@ namespace EMGLib
                     generateStim = false;
 
                 }
-            }
+            //}
 
             return (stimulate, movementDetectedTimestamp);
+            
         }
     }
 }
