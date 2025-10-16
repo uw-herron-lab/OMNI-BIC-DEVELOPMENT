@@ -410,6 +410,8 @@ namespace BICGRPCHelperNamespace
             reply->set_success(returnMessage);
             return grpc::Status::OK;
         }
+        reply->set_isstimulating(stimActive);
+        reply->set_success("success");
         return grpc::Status::OK;
     }
     //

@@ -199,9 +199,8 @@ message bicGetIsStimulatingRequest{
 }
 
 message bicGetIsStimulatingReply{
-	bool isStimulating = 1; //not sure what this is supposed to be in this case
-	string uints = 2;
-	string success = 3;
+	bool isStimulating = 1; 
+	string success = 2;
 }
 //
 
