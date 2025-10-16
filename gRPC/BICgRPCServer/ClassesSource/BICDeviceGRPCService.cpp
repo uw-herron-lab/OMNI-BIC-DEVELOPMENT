@@ -408,7 +408,9 @@ namespace BICGRPCHelperNamespace
             return grpc::Status::OK;
         }
         reply->set_isstimulating(stimActive);
-        reply->set_success("success");
+        reply->set_success("success: stimActive " + stimActive);
+        // Write Event Information to Console
+        std::cout << "\tSTATE CHANGE: Stimulation state changed: " << stimActive << std::endl;
         return grpc::Status::OK;
     }
     //

@@ -178,6 +178,12 @@ namespace RealtimeGraphing
             logFileStream.Dispose();
         }
 
+        public void getStimState()
+        {
+			deviceClient.bicGetIsStimulating(new bicGetIsStimulatingRequest());
+		}
+
+
         public void enableOpenLoopStimulation(bool openStimEn, bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold)
         {
             // Timer interval for re-triggering train of stimulation 
@@ -193,7 +199,8 @@ namespace RealtimeGraphing
                 // check if interPulseInterval is greater than 20400 us (DZ1 duration limit) to determine how to add inter pulse interval
                 if (interPulseInterval <= 20400)
                 {
-                    if (monopolar)
+                    //deviceClient.bicGetIsStimulating(new bicGetIsStimulatingRequest()); 
+					if (monopolar)
                     {
                         // Create a pulse function for monopolar stimulation
                         StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
@@ -277,7 +284,8 @@ namespace RealtimeGraphing
 			}
 			else
             {
-                // Stop the stim
+				// Stop the stim
+				deviceClient.bicGetIsStimulating(new bicGetIsStimulatingRequest());
                 deviceClient.enableOpenLoopStimulation(new openLoopStimEnableRequest() { DeviceAddress = DeviceName, Enable = false });
             }
         }
