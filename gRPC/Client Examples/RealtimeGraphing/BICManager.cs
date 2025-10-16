@@ -263,7 +263,8 @@ namespace RealtimeGraphing
                 deviceClient.enableOpenLoopStimulation(new openLoopStimEnableRequest() { DeviceAddress = DeviceName, Enable = true, WatchdogInterval = intervalDuration, TriggerStimThreshold = stimThreshold }); // originally 5000 sine we were only thinking of doing 50 Hz stim
 
                 //NEW
-                deviceClient.bicGetIsStimulating(new bicGetIsStimulatingRequest());    //check to see what the output of this line is
+                // seems to interfere with stopStimulation function, likely because isStimulating() is interfered with?
+                //deviceClient.bicGetIsStimulating(new bicGetIsStimulatingRequest());    //check to see what the output of this line is
 																					   //exception thrown
 				/*
                  * Grpc.Core.RpcException: 'Status(StatusCode="FailedPrecondition", Detail="p�p�'
@@ -534,7 +535,7 @@ namespace RealtimeGraphing
                 // Output status
                 aStopwatch.Stop();
                 double elapsedTime = (double)aStopwatch.ElapsedTicks / (double)Stopwatch.Frequency;
-                Console.WriteLine("Implant Stream Neural Samples Received: " + stream.ResponseStream.Current.Samples.Count + "copyTime: " + elapsedTime.ToString());
+                //Console.WriteLine("Implant Stream Neural Samples Received: " + stream.ResponseStream.Current.Samples.Count + "copyTime: " + elapsedTime.ToString());
             }
             Console.WriteLine("(Neural Monitor Task Exited)");
         }

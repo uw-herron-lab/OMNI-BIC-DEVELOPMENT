@@ -35,11 +35,8 @@ using BICgRPC::PowerUpdate;
 using BICgRPC::ConnectionUpdate;
 using BICgRPC::ErrorUpdate;
 using BICgRPC::NeuralSample;
-
-//NEW
 using BICgRPC::bicGetIsStimulatingRequest;
-using BICgRPC::bicGetIsStimulatingReply;
-//
+using BICgRPC::bicGetHumidityReply;
 
 namespace BICGRPCHelperNamespace
 {
