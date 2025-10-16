@@ -24,18 +24,31 @@ namespace EMGLib
         // Filter coefficients: **currently copied from bandpass butterworth from python**
         private List<float> band_b = new List<float> { 0.231f, 0f, -0.4626f, 0f, 0.231f }; // numerator coefficients
         private List<float> band_a = new List<float> { 1f, -2.14f, 1.553f, -0.592f, 0.1834f }; // denominator coefficients
-        private float band_gainVal = 0.2313f;
+        //private float band_gainVal = 0.2313f;
+        private float band_gainVal = 1f;
 
         // lowpass filter/evelope values \\
         private List<float>[] low_prevInput; // initial previous inputs (zero-padding)
         private List<float>[] low_prevFiltOut; // initial previous outputs (zero-padding)
 
-        // Filter coefficients: **currently copied from bandpass butterworth from python**
-        private List<float> low_b = new List<float> { 0.0591907f, 0.0591907f }; // numerator coefficients
-        private List<float> low_a = new List<float> { 1f, -0.88161859f }; // denominator coefficients
-        private float low_gainVal = 0.059190703818405445f;
+		// Filter coefficients: **currently copied from bandpass butterworth from python**
 
-        public Processing_Modules(int channels)
+		// Old values
+		//private List<float> low_b = new List<float> { 0.0591907f, 0.0591907f }; // numerator coefficients
+		//private List<float> low_a = new List<float> { 1f, -0.88161859f }; // denominator coefficients
+		//private float low_gainVal = 0.059190703818405445f;
+
+		// trial 1: unchanged gainVal -> update b,a lowcut = 2
+		//private List<float> low_b = new List<float> { 0.00313176f, 0.00313176f }; // numerator coefficients
+		//private List<float> low_a = new List<float> { 1f, -0.99373647f }; // denominator coefficients
+		//private float low_gainVal = 0.0031317642291927056f;
+
+		// trial 2:
+		private List<float> low_b = new List<float> { 0.00313176f, 0.00313176f }; // numerator coefficients
+		private List<float> low_a = new List<float> { 1f, -0.99373647f }; // denominator coefficients
+		private float low_gainVal = 2f;
+
+		public Processing_Modules(int channels)
         {
             numChannels = channels;
 

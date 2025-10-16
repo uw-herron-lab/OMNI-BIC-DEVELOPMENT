@@ -308,21 +308,23 @@ namespace EMGLib
                         }
                         else
                         {
-                            if (_stimEnabled)
+                            //if (_stimEnabled)
+                            //{
+                            _stimMod.stimEnabled = _stimEnabled;
+
+                            (int[] movementDetected, long[] movementDetectedTimestamp) = _stimMod.trigerStim(envelopedSamples, 0, _stimMod.thresh);
+
+                            _generateStim = _stimMod.generateStim;
+                            //rawSamplesQueue.Add(emgSamples);
+                            lock (plotFiltLock)
                             {
-                                _stimMod.stimEnabled = _stimEnabled;
+                                filtSamplesQueueForPlot.Add(filtSamples);
 
-                                (int[] movementDetected, long[] movementDetectedTimestamp) = _stimMod.trigerStim(envelopedSamples, 0, _stimMod.thresh);
-
-                                _generateStim = _stimMod.generateStim;
-                                //rawSamplesQueue.Add(emgSamples);
-                                lock (plotFiltLock)
-                                {
-                                    filtSamplesQueueForPlot.Add(filtSamples);
-
-                                }
-                                //threshSamplesQueueForPlot.Add(_stimMod.thresh);
-                                //stimSamplesQueueForPlot.Add(movementDetected);
+                            }
+                            //threshSamplesQueueForPlot.Add(_stimMod.thresh);
+                            //stimSamplesQueueForPlot.Add(movementDetected);
+                            if (logging)
+                            {
 
                                 for (int i = 0; i < filtSamples.Length; ++i)
                                 {
@@ -330,6 +332,7 @@ namespace EMGLib
                                     emgEnvelopedSW.WriteLine(string.Join(",", $"{i + 1}", envelopedSamples[i].ToString(), _stimEnabled, _generateStim, movementDetected[i], movementDetectedTimestamp[i], _stimMod.percent, _stimMod.thresh[i]));
                                 }
                             }
+                            //}
 
                         }
                     }

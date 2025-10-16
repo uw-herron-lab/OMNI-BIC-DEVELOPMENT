@@ -47,7 +47,12 @@ def bandpass_filter(data, lowcut=20, highcut=450, fs=2000, order=2):
     low = lowcut/nyquist
     high = highcut/nyquist
     sos = signal.butter(order, [low,high], btype='band', output='sos')
+    b, a = signal.butter(order, [low,high], btype='band', output='ba')
+    z, p, k = signal.butter(order, [low,high], btype='band', output='zpk')
     filt_data = signal.sosfiltfilt(sos, data)
+    print("b: ", b)
+    print("a: ", a)
+    print("z:", k)
     return filt_data / scale_factor
 
 # Rectify the EMG signal (absolute value)
@@ -65,4 +70,5 @@ def lowpass_filter(data, lowcut=40, fs=2000, order=1):
     filt_data = signal.filtfilt(b, a, data)
     print("b: ", b)
     print("a: ", a)
+    print("z:", k)
     return filt_data / scale_factor
