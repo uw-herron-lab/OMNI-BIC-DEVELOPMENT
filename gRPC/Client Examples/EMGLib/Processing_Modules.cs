@@ -25,7 +25,7 @@ namespace EMGLib
         private List<float> band_b = new List<float> { 0.231f, 0f, -0.4626f, 0f, 0.231f }; // numerator coefficients
         private List<float> band_a = new List<float> { 1f, -2.14f, 1.553f, -0.592f, 0.1834f }; // denominator coefficients
         //private float band_gainVal = 0.2313f;
-        private float band_gainVal = 1f;
+        private float band_gainVal = 0.5f;
 
         // lowpass filter/evelope values \\
         private List<float>[] low_prevInput; // initial previous inputs (zero-padding)
@@ -46,7 +46,7 @@ namespace EMGLib
 		// trial 2:
 		private List<float> low_b = new List<float> { 0.00313176f, 0.00313176f }; // numerator coefficients
 		private List<float> low_a = new List<float> { 1f, -0.99373647f }; // denominator coefficients
-		private float low_gainVal = 2f;
+		private float low_gainVal = 15f;
 
 		public Processing_Modules(int channels)
         {
@@ -98,28 +98,52 @@ namespace EMGLib
             return filtTemp;
         }
 
-        public float[] envelopeSignals(float[] currSamp)
-        {
-            // this is a low pass filter: 
-            // y[n] = (b0 * x[n] + b1 * x[n-1]) / (1 + a1 * y[n-1])
+		//public float[] envelopeSignals(float[] currSamp)
+		//{
+		//    // this is a low pass filter: 
+		//    // y[n] = (b0 * x[n] + b1 * x[n-1]) / (1 + a1 * y[n-1])
 
-            float[] filtTemp = new float[16];
-            for (int i = 0; i < 16; i++)
-            {
-                //filtTemp[i] = (low_gainVal * low_b[0] * currSamp[i] + low_gainVal * low_b[1] * low_prevInput[i][0] +
-                //    -low_a[1] * low_prevFiltOut[i][0] - low_a[2] * low_prevFiltOut[i][1] - low_a[3] * low_prevFiltOut[i][2] - low_a[4] * low_prevFiltOut[i][3]);
-                filtTemp[i] = (low_b[0] * currSamp[i] + low_b[1] * low_prevInput[i][0]) /
-                              (1 + low_a[1] * low_prevFiltOut[i][0]);
+		//    float[] filtTemp = new float[16];
+		//    for (int i = 0; i < 16; i++)
+		//    {
+		//        //filtTemp[i] = (low_gainVal * low_b[0] * currSamp[i] + low_gainVal * low_b[1] * low_prevInput[i][0] +
+		//        //    -low_a[1] * low_prevFiltOut[i][0] - low_a[2] * low_prevFiltOut[i][1] - low_a[3] * low_prevFiltOut[i][2] - low_a[4] * low_prevFiltOut[i][3]);
+		//        filtTemp[i] = (low_b[0] * currSamp[i] + low_b[1] * low_prevInput[i][0]) /
+		//                      (1 + low_a[1] * low_prevFiltOut[i][0]);
 
-                low_prevFiltOut[i].Insert(0, filtTemp[i]);
-                low_prevFiltOut[i].RemoveAt(low_prevFiltOut[i].Count - 1);
+		//        low_prevFiltOut[i].Insert(0, filtTemp[i]);
+		//        low_prevFiltOut[i].RemoveAt(low_prevFiltOut[i].Count - 1);
 
-                // Store most recent sample at the beginning of history window
-                low_prevInput[i].Insert(0, currSamp[i]);
-                low_prevInput[i].RemoveAt(low_prevInput[i].Count - 1);
-            }
+		//        // Store most recent sample at the beginning of history window
+		//        low_prevInput[i].Insert(0, currSamp[i]);
+		//        low_prevInput[i].RemoveAt(low_prevInput[i].Count - 1);
+		//    }
 
-            return filtTemp;
-        }
-    }
+		//    return filtTemp;
+		//}
+
+		public float[] envelopeSignals(float[] currSamp)
+		{
+			// this is a low pass filter: 
+			// y[n] = (b0 * x[n] + b1 * x[n-1]) / (1 + a1 * y[n-1])
+
+			float[] filtTemp = new float[16];
+			for (int i = 0; i < 16; i++)
+			{
+				//filtTemp[i] = (low_gainVal * low_b[0] * currSamp[i] + low_gainVal * low_b[1] * low_prevInput[i][0] +
+				//    -low_a[1] * low_prevFiltOut[i][0] - low_a[2] * low_prevFiltOut[i][1] - low_a[3] * low_prevFiltOut[i][2] - low_a[4] * low_prevFiltOut[i][3]);
+				filtTemp[i] = low_gainVal * (low_b[0] * currSamp[i] + low_b[1] * low_prevInput[i][0]) /
+							  (1 + low_a[1] * low_prevFiltOut[i][0]);
+
+				low_prevFiltOut[i].Insert(0, filtTemp[i]);
+				low_prevFiltOut[i].RemoveAt(low_prevFiltOut[i].Count - 1);
+
+				// Store most recent sample at the beginning of history window
+				low_prevInput[i].Insert(0, currSamp[i]);
+				low_prevInput[i].RemoveAt(low_prevInput[i].Count - 1);
+			}
+
+			return filtTemp;
+		}
+	}
 }

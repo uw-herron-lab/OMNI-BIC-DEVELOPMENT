@@ -1000,13 +1000,13 @@ namespace EMGTriggeredStimTherapyApp
 
                             aBICManager.enableOpenLoopStimulation(true, configInfo.monopolar, (uint)configInfo.stimChannel - 1, (uint)configInfo.returnChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, configInfo.stimPeriod - (5 * configInfo.stimDuration) - 3500, configInfo.stimThreshold);
                             OLstimON = true;
-                            Console.WriteLine("OL enabled, " + OLstimON);
+                            Console.WriteLine(">>>>OL enabled, " + OLstimON);
 
                         }
                         catch
                         {
                             // Exception occured, gRPC command did not succeed, do not update UI button elements
-                            Console.WriteLine("Open loop stimulation NOT started: load new configuration\n");
+                            Console.WriteLine("Open loop stimulation NOT started\n");
 
                             return;
                         }
@@ -1022,14 +1022,14 @@ namespace EMGTriggeredStimTherapyApp
                         {
                             aBICManager.enableOpenLoopStimulation(false, configInfo.monopolar, (uint)configInfo.stimChannel - 1, (uint)configInfo.returnChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 1, 20000, configInfo.stimThreshold);
                             OLstimON = false;
-                            Console.WriteLine("OL enabled, " + OLstimON);
+                            Console.WriteLine("No movement >>>> OL disabled, " + OLstimON);
                             Thread.Sleep(5000);
-
+                            Console.WriteLine("Done with sleep after OL stop");
                         }
                         catch
                         {
                             // Exception occured, gRPC command did not succeed, do not update UI button elements
-                            Console.WriteLine("Open loop stimulation NOT stopped: load new configuration\n");
+                            Console.WriteLine("Open loop stimulation NOT stopped\n");
 
                             return;
                         }
@@ -1044,7 +1044,7 @@ namespace EMGTriggeredStimTherapyApp
                 {
                     aBICManager.enableOpenLoopStimulation(false, configInfo.monopolar, (uint)configInfo.stimChannel - 1, (uint)configInfo.returnChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 1, 20000, configInfo.stimThreshold);
                     OLstimON = false;
-                    Console.WriteLine("OL enabled, " + OLstimON);
+                    Console.WriteLine("OL disabled, " + OLstimON);
 
                 }
                 catch
