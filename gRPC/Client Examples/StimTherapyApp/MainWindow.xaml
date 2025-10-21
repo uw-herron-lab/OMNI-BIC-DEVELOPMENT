@@ -20,8 +20,11 @@
         <Button x:Name="btn_load" Content="Load Config" Margin="12,11,16,0" VerticalAlignment="Top" Click="btn_load_Click" Height="20" Grid.ColumnSpan="2"/>
         <Button x:Name="btn_beta" Content="Beta Stim" Margin="10,52,10,0" VerticalAlignment="Top" Click="btn_beta_Click" Height="20"/>
         <Button x:Name="btn_open" Content="Open Loop Stim" Margin="20,52,16,0" VerticalAlignment="Top" Click="btn_open_Click" Grid.Column="1"/>
-        <Button x:Name="btn_mod_open" Content="Mod OL Stim" Margin="20,98,16,0" VerticalAlignment="Top" Click="btn_mod_open_Click" Grid.Column="1"/>
-        <Button x:Name="btn_stop" Content="Stop Stim" Margin="10,98,10,0" VerticalAlignment="Top" Click="btn_stop_Click" Height="20"/>
+        <Button x:Name="btn_mod_open" Content="Mod OL Stim" Margin="20,77,16,0" VerticalAlignment="Top" Click="btn_mod_open_Click" Grid.Column="1"/>
+		<Button x:Name="btn_movement_on" Content="True" Margin="20,98,65,0" VerticalAlignment="Top" Click="btn_movement_on_Click" Grid.Column="1"/>
+		<Button x:Name="btn_movement_off" Content="False" Margin="69,98,16,0" VerticalAlignment="Top" Click="btn_movement_off_Click" Grid.Column="1"/>
+
+		<Button x:Name="btn_stop" Content="Stop Stim" Margin="10,98,10,0" VerticalAlignment="Top" Click="btn_stop_Click" Height="20"/>
         <Button x:Name="btn_disconnect" Content="Disconnect" Margin="12,0,0,10" Click="btn_disconnect_Click" HorizontalAlignment="Left" Width="74" Height="21" VerticalAlignment="Bottom"/>
         <Button x:Name="btn_reconnect" Content="Reconnect" Grid.Column="1" Margin="10,0,0,10" Click="btn_reconnect_Click" HorizontalAlignment="Left" Width="68" Height="21" VerticalAlignment="Bottom"/>
 
