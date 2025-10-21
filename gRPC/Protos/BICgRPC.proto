@@ -191,8 +191,7 @@ message bicSetImplantPowerRequest{
 	bool powerEnabled = 2;
 }
 
-//NEW
-//bicGetIsStimulating Messages
+
 message bicGetIsStimulatingRequest{
 	string deviceAddress = 1;
 	string channel = 2;
@@ -200,9 +199,9 @@ message bicGetIsStimulatingRequest{
 
 message bicGetIsStimulatingReply{
 	bool isStimulating = 1; 
-	string success = 2;
+	bool isTriggeringStim = 2;
+	string success = 3;
 }
-//
 
 
 // *************************** Device Stimulation Service Messages ***************************

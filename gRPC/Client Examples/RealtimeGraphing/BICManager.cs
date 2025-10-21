@@ -180,7 +180,8 @@ namespace RealtimeGraphing
 
         public void getStimState()
         {
-			deviceClient.bicGetIsStimulating(new bicGetIsStimulatingRequest());
+			var reply = deviceClient.bicGetIsStimulating(new bicGetIsStimulatingRequest() { DeviceAddress = DeviceName});
+            Console.WriteLine($">>Stim: {reply.IsStimulating.ToString()}, TrigStim: {reply.IsTriggeringStim.ToString()}");
 		}
 
 

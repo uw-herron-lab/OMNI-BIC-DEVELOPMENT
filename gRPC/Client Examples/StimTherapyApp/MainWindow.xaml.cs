@@ -398,8 +398,8 @@ namespace StimTherapyApp
                 try
                 {
                     aBICManager.getStimState();
-                    OutputConsole.Inlines.Add("Getting isStimulating");
-                    Scroller.ScrollToEnd();
+                    //OutputConsole.Inlines.Add("Getting isStimulating");
+                    //Scroller.ScrollToEnd();
                 }
                 catch
                 {

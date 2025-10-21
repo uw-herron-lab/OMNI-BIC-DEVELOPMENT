@@ -384,7 +384,7 @@ namespace BICGRPCHelperNamespace
         return grpc::Status::OK;
     }
 
-    // NEW
+ 
     grpc::Status BICDeviceGRPCService::bicGetIsStimulating(grpc::ServerContext* context, const BICgRPC::bicGetIsStimulatingRequest* request, BICgRPC::bicGetIsStimulatingReply* reply) {
         // Check if already initialized
         if (deviceDirectory.find(request->deviceaddress()) == deviceDirectory.end())
@@ -396,9 +396,11 @@ namespace BICGRPCHelperNamespace
 
         // Perform the operation
         bool stimActive;
+        bool triggeringStimActive;
         try
         {
             stimActive = deviceDirectory[request->deviceaddress()]->listener->isStimulating();
+            triggeringStimActive = deviceDirectory[request->deviceaddress()]->listener->isTriggeringStimulation();
         }
         catch (const std::exception& theError)
         {
@@ -408,12 +410,12 @@ namespace BICGRPCHelperNamespace
             return grpc::Status::OK;
         }
         reply->set_isstimulating(stimActive);
-        reply->set_success("success: stimActive " + stimActive);
-        // Write Event Information to Console
-        std::cout << "\t>>>>>stim state called by bicGetIsStimulating: " << stimActive << std::endl;
+        reply->set_istriggeringstim(triggeringStimActive);
+        reply->set_success("Retrieved Stim and Triggering Stim States Successfully.");
+
         return grpc::Status::OK;
     }
-    //
+    
 
     // ************************* Streaming Control Function Declarations *************************
     grpc::Status BICDeviceGRPCService::bicTemperatureStream(grpc::ServerContext* context, const BICgRPC::bicSetStreamEnable* request, grpc::ServerWriter<BICgRPC::TemperatureUpdate>* writer)  {
