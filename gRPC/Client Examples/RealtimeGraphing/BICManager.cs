@@ -193,7 +193,6 @@ namespace RealtimeGraphing
                 // check if interPulseInterval is greater than 20400 us (DZ1 duration limit) to determine how to add inter pulse interval
                 if (interPulseInterval <= 20400)
                 {
-                    //deviceClient.bicGetIsStimulating(new bicGetIsStimulatingRequest()); 
 					if (monopolar)
                     {
                         // Create a pulse function for monopolar stimulation
@@ -263,23 +262,10 @@ namespace RealtimeGraphing
                 deviceClient.bicEnqueueStimulation(aNewWaveformRequest);
                 deviceClient.enableOpenLoopStimulation(new openLoopStimEnableRequest() { DeviceAddress = DeviceName, Enable = true, WatchdogInterval = intervalDuration, TriggerStimThreshold = stimThreshold }); // originally 5000 sine we were only thinking of doing 50 Hz stim
 
-                //NEW
-                // seems to interfere with stopStimulation function, likely because isStimulating() is interfered with?
-                //deviceClient.bicGetIsStimulating(new bicGetIsStimulatingRequest());    //check to see what the output of this line is
-																					   //exception thrown
-				/*
-                 * Grpc.Core.RpcException: 'Status(StatusCode="FailedPrecondition", Detail="p�p�'
-                 * 
-                 * Inner Exception
-                 * CoreErrorDetailException: {"created":"@1760296143.565000000","description":"Error received from peer ipv4:127.0.0.1:50051","file":"..\..\..\src\core\lib\surface\call.cc","file_line":953,"grpc_message":"Not Initialized","grpc_status":9}
-                 *
-                */
-				//
 			}
 			else
             {
 				// Stop the stim
-				deviceClient.bicGetIsStimulating(new bicGetIsStimulatingRequest());
                 deviceClient.enableOpenLoopStimulation(new openLoopStimEnableRequest() { DeviceAddress = DeviceName, Enable = false });
             }
         }
