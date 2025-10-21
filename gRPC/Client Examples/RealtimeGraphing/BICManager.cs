@@ -178,13 +178,6 @@ namespace RealtimeGraphing
             logFileStream.Dispose();
         }
 
-        public void getStimState()
-        {
-			var reply = deviceClient.bicGetIsStimulating(new bicGetIsStimulatingRequest() { DeviceAddress = DeviceName});
-            Console.WriteLine($">>Stim: {reply.IsStimulating.ToString()}, TrigStim: {reply.IsTriggeringStim.ToString()}");
-		}
-
-
         public void enableOpenLoopStimulation(bool openStimEn, bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold)
         {
             // Timer interval for re-triggering train of stimulation 
