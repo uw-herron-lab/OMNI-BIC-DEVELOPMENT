@@ -390,6 +390,23 @@ namespace StimTherapyApp
                 }));
             });
         }
+        private void btn_mod_open_Click(object sender, EventArgs e)
+        {
+            ThreadPool.QueueUserWorkItem(a =>
+            {
+                // for now, every time this button is clicked, just check if isStimulating
+                try
+                {
+                    aBICManager.getStimState();
+                    OutputConsole.Inlines.Add("Getting isStimulating");
+                    Scroller.ScrollToEnd();
+                }
+                catch
+                {
+                    OutputConsole.Inlines.Add("Issue with getStimState()");
+                }
+            });
+        }
 
         private void btn_stop_Click(object sender, RoutedEventArgs e)
         {
