@@ -193,7 +193,7 @@ namespace RealtimeGraphing
                 // check if interPulseInterval is greater than 20400 us (DZ1 duration limit) to determine how to add inter pulse interval
                 if (interPulseInterval <= 20400)
                 {
-                    if (monopolar)
+					if (monopolar)
                     {
                         // Create a pulse function for monopolar stimulation
                         StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
@@ -261,10 +261,11 @@ namespace RealtimeGraphing
                 // Enqueue the stimulation waveform
                 deviceClient.bicEnqueueStimulation(aNewWaveformRequest);
                 deviceClient.enableOpenLoopStimulation(new openLoopStimEnableRequest() { DeviceAddress = DeviceName, Enable = true, WatchdogInterval = intervalDuration, TriggerStimThreshold = stimThreshold }); // originally 5000 sine we were only thinking of doing 50 Hz stim
-            }
-            else
+
+			}
+			else
             {
-                // Stop the stim
+				// Stop the stim
                 deviceClient.enableOpenLoopStimulation(new openLoopStimEnableRequest() { DeviceAddress = DeviceName, Enable = false });
             }
         }
