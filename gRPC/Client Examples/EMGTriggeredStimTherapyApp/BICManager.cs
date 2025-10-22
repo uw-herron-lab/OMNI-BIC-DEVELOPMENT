@@ -29,7 +29,7 @@ namespace EMGTriggeredStimTherapyApp
         // Logging Objects
         FileStream logFileStream;
         StreamWriter logFileWriter;
-        string fileName = @"\filterLog_" + $"{DateTime.Now:yyyy - MM - dd_HH - mm - ss}" + ".csv";
+        string fileName = @"\mtsLog_" + $"{DateTime.Now:yyyy-MM-dd_HH-mm-ss}" + ".csv";
         public string saveDir;
         string filePath;
         ConcurrentQueue<string> logLineQueue = new ConcurrentQueue<string>();
@@ -90,10 +90,10 @@ namespace EMGTriggeredStimTherapyApp
             string chanHeader = "";
             for (int chNum = 0; chNum < numSensingChannelsDef; chNum++)
             {
-                chanHeader += ", CH" + (chNum + 1).ToString();
+                chanHeader += ",CH" + (chNum + 1).ToString();
             }
-            logFileWriter.WriteLine("PacketNum, TimeStamp, FilteredChannelNum, RawChannelData, PreFilteredChannelData, HampelFilteredChannelData, " +
-                "FilteredChannelData, boolInterpolated, StimChannelData, StimActive, CalcPhase, TriggerPhase, validTarget, InputTrigger" + chanHeader);
+            logFileWriter.WriteLine("PacketNum,TimeStamp,FilteredChannelNum,RawChannelData,PreFilteredChannelData,HampelFilteredChannelData," +
+                "FilteredChannelData,boolInterpolated,StimChannelData,StimActive,CalcPhase,TriggerPhase,validTarget,InputTrigger" + chanHeader);
 
         }
         public bool BICConnect()
@@ -189,6 +189,13 @@ namespace EMGTriggeredStimTherapyApp
             logFileWriter.Flush();
             logFileWriter.Dispose();
             logFileStream.Dispose();
+        }
+
+        public bool[] getStimState()
+        {
+            var reply = deviceClient.bicGetIsStimulating(new bicGetIsStimulatingRequest() { DeviceAddress = DeviceName });
+
+            return new bool[] { reply.IsStimulating, reply.IsTriggeringStim };
         }
 
         public void enableOpenLoopStimulation(bool openStimEn, bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold)
@@ -323,11 +330,43 @@ namespace EMGTriggeredStimTherapyApp
             });
         }
 
-        /// <summary>
-        /// Provide a copy of the current data buffers
-        /// </summary>
-        /// <returns>A list of double-arrays, each array is composed of the latest time domain data from each BIC channel. index 0 is the oldest data. </returns>
-        public List<double>[] getData() // need to modify this section in order to get filtered data
+        public void sendSingleStimulation( bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold)
+        {
+			// Create a waveform defintion request 
+			bicEnqueueStimulationRequest aNewWaveformRequest = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.PersistentWaveform, WaveformRepititions = 1 };
+			if (monopolar)
+			{
+				// Create a pulse function
+				StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
+				{
+					FunctionName = "singlePulseFunction",
+					StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 10, PulseWidth = stimDuration, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { }, UseGround = true, BurstRepetitions = 1 }
+				};
+				aNewWaveformRequest.Functions.Add(pulseFunction0);
+			}
+			else
+			{
+				// Create a pulse function
+				StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
+				{
+					FunctionName = "singlePulseFunction",
+					StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 10, PulseWidth = stimDuration, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { returnChannel }, UseGround = true, BurstRepetitions = 1 }
+				};
+				aNewWaveformRequest.Functions.Add(pulseFunction0);
+			}
+
+			// Enqueue the stimulation waveform
+			deviceClient.bicEnqueueStimulation(aNewWaveformRequest);
+            deviceClient.bicStartStimulation(new bicStartStimulationRequest() { DeviceAddress = DeviceName });
+		}
+      
+        
+
+		/// <summary>
+		/// Provide a copy of the current data buffers
+		/// </summary>
+		/// <returns>A list of double-arrays, each array is composed of the latest time domain data from each BIC channel. index 0 is the oldest data. </returns>
+		public List<double>[] getData() // need to modify this section in order to get filtered data
         {
             List<double>[] outputBuffer = new List<double>[dataBuffer.Length + filtDataBuffer.Length];
 

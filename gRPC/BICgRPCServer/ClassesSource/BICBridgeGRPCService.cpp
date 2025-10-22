@@ -13,6 +13,7 @@ using BICgRPC::ConnectBridgeResponse;
 using BICgRPC::bicSetStreamEnable;
 using BICgRPC::DisconnectBridgeRequest;
 
+
 namespace BICGRPCHelperNamespace
 {
 

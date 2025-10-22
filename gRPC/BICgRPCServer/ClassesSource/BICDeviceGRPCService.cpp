@@ -35,6 +35,7 @@ using BICgRPC::PowerUpdate;
 using BICgRPC::ConnectionUpdate;
 using BICgRPC::ErrorUpdate;
 using BICgRPC::NeuralSample;
+using BICgRPC::bicGetIsStimulatingRequest;
 
 namespace BICGRPCHelperNamespace
 {
@@ -379,6 +380,36 @@ namespace BICGRPCHelperNamespace
         }
 
         // Respond to client=
+        return grpc::Status::OK;
+    }
+    grpc::Status BICDeviceGRPCService::bicGetIsStimulating(grpc::ServerContext* context, const BICgRPC::bicGetIsStimulatingRequest* request, BICgRPC::bicGetIsStimulatingReply* reply) {
+        // Check if already initialized
+        if (deviceDirectory.find(request->deviceaddress()) == deviceDirectory.end())
+        {
+            // Not found!
+            reply->set_success("error: not initialized");
+            return grpc::Status(grpc::StatusCode::FAILED_PRECONDITION, "Not Initialized");
+        }
+
+        // Perform the operation
+        bool stimActive;
+        bool triggeringStimActive;
+        try
+        {
+            stimActive = deviceDirectory[request->deviceaddress()]->listener->isStimulating();
+            triggeringStimActive = deviceDirectory[request->deviceaddress()]->listener->isTriggeringStimulation();
+        }
+        catch (const std::exception& theError)
+        {
+            std::string returnMessage = "error: exception - ";
+            returnMessage += theError.what();
+            reply->set_success(returnMessage);
+            return grpc::Status::OK;
+        }
+        reply->set_isstimulating(stimActive);
+        reply->set_istriggeringstim(triggeringStimActive);
+        reply->set_success("Retrieved Stim and Triggering Stim States Successfully.");
+
         return grpc::Status::OK;
     }
 

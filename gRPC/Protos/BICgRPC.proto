@@ -47,6 +47,7 @@ service BICDeviceService{
 	rpc bicGetImpedance (bicGetImpedanceRequest) returns (bicGetImpedanceReply) {}
 	rpc bicGetTemperature (RequestDeviceAddress) returns (bicGetTemperatureReply) {}
 	rpc bicGetHumidity (RequestDeviceAddress) returns (bicGetHumidityReply) {}
+	rpc bicGetIsStimulating (bicGetIsStimulatingRequest) returns (bicGetIsStimulatingReply) {}
 
 	// Set Functions
 	rpc bicSetImplantPower (bicSetImplantPowerRequest) returns (bicSuccessReply) {}
@@ -188,6 +189,16 @@ enum RecordingAmplificationFactor{
 message bicSetImplantPowerRequest{
 	string deviceAddress = 1;
 	bool powerEnabled = 2;
+}
+message bicGetIsStimulatingRequest{
+	string deviceAddress = 1;
+	string channel = 2;
+}
+
+message bicGetIsStimulatingReply{
+	bool isStimulating = 1; 
+	bool isTriggeringStim = 2;
+	string success = 3;
 }
 
 // *************************** Device Stimulation Service Messages ***************************
