@@ -65,9 +65,11 @@ def lowpass_filter(data, lowcut=40, fs=2000, order=1):
     nyquist = fs/2
     low = lowcut/nyquist
     data = np.array(data, dtype=np.float64) * scale_factor
+    sos = signal.butter(order, low, btype='low', output='sos')
     b, a = signal.butter(order, low, btype='low', output='ba')
     z, p, k = signal.butter(order, low, btype='low', output='zpk')
-    filt_data = signal.filtfilt(b, a, data)
+    # filt_data = signal.filtfilt(b, a, data)
+    filt_data = signal.sosfiltfilt(sos, data)
     print("b: ", b)
     print("a: ", a)
     print("z:", k)

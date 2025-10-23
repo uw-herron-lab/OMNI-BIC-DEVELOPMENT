@@ -31,24 +31,29 @@ namespace EMGLib
         private List<float>[] low_prevInput; // initial previous inputs (zero-padding)
         private List<float>[] low_prevFiltOut; // initial previous outputs (zero-padding)
 
-		// Filter coefficients: **currently copied from bandpass butterworth from python**
+        // Filter coefficients: **currently copied from bandpass butterworth from python**
 
-		// Old values
-		//private List<float> low_b = new List<float> { 0.0591907f, 0.0591907f }; // numerator coefficients
-		//private List<float> low_a = new List<float> { 1f, -0.88161859f }; // denominator coefficients
-		//private float low_gainVal = 0.059190703818405445f;
+        // Old values
+        //private List<float> low_b = new List<float> { 0.0591907f, 0.0591907f }; // numerator coefficients
+        //private List<float> low_a = new List<float> { 1f, -0.88161859f }; // denominator coefficients
+        //private float low_gainVal = 0.059190703818405445f;
 
-		// trial 1: unchanged gainVal -> update b,a lowcut = 2
-		//private List<float> low_b = new List<float> { 0.00313176f, 0.00313176f }; // numerator coefficients
-		//private List<float> low_a = new List<float> { 1f, -0.99373647f }; // denominator coefficients
-		//private float low_gainVal = 0.0031317642291927056f;
+        // trial 1: unchanged gainVal -> update b,a lowcut = 2
+        //private List<float> low_b = new List<float> { 0.00313176f, 0.00313176f }; // numerator coefficients
+        //private List<float> low_a = new List<float> { 1f, -0.99373647f }; // denominator coefficients
+        //private float low_gainVal = 0.0031317642291927056f;
 
-		// trial 2:
-		private List<float> low_b = new List<float> { 0.00313176f, 0.00313176f }; // numerator coefficients
-		private List<float> low_a = new List<float> { 1f, -0.99373647f }; // denominator coefficients
-		private float low_gainVal = 15f;
+        // trial 2:
+        //private List<float> low_b = new List<float> { 0.00313176f, 0.00313176f }; // numerator coefficients
+        //private List<float> low_a = new List<float> { 1f, -0.99373647f }; // denominator coefficients
+        //private float low_gainVal = 15f;
 
-		public Processing_Modules(int channels)
+        // trial 3: second order, and lowcut is 2
+        private List<float> low_b = new List<float> { 9.82591682e-06f, 1.96518336e-05f, 9.82591682e-06f }; // numerator coefficients
+        private List<float> low_a = new List<float> { 1f, - 1.99111429f,  0.9911536f }; // denominator coefficients
+        private float low_gainVal = 15f;
+
+        public Processing_Modules(int channels)
         {
             numChannels = channels;
 
@@ -130,12 +135,15 @@ namespace EMGLib
 			float[] filtTemp = new float[16];
 			for (int i = 0; i < 16; i++)
 			{
-				//filtTemp[i] = (low_gainVal * low_b[0] * currSamp[i] + low_gainVal * low_b[1] * low_prevInput[i][0] +
-				//    -low_a[1] * low_prevFiltOut[i][0] - low_a[2] * low_prevFiltOut[i][1] - low_a[3] * low_prevFiltOut[i][2] - low_a[4] * low_prevFiltOut[i][3]);
-				filtTemp[i] = low_gainVal * (low_b[0] * currSamp[i] + low_b[1] * low_prevInput[i][0]) /
-							  (1 + low_a[1] * low_prevFiltOut[i][0]);
+                //filtTemp[i] = (low_gainVal * low_b[0] * currSamp[i] + low_gainVal * low_b[1] * low_prevInput[i][0] +
+                //    -low_a[1] * low_prevFiltOut[i][0] - low_a[2] * low_prevFiltOut[i][1] - low_a[3] * low_prevFiltOut[i][2] - low_a[4] * low_prevFiltOut[i][3]);
+                //filtTemp[i] = low_gainVal * (low_b[0] * currSamp[i] + low_b[1] * low_prevInput[i][0]) /
+                //			  (1 + low_a[1] * low_prevFiltOut[i][0]);
 
-				low_prevFiltOut[i].Insert(0, filtTemp[i]);
+                filtTemp[i] = low_gainVal * (low_b[0] * currSamp[i] + low_b[1] * low_prevInput[i][0] + low_b[2] * low_prevInput[i][1]) -
+                              ( low_a[1] * low_prevFiltOut[i][0] + low_a[2] * low_prevFiltOut[i][1]);
+
+                low_prevFiltOut[i].Insert(0, filtTemp[i]);
 				low_prevFiltOut[i].RemoveAt(low_prevFiltOut[i].Count - 1);
 
 				// Store most recent sample at the beginning of history window
