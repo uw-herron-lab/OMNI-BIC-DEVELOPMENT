@@ -20,15 +20,14 @@ namespace EMGLib
         private List<float>[] band_prevInput; // initial previous inputs (zero-padding)
         private List<float>[] band_prevFiltOut; // initial previous outputs (zero-padding)
 
-        // TO DO: should be included in the config file - should they be modified based on the filter output of the calibration?
-        // Filter coefficients: **currently copied from bandpass butterworth from python**
-        private List<float> band_b = new List<float> { 0.231f, 0f, -0.4626f, 0f, 0.231f }; // numerator coefficients
-        private List<float> band_a = new List<float> { 1f, -2.14f, 1.553f, -0.592f, 0.1834f }; // denominator coefficients
-        //private float band_gainVal = 0.2313f;
-        private float band_gainVal = 0.5f;
+		// TO DO: should be included in the config file - should they be modified based on the filter output of the calibration?
+		// Filter coefficients: **currently copied from bandpass butterworth from python**
+		private List<float> band_b = new List<float> { 0.231f, 0f, -0.4626f, 0f, 0.231f }; // numerator coefficients
+		private List<float> band_a = new List<float> { 1f, -2.14f, 1.553f, -0.592f, 0.1834f }; // denominator coefficients
+		private float band_gainVal = 0.9f;
 
-        // lowpass filter/evelope values \\
-        private List<float>[] low_prevInput; // initial previous inputs (zero-padding)
+		// lowpass filter/evelope values \\
+		private List<float>[] low_prevInput; // initial previous inputs (zero-padding)
         private List<float>[] low_prevFiltOut; // initial previous outputs (zero-padding)
 
 		// Filter coefficients: **currently copied from bandpass butterworth from python**
@@ -44,9 +43,10 @@ namespace EMGLib
 		//private float low_gainVal = 0.0031317642291927056f;
 
 		// trial 2:
-		private List<float> low_b = new List<float> { 0.00313176f, 0.00313176f }; // numerator coefficients
-		private List<float> low_a = new List<float> { 1f, -0.99373647f }; // denominator coefficients
-		private float low_gainVal = 15f;
+
+		private List<float> low_b = new List<float> { 9.82591682e-06f, 1.96518336e-05f, 9.82591682e-06f }; // numerator coefficients
+		private List<float> low_a = new List<float> { 1f, -1.99111429f, 0.9911536f }; // denominator coefficients
+		private float low_gainVal = 2f;
 
 		public Processing_Modules(int channels)
         {
@@ -132,8 +132,8 @@ namespace EMGLib
 			{
 				//filtTemp[i] = (low_gainVal * low_b[0] * currSamp[i] + low_gainVal * low_b[1] * low_prevInput[i][0] +
 				//    -low_a[1] * low_prevFiltOut[i][0] - low_a[2] * low_prevFiltOut[i][1] - low_a[3] * low_prevFiltOut[i][2] - low_a[4] * low_prevFiltOut[i][3]);
-				filtTemp[i] = low_gainVal * (low_b[0] * currSamp[i] + low_b[1] * low_prevInput[i][0]) /
-							  (1 + low_a[1] * low_prevFiltOut[i][0]);
+				filtTemp[i] = low_gainVal * (low_b[0] * currSamp[i] + low_b[1] * low_prevInput[i][0] + low_b[2] * low_prevInput[i][1]) -
+							  (low_a[1] * low_prevFiltOut[i][0] + low_a[2] * low_prevFiltOut[i][1]);
 
 				low_prevFiltOut[i].Insert(0, filtTemp[i]);
 				low_prevFiltOut[i].RemoveAt(low_prevFiltOut[i].Count - 1);
