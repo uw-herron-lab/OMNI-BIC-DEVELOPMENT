@@ -25,7 +25,7 @@ namespace EMGLib
         private List<float> band_b = new List<float> { 0.231f, 0f, -0.4626f, 0f, 0.231f }; // numerator coefficients
         private List<float> band_a = new List<float> { 1f, -2.14f, 1.553f, -0.592f, 0.1834f }; // denominator coefficients
         //private float band_gainVal = 0.2313f;
-        private float band_gainVal = 0.5f;
+        private float band_gainVal = 0.9f;
 
         // lowpass filter/evelope values \\
         private List<float>[] low_prevInput; // initial previous inputs (zero-padding)
@@ -51,7 +51,7 @@ namespace EMGLib
         // trial 3: second order, and lowcut is 2
         private List<float> low_b = new List<float> { 9.82591682e-06f, 1.96518336e-05f, 9.82591682e-06f }; // numerator coefficients
         private List<float> low_a = new List<float> { 1f, - 1.99111429f,  0.9911536f }; // denominator coefficients
-        private float low_gainVal = 15f;
+        private float low_gainVal = 2f;
 
         public Processing_Modules(int channels)
         {
