@@ -335,7 +335,7 @@ namespace MotorEvokedPotentialsApp
 
             if (stimMode == 0) // motor threshold mode
             {
-                ThreadPool.QueueUserWorkItem(a =>
+                ThreadPool.QueueUserWorkItem(async a =>
                 {
                     // Keep the time for console output writing
                     string timeStamp = DateTime.Now.ToString("h:mm:ss tt");
@@ -377,7 +377,16 @@ namespace MotorEvokedPotentialsApp
                         Scroller.ScrollToEnd();
                     }));
                 });
-                
+                try
+                {
+                    // Deliver open-loop stimulation for a set 4 seconds before stopping all stimulation
+                    await Task.Delay(4000);
+                    aBICManagerMEP.enableMotorThresholdStimulation(false, monopolar, useGround, (uint)stimChannel - 1, (uint)returnChannel - 1, stimAmplitude, stimDuration, 4, 20000, stimThreshold);
+                }
+                catch (TaskCanceledException)
+                {
+                    return;
+                }
             }
             else if (stimMode == 1) // motor evoked potential mode
             {
