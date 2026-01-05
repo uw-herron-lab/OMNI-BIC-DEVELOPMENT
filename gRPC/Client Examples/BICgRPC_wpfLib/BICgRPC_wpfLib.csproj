@@ -78,15 +78,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\..\packages\Grpc.Core.2.46.6\build\net45\Grpc.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Grpc.Core.2.46.6\build\net45\Grpc.Core.targets'))" />
-    <Error Condition="!Exists('..\..\packages\Grpc.Tools.2.59.0\build\Grpc.Tools.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Grpc.Tools.2.59.0\build\Grpc.Tools.props'))" />
-    <Error Condition="!Exists('..\..\packages\Grpc.Tools.2.59.0\build\Grpc.Tools.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Grpc.Tools.2.59.0\build\Grpc.Tools.targets'))" />
-    <Error Condition="!Exists('..\..\packages\Google.Protobuf.Tools.3.24.4\build\Google.Protobuf.Tools.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Google.Protobuf.Tools.3.24.4\build\Google.Protobuf.Tools.targets'))" />
-  </Target>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild" />
   <Import Project="..\..\packages\Grpc.Core.2.46.6\build\net45\Grpc.Core.targets" Condition="Exists('..\..\packages\Grpc.Core.2.46.6\build\net45\Grpc.Core.targets')" />
   <Import Project="..\..\packages\Grpc.Tools.2.59.0\build\Grpc.Tools.targets" Condition="Exists('..\..\packages\Grpc.Tools.2.59.0\build\Grpc.Tools.targets')" />
   <Import Project="..\..\packages\Google.Protobuf.Tools.3.24.4\build\Google.Protobuf.Tools.targets" Condition="Exists('..\..\packages\Google.Protobuf.Tools.3.24.4\build\Google.Protobuf.Tools.targets')" />
