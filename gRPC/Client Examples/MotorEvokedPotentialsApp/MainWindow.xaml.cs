@@ -55,6 +55,7 @@ namespace MotorEvokedPotentialsApp
         private bool ampSetFlag = false;
         private bool sourceSetFlag = false;
         private bool destinationSetFlag = false;
+        private string currTimeStamp = DateTime.Now.ToString("h:mm:ss tt");
 
         private bool stopStimClicked = false; // set to true when stop is clicked. Flag to exit from for loops that would send more stimulation
         private CancellationTokenSource cancellationTokenSource;
@@ -339,7 +340,7 @@ namespace MotorEvokedPotentialsApp
                 ThreadPool.QueueUserWorkItem(a =>
                 {
                     // Keep the time for console output writing
-                    string timeStamp = DateTime.Now.ToString("h:mm:ss tt");
+                    currTimeStamp = DateTime.Now.ToString("h:mm:ss tt");
 
                     try
                     {
@@ -350,7 +351,7 @@ namespace MotorEvokedPotentialsApp
                         // Exception occured, gRPC command did not succeed, do not update UI button elements
                         Application.Current.Dispatcher.Invoke(new Action(() =>
                         {
-                            OutputConsole.Inlines.Add("Open loop stimulation NOT started: " + timeStamp + ", load new configuration\n");
+                            OutputConsole.Inlines.Add("Open loop stimulation NOT started: " + currTimeStamp + ", load new configuration\n");
                             Scroller.ScrollToEnd();
                         }));
                         return;
@@ -374,7 +375,7 @@ namespace MotorEvokedPotentialsApp
                     // notify user of stimulation starting
                     Application.Current.Dispatcher.Invoke(new Action(() =>
                     {
-                        OutputConsole.Inlines.Add("Motor threshold stimulation started: " + timeStamp + "\n");
+                        OutputConsole.Inlines.Add("Motor threshold stimulation started: " + currTimeStamp + "\n");
                         Scroller.ScrollToEnd();
                     }));
                 });
@@ -383,12 +384,12 @@ namespace MotorEvokedPotentialsApp
                     // Deliver open-loop stimulation for a set 4 seconds before stopping all stimulation
                     await Task.Delay(4000, cancellationTokenSource.Token);
                     aBICManagerMEP.enableMotorThresholdStimulation(false, monopolar, useGround, (uint)stimChannel - 1, (uint)returnChannel - 1, stimAmplitude, stimDuration, 4, 20000, stimThreshold);
-                    
+
                     // notify user of stimulation ending
-                    string timeStamp = DateTime.Now.ToString("h:mm:ss tt");
+                    currTimeStamp = DateTime.Now.ToString("h:mm:ss tt");
                     Application.Current.Dispatcher.Invoke(new Action(() =>
                     {
-                        OutputConsole.Inlines.Add("Motor threshold stimulation stopped: " + timeStamp + "\n");
+                        OutputConsole.Inlines.Add("Motor threshold stimulation stopped: " + currTimeStamp + "\n");
                         Scroller.ScrollToEnd();
                     }));
                 }
@@ -402,7 +403,7 @@ namespace MotorEvokedPotentialsApp
                 ThreadPool.QueueUserWorkItem(a =>
                 {
                     // Keep the time for console output writing
-                    string timeStamp = DateTime.Now.ToString("h:mm:ss tt");
+                    currTimeStamp = DateTime.Now.ToString("h:mm:ss tt");
 
                     // start stim and update status
                     try
@@ -414,7 +415,7 @@ namespace MotorEvokedPotentialsApp
                         // Exception occured, gRPC command did not succeed, do not update UI button elements
                         Application.Current.Dispatcher.Invoke(new Action(() =>
                         {
-                            OutputConsole.Inlines.Add("Evoked Potential stimulation NOT started: " + timeStamp + ", load new configuration\n");
+                            OutputConsole.Inlines.Add("Motor evoked Potential stimulation NOT started: " + currTimeStamp + ", load new configuration\n");
                             Scroller.ScrollToEnd();
                         }));
                         return;
@@ -439,7 +440,7 @@ namespace MotorEvokedPotentialsApp
                     // notify user of stimulation starting
                     Application.Current.Dispatcher.Invoke(new Action(() =>
                     {
-                        OutputConsole.Inlines.Add("Evoked potential stimulation started: " + timeStamp + "\n");
+                        OutputConsole.Inlines.Add("Motor evoked potential stimulation started: " + currTimeStamp + "\n");
                         OutputConsole.Inlines.Add("Source channel: " + stimChannel + "\nDestination channel: " + returnChannel + "\n");
                         Scroller.ScrollToEnd();
                     }));
@@ -459,9 +460,10 @@ namespace MotorEvokedPotentialsApp
 
 
                 // notify user and update UI
+                currTimeStamp = DateTime.Now.ToString("h:mm:tt");
                 Application.Current.Dispatcher.Invoke(new Action(() =>
                 {
-                    OutputConsole.Inlines.Add("Motor evoked potential stimulation completed.\n");
+                    OutputConsole.Inlines.Add("Motor evoked potential stimulation completed: " + currTimeStamp + "\n");
                     Scroller.ScrollToEnd();
                 }));
             }
@@ -545,10 +547,10 @@ namespace MotorEvokedPotentialsApp
                 }
             });
 
-            string timeStamp = DateTime.Now.ToString("h:mm:ss tt");
+            currTimeStamp = DateTime.Now.ToString("h:mm:ss tt");
             Application.Current.Dispatcher.Invoke(new Action(() =>
             {
-                OutputConsole.Inlines.Add("Stimulation cancelled at " + timeStamp + "\n");
+                OutputConsole.Inlines.Add("Stimulation cancelled at " + currTimeStamp + "\n");
                 Scroller.ScrollToEnd();
             }));
             stop_stim_UI_update();
