@@ -1,4 +1,5 @@
-﻿using MotorEvokedPotentialsApp.Properties;
+﻿using Google.Protobuf.WellKnownTypes;
+using MotorEvokedPotentialsApp.Properties;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -335,7 +336,7 @@ namespace MotorEvokedPotentialsApp
 
             if (stimMode == 0) // motor threshold mode
             {
-                ThreadPool.QueueUserWorkItem(async a =>
+                ThreadPool.QueueUserWorkItem(a =>
                 {
                     // Keep the time for console output writing
                     string timeStamp = DateTime.Now.ToString("h:mm:ss tt");
@@ -380,8 +381,16 @@ namespace MotorEvokedPotentialsApp
                 try
                 {
                     // Deliver open-loop stimulation for a set 4 seconds before stopping all stimulation
-                    await Task.Delay(4000);
+                    await Task.Delay(4000, cancellationTokenSource.Token);
                     aBICManagerMEP.enableMotorThresholdStimulation(false, monopolar, useGround, (uint)stimChannel - 1, (uint)returnChannel - 1, stimAmplitude, stimDuration, 4, 20000, stimThreshold);
+                    
+                    // notify user of stimulation ending
+                    string timeStamp = DateTime.Now.ToString("h:mm:ss tt");
+                    Application.Current.Dispatcher.Invoke(new Action(() =>
+                    {
+                        OutputConsole.Inlines.Add("Motor threshold stimulation stopped: " + timeStamp + "\n");
+                        Scroller.ScrollToEnd();
+                    }));
                 }
                 catch (TaskCanceledException)
                 {
@@ -456,6 +465,7 @@ namespace MotorEvokedPotentialsApp
                     Scroller.ScrollToEnd();
                 }));
             }
+            // Revert UI to pre-stimulation state
             stop_stim_UI_update();
         }
 
