@@ -49,7 +49,7 @@ namespace EMGLib
         }
 
         // the name of this method is misleading, it should be changed to e.g. identifyMovement, 
-        public (int[] movementDetected, long[] movementDetectedTimestamp) trigerStim(float[] signal, int ch, float[] thresh)
+        public (int[] movementDetected, long[] movementDetectedTimestamp) triggerStim(float[] signal, int ch, float[] thresh)
         {
             
             // movement not detected = 0, movement detected = 1

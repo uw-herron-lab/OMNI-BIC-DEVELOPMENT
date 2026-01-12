@@ -89,7 +89,7 @@ namespace EMGLib
             threshDataToPlot = new List<double>[numSamplesToPlot];
             stimDataToPlot = new List<int>[numSamplesToPlot];
 
-            file_extension = $"{DateTime.Now:yyyy - MM - dd_HH - mm - ss}.csv";
+            file_extension = $"{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.csv";
 
             _processingMod = new Processing_Modules(numberOfChannels);
             _stimMod = new Stim_Modules(numberOfChannels);
@@ -138,7 +138,7 @@ namespace EMGLib
             emgFiltSW.Dispose();
             if (!calibrationOn)
             {
-                emgEnvelopedSW.Dispose();
+                //emgEnvelopedSW.Dispose();
             }
         }
 
@@ -256,7 +256,7 @@ namespace EMGLib
             {
                 filename = currPart + "_FiltEMGData_" + file_extension;
                 emgFiltSW = new StreamWriter(Path.Combine(saveDir, filename));
-                emgFiltSW.WriteLine(string.Join(",", "emg channel", "filt signal", "signal timstamp"));
+                emgFiltSW.WriteLine(string.Join(",", "filt signal", "raw signal timstamp", "filt timestamp"));
                 emgFiltSW.Flush();
 
             }
@@ -264,12 +264,12 @@ namespace EMGLib
             {
                 filename = currPart + "_FiltEMGData_" + file_extension;
                 emgFiltSW = new StreamWriter(Path.Combine(saveDir, filename));
-                emgFiltSW.WriteLine(string.Join(",", "emg channel", "filt signal", "signal timstamp"));
+                emgFiltSW.WriteLine(string.Join(",", "filt signal", "filt timestamp", "env signal", "env timestamp", "MTS on", "stimulating", "percentage", "threshold"));
                 emgFiltSW.Flush();
                 filename = currPart + "_EnvData_" + file_extension;
-                emgEnvelopedSW = new StreamWriter(Path.Combine(saveDir, filename));
-                emgEnvelopedSW.WriteLine(string.Join(",", "emg channel", "enveloped signal", "start stim", "stim command", "movement detected", "movement detected timestamp", "percent", "threshold"));
-                emgEnvelopedSW.Flush();
+                //emgEnvelopedSW = new StreamWriter(Path.Combine(saveDir, filename));
+                //emgEnvelopedSW.WriteLine(string.Join(",", "emg channel", "enveloped signal", "start stim", "stim command", "movement detected", "movement detected timestamp", "raw signal timestamp", "percent", "threshold"));
+                //emgEnvelopedSW.Flush();
             }
 
 
@@ -281,6 +281,8 @@ namespace EMGLib
                     if (rawSamplesAvailable > 0)
                     {
                         rawPacket rawSampPacket = new rawPacket();
+                        long bandpassFiltTS;
+                        long envFiltTS;
                         // theoretically this should take the data as it becomes available quickly,
                         // but this process might create a latency that later on should be fixed -> maybe should be incorporated into the same thread for raw data being logged?
                         // or maybe the most recent data available should be processed for stimulation and the rest, if not processed already, should be ignored. but this process is needed for plotting
@@ -291,7 +293,9 @@ namespace EMGLib
                         float[] envelopedSamples = new float[numberOfChannels];
                         // filter data
                         filtSamples = _processingMod.IIRFilter(rawSamples);
+                        bandpassFiltTS = DateTime.Now.Ticks;
                         envelopedSamples = _processingMod.envelopeSignals(_stimMod.rectifySignals(filtSamples));
+                        envFiltTS = DateTime.Now.Ticks;
                         // FILE SAVED FOR CALIBRATION DATA VS STIM DATA ARE DIFFERENT, SINCE CALIBRATION DATA WILL NOT INCLUDE STIM VALUES
                         // ADD CHECK BOX TO UI INDICATE WHETHER CALIBRATION
                         // movement detection
@@ -303,7 +307,14 @@ namespace EMGLib
                             filtSamplesQueueForPlot.Add(filtSamples);
                             for (int i = 0; i < filtSamples.Length; ++i)
                             {
-                                emgFiltSW.WriteLine(string.Join(",", $"{i + 1}", filtSamples[i].ToString(), timestampForAllSamples));
+                                for (int ch = 0; ch < 16; ch++)
+                                {
+                                    if (ch == 0)
+                                    {
+										emgFiltSW.WriteLine(string.Join(",", filtSamples[i].ToString(), timestampForAllSamples, bandpassFiltTS));
+									}
+                                }
+                                
                             }
                         }
                         else
@@ -312,7 +323,7 @@ namespace EMGLib
                             //{
                             _stimMod.stimEnabled = _stimEnabled;
 
-                            (int[] movementDetected, long[] movementDetectedTimestamp) = _stimMod.trigerStim(envelopedSamples, 0, _stimMod.thresh);
+                            (int[] movementDetected, long[] movementDetectedTimestamp) = _stimMod.triggerStim(envelopedSamples, 0, _stimMod.thresh);
 
                             _generateStim = _stimMod.generateStim;
                             //rawSamplesQueue.Add(emgSamples);
@@ -328,8 +339,8 @@ namespace EMGLib
 
                                 for (int i = 0; i < filtSamples.Length; ++i)
                                 {
-                                    emgFiltSW.WriteLine(string.Join(",", $"{i + 1}", filtSamples[i].ToString(), timestampForAllSamples));
-                                    emgEnvelopedSW.WriteLine(string.Join(",", $"{i + 1}", envelopedSamples[i].ToString(), _stimEnabled, _generateStim, movementDetected[i], movementDetectedTimestamp[i], _stimMod.percent, _stimMod.thresh[i]));
+                                    emgFiltSW.WriteLine(string.Join(",", $"{i + 1}", filtSamples[i].ToString(), timestampForAllSamples, bandpassFiltTS));
+                                    //emgEnvelopedSW.WriteLine(string.Join(",", $"{i + 1}", envelopedSamples[i].ToString(), _stimEnabled, _generateStim, movementDetected[i], movementDetectedTimestamp[i], timestampForAllSamples, _stimMod.percent, _stimMod.thresh[i]));
                                 }
                             }
                             //}
@@ -342,7 +353,7 @@ namespace EMGLib
                     emgFiltSW.Flush();
                     if (!calibrationOn)
                     {
-                        emgEnvelopedSW.Flush();
+                        //emgEnvelopedSW.Flush();
                     }
                     Console.WriteLine("Filt function thread - " + ex.Message);
                 }
@@ -350,7 +361,7 @@ namespace EMGLib
             emgFiltSW.Flush();
             if (!calibrationOn)
             {
-                emgEnvelopedSW.Flush();
+                //emgEnvelopedSW.Flush();
             }
         }
         // TO DO: add another method for prepping filtered data for plotting
