@@ -415,6 +415,7 @@ namespace EMGTriggeredStimTherapyApp
         private void calibration_Checked(object sender, RoutedEventArgs e)
         {
             calibrating = true;
+            emgStreaming.calibrationOn = calibrating;
             btn_loadCalib.IsEnabled = false;
             btn_bicConfigLoad.IsEnabled = false;
 

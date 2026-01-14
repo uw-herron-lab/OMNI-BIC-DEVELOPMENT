@@ -22,9 +22,11 @@ namespace EMGLib
 
 		// TO DO: should be included in the config file - should they be modified based on the filter output of the calibration?
 		// Filter coefficients: **currently copied from bandpass butterworth from python**
-		private List<float> band_b = new List<float> { 0.231f, 0f, -0.4626f, 0f, 0.231f }; // numerator coefficients
-		private List<float> band_a = new List<float> { 1f, -2.14f, 1.553f, -0.592f, 0.1834f }; // denominator coefficients
-		private float band_gainVal = 0.9f;
+		private List<float> band_b = new List<float> { 0.23130797944426512f, 0.0f, -0.46261595888853024f, 0.0f, 0.23130797944426512f }; // numerator coefficients
+		private List<float> band_a = new List<float> { 1.0f, -2.1400945982631905f, 1.5528893358210751f, -0.5922328575740207f, 0.18337778320123216f }; // denominator coefficients
+																																//private float band_gainVal = 0.9f;
+		//private float band_gainVal = 0.23130797944426512f;
+		private float band_gainVal = 1f;
 
 		// lowpass filter/evelope values \\
 		private List<float>[] low_prevInput; // initial previous inputs (zero-padding)
@@ -44,8 +46,12 @@ namespace EMGLib
 
 		// trial 2:
 
-		private List<float> low_b = new List<float> { 9.82591682e-06f, 1.96518336e-05f, 9.82591682e-06f }; // numerator coefficients
-		private List<float> low_a = new List<float> { 1f, -1.99111429f, 0.9911536f }; // denominator coefficients
+		private List<float> low_b = new List<float> { 0.0009446918438401507f, 0.0018893836876803015f, 0.0009446918438401507f }; // numerator coefficients
+		private List<float> low_a = new List<float> { 1.0f, -1.911197067426073f, 0.9149758348014336f }; // denominator coefficients
+		// second order cutoff 20Hz
+		//private List<float> low_b = new List<float> { 0.000944, 1.96518336e-05f, 9.82591682e-06f }; // numerator coefficients
+		//private List<float> low_a = new List<float> { 1f, -1.99111429f, 0.9911536f }; // denominator coefficients
+		//private float low_gainVal = 0.0009446918438401507f;
 		private float low_gainVal = 2f;
 
 		public Processing_Modules(int channels)

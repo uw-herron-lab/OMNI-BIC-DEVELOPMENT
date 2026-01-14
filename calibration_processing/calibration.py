@@ -40,19 +40,19 @@ def separate_ch_sig(data, num_channels=16):
 
 
 # Define a function to apply a bandpass filter (20-500 Hz is a typical range for EMG)
-def bandpass_filter(data, lowcut=20, highcut=450, fs=2000, order=2):
+def bandpass_filter(data, lowcut=20, highcut=450, fs=2000):
     scale_factor = 1e6
     data = np.array(data, dtype=np.float64) * scale_factor
-    nyquist = fs/2
-    low = lowcut/nyquist
-    high = highcut/nyquist
-    sos = signal.butter(order, [low,high], btype='band', output='sos')
-    b, a = signal.butter(order, [low,high], btype='band', output='ba')
-    z, p, k = signal.butter(order, [low,high], btype='band', output='zpk')
-    filt_data = signal.sosfiltfilt(sos, data)
-    print("b: ", b)
-    print("a: ", a)
-    print("z:", k)
+    # nyquist = fs/2
+    # low = lowcut/nyquist
+    # high = highcut/nyquist
+    # sos = signal.butter(order, [low,high], btype='band', output='sos')
+    b, a = signal.butter(2, [lowcut,highcut], fs=fs, btype='band', output='ba')
+    z, p, k = signal.butter(2, [lowcut,highcut], fs=fs, btype='band', output='zpk')
+    filt_data = signal.filtfilt(b,a, data)
+    print(f"band_b: {b[0]}f, {b[1]}f, {b[2]}f, {b[3]}f, {b[4]}f")
+    print(f"band_a: {a[0]}f, {a[1]}f, {a[2]}f, {a[3]}f, {a[4]}f")
+    print(f"band_gainVal: {k}f")
     return filt_data / scale_factor
 
 # Rectify the EMG signal (absolute value)
@@ -60,15 +60,15 @@ def rectify(data):
     return np.abs(data)
 
 
-def lowpass_filter(data, lowcut=40, fs=2000, order=1):
+def lowpass_filter(data, lowcut=20, fs=2000):
     scale_factor = 1e6
-    nyquist = fs/2
-    low = lowcut/nyquist
+    # nyquist = fs/2
+    # low = lowcut/nyquist
     data = np.array(data, dtype=np.float64) * scale_factor
-    b, a = signal.butter(order, low, btype='low', output='ba')
-    z, p, k = signal.butter(order, low, btype='low', output='zpk')
+    b, a = signal.butter(2, lowcut, btype='low', fs=fs, output='ba')
+    z, p, k = signal.butter(2, lowcut, btype='low', fs=fs, output='zpk')
     filt_data = signal.filtfilt(b, a, data)
-    print("b: ", b)
-    print("a: ", a)
-    print("z:", k)
+    print(f"low_b: {b[0]}f, {b[1]}f, {b[2]}f")
+    print(f"low_a: {a[0]}f, {a[1]}f, {a[2]}f")
+    print(f"low_gainVal: {k}f")
     return filt_data / scale_factor

@@ -49,7 +49,7 @@ namespace EMGLib
         }
 
         // the name of this method is misleading, it should be changed to e.g. identifyMovement, 
-        public (int[] movementDetected, long[] movementDetectedTimestamp) triggerStim(float[] signal, int ch, float[] thresh)
+        public (int[] movementDetected, long[] movementDetectedTimestamp) triggerStim(float[] signal, int ch)
         {
             
             // movement not detected = 0, movement detected = 1
@@ -63,23 +63,24 @@ namespace EMGLib
                 //if (1 >= thresh[ch] & signal[ch] != 0)
 
                 {
-                    // timestamp for when signal above threshold was detected
-                    movementDetectedTimestamp[ch] = DateTime.Now.Ticks;
-                    stimulate[ch] = 1;
-
+                   
                     generateStim = true;
-                    /*need to change the way filtered data is being outputted, 
+				    /*need to change the way filtered data is being outputted, 
 					    * and also need to implement loading of filter coefficients with calibration data. 
 					    * for some reason signal[ch] is not currently greater than thresh[ch]
-                        */
+					    */
+				    // timestamp for when signal above threshold was detected
+				    movementDetectedTimestamp[ch] = DateTime.Now.Ticks;
+				    stimulate[ch] = 1;
 
-                }
+			}
                 else
                 {
-                    movementDetectedTimestamp[ch] = DateTime.Now.Ticks;
+				    generateStim = false;
+				    movementDetectedTimestamp[ch] = DateTime.Now.Ticks;
                     stimulate[ch] = 0;
                     //NEW: this is redundant but just in case for testing
-                    generateStim = false;
+                    
 
                 }
             //}

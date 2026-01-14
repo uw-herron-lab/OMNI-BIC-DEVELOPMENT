@@ -36,6 +36,9 @@ namespace EMGTriggeredStimTherapyApp
         Thread newLoggingThread;
         bool loggingNotDisposed = true;
 
+        // delete later, for spec analysis
+        StreamWriter stimCommandSW;
+
         // Public Class Properties
         public int DataBufferMaxSampleNumber { get; set; }
 
@@ -94,7 +97,10 @@ namespace EMGTriggeredStimTherapyApp
             }
             logFileWriter.WriteLine("PacketNum,TimeStamp,FilteredChannelNum,RawChannelData,PreFilteredChannelData,HampelFilteredChannelData," +
                 "FilteredChannelData,boolInterpolated,StimChannelData,StimActive,CalcPhase,TriggerPhase,validTarget,InputTrigger" + chanHeader);
-
+            
+            stimCommandSW = new StreamWriter((saveDir + @"\stimCommand_" + $"{DateTime.Now:yyyy-MM-dd_HH-mm-ss}" + ".csv"));
+			//stimCommandSW = new StreamWriter(Path.Combine(saveDir, (@"\stimCommand_" + $"{DateTime.Now:yyyy-MM-dd_HH-mm-ss}" + ".csv")));
+			stimCommandSW.WriteLine("Stim command sent from BICManager");
         }
         public bool BICConnect()
         {
@@ -358,7 +364,11 @@ namespace EMGTriggeredStimTherapyApp
 			// Enqueue the stimulation waveform
 			deviceClient.bicEnqueueStimulation(aNewWaveformRequest);
             deviceClient.bicStartStimulation(new bicStartStimulationRequest() { DeviceAddress = DeviceName });
-		}
+		    
+            long timestamp = DateTime.Now.Ticks;
+            stimCommandSW.WriteLine(timestamp);
+            stimCommandSW.Flush();
+        }
       
         
 
