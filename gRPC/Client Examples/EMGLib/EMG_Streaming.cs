@@ -155,7 +155,7 @@ namespace EMGLib
             string stamp_filename = currPart + "_TimestampEMG_" + file_extension;
             if (calibrationOn)
             {
-                saveDir = Path.Combine(saveDir, @"\" + "Calibration");
+                saveDir = Path.Combine(saveDir, "Calibration");
             }
 
             try
@@ -252,25 +252,29 @@ namespace EMGLib
         {
             string filename;
             string stamp_filename;
-            if (calibrationOn)
-            {
-                filename = currPart + "_FiltEMGData_" + file_extension;
-                emgFiltSW = new StreamWriter(Path.Combine(saveDir, filename));
-                emgFiltSW.WriteLine(string.Join(",", "filt signal", "raw signal timstamp", "filt timestamp"));
-                emgFiltSW.Flush();
+			//if (calibrationOn)
+			//{
+			//    filename = currPart + "_FiltEMGData_" + file_extension;
+			//    emgFiltSW = new StreamWriter(Path.Combine(saveDir, filename));
+			//    emgFiltSW.WriteLine(string.Join(",", "filt signal", "raw signal timstamp", "filt timestamp"));
+			//    emgFiltSW.Flush();
 
-            }
-            else
-            {
-                filename = currPart + "_FiltEMGData_" + file_extension;
+			//}
+			//else
+			//{
+			    if (calibrationOn)
+			    {
+				    saveDir = Path.Combine(saveDir, "Calibration");
+			    }
+			    filename = currPart + "_FiltEMGData_" + file_extension;
                 emgFiltSW = new StreamWriter(Path.Combine(saveDir, filename));
-                emgFiltSW.WriteLine(string.Join(",", "filt signal", "filt timestamp", "env signal", "env timestamp", "MTS on", "stimulating", "percentage", "threshold"));
-                emgFiltSW.Flush();
+				emgFiltSW.WriteLine(string.Join(",", "raw signal", "TTL signal", "raw timestamp", "filt signal", "filt timestamp", "env signal", "env timestamp", "MTS on", "send stim", "movement detected", "movement timestamp", "percentage", "threshold", "max MVC"));
+				emgFiltSW.Flush();
                 filename = currPart + "_EnvData_" + file_extension;
                 //emgEnvelopedSW = new StreamWriter(Path.Combine(saveDir, filename));
                 //emgEnvelopedSW.WriteLine(string.Join(",", "emg channel", "enveloped signal", "start stim", "stim command", "movement detected", "movement detected timestamp", "raw signal timestamp", "percent", "threshold"));
                 //emgEnvelopedSW.Flush();
-            }
+            //}
 
 
             while (!token.IsCancellationRequested)
@@ -302,28 +306,31 @@ namespace EMGLib
                         // add raw, filtered, and movement detection to queue
 
                         // log data
-                        if (calibrationOn)
-                        {
-                            filtSamplesQueueForPlot.Add(filtSamples);
-                            for (int i = 0; i < filtSamples.Length; ++i)
-                            {
-                                for (int ch = 0; ch < 16; ch++)
-                                {
-                                    if (ch == 0)
-                                    {
-										emgFiltSW.WriteLine(string.Join(",", filtSamples[i].ToString(), timestampForAllSamples, bandpassFiltTS));
-									}
-                                }
+         //               if (calibrationOn)
+         //               {
+         //                   filtSamplesQueueForPlot.Add(filtSamples);
+         //                   for (int i = 0; i < filtSamples.Length;)
+         //                   {
+         //                       for (int ch = 0; ch < 16; ch++)
+         //                       {
+         //                           if (ch == 0)
+         //                           {
+									//	emgFiltSW.WriteLine(string.Join(",", filtSamples[i].ToString(), timestampForAllSamples, bandpassFiltTS));
+                                        
+									//}
+         //                           i++;
+         //                       }
                                 
-                            }
-                        }
-                        else
-                        {
+         //                   }
+         //               }
+         //               else
+         //               {
                             //if (_stimEnabled)
                             //{
                             _stimMod.stimEnabled = _stimEnabled;
 
-                            (int[] movementDetected, long[] movementDetectedTimestamp) = _stimMod.triggerStim(envelopedSamples, 0, _stimMod.thresh);
+                            (int[] movementDetected, long[] movementDetectedTimestamp) = _stimMod.triggerStim(envelopedSamples, 0);
+                            //long movementDetectedTS = DateTime.Now.Ticks;
 
                             _generateStim = _stimMod.generateStim;
                             //rawSamplesQueue.Add(emgSamples);
@@ -337,12 +344,22 @@ namespace EMGLib
                             if (logging)
                             {
 
-                                for (int i = 0; i < filtSamples.Length; ++i)
+                                for (int i = 0; i < filtSamples.Length;)
                                 {
-                                    emgFiltSW.WriteLine(string.Join(",", $"{i + 1}", filtSamples[i].ToString(), timestampForAllSamples, bandpassFiltTS));
+									for (int ch = 0; ch < 16; ch++)
+									{
+										// only stores EMG1 at index i, and the TTL signal which is EMG2 at i+1
+
+										if (ch == 0)
+										{
+											emgFiltSW.WriteLine(string.Join(",", rawSamples[i], rawSamples[i+1], timestampForAllSamples, filtSamples[i].ToString(), bandpassFiltTS, envelopedSamples[i], envFiltTS, _stimEnabled, _generateStim, movementDetected[i], movementDetectedTimestamp[i], _stimMod.percent, _stimMod.thresh[0], _stimMod.maxSig[0]));
+										}
+                                        i++;
+									}
+									//emgFiltSW.WriteLine(string.Join(",", $"{i + 1}", filtSamples[i].ToString(), timestampForAllSamples, bandpassFiltTS));
                                     //emgEnvelopedSW.WriteLine(string.Join(",", $"{i + 1}", envelopedSamples[i].ToString(), _stimEnabled, _generateStim, movementDetected[i], movementDetectedTimestamp[i], timestampForAllSamples, _stimMod.percent, _stimMod.thresh[i]));
                                 }
-                            }
+                            //}
                             //}
 
                         }
