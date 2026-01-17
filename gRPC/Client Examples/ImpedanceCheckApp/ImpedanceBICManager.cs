@@ -33,6 +33,9 @@ namespace ImpedanceCheckApp
         {
             // Open up the GRPC Channel to the BIC microservice
             aGRPChannel = new Channel("127.0.0.1:50051", ChannelCredentials.Insecure);
+
+            // Add header labels
+            impedFileWriter.WriteLine("Channel,Impedance,Units");
         }
         public bool BICConnect()
         {
@@ -123,17 +126,18 @@ namespace ImpedanceCheckApp
             string impedEntry = "";
             for (uint channelNum = 0; channelNum < numSensingChannelsDef; channelNum++)
             {
+                impedEntry = (channelNum + 1).ToString() + ", ";
+
                 impedEntry = "CH" + (channelNum + 1).ToString();
                 bicGetImpedanceReply chanImpedValue = deviceClient.bicGetImpedance(new bicGetImpedanceRequest() { DeviceAddress = DeviceName, Channel = channelNum });
                 if (chanImpedValue.Success == "success")
                 {
-                    impBuffer.Add(chanImpedValue.ChannelImpedance.ToString() + chanImpedValue.Units);
+                    impedEntry += chanImpedValue.ChannelImpedance.ToString() + ", " + chanImpedValue.Units;
                 }
                 else
                 {
-                    impBuffer.Add("Unsuccessful impedance reading");
+                    impedEntry += "Unsuccessful impedance reading, N/A";
                 }
-                impedEntry += "," + impBuffer.Last();
                 impedFileWriter.WriteLine(impedEntry);
             }
 
