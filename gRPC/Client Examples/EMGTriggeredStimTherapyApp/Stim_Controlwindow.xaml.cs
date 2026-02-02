@@ -986,71 +986,45 @@ namespace EMGTriggeredStimTherapyApp
         private void Stimulator()
         {
             var configInfo = aBICManager.configInfo;
+            if (emgStreaming._stimEnabled)
+            {
+                aBICManager.enqueueStimulation(configInfo.monopolar, (uint)configInfo.stimChannel - 1, (uint)configInfo.returnChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, configInfo.stimPeriod - (5 * configInfo.stimDuration) - 3500, configInfo.stimThreshold);
+
+			}
             while (emgStreaming._stimEnabled)
             {
                 if (emgStreaming._generateStim)
                 {
-                    //if (!stimSent)
-                    //{
-                    // if currently not stimulating
-                    if (!aBICManager.getStimState()[0])
+					// if currently not stimulating
+					// and if currently not triggering a stimulation
+					if (!aBICManager.getStimState()[0] && !aBICManager.getStimState()[1])
                     {
-                        // and if currently not triggering a stimulation
-                        if (!aBICManager.getStimState()[1])
+                        // send a single stim pulse
+                        try
                         {
-                            // send a single stim pulse
-                            try
-                            {
-                                bool[] stimState;
-                                stimState = aBICManager.getStimState();
-                                Console.WriteLine("stim active: " + stimState[0] + " triggering stim: " + stimState[1]);
-                                aBICManager.sendSingleStimulation(configInfo.monopolar, (uint)configInfo.stimChannel - 1, (uint)configInfo.returnChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, configInfo.stimPeriod - (5 * configInfo.stimDuration) - 3500, configInfo.stimThreshold);
-                                stimSent = true;
-                                Console.WriteLine("\n>>>>OL enabled, " + OLstimON);
-                                stimState = aBICManager.getStimState();
-                                Console.WriteLine("stim active: " + stimState[0] + " triggering stim: " + stimState[1]);
+                            bool[] stimState;
+                            stimState = aBICManager.getStimState();
+                            Console.WriteLine("stim active: " + stimState[0] + " triggering stim: " + stimState[1]);
+                            aBICManager.sendSingleStimulation();
+                            Console.WriteLine("\n>>>> single stim sent " );
+                            stimState = aBICManager.getStimState();
+                            Console.WriteLine("stim active: " + stimState[0] + " triggering stim: " + stimState[1]);
 
-                            }
-                            catch
-                            {
-                                // Exception occured, gRPC command did not succeed, do not update UI button elements
-                                Console.WriteLine("Open loop stimulation NOT started\n");
-
-                                return;
-                            }
                         }
+                        catch
+                        {
+                            // Exception occured, gRPC command did not succeed, do not update UI button elements
+                            Console.WriteLine("Open loop stimulation NOT started\n");
+
+                            return;
+                        }
+                        
                     }
 
-
-                    Thread.Sleep(20);
                 }
 
-                //	}
-                //	else
-                //	{
-                //		if (OLstimON)
-                //		{
-                //			try
-                //			{
-                //				aBICManager.enableOpenLoopStimulation(false, configInfo.monopolar, (uint)configInfo.stimChannel - 1, (uint)configInfo.returnChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 1, 20000, configInfo.stimThreshold);
-                //				OLstimON = false;
-                //				Console.WriteLine("No movement >>>> OL disabled, " + OLstimON);
-                //				Thread.Sleep(5000);
-                //				Console.WriteLine("Done with sleep after OL stop");
-                //			}
-                //			catch
-                //			{
-                //				// Exception occured, gRPC command did not succeed, do not update UI button elements
-                //				Console.WriteLine("Open loop stimulation NOT stopped\n");
-
-                //				return;
-                //			}
-                //			Thread.Sleep(20);
-                //		}
-                //	}
-
             }
-            //OLstimON = false;
+            
 
         }
 

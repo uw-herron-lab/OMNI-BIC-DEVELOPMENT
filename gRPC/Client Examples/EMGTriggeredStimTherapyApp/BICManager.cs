@@ -336,7 +336,7 @@ namespace EMGTriggeredStimTherapyApp
             });
         }
 
-        public void sendSingleStimulation( bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold)
+        public void enqueueStimulation(bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold)
         {
 			// Create a waveform defintion request 
 			bicEnqueueStimulationRequest aNewWaveformRequest = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.PersistentWaveform, WaveformRepititions = 1 };
@@ -360,9 +360,38 @@ namespace EMGTriggeredStimTherapyApp
 				};
 				aNewWaveformRequest.Functions.Add(pulseFunction0);
 			}
-
 			// Enqueue the stimulation waveform
 			deviceClient.bicEnqueueStimulation(aNewWaveformRequest);
+		}
+
+
+		public void sendSingleStimulation()
+        {
+			//// Create a waveform defintion request 
+			//bicEnqueueStimulationRequest aNewWaveformRequest = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.PersistentWaveform, WaveformRepititions = 1 };
+			//if (monopolar)
+			//{
+			//	// Create a pulse function
+			//	StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
+			//	{
+			//		FunctionName = "singlePulseFunction",
+			//		StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 10, PulseWidth = stimDuration, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { }, UseGround = true, BurstRepetitions = 1 }
+			//	};
+			//	aNewWaveformRequest.Functions.Add(pulseFunction0);
+			//}
+			//else
+			//{
+			//	// Create a pulse function
+			//	StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
+			//	{
+			//		FunctionName = "singlePulseFunction",
+			//		StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 10, PulseWidth = stimDuration, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { returnChannel }, UseGround = true, BurstRepetitions = 1 }
+			//	};
+			//	aNewWaveformRequest.Functions.Add(pulseFunction0);
+			//}
+
+			//// Enqueue the stimulation waveform
+			//deviceClient.bicEnqueueStimulation(aNewWaveformRequest);
             deviceClient.bicStartStimulation(new bicStartStimulationRequest() { DeviceAddress = DeviceName });
 		    
             long timestamp = DateTime.Now.Ticks;
