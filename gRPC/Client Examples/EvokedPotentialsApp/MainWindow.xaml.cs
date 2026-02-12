@@ -31,7 +31,7 @@ namespace EvokedPotentialsApp
     {
         private bool scanMode = false;
         
-        private EvokedPotentialsApp.BICManagerEP aBICManagerEP;
+        private EvokedPotentialsApp.BICManagerEP aBICManagerEP = new EvokedPotentialsApp.BICManagerEP();
         private int numChannels = 32;
         private Configuration configInfo;
         private int? stimChannel = null;
@@ -46,13 +46,12 @@ namespace EvokedPotentialsApp
         private bool monopolar = false;
         private bool reversePolarity = false;
         private bool connectState = false;
-        
+
         private bool stopStimClicked = false; // set to true when stop is clicked. Flag to exit from for loops that would send more stimulation
         private CancellationTokenSource cancellationTokenSource;
 
         private List<int> stimChannelsQueue = new List<int> { 1, 7, 2, 8, 3, 9, 4, 10 };
         private List<int> returnChannelsQueue = new List<int> { 7, 1, 8, 2, 9, 3, 10, 4 };
-
         public class Channel
         {
             public string Name { get; set; }
@@ -76,6 +75,7 @@ namespace EvokedPotentialsApp
 
         public class Configuration
         {
+            public string filePath { get; set; }
             public bool scanMode { get; set; } = false;
             public int numChannels { get; set; }
             public uint numPulses { get; set; }
@@ -110,10 +110,8 @@ namespace EvokedPotentialsApp
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            
             string seriesName;
-            aBICManagerEP = new EvokedPotentialsApp.BICManagerEP(neuroStreamChart.Width, stimPeriod, baselinePeriod); // initialize buffer to the width we need! or maybe whichever is bigger. might need to do something later for the display, if buffer is diff length
-            aBICManagerEP.BICConnect();
-
             var colors_list = new System.Drawing.Color[]
             {
                 System.Drawing.Color.Blue,
@@ -193,12 +191,9 @@ namespace EvokedPotentialsApp
 
             mode.SelectedIndex = 0;
 
-            // Start update timer
             neuroChartUpdateTimer = new System.Timers.Timer(200);
             neuroChartUpdateTimer.Elapsed += neuroChartUpdateTimer_Elapsed;
-            neuroChartUpdateTimer.Start();
 
-            aBICManagerEP.disconnected += onDisconnected;
         }
 
         private void neuroChartUpdateTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -273,6 +268,31 @@ namespace EvokedPotentialsApp
                 }));
             }
         }
+
+        /// <summary>
+        /// Initiate connection to BIC
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_connect_Click(object sender, EventArgs e)
+        {
+            OutputConsole.Inlines.Add("Connecting...\n");
+            aBICManagerEP.Initialize(neuroStreamChart.Width, stimPeriod, baselinePeriod); // initialize buffer to the width we need! or maybe whichever is bigger. might need to do something later for the display, if buffer is diff length
+            aBICManagerEP.BICConnect();
+
+            if (connectState)
+            {
+                OutputConsole.Inlines.Add("Connection successful!\n");
+            }
+            else
+            {
+                OutputConsole.Inlines.Add("Connection unsuccessful!\n");
+            }
+            // Start update timer
+            neuroChartUpdateTimer.Start();
+            aBICManagerEP.disconnected += onDisconnected;
+        }
+
         /// <summary>
         /// Update user about disconnection event
         /// </summary>
@@ -331,6 +351,9 @@ namespace EvokedPotentialsApp
                             Scroller.ScrollToEnd();
                         }
 
+                        string saveDir = configInfo.filePath + @"\" + DateTime.Now.ToString("yyyy-MM-dd");
+
+                        aBICManagerEP.saveDir = saveDir;
                         scanMode = configInfo.scanMode;
                         stimChannelsQueue = configInfo.stimChannelsQueue;
                         returnChannelsQueue = configInfo.returnChannelsQueue;
@@ -669,7 +692,7 @@ namespace EvokedPotentialsApp
         private void btn_reconnect_Click(object sender, RoutedEventArgs e)
         {
             OutputConsole.Inlines.Add("Reconnecting...\n");
-            aBICManagerEP = new EvokedPotentialsApp.BICManagerEP(neuroStreamChart.Width, stimPeriod, baselinePeriod);
+            aBICManagerEP.Initialize( neuroStreamChart.Width, stimPeriod, baselinePeriod);
             connectState = aBICManagerEP.BICConnect();    // Try to reestablish connection
 
             if (connectState)
