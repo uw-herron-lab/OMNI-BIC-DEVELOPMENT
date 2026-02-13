@@ -33,9 +33,6 @@ namespace ImpedanceCheckApp
         {
             // Open up the GRPC Channel to the BIC microservice
             aGRPChannel = new Channel("127.0.0.1:50051", ChannelCredentials.Insecure);
-
-            // Add header labels
-            impedFileWriter.WriteLine("Channel,Impedance,Units");
         }
         public bool BICConnect()
         {
@@ -118,6 +115,9 @@ namespace ImpedanceCheckApp
             impedFileStream = new FileStream(impedFilePath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, FileOptions.Asynchronous);
             impedFileWriter = new StreamWriter(impedFileStream);
 
+            // Add header labels
+            impedFileWriter.WriteLine("Channel,Impedance,Units");
+
             // Get timestamp
             string timestamp = DateTime.Now.ToString("hh:mm:ss tt");
 
@@ -126,19 +126,26 @@ namespace ImpedanceCheckApp
             string impedEntry = "";
             for (uint channelNum = 0; channelNum < numSensingChannelsDef; channelNum++)
             {
-                impedEntry = (channelNum + 1).ToString() + ", ";
-
                 impedEntry = "CH" + (channelNum + 1).ToString();
                 bicGetImpedanceReply chanImpedValue = deviceClient.bicGetImpedance(new bicGetImpedanceRequest() { DeviceAddress = DeviceName, Channel = channelNum });
                 if (chanImpedValue.Success == "success")
                 {
-                    impedEntry += chanImpedValue.ChannelImpedance.ToString() + ", " + chanImpedValue.Units;
+                    // Output to display to application
+                    impBuffer.Add(chanImpedValue.ChannelImpedance.ToString() + chanImpedValue.Units);
+
+                    // Output to save to file
+                    impedFileWriter.WriteLine((channelNum + 1).ToString() + ", " +
+                        chanImpedValue.ChannelImpedance.ToString() + ", " +
+                        chanImpedValue.Units);
                 }
                 else
                 {
-                    impedEntry += "Unsuccessful impedance reading, N/A";
+                    impBuffer.Add("Unsuccessful impedance reading");
+                    impedFileWriter.WriteLine((channelNum + 1).ToString() + ", " +
+                        "Unsuccessful impedance reading, " +
+                        "N/A");
                 }
-                impedFileWriter.WriteLine(impedEntry);
+                impedEntry += "," + impBuffer.Last();
             }
 
             // Close impedance logging items
