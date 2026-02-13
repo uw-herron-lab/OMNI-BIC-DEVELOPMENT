@@ -18,11 +18,11 @@
             <ColumnDefinition Width="570*"/>
         </Grid.ColumnDefinitions>
         <Button x:Name="btn_load" Content="Load Config" Margin="12,11,16,0" VerticalAlignment="Top" Click="btn_load_Click" Height="20" Grid.ColumnSpan="2"/>
-        <Button x:Name="btn_beta" Content="Beta Stim" Margin="10,52,10,0" VerticalAlignment="Top" Click="btn_beta_Click" Height="20"/>
-        <Button x:Name="btn_open" Content="Open Loop Stim" Margin="20,52,16,0" VerticalAlignment="Top" Click="btn_open_Click" Grid.Column="1"/>
-		<Button x:Name="btn_stop" Content="Stop Stim" Margin="10,98,10,0" VerticalAlignment="Top" Click="btn_stop_Click" Height="20"/>
-        <Button x:Name="btn_disconnect" Content="Disconnect" Margin="12,0,0,10" Click="btn_disconnect_Click" HorizontalAlignment="Left" Width="74" Height="21" VerticalAlignment="Bottom"/>
-        <Button x:Name="btn_reconnect" Content="Reconnect" Grid.Column="1" Margin="10,0,0,10" Click="btn_reconnect_Click" HorizontalAlignment="Left" Width="68" Height="21" VerticalAlignment="Bottom"/>
+        <Button x:Name="btn_beta" Content="Beta Stim" Margin="10,52,10,0" VerticalAlignment="Top" Click="btn_beta_Click" Height="20" IsEnabled="False"/>
+        <Button x:Name="btn_open" Content="Open Loop Stim" Margin="20,52,16,0" VerticalAlignment="Top" Click="btn_open_Click" Grid.Column="1" IsEnabled="False"/>
+        <Button x:Name="btn_stop" Content="Stop Stim" Margin="10,98,10,0" VerticalAlignment="Top" Click="btn_stop_Click" Height="20"/>
+        <Button x:Name="btn_disconnect" Content="Disconnect" Margin="12,0,0,10" Click="btn_disconnect_Click" HorizontalAlignment="Left" Width="74" Height="21" VerticalAlignment="Bottom" IsEnabled="False"/>
+        <Button x:Name="btn_connect" Content="Connect" Grid.Column="1" Margin="10,0,0,10" Click="btn_connect_Click" HorizontalAlignment="Left" Width="68" Height="21" VerticalAlignment="Bottom"/>
 
         <ScrollViewer Name="Scroller" Margin="0,0.4,-0.4,0" Background="White" Grid.ColumnSpan="3" VerticalScrollBarVisibility="Auto" Grid.Row="1">
             <Border BorderThickness="1" BorderBrush="Black">
@@ -53,6 +53,7 @@
         <TextBox x:Name="y_min" TextWrapping="Wrap" Margin="0,0,141.6,9.6" Grid.Column="2" TextChanged="y_min_TextChanged" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="50"/>
         <TextBlock TextWrapping="Wrap" Text="y-axis max:" Grid.Column="2" Margin="0,0,65.6,12.6" HorizontalAlignment="Right" Width="63" Height="16" VerticalAlignment="Bottom"/>
         <TextBox x:Name="y_max" TextWrapping="Wrap" Margin="0,0,15.6,9.6" Grid.Column="2" TextChanged="y_max_TextChanged" HorizontalAlignment="Right" Width="50" Height="20" VerticalAlignment="Bottom"/>
+        <CheckBox x:Name="checkBox_restingState" Grid.Column="1" Content="Resting State" HorizontalAlignment="Center" Height="20" Margin="0,101,0,0" VerticalAlignment="Top" Width="98" RenderTransformOrigin="-0.764,1.719" />
 
     </Grid>
 </Window>

@@ -81,6 +81,7 @@ namespace MotorEvokedPotentialsApp
 
         public class Configuration
         {
+            public string filePath {  get; set; }
             public int stimMode { get; set; }
             public int stimChannel { get; set; }
             public int returnChannel { get; set; }
@@ -118,8 +119,8 @@ namespace MotorEvokedPotentialsApp
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             string seriesName;
-            aBICManagerMEP = new MotorEvokedPotentialsApp.BICManagerMEP(neuroStreamChart.Width, interTrainInterval, baselinePeriod); // initialize buffer to the width we need! or maybe whichever is bigger. might need to do something later for the display, if buffer is diff length
-            aBICManagerMEP.BICConnect();
+            aBICManagerMEP = new MotorEvokedPotentialsApp.BICManagerMEP(); // initialize buffer to the width we need! or maybe whichever is bigger. might need to do something later for the display, if buffer is diff length
+            
 
             var colors_list = new System.Drawing.Color[]
             {
@@ -186,11 +187,7 @@ namespace MotorEvokedPotentialsApp
             // Start update timer
             neuroChartUpdateTimer = new System.Timers.Timer(200);
             neuroChartUpdateTimer.Elapsed += neuroChartUpdateTimer_Elapsed;
-            neuroChartUpdateTimer.Start();
-
-            aBICManagerMEP.disconnected += onDisconnected;
         }
-
         private void neuroChartUpdateTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             // grab latest data
@@ -269,6 +266,7 @@ namespace MotorEvokedPotentialsApp
                             configInfo = System.Text.Json.JsonSerializer.Deserialize<Configuration>(configJson);
 
                             OutputConsole.Inlines.Add("Loaded " + fileName + "\n");
+                            OutputConsole.Inlines.Add("Save path: " + configInfo.filePath + "\n");
                             OutputConsole.Inlines.Add("StimMode: " + configInfo.stimMode+ "\n");
                             OutputConsole.Inlines.Add("Stim channel: " + String.Join(", ", configInfo.stimChannel) + "\n");
                             OutputConsole.Inlines.Add("Return channel: " + String.Join(", ", configInfo.returnChannel) + "\n");
@@ -282,7 +280,9 @@ namespace MotorEvokedPotentialsApp
                             OutputConsole.Inlines.Add("Using ground during stim: " + configInfo.useGround + "\n");
                             Scroller.ScrollToEnd();
                         }
+                        string saveDir = configInfo.filePath + @"\" + DateTime.Now.ToString("yyyy-MM-dd");
 
+                        aBICManagerMEP.saveDir = saveDir;
                         stimMode = configInfo.stimMode;
                         stimChannel = configInfo.stimChannel;
                         returnChannel = configInfo.returnChannel;
@@ -307,7 +307,8 @@ namespace MotorEvokedPotentialsApp
                         neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
                             delegate
                             {
-                                btn_start.IsEnabled = true;
+                                btn_start.IsEnabled = false;
+                                btn_connect.IsEnabled = true;
                                 btn_load.IsEnabled = true;
                             }));
                     }
@@ -366,6 +367,7 @@ namespace MotorEvokedPotentialsApp
                             // update buttons
                             btn_start.IsEnabled = false;
                             btn_stop.IsEnabled = true;
+                            btn_disconnect.IsEnabled = false;
                             btn_load.IsEnabled = false;
                             btn_set.IsEnabled = false;
                         }));
@@ -414,6 +416,7 @@ namespace MotorEvokedPotentialsApp
                             // update buttons
                             btn_start.IsEnabled = false;
                             btn_stop.IsEnabled = true;
+                            btn_disconnect.IsEnabled = false;
                             btn_load.IsEnabled = false;
                             btn_set.IsEnabled = false;
                         }));
@@ -499,7 +502,6 @@ namespace MotorEvokedPotentialsApp
                        // update buttons once stimulation is complete
                        btn_start.IsEnabled = true;
                        btn_stop.IsEnabled = false;
-                       btn_load.IsEnabled = true;
                        btn_set.IsEnabled = true;
                    }));
         }
@@ -533,8 +535,32 @@ namespace MotorEvokedPotentialsApp
                 Scroller.ScrollToEnd();
             }));
             stop_stim_UI_update();
-        }
+            btn_disconnect.IsEnabled = true;
 
+        }
+        private void btn_connect_Click(object sender, RoutedEventArgs e)
+        {
+            OutputConsole.Inlines.Add("Connecting...\n");
+            aBICManagerMEP.Initialize(neuroStreamChart.Width, interTrainInterval, baselinePeriod); // initialize buffer to the width we need! or maybe whichever is bigger. might need to do something later for the display, if buffer is diff length
+            connectState = aBICManagerMEP.BICConnect();
+
+            if (connectState)
+            {
+                OutputConsole.Inlines.Add("Connection successful!\n");
+            }
+            else
+            {
+                OutputConsole.Inlines.Add("Connection unsuccessful!\n");
+            }
+            // Start update timer
+            neuroChartUpdateTimer.Start();
+            aBICManagerMEP.disconnected += onDisconnected;
+            // enable buttons after a config has been successfully loaded
+            btn_load.IsEnabled = false; // load config button
+            btn_start.IsEnabled = true;
+            btn_disconnect.IsEnabled = true;
+            btn_stop.IsEnabled = true; // stop stim button
+        }
         private void btn_disconnect_Click(object sender, RoutedEventArgs e)
         {
             neuroChartUpdateTimer.Stop();
@@ -543,25 +569,11 @@ namespace MotorEvokedPotentialsApp
             aBICManagerMEP.Dispose();  // Shut down connection
             connectState = false;
             OutputConsole.Inlines.Add("Disconnection successful!\n");
+
+            btn_start.IsEnabled = false;
         }
 
-        private void btn_reconnect_Click(object sender, RoutedEventArgs e)
-        {
-            OutputConsole.Inlines.Add("Reconnecting...\n");
-            aBICManagerMEP = new MotorEvokedPotentialsApp.BICManagerMEP(neuroStreamChart.Width, interTrainInterval, baselinePeriod);
-            connectState = aBICManagerMEP.BICConnect();    // Try to reestablish connection
-
-            if (connectState)
-            {
-                OutputConsole.Inlines.Add("Reconnection successful!\n");
-            }
-            else
-            {
-                OutputConsole.Inlines.Add("Reconnection unsuccessful!\n");
-            }
-            neuroChartUpdateTimer.Start();
-            aBICManagerMEP.disconnected += onDisconnected;
-        }
+        
 
         private void btn_set_Click(object sender, RoutedEventArgs e)
         {

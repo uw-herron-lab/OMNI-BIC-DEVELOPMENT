@@ -30,7 +30,9 @@ namespace RealtimeGraphing
         // Logging Objects
         FileStream logFileStream;
         StreamWriter logFileWriter;
-        string filePath = "./filterLog" + DateTime.Now.ToString("_yyyy-MM-dd_HH-mm-ss") + ".csv";
+        string filePath;
+        public string fileName;
+        public string saveDir;
         ConcurrentQueue<string> logLineQueue = new ConcurrentQueue<string>();
         Thread newLoggingThread;
         bool loggingNotDisposed = true;
@@ -45,7 +47,10 @@ namespace RealtimeGraphing
         private Task connectMonitor = null;
 
         // Constructor
-        public BICManager(int definedDataBufferLength)
+        public BICManager()
+        {
+        }
+        public void Initialize(int definedDataBufferLength)
         {
             // Open up the GRPC Channel to the BIC microservice
             aGRPChannel = new Channel("127.0.0.1:50051", ChannelCredentials.Insecure);
@@ -62,7 +67,22 @@ namespace RealtimeGraphing
             }
             filtDataBuffer[0] = new List<double>();
 
+            try
+            {
+                if (!Directory.Exists(saveDir))
+                {
+                    System.IO.Directory.CreateDirectory(saveDir);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("EMG Streamer, Directory Exception - " + ex.Message.ToString());
+            }
+
+
             // Set up the logging interface
+            filePath = saveDir + fileName + DateTime.Now.ToString("_yyyy-MM-dd_HH-mm-ss") + ".csv";
+
             if (File.Exists(filePath))
             {
                 File.Delete(filePath);
@@ -76,6 +96,7 @@ namespace RealtimeGraphing
             }
             logFileWriter.WriteLine("PacketNum,TimeStamp,FilteredChannelNum,RawChannelData,PreFilteredChannelData,HampelFilteredChannelData," +
                 "FilteredChannelData,boolInterpolated,StimChannelData,StimActive,CalcPhase,TriggerPhase,validTarget,InputTrigger" + chanHeader);
+
         }
         public bool BICConnect()
         {

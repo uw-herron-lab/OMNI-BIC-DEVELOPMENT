@@ -34,9 +34,11 @@ namespace EvokedPotentialsApp
         private uint samplingRate = 1000;               // [Hz]
 
         // Logging Objects
+        public string saveDir;
+        string filePath;
         FileStream logFileStream;
         StreamWriter logFileWriter;
-        string filePath = "./epLog" + DateTime.Now.ToString("_yyyy-MM-dd_HH-mm-ss") + ".csv";
+        string fileName = @"\epLog";
         ConcurrentQueue<string> logLineQueue = new ConcurrentQueue<string>();
         Thread newLoggingThread;
         bool loggingNotDisposed = true;
@@ -53,7 +55,8 @@ namespace EvokedPotentialsApp
         private Task connectMonitor = null;
 
         // Constructor
-        public BICManagerEP(int definedDataBufferLength, uint stimPeriod, uint baselinePeriod) 
+        public BICManagerEP() { }
+        public void Initialize( int definedDataBufferLength, uint stimPeriod, uint baselinePeriod) 
         {
             // Open up the GRPC Channel to the BIC microservice
             aGRPChannel = new Channel("127.0.0.1:50051", ChannelCredentials.Insecure);
@@ -73,12 +76,25 @@ namespace EvokedPotentialsApp
                 currPulseBuffer[i] = new List<double>();
                 runningTotals[i] = new List<double>(new double[stimPeriodSamples]);
             }
+            try
+            {
+                if (!Directory.Exists(saveDir))
+                {
+                    System.IO.Directory.CreateDirectory(saveDir);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("EMG Streamer, Directory Exception - " + ex.Message.ToString());
+            }
 
             // Set up the logging interface
-            if(File.Exists(filePath))
+            filePath = saveDir + fileName + DateTime.Now.ToString("_yyyy-MM-dd_HH-mm-ss") + ".csv";
+            if (File.Exists(filePath))
             {
                 File.Delete(filePath);
             }
+            
             logFileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, FileOptions.Asynchronous);
             logFileWriter = new StreamWriter(logFileStream);
             string chanHeader = "";

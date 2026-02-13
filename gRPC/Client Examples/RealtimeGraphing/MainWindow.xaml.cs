@@ -34,7 +34,8 @@ namespace RealtimeGraphing
 
         public void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            aBICManager = new BICManager(neuroDataChart.Width);
+            aBICManager = new BICManager();
+            aBICManager.Initialize(neuroDataChart.Width);
             aBICManager.BICConnect();
 
             // Update the chart controls
