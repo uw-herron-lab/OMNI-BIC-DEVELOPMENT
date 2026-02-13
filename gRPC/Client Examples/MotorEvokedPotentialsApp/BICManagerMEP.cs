@@ -299,12 +299,12 @@ namespace MotorEvokedPotentialsApp
 
                 // Enqueue the stimulation waveform
                 deviceClient.bicEnqueueStimulation(aNewWaveformRequest);
-                deviceClient.enableOpenLoopStimulation(new openLoopStimEnableRequest() { DeviceAddress = DeviceName, Enable = true, WatchdogInterval = intervalDuration, TriggerStimThreshold = stimThreshold }); // originally 5000 sine we were only thinking of doing 50 Hz stim
+                deviceClient.bicStartStimulation(new bicStartStimulationRequest() { DeviceAddress = DeviceName });
             }
             else
             {
                 // Stop the stim
-                deviceClient.enableOpenLoopStimulation(new openLoopStimEnableRequest() { DeviceAddress = DeviceName, Enable = false });
+                deviceClient.bicStopStimulation(new RequestDeviceAddress() { DeviceAddress = DeviceName });
             }
         }
 
