@@ -95,7 +95,6 @@ namespace EvokedPotentialsApp
                 File.Delete(filePath);
             }
             
-            Console.WriteLine(filePath);
             logFileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, FileOptions.Asynchronous);
             logFileWriter = new StreamWriter(logFileStream);
             string chanHeader = "";

@@ -339,6 +339,7 @@ namespace EvokedPotentialsApp
                             configInfo = System.Text.Json.JsonSerializer.Deserialize<Configuration>(configJson);
 
                             OutputConsole.Inlines.Add("Loaded " + fileName + "\n");
+                            OutputConsole.Inlines.Add("Save path: " + configInfo.filePath);
                             OutputConsole.Inlines.Add("Stim channels: " + String.Join(", ", configInfo.stimChannelsQueue) + "\n");
                             OutputConsole.Inlines.Add("Return channels: " + String.Join(", ", configInfo.returnChannelsQueue) + "\n");
                             OutputConsole.Inlines.Add("Number of pulses: " + configInfo.numPulses + "\n");

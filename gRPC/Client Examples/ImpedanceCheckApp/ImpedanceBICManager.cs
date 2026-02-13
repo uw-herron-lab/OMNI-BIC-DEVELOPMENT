@@ -24,6 +24,8 @@ namespace ImpedanceCheckApp
         private List<string> impBuffer;
 
         // Logging Objects
+        public string saveDir;
+        string fileName = @"\impedances";
         FileStream impedFileStream;
         StreamWriter impedFileWriter;
         string impedFilePath;
@@ -111,7 +113,13 @@ namespace ImpedanceCheckApp
         public void performImpCheck()
         {
             // Logging impedance items
-            impedFilePath = "./impedances" + DateTime.Now.ToString("_yyyy-MM-dd_HH-mm-ss") + ".csv";
+
+            if (!Directory.Exists(saveDir))
+            {
+                System.IO.Directory.CreateDirectory(saveDir);
+            }
+            
+            impedFilePath = saveDir + fileName + DateTime.Now.ToString("_yyyy-MM-dd_HH-mm-ss") + ".csv";
             impedFileStream = new FileStream(impedFilePath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, FileOptions.Asynchronous);
             impedFileWriter = new StreamWriter(impedFileStream);
 
