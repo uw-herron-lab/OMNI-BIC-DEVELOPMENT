@@ -18,6 +18,7 @@ using System.Timers;
 using System.Threading;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Data.SqlTypes;
 
 namespace StimTherapyApp
 {
@@ -46,6 +47,7 @@ namespace StimTherapyApp
 
         public class Configuration
         {
+            public string filePath { get; set; }
             public string stimType { get; set; }
             public bool monopolar { get; set; }
             public int senseChannel { get; set; }
@@ -86,8 +88,7 @@ namespace StimTherapyApp
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             string seriesName;
-            aBICManager = new RealtimeGraphing.BICManager(neuroStreamChart.Width);
-            connectState = aBICManager.BICConnect();
+            aBICManager = new RealtimeGraphing.BICManager();
 
             var colors_list = new System.Drawing.Color[]
             {
@@ -162,10 +163,6 @@ namespace StimTherapyApp
             // Start update timer
             neuroChartUpdateTimer = new System.Timers.Timer(200);
             neuroChartUpdateTimer.Elapsed += neuroChartUpdateTimer_Elapsed;
-            neuroChartUpdateTimer.Start();
-
-            // subscribe to disconnection event
-            aBICManager.disconnected += onDisconnected;
         }
 
         private void neuroChartUpdateTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -282,16 +279,10 @@ namespace StimTherapyApp
                             OutputConsole.Inlines.Add("Target Phase: " + configInfo.targetPhase+ "\n");
                             Scroller.ScrollToEnd();
                         }
+                        string saveDir = configInfo.filePath + @"\" + DateTime.Now.ToString("yyyy-MM-dd");
 
-                        neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
-                        delegate
-                        {
-                        // enable buttons after a config has been successfully loaded
-                            btn_beta.IsEnabled = true; // beta stim button; have to use method invoker
-                            btn_open.IsEnabled = true; // open loop stim button
-                            btn_load.IsEnabled = true; // load config button
-                            btn_stop.IsEnabled = true; // stop stim button
-                        }));
+                        aBICManager.saveDir = saveDir;
+                        
                     }
                 }
             }
@@ -303,6 +294,7 @@ namespace StimTherapyApp
                 Scroller.ScrollToEnd();
             }
         }
+
         private void btn_beta_Click(object sender, RoutedEventArgs e)
         {
             ThreadPool.QueueUserWorkItem(a =>
@@ -432,22 +424,40 @@ namespace StimTherapyApp
             OutputConsole.Inlines.Add("Disconnection successful!\n");
         }
 
-        private void btn_reconnect_Click(object sender, RoutedEventArgs e)
+        private void btn_connect_Click(object sender, RoutedEventArgs e)
         {
-            OutputConsole.Inlines.Add("Reconnecting...");
-            aBICManager = new RealtimeGraphing.BICManager(neuroStreamChart.Width);
+            if(checkBox_restingState.IsChecked == true)
+            {
+                aBICManager.fileName = @"\restLog";
+                btn_beta.IsEnabled = false; // beta stim button; have to use method invoker
+                btn_open.IsEnabled = false; // open loop stim button
+            }
+            else
+            {
+                aBICManager.fileName = @"\filterLog";
+                btn_beta.IsEnabled = true;
+                btn_open.IsEnabled = true;
+                btn_stop.IsEnabled = true; // stop stim button
+            }
+
+            OutputConsole.Inlines.Add("Connecting...");
+            aBICManager.Initialize(neuroStreamChart.Width); // initialize buffer to the width we need! or maybe whichever is bigger. might need to do something later for the display, if buffer is diff length
             connectState = aBICManager.BICConnect(); // Try reestablishing connection
 
             if (connectState)
             {
-                OutputConsole.Inlines.Add("Reconnection successful!\n");
+                OutputConsole.Inlines.Add("Connection successful!\n");
             }
             else
             {
-                OutputConsole.Inlines.Add("Reconnection unsuccessful!\n");
+                OutputConsole.Inlines.Add("Connection unsuccessful!\n");
             }
             neuroChartUpdateTimer.Start();
             aBICManager.disconnected += onDisconnected;
+
+
+            btn_load.IsEnabled = false; // load config button
+            btn_disconnect.IsEnabled = true; // disconnect BIC button
         }
         private void MainWindow_Closed(object sender, EventArgs e)
         {
@@ -538,5 +548,6 @@ namespace StimTherapyApp
                 }
             }
         }
+
     }
 }

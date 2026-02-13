@@ -36,7 +36,9 @@ namespace MotorEvokedPotentialsApp
         // Logging Objects
         FileStream logFileStream;
         StreamWriter logFileWriter;
-        string filePath = "./mepLog" + DateTime.Now.ToString("_yyyy-MM-dd_HH-mm-ss") + ".csv";
+        string filePath; 
+        string fileName = @"\mepLog";
+        public string saveDir;
         ConcurrentQueue<string> logLineQueue = new ConcurrentQueue<string>();
         Thread newLoggingThread;
         bool loggingNotDisposed = true;
@@ -53,7 +55,11 @@ namespace MotorEvokedPotentialsApp
         private Task connectMonitor = null;
 
         // Constructor
-        public BICManagerMEP(int definedDataBufferLength, uint stimPeriod, uint baselinePeriod) 
+        public BICManagerMEP() 
+        {
+        }
+       
+        public void Initialize(int definedDataBufferLength, uint stimPeriod, uint baselinePeriod)
         {
             // Open up the GRPC Channel to the BIC microservice
             aGRPChannel = new Channel("127.0.0.1:50051", ChannelCredentials.Insecure);
@@ -67,15 +73,27 @@ namespace MotorEvokedPotentialsApp
             runningTotals = new List<double>[numSensingChannelsDef];
             connectionInfoBuffer = new List<string>();
 
-            for(int i = 0; i < numSensingChannelsDef; i++)
+            for (int i = 0; i < numSensingChannelsDef; i++)
             {
                 dataBuffer[i] = new List<double>();
                 currPulseBuffer[i] = new List<double>();
                 runningTotals[i] = new List<double>(new double[stimPeriodSamples]);
             }
 
+            try
+            {
+                if (!Directory.Exists(saveDir))
+                {
+                    System.IO.Directory.CreateDirectory(saveDir);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("EMG Streamer, Directory Exception - " + ex.Message.ToString());
+            }
+            filePath = saveDir + fileName + DateTime.Now.ToString("_yyyy-MM-dd_HH-mm-ss") + ".csv";
             // Set up the logging interface
-            if(File.Exists(filePath))
+            if (File.Exists(filePath))
             {
                 File.Delete(filePath);
             }
@@ -88,8 +106,9 @@ namespace MotorEvokedPotentialsApp
             }
             // list of header names
             logFileWriter.WriteLine("PacketNum,TimeStamp,FilteredChannelNum,RawChannelData,FilteredChannelData,boolInterpolated,StimChannelData,StimActive,InputTrigger" + chanHeader);
+
         }
-       
+
         // Resets currPulseBuffer and runningTotals
         public void zeroAvgsBuffers()
         {

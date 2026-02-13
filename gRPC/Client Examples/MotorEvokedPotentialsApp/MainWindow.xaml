@@ -18,10 +18,10 @@
             <ColumnDefinition Width="602*"/>
         </Grid.ColumnDefinitions>
         <Button x:Name="btn_load" Content="Load Config" Margin="16,24,7,0" VerticalAlignment="Top" Click="btn_load_Click" Height="20" Grid.ColumnSpan="2"/>
-        <Button x:Name="btn_start" Content="Start Stim" Margin="16,230,0,0" VerticalAlignment="Top" Click="btn_start_Click" Height="20" HorizontalAlignment="Left" Width="78"/>
+        <Button x:Name="btn_start" Content="Start Stim" Margin="16,230,0,0" VerticalAlignment="Top" Click="btn_start_Click" Height="20" HorizontalAlignment="Left" Width="78" IsEnabled="False"/>
         <Button x:Name="btn_stop" Content="Stop Stim" Margin="0,230,0,0" VerticalAlignment="Top" Click="btn_stop_Click" Height="20" Grid.Column="1" HorizontalAlignment="Left" Width="78"/>
-        <Button x:Name="btn_disconnect" Content="Disconnect" Margin="10,0,0,11" Click="btn_disconnect_Click" Grid.Column="2" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="74"/>
-        <Button x:Name="btn_reconnect" Content="Reconnect" Grid.Column="2" Margin="103,0,0,11" Click="btn_reconnect_Click" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="68"/>
+        <Button x:Name="btn_disconnect" Content="Disconnect" Margin="10,0,0,11" Click="btn_disconnect_Click" Grid.Column="2" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="74" IsEnabled="False"/>
+        <Button x:Name="btn_connect" Content="Connect" Grid.Column="2" Margin="103,0,0,11" Click="btn_connect_Click" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="68"/>
         <Button x:Name="btn_set" Content="Set" Margin="40,121,0,0" Grid.Column="1" Click="btn_set_Click" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="38"/>
 
         <ScrollViewer Name="Scroller" Background="White" Grid.ColumnSpan="3" VerticalScrollBarVisibility="Auto" Grid.Row="1">

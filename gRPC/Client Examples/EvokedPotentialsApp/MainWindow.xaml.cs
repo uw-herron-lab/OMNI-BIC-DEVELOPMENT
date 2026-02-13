@@ -278,7 +278,7 @@ namespace EvokedPotentialsApp
         {
             OutputConsole.Inlines.Add("Connecting...\n");
             aBICManagerEP.Initialize(neuroStreamChart.Width, stimPeriod, baselinePeriod); // initialize buffer to the width we need! or maybe whichever is bigger. might need to do something later for the display, if buffer is diff length
-            aBICManagerEP.BICConnect();
+            connectState = aBICManagerEP.BICConnect();
 
             if (connectState)
             {
@@ -291,6 +291,44 @@ namespace EvokedPotentialsApp
             // Start update timer
             neuroChartUpdateTimer.Start();
             aBICManagerEP.disconnected += onDisconnected;
+
+            // enable certain buttons depending on stimulation experiment mode
+            if (scanMode)
+            {
+                mode.SelectedIndex = 1;
+                neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
+                    delegate
+                    {
+                        // enable buttons after a config has been successfully loaded
+                        btn_start.IsEnabled = true; // open loop stim button
+                        btn_connect.IsEnabled = false; // connect BIC button
+                        btn_disconnect.IsEnabled = true; // disconnect BIC button
+                        btn_load.IsEnabled = true; // load config button
+                        btn_diagnostic.IsEnabled = true; // diagnostics button
+                        btn_stop.IsEnabled = false; // stop stim button
+                        mode.IsEnabled = true;
+                        sources.IsEnabled = false;
+                        destinations.IsEnabled = false;
+                    }));
+            }
+            else
+            {
+                mode.SelectedIndex = 0;
+                neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
+                    delegate
+                    {
+                        // enable buttons after a config has been successfully loaded
+                        btn_start.IsEnabled = true; // open loop stim button
+                        btn_connect.IsEnabled = false; // connect BIC button
+                        btn_disconnect.IsEnabled = true; // disconnect BIC button
+                        btn_load.IsEnabled = true; // load config button
+                        btn_diagnostic.IsEnabled = true; // diagnostics button
+                        btn_stop.IsEnabled = false; // stop stim button
+                        mode.IsEnabled = true;
+                        sources.IsEnabled = true;
+                        destinations.IsEnabled = true;
+                    }));
+            }
         }
 
         /// <summary>
@@ -339,7 +377,7 @@ namespace EvokedPotentialsApp
                             configInfo = System.Text.Json.JsonSerializer.Deserialize<Configuration>(configJson);
 
                             OutputConsole.Inlines.Add("Loaded " + fileName + "\n");
-                            OutputConsole.Inlines.Add("Save path: " + configInfo.filePath);
+                            OutputConsole.Inlines.Add("Save path: " + configInfo.filePath + "\n");
                             OutputConsole.Inlines.Add("Stim channels: " + String.Join(", ", configInfo.stimChannelsQueue) + "\n");
                             OutputConsole.Inlines.Add("Return channels: " + String.Join(", ", configInfo.returnChannelsQueue) + "\n");
                             OutputConsole.Inlines.Add("Number of pulses: " + configInfo.numPulses + "\n");
@@ -377,7 +415,8 @@ namespace EvokedPotentialsApp
                                 delegate
                                 {
                                     // enable buttons after a config has been successfully loaded
-                                    btn_start.IsEnabled = true; // open loop stim button
+                                    btn_start.IsEnabled = false; // open loop stim button
+                                    btn_connect.IsEnabled = true; // connect BIC button
                                     btn_load.IsEnabled = true; // load config button
                                     btn_diagnostic.IsEnabled = true; // diagnostics button
                                     btn_stop.IsEnabled = false; // stop stim button
@@ -393,7 +432,8 @@ namespace EvokedPotentialsApp
                                 delegate
                                 {
                                     // enable buttons after a config has been successfully loaded
-                                    btn_start.IsEnabled = true; // open loop stim button
+                                    btn_start.IsEnabled = false; // open loop stim button
+                                    btn_connect.IsEnabled = true; // connect BIC button
                                     btn_load.IsEnabled = true; // load config button
                                     btn_diagnostic.IsEnabled = true; // diagnostics button
                                     btn_stop.IsEnabled = false; // stop stim button
@@ -483,6 +523,8 @@ namespace EvokedPotentialsApp
                         // disable buttons
                             btn_start.IsEnabled = false; // stim button
                             btn_load.IsEnabled = false; // load config button
+                            btn_connect.IsEnabled = false;
+                            btn_disconnect.IsEnabled = false;
                             btn_diagnostic.IsEnabled = false; // diagnostics button
                             btn_stop.IsEnabled = true;
                             sources.IsEnabled = false;
@@ -661,6 +703,8 @@ namespace EvokedPotentialsApp
                 Scroller.ScrollToEnd();
             }));
             stop_stim_UI_update();
+
+            btn_disconnect.IsEnabled = true;
         }
 
         private void btn_diagnostic_Click(object sender, RoutedEventArgs e)
@@ -683,30 +727,11 @@ namespace EvokedPotentialsApp
             aBICManagerEP.Dispose();  // Shut down connection
             connectState = false;
             OutputConsole.Inlines.Add("Disconnection successful!\n");
+            
+            btn_start.IsEnabled = false;
+            btn_connect.IsEnabled = true;
         }
 
-        /// <summary>
-        /// Reinitiate connection to BIC
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void btn_reconnect_Click(object sender, RoutedEventArgs e)
-        {
-            OutputConsole.Inlines.Add("Reconnecting...\n");
-            aBICManagerEP.Initialize( neuroStreamChart.Width, stimPeriod, baselinePeriod);
-            connectState = aBICManagerEP.BICConnect();    // Try to reestablish connection
-
-            if (connectState)
-            {
-                OutputConsole.Inlines.Add("Reconnection successful!\n");
-            }
-            else
-            {
-                OutputConsole.Inlines.Add("Reconnection unsuccessful!\n");
-            }
-            neuroChartUpdateTimer.Start();
-            aBICManagerEP.disconnected += onDisconnected;
-        }
 
         private void MainWindow_Closed(object sender, EventArgs e)
         {

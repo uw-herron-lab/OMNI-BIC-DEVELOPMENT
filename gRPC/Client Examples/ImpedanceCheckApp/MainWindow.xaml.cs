@@ -77,6 +77,7 @@ namespace ImpedanceCheckApp
                         impBICManager.saveDir = saveDir;
                     }
                 }
+                btn_impcheck.IsEnabled = true;
             }
             catch (Exception ex)
             {
