@@ -46,14 +46,14 @@ namespace MotorEvokedPotentialsApp
         public delegate void disconnectEventHandler(List<string> disconnectionInfo);
         public event disconnectEventHandler disconnected;
 
-        public int deviceSampleRate {  get; set; }
-        
+        public int deviceSampleRate { get; set; }
+
         // Task pointers for streaming methods
         private Task neuroMonitor = null;
         private Task connectMonitor = null;
 
         // Constructor
-        public BICManagerMEP(int definedDataBufferLength, uint stimPeriod, uint baselinePeriod) 
+        public BICManagerMEP(int definedDataBufferLength, uint stimPeriod, uint baselinePeriod)
         {
             // Open up the GRPC Channel to the BIC microservice
             aGRPChannel = new Channel("127.0.0.1:50051", ChannelCredentials.Insecure);
@@ -67,7 +67,7 @@ namespace MotorEvokedPotentialsApp
             runningTotals = new List<double>[numSensingChannelsDef];
             connectionInfoBuffer = new List<string>();
 
-            for(int i = 0; i < numSensingChannelsDef; i++)
+            for (int i = 0; i < numSensingChannelsDef; i++)
             {
                 dataBuffer[i] = new List<double>();
                 currPulseBuffer[i] = new List<double>();
@@ -75,7 +75,7 @@ namespace MotorEvokedPotentialsApp
             }
 
             // Set up the logging interface
-            if(File.Exists(filePath))
+            if (File.Exists(filePath))
             {
                 File.Delete(filePath);
             }
@@ -89,7 +89,7 @@ namespace MotorEvokedPotentialsApp
             // list of header names
             logFileWriter.WriteLine("PacketNum,TimeStamp,FilteredChannelNum,RawChannelData,FilteredChannelData,boolInterpolated,StimChannelData,StimActive,InputTrigger" + chanHeader);
         }
-       
+
         // Resets currPulseBuffer and runningTotals
         public void zeroAvgsBuffers()
         {
@@ -102,12 +102,12 @@ namespace MotorEvokedPotentialsApp
                 }
             }
         }
-        
+
         public bool BICConnect()
         {
-//#warning TODO: Add a check for already connected devices?
+            //#warning TODO: Add a check for already connected devices?
 
-//#warning TODO: Add InfoService- prompted by "?"
+            //#warning TODO: Add InfoService- prompted by "?"
             infoClient = new BICInfoService.BICInfoServiceClient(aGRPChannel);
             Console.WriteLine("Grabbing information: ");
             var versionNumberReply = infoClient.VersionNumber(new VersionNumberRequest());
@@ -264,15 +264,15 @@ namespace MotorEvokedPotentialsApp
 
         public void enableMotorThresholdStimulation(bool openStimEn, bool monopolar, bool useStimGround, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold)
         {
-            // Timer interval for re-triggering train of stimulation 
-            uint intervalDuration = ((interPulseInterval / 1000) * 255);
+            // Determine the number of waveform repetitions needed to create a 2-sec burst of stimulation
+            uint numRepetition = 2000 / (interPulseInterval / 1000);
             // Additional pause duration for stimulation
             uint addDuration = interPulseInterval - (5 * stimDuration);
 
             if (openStimEn)
             {
                 // Create a waveform defintion request 
-                bicEnqueueStimulationRequest aNewWaveformRequest = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.PersistentWaveform, WaveformRepititions = 100 };
+                bicEnqueueStimulationRequest aNewWaveformRequest = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.PersistentWaveform, WaveformRepititions = numRepetition };
 
                 if (monopolar)
                 {
@@ -311,7 +311,7 @@ namespace MotorEvokedPotentialsApp
         /// <summary>
         /// Stop all stimulation
         /// </summary>
-        public void stopEvokedPotentialStimulation()
+        public void stopMotorThresholdStimulation()
         {
             deviceClient.bicStopStimulation(new RequestDeviceAddress() { DeviceAddress = DeviceName });
         }
@@ -324,7 +324,7 @@ namespace MotorEvokedPotentialsApp
         {
             List<double>[] outputBuffer = new List<double>[dataBuffer.Length];
 
-            lock(dataBufferLock)
+            lock (dataBufferLock)
             {
                 for (int i = 0; i < dataBuffer.Length; i++)
                 {
@@ -340,7 +340,7 @@ namespace MotorEvokedPotentialsApp
             string dequeuedString;
 
             // Loop until quit
-            while(loggingNotDisposed)
+            while (loggingNotDisposed)
             {
                 try
                 {
@@ -367,7 +367,7 @@ namespace MotorEvokedPotentialsApp
             for (int i = 1; i < sampleBuffer.Count; i++)
             {
                 // check if the sequential packet number is less than the previous packet number
-                if (sampleBuffer[i].SampleCounter < prevPacketNum + 1) 
+                if (sampleBuffer[i].SampleCounter < prevPacketNum + 1)
                 {
                     Console.WriteLine("ERROR: Packet numbers are not in order! Sample (prev, next): " + prevPacketNum.ToString() + ", " + sampleBuffer[i].SampleCounter.ToString());
                     return false;
@@ -414,8 +414,8 @@ namespace MotorEvokedPotentialsApp
         async Task neuralMonitorTaskAsync()
         {
             Debug.WriteLine("********************************************************* calling monitor task");
-            var stream = deviceClient.bicNeuralStream(new bicNeuralSetStreamingEnable() { DeviceAddress = DeviceName, Enable = true, BufferSize = 100, MaxInterpolationPoints = 10, AmplificationFactor = RecordingAmplificationFactor.Amplification395DB, RefChannels = { 31 }, UseGroundReference = true});
-        
+            var stream = deviceClient.bicNeuralStream(new bicNeuralSetStreamingEnable() { DeviceAddress = DeviceName, Enable = true, BufferSize = 100, MaxInterpolationPoints = 10, AmplificationFactor = RecordingAmplificationFactor.Amplification395DB, RefChannels = { 31 }, UseGroundReference = true });
+
             // Create performance-tracking interpacket variables
             Stopwatch aStopwatch = new Stopwatch();
             newLoggingThread = new Thread(loggingThread);
@@ -429,11 +429,11 @@ namespace MotorEvokedPotentialsApp
                 validBufferOrderCheck(stream.ResponseStream.Current.Samples);
 
                 // Missing packet handling
-                if (stream.ResponseStream.Current.Samples[0].SampleCounter != (latestPacketNum + 1) )
+                if (stream.ResponseStream.Current.Samples[0].SampleCounter != (latestPacketNum + 1))
                 {
                     // Determine the number of packets missing
                     long diffPackets = stream.ResponseStream.Current.Samples[0].SampleCounter - (latestPacketNum + 1);
-                    
+
                     // Account for uint wrap around (RARE)
                     if (diffPackets < 0)
                     {
@@ -441,7 +441,7 @@ namespace MotorEvokedPotentialsApp
                     }
 
                     // Insert a maximum of 10 NANs
-                    if(diffPackets > 10)
+                    if (diffPackets > 10)
                     {
                         diffPackets = 10;
                     }
@@ -454,7 +454,7 @@ namespace MotorEvokedPotentialsApp
                     {
                         nanBuffer[i] = double.NaN;
                     }
-                    
+
                     // Lock dataBuffer access to ensure no mid-update copy.
                     lock (dataBufferLock)
                     {
@@ -469,11 +469,11 @@ namespace MotorEvokedPotentialsApp
 
                 // Status update to console
                 aStopwatch.Restart();
-               
+
                 // Create local copy buffers and loop variables
                 int numSamples = stream.ResponseStream.Current.Samples.Count;
                 double[] copyBuffer = new double[numSamples];
-                double[] filtBuffer = new double [numSamples];
+                double[] filtBuffer = new double[numSamples];
 
                 // Lock dataBuffer access to ensure no mid-update copy.
                 lock (dataBufferLock)
@@ -545,7 +545,7 @@ namespace MotorEvokedPotentialsApp
                             }
                         }
                     }
-                    
+
 
                     // Update the data buffers
                     for (int channelNum = 0; channelNum < dataBuffer.Length; channelNum++)
@@ -578,13 +578,13 @@ namespace MotorEvokedPotentialsApp
 
                         // Enqueue the data for the logging thread
                         string logString = stream.ResponseStream.Current.Samples[sampleNum].SampleCounter.ToString() + ", " +
-                            stream.ResponseStream.Current.Samples[sampleNum].TimeStamp.ToString() + ", " + 
+                            stream.ResponseStream.Current.Samples[sampleNum].TimeStamp.ToString() + ", " +
                             filteredIndex.ToString() + ", " +
                             stream.ResponseStream.Current.Samples[sampleNum].Measurements[filteredIndex].ToString() + ", " +
                             stream.ResponseStream.Current.Samples[sampleNum].FiltSample.ToString() + ", " +
                             stream.ResponseStream.Current.Samples[sampleNum].IsInterpolated.ToString() + ", " +
                             stream.ResponseStream.Current.Samples[sampleNum].Measurements[5].ToString() + ", " +
-                            stream.ResponseStream.Current.Samples[sampleNum].StimulationActive.ToString()+ ", " +
+                            stream.ResponseStream.Current.Samples[sampleNum].StimulationActive.ToString() + ", " +
                             stream.ResponseStream.Current.Samples[sampleNum].IsInputTrigHigh.ToString(); ;
                         for (int chNum = 0; chNum < numSensingChannelsDef; chNum++)
                         {

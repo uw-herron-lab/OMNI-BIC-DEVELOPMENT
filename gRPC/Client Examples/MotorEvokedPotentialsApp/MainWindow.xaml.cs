@@ -91,9 +91,9 @@ namespace MotorEvokedPotentialsApp
             public uint interPulseInterval { get; set; }
             public uint interTrainInterval { get; set; }
             public uint baselinePeriod { get; set; }
-            public int stimAmplitude { get; set; } 
+            public int stimAmplitude { get; set; }
             public uint stimDuration { get; set; }
-            public int jitterMax { get; set; } 
+            public int jitterMax { get; set; }
             public bool monopolar { get; set; }
             public double stimThreshold { get; set; }
             public bool useGround { get; set; }
@@ -271,7 +271,7 @@ namespace MotorEvokedPotentialsApp
                             configInfo = System.Text.Json.JsonSerializer.Deserialize<Configuration>(configJson);
 
                             OutputConsole.Inlines.Add("Loaded " + fileName + "\n");
-                            OutputConsole.Inlines.Add("StimMode: " + configInfo.stimMode+ "\n");
+                            OutputConsole.Inlines.Add("StimMode: " + configInfo.stimMode + "\n");
                             OutputConsole.Inlines.Add("Stim channel: " + String.Join(", ", configInfo.stimChannel) + "\n");
                             OutputConsole.Inlines.Add("Return channel: " + String.Join(", ", configInfo.returnChannel) + "\n");
                             OutputConsole.Inlines.Add("Number of pulses: " + configInfo.numPulses + "\n");
@@ -344,14 +344,15 @@ namespace MotorEvokedPotentialsApp
 
                     try
                     {
-                        aBICManagerMEP.enableMotorThresholdStimulation(true, monopolar, useGround,(uint) stimChannel-1, (uint) returnChannel-1, stimAmplitude, stimDuration, 4, 20000, stimThreshold);
+                        // Deliver 50 Hz stimulation with specified stimulation parameters
+                        aBICManagerMEP.enableMotorThresholdStimulation(true, monopolar, useGround, (uint)stimChannel - 1, (uint)returnChannel - 1, stimAmplitude, stimDuration, 4, 20000, stimThreshold);
                     }
                     catch
                     {
                         // Exception occured, gRPC command did not succeed, do not update UI button elements
                         Application.Current.Dispatcher.Invoke(new Action(() =>
                         {
-                            OutputConsole.Inlines.Add("Open loop stimulation NOT started: " + currTimeStamp + ", load new configuration\n");
+                            OutputConsole.Inlines.Add("Motor threshold stimulation NOT started: " + currTimeStamp + ", load new configuration\n");
                             Scroller.ScrollToEnd();
                         }));
                         return;
@@ -379,24 +380,19 @@ namespace MotorEvokedPotentialsApp
                         Scroller.ScrollToEnd();
                     }));
                 });
-                try
-                {
-                    // Deliver open-loop stimulation for a set 4 seconds before stopping all stimulation
-                    await Task.Delay(4000, cancellationTokenSource.Token);
-                    aBICManagerMEP.enableMotorThresholdStimulation(false, monopolar, useGround, (uint)stimChannel - 1, (uint)returnChannel - 1, stimAmplitude, stimDuration, 4, 20000, stimThreshold);
 
-                    // notify user of stimulation ending
-                    currTimeStamp = DateTime.Now.ToString("h:mm:ss tt");
-                    Application.Current.Dispatcher.Invoke(new Action(() =>
-                    {
-                        OutputConsole.Inlines.Add("Motor threshold stimulation stopped: " + currTimeStamp + "\n");
-                        Scroller.ScrollToEnd();
-                    }));
-                }
-                catch (TaskCanceledException)
+                await Task.Delay(2000);
+
+                // Stim should only last for 2 sec, but ensure all stimulation has stopped by sending a stop stimulation command
+                aBICManagerMEP.stopMotorThresholdStimulation();
+
+                // notify user of stimulation ending
+                currTimeStamp = DateTime.Now.ToString("h:mm:ss tt");
+                Application.Current.Dispatcher.Invoke(new Action(() =>
                 {
-                    return;
-                }
+                    OutputConsole.Inlines.Add("Motor threshold stimulation stopped: " + currTimeStamp + "\n");
+                    Scroller.ScrollToEnd();
+                }));
             }
             else if (stimMode == 1) // motor evoked potential mode
             {
@@ -538,11 +534,11 @@ namespace MotorEvokedPotentialsApp
             {
                 if (stimMode == 0)
                 {
-                    aBICManagerMEP.enableMotorThresholdStimulation(false, monopolar, useGround,(uint)stimChannel - 1, (uint)returnChannel - 1, stimAmplitude, stimDuration, 1, 20000, stimThreshold);
+                    aBICManagerMEP.enableMotorThresholdStimulation(false, monopolar, useGround, (uint)stimChannel - 1, (uint)returnChannel - 1, stimAmplitude, stimDuration, 1, 20000, stimThreshold);
                 }
                 else if (stimMode == 1)
                 {
-                    aBICManagerMEP.stopEvokedPotentialStimulation();
+                    aBICManagerMEP.stopMotorThresholdStimulation();
                     cancellationTokenSource.Cancel();
                 }
             });
