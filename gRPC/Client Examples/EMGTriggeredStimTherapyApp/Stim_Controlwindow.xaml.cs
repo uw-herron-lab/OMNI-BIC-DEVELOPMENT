@@ -1025,6 +1025,7 @@ namespace EMGTriggeredStimTherapyApp
                     }
 
                 }
+                Thread.Sleep(2000);
 
             }
             
