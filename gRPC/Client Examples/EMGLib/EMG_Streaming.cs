@@ -43,6 +43,7 @@ namespace EMGLib
         StreamWriter emgTimestampSW;
         public string currPart;
         public bool logging = false;
+        public int currTrial = 0;
         string file_extension;
 
         // for plotting
@@ -176,7 +177,7 @@ namespace EMGLib
             {
                 emgLog_label = string.Join(",", emgLog_label, "EMG" + (i + 1).ToString());
             }
-            emgLog_label = string.Join(",", emgLog_label, "Timestamp");
+            emgLog_label = string.Join(",", emgLog_label, "Timestamp", "Trial num");
             emgSW.WriteLine(emgLog_label);
             emgSW.Flush();
             // timestamp log file could be used for easier interpolation of timestamps if needed
@@ -218,7 +219,7 @@ namespace EMGLib
                         }
                         if (logging)
                         {
-                            emgLog = string.Join(",", emgLog, formattedTimestamp);
+                            emgLog = string.Join(",", emgLog, formattedTimestamp, currTrial);
                             emgSW.WriteLine(emgLog);
                             emgTimestampSW.WriteLine(formattedTimestamp);
 
@@ -268,7 +269,7 @@ namespace EMGLib
 			    }
 			    filename = currPart + "_FiltEMGData_" + file_extension;
                 emgFiltSW = new StreamWriter(Path.Combine(saveDir, filename));
-				emgFiltSW.WriteLine(string.Join(",", "raw signal", "TTL signal", "raw timestamp", "filt signal", "filt timestamp", "env signal", "env timestamp", "MTS on", "send stim", "movement detected", "movement timestamp", "percentage", "threshold", "max MVC"));
+				emgFiltSW.WriteLine(string.Join(",", "raw signal", "TTL signal", "raw timestamp", "filt signal", "filt timestamp", "env signal", "env timestamp", "MTS on", "send stim", "movement detected", "movement timestamp", "percentage", "threshold", "max MVC", "Trial"));
 				emgFiltSW.Flush();
                 filename = currPart + "_EnvData_" + file_extension;
                 //emgEnvelopedSW = new StreamWriter(Path.Combine(saveDir, filename));
@@ -352,7 +353,7 @@ namespace EMGLib
 
 										if (ch == 0)
 										{
-											emgFiltSW.WriteLine(string.Join(",", rawSamples[i], rawSamples[i+1], timestampForAllSamples, filtSamples[i].ToString(), bandpassFiltTS, envelopedSamples[i], envFiltTS, _stimEnabled, _generateStim, movementDetected[i], movementDetectedTimestamp[i], _stimMod.percent, _stimMod.thresh[0], _stimMod.maxSig[0]));
+											emgFiltSW.WriteLine(string.Join(",", rawSamples[i], rawSamples[i+1], timestampForAllSamples, filtSamples[i].ToString(), bandpassFiltTS, envelopedSamples[i], envFiltTS, _stimEnabled, _generateStim, movementDetected[i], movementDetectedTimestamp[i], _stimMod.percent, _stimMod.thresh[0], _stimMod.maxSig[0]), currTrial);
 										}
                                         i++;
 									}

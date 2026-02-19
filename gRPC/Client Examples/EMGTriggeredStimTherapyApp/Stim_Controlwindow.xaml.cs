@@ -63,6 +63,8 @@ namespace EMGTriggeredStimTherapyApp
         private bool bicConnected = false;
         private bool startStim = false;
 
+        private int currTrialBuffer = 0;
+
         public class Channel
         {
             public string Name { get; set; }
@@ -608,6 +610,7 @@ namespace EMGTriggeredStimTherapyApp
             startStimThread.Start();
             btn_stopStim.IsEnabled = true;
             btn_stopEMGlog.IsEnabled = false;
+            btn_trialStart.IsEnabled = true;
         }
 
         private void btn_stopStim_Click(Object sender, RoutedEventArgs e)
@@ -1028,83 +1031,107 @@ namespace EMGTriggeredStimTherapyApp
 
         }
 
-		//  private void Stimulator()
-		//  {
-		//      var configInfo = aBICManager.configInfo;
-		//      while (emgStreaming._stimEnabled)
-		//      {
-		//          if (emgStreaming._generateStim)
-		//          {
-		//              if (!OLstimON)
-		//              {
-		//                  try
-		//                  {
-		//                      bool[] stimState;
-		//                      stimState = aBICManager.getStimState();
-		//                      Console.WriteLine("stim active: " + stimState[0]+ " triggering stim: " + stimState[1]);
-		//                      aBICManager.enableOpenLoopStimulation(true, configInfo.monopolar, (uint)configInfo.stimChannel - 1, (uint)configInfo.returnChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, configInfo.stimPeriod - (5 * configInfo.stimDuration) - 3500, configInfo.stimThreshold);
-		//                      OLstimON = true;
-		//                      Console.WriteLine("\n>>>>OL enabled, " + OLstimON);
-		//	stimState = aBICManager.getStimState();
-		//	Console.WriteLine("stim active: " + stimState[0] + " triggering stim: " + stimState[1]);
+        private void btn_trialStart_Click(object sender, RoutedEventArgs e)
+        {
+            currTrialBuffer++;
+            emgStreaming.currTrial = currTrialBuffer;
+            trialCount.Text = emgStreaming.currTrial.ToString();
 
-		//}
-		//                  catch
-		//                  {
-		//                      // Exception occured, gRPC command did not succeed, do not update UI button elements
-		//                      Console.WriteLine("Open loop stimulation NOT started\n");
+            var converter = new System.Windows.Media.BrushConverter();
+            trialCount.Background = (Brush)converter.ConvertFromString("#FF61B571");
 
-		//                      return;
-		//                  }
-		//                  Thread.Sleep(20);
-		//              }
+            btn_trialStart.IsEnabled = false;
+            btn_trialStop.IsEnabled = true;
+        }
 
-		//          }
-		//          else
-		//          {
-		//              if (OLstimON)
-		//              {
-		//                  try
-		//                  {
-		//                      aBICManager.enableOpenLoopStimulation(false, configInfo.monopolar, (uint)configInfo.stimChannel - 1, (uint)configInfo.returnChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 1, 20000, configInfo.stimThreshold);
-		//                      OLstimON = false;
-		//                      Console.WriteLine("No movement >>>> OL disabled, " + OLstimON);
-		//                      Thread.Sleep(5000);
-		//                      Console.WriteLine("Done with sleep after OL stop");
-		//                  }
-		//                  catch
-		//                  {
-		//                      // Exception occured, gRPC command did not succeed, do not update UI button elements
-		//                      Console.WriteLine("Open loop stimulation NOT stopped\n");
+        private void btn_trialStop_Click(object sender, RoutedEventArgs e)
+        {
+            emgStreaming.currTrial = 0;
+            var converter = new System.Windows.Media.BrushConverter();
+            trialCount.Background = (Brush)converter.ConvertFromString("#FFCA5B5B");
 
-		//                      return;
-		//                  }
-		//                  Thread.Sleep(20);
-		//              }
-		//          }
-
-		//      }
-		//      if (OLstimON)
-		//      {
-		//          try
-		//          {
-		//              aBICManager.enableOpenLoopStimulation(false, configInfo.monopolar, (uint)configInfo.stimChannel - 1, (uint)configInfo.returnChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 1, 20000, configInfo.stimThreshold);
-		//              OLstimON = false;
-		//              Console.WriteLine("OL disabled, " + OLstimON);
-
-		//          }
-		//          catch
-		//          {
-		//              // Exception occured, gRPC command did not succeed, do not update UI button elements
-		//              Console.WriteLine("Open loop stimulation NOT stopped: load new configuration\n");
-
-		//              return;
-		//          }
-		//          Thread.Sleep(20);
-		//      }
-		//      OLstimON = false;
-		//  }
+            btn_trialStart.IsEnabled = true;
+            btn_trialStop.IsEnabled = false;
+        }
 
 
-	}
+        //  private void Stimulator()
+        //  {
+        //      var configInfo = aBICManager.configInfo;
+        //      while (emgStreaming._stimEnabled)
+        //      {
+        //          if (emgStreaming._generateStim)
+        //          {
+        //              if (!OLstimON)
+        //              {
+        //                  try
+        //                  {
+        //                      bool[] stimState;
+        //                      stimState = aBICManager.getStimState();
+        //                      Console.WriteLine("stim active: " + stimState[0]+ " triggering stim: " + stimState[1]);
+        //                      aBICManager.enableOpenLoopStimulation(true, configInfo.monopolar, (uint)configInfo.stimChannel - 1, (uint)configInfo.returnChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, configInfo.stimPeriod - (5 * configInfo.stimDuration) - 3500, configInfo.stimThreshold);
+        //                      OLstimON = true;
+        //                      Console.WriteLine("\n>>>>OL enabled, " + OLstimON);
+        //	stimState = aBICManager.getStimState();
+        //	Console.WriteLine("stim active: " + stimState[0] + " triggering stim: " + stimState[1]);
+
+        //}
+        //                  catch
+        //                  {
+        //                      // Exception occured, gRPC command did not succeed, do not update UI button elements
+        //                      Console.WriteLine("Open loop stimulation NOT started\n");
+
+        //                      return;
+        //                  }
+        //                  Thread.Sleep(20);
+        //              }
+
+        //          }
+        //          else
+        //          {
+        //              if (OLstimON)
+        //              {
+        //                  try
+        //                  {
+        //                      aBICManager.enableOpenLoopStimulation(false, configInfo.monopolar, (uint)configInfo.stimChannel - 1, (uint)configInfo.returnChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 1, 20000, configInfo.stimThreshold);
+        //                      OLstimON = false;
+        //                      Console.WriteLine("No movement >>>> OL disabled, " + OLstimON);
+        //                      Thread.Sleep(5000);
+        //                      Console.WriteLine("Done with sleep after OL stop");
+        //                  }
+        //                  catch
+        //                  {
+        //                      // Exception occured, gRPC command did not succeed, do not update UI button elements
+        //                      Console.WriteLine("Open loop stimulation NOT stopped\n");
+
+        //                      return;
+        //                  }
+        //                  Thread.Sleep(20);
+        //              }
+        //          }
+
+        //      }
+        //      if (OLstimON)
+        //      {
+        //          try
+        //          {
+        //              aBICManager.enableOpenLoopStimulation(false, configInfo.monopolar, (uint)configInfo.stimChannel - 1, (uint)configInfo.returnChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 1, 20000, configInfo.stimThreshold);
+        //              OLstimON = false;
+        //              Console.WriteLine("OL disabled, " + OLstimON);
+
+        //          }
+        //          catch
+        //          {
+        //              // Exception occured, gRPC command did not succeed, do not update UI button elements
+        //              Console.WriteLine("Open loop stimulation NOT stopped: load new configuration\n");
+
+        //              return;
+        //          }
+        //          Thread.Sleep(20);
+        //      }
+        //      OLstimON = false;
+        //  }
+
+
+    }
 }
