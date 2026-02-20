@@ -342,7 +342,7 @@ namespace EMGTriggeredStimTherapyApp
                         {
                             string configJson = fileReader.ReadToEnd();
                             EMGconfigInfo = System.Text.Json.JsonSerializer.Deserialize<emgConfiguration>(configJson);
-                            aBICManager.saveDir = EMGconfigInfo.save_path;
+                            //aBICManager.saveDir = EMGconfigInfo.save_path;
                         }
                     }
                 }
@@ -485,6 +485,9 @@ namespace EMGTriggeredStimTherapyApp
 
             dateStamp = $"{DateTime.Now:yyyy - MM - dd}";
             string path = System.IO.Path.Combine(EMGconfigInfo.save_path, emgStreaming.currPart, dateStamp);
+
+            aBICManager.saveDir = path;
+
             cancellationTokenSource = new CancellationTokenSource();
             baseConnection.Main();
             // create/recreate threads
@@ -1005,13 +1008,13 @@ namespace EMGTriggeredStimTherapyApp
                         // send a single stim pulse
                         try
                         {
-                            bool[] stimState;
-                            stimState = aBICManager.getStimState();
-                            Console.WriteLine("stim active: " + stimState[0] + " triggering stim: " + stimState[1]);
+                            //bool[] stimState;
+                            //stimState = aBICManager.getStimState();
+                            //Console.WriteLine("stim active: " + stimState[0] + " triggering stim: " + stimState[1]);
                             aBICManager.sendSingleStimulation();
-                            Console.WriteLine("\n>>>> single stim sent " );
-                            stimState = aBICManager.getStimState();
-                            Console.WriteLine("stim active: " + stimState[0] + " triggering stim: " + stimState[1]);
+                            //Console.WriteLine("\n>>>> single stim sent " );
+                            //stimState = aBICManager.getStimState();
+                            //Console.WriteLine("stim active: " + stimState[0] + " triggering stim: " + stimState[1]);
 
                         }
                         catch
@@ -1023,9 +1026,10 @@ namespace EMGTriggeredStimTherapyApp
                         }
                         
                     }
+                    Thread.Sleep(2000);
 
                 }
-                Thread.Sleep(2000);
+                
 
             }
             
