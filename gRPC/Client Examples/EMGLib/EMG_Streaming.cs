@@ -353,7 +353,7 @@ namespace EMGLib
 
 										if (ch == 0)
 										{
-											emgFiltSW.WriteLine(string.Join(",", rawSamples[i], rawSamples[i+1], timestampForAllSamples, filtSamples[i].ToString(), bandpassFiltTS, envelopedSamples[i], envFiltTS, _stimEnabled, _generateStim, movementDetected[i], movementDetectedTimestamp[i], _stimMod.percent, _stimMod.thresh[0], _stimMod.maxSig[0]), currTrial);
+											emgFiltSW.WriteLine(string.Join(",", rawSamples[i], rawSamples[i+1], timestampForAllSamples, filtSamples[i].ToString(), bandpassFiltTS, envelopedSamples[i], envFiltTS, _stimEnabled, _generateStim, movementDetected[i], movementDetectedTimestamp[i], _stimMod.percent, _stimMod.thresh[0], _stimMod.maxSig[0], currTrial));
 										}
                                         i++;
 									}
