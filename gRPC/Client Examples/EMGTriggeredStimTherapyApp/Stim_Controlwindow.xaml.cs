@@ -1011,6 +1011,7 @@ namespace EMGTriggeredStimTherapyApp
                             //bool[] stimState;
                             //stimState = aBICManager.getStimState();
                             //Console.WriteLine("stim active: " + stimState[0] + " triggering stim: " + stimState[1]);
+                            emgStreaming.stimulatorTimestamp = DateTime.Now.Ticks;
                             aBICManager.sendSingleStimulation();
                             //Console.WriteLine("\n>>>> single stim sent " );
                             //stimState = aBICManager.getStimState();

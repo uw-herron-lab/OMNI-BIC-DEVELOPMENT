@@ -35,6 +35,7 @@ namespace EMGLib
         private List<int>[] stimDataToPlot;
 
         public bool streamingStatus = false;
+        public long stimulatorTimestamp = 0;
 
         // for logging
         StreamWriter emgSW;
@@ -269,7 +270,7 @@ namespace EMGLib
 			    }
 			    filename = currPart + "_FiltEMGData_" + file_extension;
                 emgFiltSW = new StreamWriter(Path.Combine(saveDir, filename));
-				emgFiltSW.WriteLine(string.Join(",", "raw signal", "TTL signal", "raw timestamp", "filt signal", "filt timestamp", "env signal", "env timestamp", "MTS on", "send stim", "movement detected", "movement timestamp", "percentage", "threshold", "max MVC", "Trial"));
+				emgFiltSW.WriteLine(string.Join(",", "raw signal", "TTL signal", "raw timestamp", "filt signal", "filt timestamp", "env signal", "env timestamp", "MTS on", "send stim", "movement detected", "movement timestamp", "stimulator timestamp", "percentage", "threshold", "max MVC", "Trial"));
 				emgFiltSW.Flush();
                 filename = currPart + "_EnvData_" + file_extension;
                 //emgEnvelopedSW = new StreamWriter(Path.Combine(saveDir, filename));
@@ -353,7 +354,7 @@ namespace EMGLib
 
 										if (ch == 0)
 										{
-											emgFiltSW.WriteLine(string.Join(",", rawSamples[i], rawSamples[i+1], timestampForAllSamples, filtSamples[i].ToString(), bandpassFiltTS, envelopedSamples[i], envFiltTS, _stimEnabled, _generateStim, movementDetected[i], movementDetectedTimestamp[i], _stimMod.percent, _stimMod.thresh[0], _stimMod.maxSig[0], currTrial));
+											emgFiltSW.WriteLine(string.Join(",", rawSamples[i], rawSamples[i+1], timestampForAllSamples, filtSamples[i].ToString(), bandpassFiltTS, envelopedSamples[i], envFiltTS, _stimEnabled, _generateStim, movementDetected[i], movementDetectedTimestamp[i], stimulatorTimestamp, _stimMod.percent, _stimMod.thresh[0], _stimMod.maxSig[0], currTrial));
 										}
                                         i++;
 									}
