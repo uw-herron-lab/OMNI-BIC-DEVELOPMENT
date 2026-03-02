@@ -995,7 +995,36 @@ namespace EMGTriggeredStimTherapyApp
             if (emgStreaming._stimEnabled)
             {
                 aBICManager.enqueueStimulation(configInfo.monopolar, (uint)configInfo.stimChannel - 1, (uint)configInfo.returnChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, configInfo.stimPeriod - (5 * configInfo.stimDuration) - 3500, configInfo.stimThreshold);
+                // start BICListener.cpp -> enableStimTimeLogging() -> this starts logStimTimeThread() which should store exceptions with more detail;
 
+                /* FOR OL Stim:
+                 * BICManager.cs:
+                 * enableOpenLoopStimulation()
+                 * deviceClient.enableOpenLoopStimulation
+                 * 
+                 * -> BICDeviceGRPCService.cpp:
+                 * enableOpenLoopStimulation()
+                 * listener -> enableOpenLoopStim()
+                 * 
+                 * -> BICListener.cpp:
+                 * enableOpenLoopStim()
+                 * openLoopStimLoopThread()
+                 * enableStimTimeLogging()
+                 */
+
+                /* For MT Stim:
+                 * Stim_Controlwindow.xaml.cs:
+                 * Stimulator()
+                 * aBICManager.enableMovementStimTimeLogging()
+                 * 
+                 * -> BICManager.cs:
+                 * deviceClient.enableMovementStimTimeLogging()
+                 * 
+                 * -> BICDeviceGRPCService.cpp:
+                 * enableMovementStimTimeLogging()
+                 * listener -> enableStimTimeLogging()
+                 */ 
+                
 			}
             while (emgStreaming._stimEnabled)
             {
