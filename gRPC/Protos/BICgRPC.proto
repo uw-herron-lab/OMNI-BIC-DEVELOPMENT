@@ -51,6 +51,7 @@ service BICDeviceService{
 
 	// Set Functions
 	rpc bicSetImplantPower (bicSetImplantPowerRequest) returns (bicSuccessReply) {}
+	rpc enableMovementStimTimeLog (movementStimTimeLogEnableRequest) returns (bicSuccessReply) {}
 
 	// Stim Functions
 	rpc bicStartStimulation (bicStartStimulationRequest) returns (bicSuccessReply) {}
@@ -199,6 +200,10 @@ message bicGetIsStimulatingReply{
 	bool isStimulating = 1; 
 	bool isTriggeringStim = 2;
 	string success = 3;
+}
+
+message movementStimTimeLogEnableRequest{
+	string deviceAddress = 1;
 }
 
 // *************************** Device Stimulation Service Messages ***************************

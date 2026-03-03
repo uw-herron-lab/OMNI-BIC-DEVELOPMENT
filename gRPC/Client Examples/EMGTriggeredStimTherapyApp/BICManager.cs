@@ -197,6 +197,10 @@ namespace EMGTriggeredStimTherapyApp
             logFileStream.Dispose();
         }
 
+        public void enableMovementStimTimeLogging()
+        {
+            deviceClient.enableMovementStimTimeLog(new movementStimTimeLogEnableRequest() { DeviceAddress = DeviceName });
+        }
         public bool[] getStimState()
         {
             var reply = deviceClient.bicGetIsStimulating(new bicGetIsStimulatingRequest() { DeviceAddress = DeviceName });

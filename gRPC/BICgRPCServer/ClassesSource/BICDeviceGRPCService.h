@@ -46,6 +46,8 @@ namespace BICGRPCHelperNamespace
 
         grpc::Status bicGetIsStimulating(grpc::ServerContext* context, const BICgRPC::bicGetIsStimulatingRequest* request, BICgRPC::bicGetIsStimulatingReply* reply) override;
 
+        grpc::Status enableMovementStimTimeLog(grpc::ServerContext* context, const BICgRPC::movementStimTimeLogEnableRequest* request, BICgRPC::bicSuccessReply* reply) override;
+
         // ************************* Streaming Control Function Declarations *************************
         grpc::Status bicTemperatureStream(grpc::ServerContext* context, const BICgRPC::bicSetStreamEnable* request, grpc::ServerWriter<BICgRPC::TemperatureUpdate>* writer) override;
 
@@ -69,5 +71,6 @@ namespace BICGRPCHelperNamespace
         grpc::Status enableDistributedStimulation(grpc::ServerContext* context, const BICgRPC::distributedStimEnableRequest* request, BICgRPC::bicSuccessReply* reply) override;
 
         grpc::Status enableOpenLoopStimulation(grpc::ServerContext* context, const BICgRPC::openLoopStimEnableRequest* request, BICgRPC::bicSuccessReply* reply) override;
+        
     };
 }

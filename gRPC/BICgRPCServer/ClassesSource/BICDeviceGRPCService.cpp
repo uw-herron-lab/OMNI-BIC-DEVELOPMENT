@@ -382,6 +382,7 @@ namespace BICGRPCHelperNamespace
         // Respond to client=
         return grpc::Status::OK;
     }
+    
     grpc::Status BICDeviceGRPCService::bicGetIsStimulating(grpc::ServerContext* context, const BICgRPC::bicGetIsStimulatingRequest* request, BICgRPC::bicGetIsStimulatingReply* reply) {
         // Check if already initialized
         if (deviceDirectory.find(request->deviceaddress()) == deviceDirectory.end())
@@ -411,6 +412,28 @@ namespace BICGRPCHelperNamespace
         reply->set_success("Retrieved Stim and Triggering Stim States Successfully.");
 
         return grpc::Status::OK;
+    }
+    // TO DO **********
+    grpc::Status BICDeviceGRPCService::enableMovementStimTimeLog(grpc::ServerContext* context, const BICgRPC::movementStimTimeLogEnableRequest* request, BICgRPC::bicSuccessReply* reply) {
+        // Check if already initialized
+        if (deviceDirectory.find(request->deviceaddress()) == deviceDirectory.end())
+        {
+            // Not found!
+            //reply->set_success("error: not initialized");
+            return grpc::Status(grpc::StatusCode::FAILED_PRECONDITION, "Not Initialized");
+        }
+
+        try
+        {
+            deviceDirectory[request->deviceaddress()]->listener->enableStimTimeLogging(true);
+        }
+        catch (const std::exception& theError)
+        {
+            //std::string returnMessage = "error: exception - ";
+            //returnMessage += theError.what();
+            //reply->set_success(returnMessage);
+            return grpc::Status::OK;
+        }
     }
 
     // ************************* Streaming Control Function Declarations *************************
@@ -820,4 +843,5 @@ namespace BICGRPCHelperNamespace
         // Respond to client
         return grpc::Status::OK;
     }
+
 }
