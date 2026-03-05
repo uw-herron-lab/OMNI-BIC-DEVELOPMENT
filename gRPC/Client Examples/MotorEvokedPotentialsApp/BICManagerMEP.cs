@@ -265,14 +265,14 @@ namespace MotorEvokedPotentialsApp
         public void enableMotorThresholdStimulation(bool openStimEn, bool monopolar, bool useStimGround, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold)
         {
             // Determine the number of waveform repetitions needed to create a 2-sec burst of stimulation
-            uint numRepetition = 2000 / (interPulseInterval / 1000);
+            uint numRepetition = 3000 / (interPulseInterval / 1000);
             // Additional pause duration for stimulation
             uint addDuration = interPulseInterval - (5 * stimDuration);
 
             if (openStimEn)
             {
                 // Create a waveform defintion request 
-                bicEnqueueStimulationRequest aNewWaveformRequest = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.PersistentWaveform, WaveformRepititions = numRepetition };
+                bicEnqueueStimulationRequest aNewWaveformRequest = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.PersistentWaveform, WaveformRepititions = 1 };
 
                 if (monopolar)
                 {
@@ -280,7 +280,7 @@ namespace MotorEvokedPotentialsApp
                     StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
                     {
                         FunctionName = "openLoopPulse",
-                        StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = addDuration, PulseWidth = stimDuration, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { }, UseGround = true, BurstRepetitions = 1 }
+                        StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = addDuration, PulseWidth = stimDuration, PulseRepetitions = numRepetition, SourceElectrodes = { stimChannel }, SinkElectrodes = { }, UseGround = true, BurstRepetitions = 1 }
 
                     };
                     aNewWaveformRequest.Functions.Add(pulseFunction0);
@@ -291,7 +291,7 @@ namespace MotorEvokedPotentialsApp
                     StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
                     {
                         FunctionName = "openLoopPulse",
-                        StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = addDuration, PulseWidth = stimDuration, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { returnChannel }, UseGround = useStimGround, BurstRepetitions = 1 }
+                        StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = addDuration, PulseWidth = stimDuration, PulseRepetitions = numRepetition, SourceElectrodes = { stimChannel }, SinkElectrodes = { returnChannel }, UseGround = useStimGround, BurstRepetitions = 1 }
 
                     };
                     aNewWaveformRequest.Functions.Add(pulseFunction0);

@@ -381,10 +381,7 @@ namespace MotorEvokedPotentialsApp
                     }));
                 });
 
-                await Task.Delay(2000);
-
-                // Stim should only last for 2 sec, but ensure all stimulation has stopped by sending a stop stimulation command
-                aBICManagerMEP.stopMotorThresholdStimulation();
+                await Task.Delay(2000); // wait for 2 seconds before updating UI
 
                 // notify user of stimulation ending
                 currTimeStamp = DateTime.Now.ToString("h:mm:ss tt");
