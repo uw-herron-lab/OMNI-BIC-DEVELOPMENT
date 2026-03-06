@@ -305,6 +305,7 @@ namespace EMGLib
                         //threshSamplesQueueForPlot.Add(_stimMod.thresh);
                         //stimSamplesQueueForPlot.Add(movementDetected);
 
+                        
                         // TO DO: maybe do this in a different thread?
                         if (logging)
                         {
@@ -313,12 +314,14 @@ namespace EMGLib
                             {
 								for (int ch = 0; ch < 16; ch++) // TO DO: can replace this to not have to loop through all channels
 								{
-									// only stores EMG1 at index i, and the TTL signal which is EMG2 at i+1
+                                    // only stores EMG1 at index i, and the TTL signal which is EMG2 at i+1
 
-									if (ch == 0)
-									{
-										emgFiltSW.WriteLine(string.Join(",", rawSamples[i], rawSamples[i+1], timestampForAllSamples, filtSamples[i], bandpassFiltTS, envelopedSamples[i], envFiltTS, _stimEnabled, _generateStim, movementDetected[i], movementDetectedTimestamp[i], stimulatorTimestamp, _stimMod.percent, _stimMod.thresh[0], _stimMod.maxSig[0], currTrial));
-									}
+                                    if (ch == 0)
+                                    {
+                                        emgFiltSW.WriteLine(string.Join(",", rawSamples[i], rawSamples[i + 1], timestampForAllSamples, filtSamples[i], bandpassFiltTS, envelopedSamples[i], envFiltTS, _stimEnabled, _generateStim, movementDetected[i], movementDetectedTimestamp[i], stimulatorTimestamp, _stimMod.percent, _stimMod.thresh[0], _stimMod.maxSig[0], currTrial));
+                                        Console.WriteLine("Movement TS - stimulator TS: " + (movementDetected[i] - stimulatorTimestamp).ToString());
+                                        Console.WriteLine(elapsedTime(stimulatorTimestamp, movementDetectedTimestamp[i]).ToString());
+                                    }
                                     i++;
 								}
 								//emgFiltSW.WriteLine(string.Join(",", $"{i + 1}", filtSamples[i].ToString(), timestampForAllSamples, bandpassFiltTS));
@@ -344,7 +347,7 @@ namespace EMGLib
                 //emgEnvelopedSW.Flush();
             }
         }
-        // TO DO: add another method for prepping filtered data for plotting
+
         public void prepRawForPlot(CancellationToken token)
         {
 
@@ -471,7 +474,7 @@ namespace EMGLib
             }
             return emgDataToPlotBuffer;
         }
-        // TO DO: this needs to be implemented
+
         public List<float>[] getFiltData()
         {
             List<float>[] emgDataToPlotBuffer = new List<float>[numSamplesToPlot];
@@ -481,7 +484,7 @@ namespace EMGLib
             }
             return emgDataToPlotBuffer;
         }
-        // TO DO:
+
         //public (List<double>[] thresh, List<int>[] stim) getMovementStimData()
         //{
         //    List<double>[] plotThreshData = plotThreshDataQueue.Take();
@@ -490,12 +493,13 @@ namespace EMGLib
         //    return (plotThreshData, plotStimData);
         //}
 
-        private double elapsedTime(long sampleStamp)
+        private double elapsedTime(long t1, long t2)
         {
-            double elapsed_time_per_sample;
-            elapsed_time_per_sample = (sampleStamp - streamStart_timestamp) * 100 % 1e9 / 1e9;
+            long t_elapsed = t1 - t2;
+            DateTime dt = new DateTime(t_elapsed);
+            double t_ms = dt.TimeOfDay.TotalMilliseconds;
 
-            return elapsed_time_per_sample;
+            return t_ms;
 
         }
     }

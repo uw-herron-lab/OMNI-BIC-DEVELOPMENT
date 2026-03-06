@@ -53,23 +53,8 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <WindowsFormsHost x:Name="RawEMGForm" Margin="470,0,93,7" Grid.Row="0" Height="263" VerticalAlignment="Bottom">
-            <winformchart:Chart x:Name="EMGStreamChart" Dock="Fill">
-                <winformchart:Chart.Series>
-                    <winformchart:Series Name="series" ChartType="Line"/>
-                </winformchart:Chart.Series>
-                <winformchart:Chart.ChartAreas>
-                    <winformchart:ChartArea/>
-                </winformchart:Chart.ChartAreas>
-                <winformchart:Chart.Legends>
-                    <winformchart:Legend/>
-                </winformchart:Chart.Legends>
-                <winformchart:Chart.Titles>
-                    <winformchart:Title Text="Streamed Data by Channel (V)"></winformchart:Title>
-                </winformchart:Chart.Titles>
-            </winformchart:Chart>
-        </WindowsFormsHost>
-        <WindowsFormsHost x:Name="FilteredEMGForm" Margin="470,0,93,316" Grid.Row="0" Height="266" VerticalAlignment="Bottom">
+
+        <WindowsFormsHost x:Name="FilteredEMGForm" Margin="470,0,93,24" Grid.Row="0" Height="510" VerticalAlignment="Bottom">
             <winformchart:Chart x:Name="FiltEMGStreamChart" Dock="Fill">
                 <winformchart:Chart.Series>
                     <winformchart:Series Name="series" ChartType="Line"/>
@@ -85,7 +70,7 @@
                 </winformchart:Chart.Titles>
             </winformchart:Chart>
         </WindowsFormsHost>
-        <WindowsFormsHost x:Name="neuroForm" Margin="470,12,93,622" Grid.Row="0">
+        <WindowsFormsHost x:Name="neuroForm" Margin="470,12,93,549" Grid.Row="0">
             <winformchart:Chart x:Name="neuroStreamChart" Dock="Fill">
                 <winformchart:Chart.Series>
                     <winformchart:Series Name="series" ChartType="Line"/>
