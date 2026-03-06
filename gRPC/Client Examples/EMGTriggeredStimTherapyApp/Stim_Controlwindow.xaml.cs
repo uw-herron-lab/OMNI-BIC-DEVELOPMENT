@@ -595,19 +595,6 @@ namespace EMGTriggeredStimTherapyApp
             startStimThread = new Thread(() => Stimulator());
 
             var configInfo = aBICManager.configInfo;
-            //try
-            //{
-
-            //    aBICManager.enableOpenLoopStimulation(true, configInfo.monopolar, (uint)configInfo.stimChannel - 1, (uint)configInfo.returnChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, configInfo.stimPeriod - (5 * configInfo.stimDuration) - 3500, configInfo.stimThreshold);
-            //    Console.WriteLine("OL enabled");
-            //}
-            //catch
-            //{
-            //    // Exception occured, gRPC command did not succeed, do not update UI button elements
-            //    Console.WriteLine("Open loop stimulation NOT started: load new configuration\n");
-
-            //    return;
-            //}
 
             emgStreaming._stimEnabled = true;
             startStimThread.Start();
@@ -992,6 +979,7 @@ namespace EMGTriggeredStimTherapyApp
         private void Stimulator()
         {
             var configInfo = aBICManager.configInfo;
+            // ensures stim is actually enabled for EMG
             if (emgStreaming._stimEnabled)
             {
                 aBICManager.enqueueStimulation(configInfo.monopolar, (uint)configInfo.stimChannel - 1, (uint)configInfo.returnChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, configInfo.stimPeriod - (5 * configInfo.stimDuration) - 3500, configInfo.stimThreshold);
@@ -1028,11 +1016,12 @@ namespace EMGTriggeredStimTherapyApp
 			}
             while (emgStreaming._stimEnabled)
             {
-                if (emgStreaming._generateStim)
+                if (emgStreaming._generateStim) // TO DO: Add a lock to this
                 {
-					// if currently not stimulating
-					// and if currently not triggering a stimulation
-					if (!aBICManager.getStimState()[0] && !aBICManager.getStimState()[1])
+                    // if currently not stimulating
+                    // and if currently not triggering a stimulation
+                    bool[] getStimState = aBICManager.getStimState();
+                    if (getStimState[0] && !getStimState[1])
                     {
                         // send a single stim pulse
                         try
@@ -1045,18 +1034,18 @@ namespace EMGTriggeredStimTherapyApp
                             //Console.WriteLine("\n>>>> single stim sent " );
                             //stimState = aBICManager.getStimState();
                             //Console.WriteLine("stim active: " + stimState[0] + " triggering stim: " + stimState[1]);
-
+                            Thread.Sleep(2000);
                         }
                         catch
                         {
                             // Exception occured, gRPC command did not succeed, do not update UI button elements
-                            Console.WriteLine("Open loop stimulation NOT started\n");
+                            Console.WriteLine("Single stimulation not sent\n");
 
                             return;
                         }
                         
+
                     }
-                    Thread.Sleep(2000);
 
                 }
                 

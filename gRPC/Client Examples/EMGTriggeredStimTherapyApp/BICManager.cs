@@ -338,60 +338,85 @@ namespace EMGTriggeredStimTherapyApp
 
         public void enqueueStimulation(bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold)
         {
-			// Create a waveform defintion request 
-			bicEnqueueStimulationRequest aNewWaveformRequest = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.PersistentWaveform, WaveformRepititions = 1 };
-			if (monopolar)
-			{
-				// Create a pulse function
-				StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
-				{
-					FunctionName = "singlePulseFunction",
-					StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 10, PulseWidth = stimDuration, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { }, UseGround = true, BurstRepetitions = 1 }
-				};
-				aNewWaveformRequest.Functions.Add(pulseFunction0);
-			}
-			else
-			{
-				// Create a pulse function
-				StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
-				{
-					FunctionName = "singlePulseFunction",
-					StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 10, PulseWidth = stimDuration, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { returnChannel }, UseGround = true, BurstRepetitions = 1 }
-				};
-				aNewWaveformRequest.Functions.Add(pulseFunction0);
-			}
-			// Enqueue the stimulation waveform
-			deviceClient.bicEnqueueStimulation(aNewWaveformRequest);
-		}
+            // Create a waveform defintion request 
+            bicEnqueueStimulationRequest aNewWaveformRequest = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.PersistentWaveform, WaveformRepititions = 255 };
+
+            // check if interPulseInterval is greater than 20400 us (DZ1 duration limit) to determine how to add inter pulse interval
+            if (interPulseInterval <= 20400)
+            {
+                if (monopolar)
+                {
+                    // Create a pulse function for monopolar stimulation
+                    StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
+                    {
+                        FunctionName = "openLoopPulse",
+                        StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = interPulseInterval, PulseWidth = stimDuration, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { }, UseGround = true, BurstRepetitions = 1 }
+
+                    };
+                    aNewWaveformRequest.Functions.Add(pulseFunction0);
+                }
+                else
+                {
+                    // Create a pulse function for bipolar stimulation
+                    StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
+                    {
+                        FunctionName = "openLoopPulse",
+                        StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = interPulseInterval, PulseWidth = stimDuration, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { returnChannel }, UseGround = true, BurstRepetitions = 1 }
+
+                    };
+                    aNewWaveformRequest.Functions.Add(pulseFunction0);
+                }
+            }
+            else
+            {
+                if (monopolar)
+                {
+                    // Create a pulse function for monopolar stimulation
+                    StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
+                    {
+                        FunctionName = "openLoopPulse",
+                        StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 10, PulseWidth = stimDuration, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { }, UseGround = true, BurstRepetitions = 1 }
+
+                    };
+                    aNewWaveformRequest.Functions.Add(pulseFunction0);
+
+                    // Create the interpulse pause for monopolar stimulation
+                    StimulationFunctionDefinition interpulsePause = new StimulationFunctionDefinition()
+                    {
+                        FunctionName = "pausePulse",
+                        Pause = new pauseFunction() { Duration = interPulseInterval }
+                    };
+                    aNewWaveformRequest.Functions.Add(interpulsePause);
+                }
+                else
+                {
+                    // Create a pulse function for bipolar stimulation
+                    StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
+                    {
+                        FunctionName = "openLoopPulse",
+                        StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 10, PulseWidth = stimDuration, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { returnChannel }, UseGround = true, BurstRepetitions = 1 }
+
+                    };
+                    aNewWaveformRequest.Functions.Add(pulseFunction0);
+
+                    // Create the interpulse pause for bipolar stimulation
+                    StimulationFunctionDefinition interpulsePause = new StimulationFunctionDefinition()
+                    {
+                        FunctionName = "pausePulse",
+                        Pause = new pauseFunction() { Duration = interPulseInterval }
+                    };
+                    aNewWaveformRequest.Functions.Add(interpulsePause);
+                }
+            }
+
+            // Enqueue the stimulation waveform
+            deviceClient.bicEnqueueStimulation(aNewWaveformRequest);
+        }
 
 
 		public void sendSingleStimulation()
         {
-			//// Create a waveform defintion request 
-			//bicEnqueueStimulationRequest aNewWaveformRequest = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.PersistentWaveform, WaveformRepititions = 1 };
-			//if (monopolar)
-			//{
-			//	// Create a pulse function
-			//	StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
-			//	{
-			//		FunctionName = "singlePulseFunction",
-			//		StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 10, PulseWidth = stimDuration, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { }, UseGround = true, BurstRepetitions = 1 }
-			//	};
-			//	aNewWaveformRequest.Functions.Add(pulseFunction0);
-			//}
-			//else
-			//{
-			//	// Create a pulse function
-			//	StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
-			//	{
-			//		FunctionName = "singlePulseFunction",
-			//		StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 10, PulseWidth = stimDuration, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { returnChannel }, UseGround = true, BurstRepetitions = 1 }
-			//	};
-			//	aNewWaveformRequest.Functions.Add(pulseFunction0);
-			//}
-
-			//// Enqueue the stimulation waveform
-			//deviceClient.bicEnqueueStimulation(aNewWaveformRequest);
+			// trigger the start of stimulation
             deviceClient.bicStartStimulation(new bicStartStimulationRequest() { DeviceAddress = DeviceName });
 		    
             long timestamp = DateTime.Now.Ticks;

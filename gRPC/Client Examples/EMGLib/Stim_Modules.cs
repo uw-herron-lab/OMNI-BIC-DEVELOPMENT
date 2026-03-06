@@ -11,7 +11,7 @@ namespace EMGLib
 {
     public class Stim_Modules
     {
-        public bool stimEnabled = false;
+        //public bool stimEnabled = false;
         public bool generateStim = false;
         public float percent;
         int numberOfChannels;
@@ -60,8 +60,6 @@ namespace EMGLib
             //for (int ch = 0; ch < thresh.Length; ch++)
             //{
                 if (signal[ch] >= thresh[ch] & signal[ch] != 0)
-                //if (1 >= thresh[ch] & signal[ch] != 0)
-
                 {
                    
                     generateStim = true;

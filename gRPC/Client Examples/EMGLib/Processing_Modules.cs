@@ -104,40 +104,15 @@ namespace EMGLib
             return filtTemp;
         }
 
-		//public float[] envelopeSignals(float[] currSamp)
-		//{
-		//    // this is a low pass filter: 
-		//    // y[n] = (b0 * x[n] + b1 * x[n-1]) / (1 + a1 * y[n-1])
-
-		//    float[] filtTemp = new float[16];
-		//    for (int i = 0; i < 16; i++)
-		//    {
-		//        //filtTemp[i] = (low_gainVal * low_b[0] * currSamp[i] + low_gainVal * low_b[1] * low_prevInput[i][0] +
-		//        //    -low_a[1] * low_prevFiltOut[i][0] - low_a[2] * low_prevFiltOut[i][1] - low_a[3] * low_prevFiltOut[i][2] - low_a[4] * low_prevFiltOut[i][3]);
-		//        filtTemp[i] = (low_b[0] * currSamp[i] + low_b[1] * low_prevInput[i][0]) /
-		//                      (1 + low_a[1] * low_prevFiltOut[i][0]);
-
-		//        low_prevFiltOut[i].Insert(0, filtTemp[i]);
-		//        low_prevFiltOut[i].RemoveAt(low_prevFiltOut[i].Count - 1);
-
-		//        // Store most recent sample at the beginning of history window
-		//        low_prevInput[i].Insert(0, currSamp[i]);
-		//        low_prevInput[i].RemoveAt(low_prevInput[i].Count - 1);
-		//    }
-
-		//    return filtTemp;
-		//}
 
 		public float[] envelopeSignals(float[] currSamp)
 		{
-			// this is a low pass filter: 
+			// this is the low pass filter coefficient: 
 			// y[n] = (b0 * x[n] + b1 * x[n-1]) / (1 + a1 * y[n-1])
 
 			float[] filtTemp = new float[16];
 			for (int i = 0; i < 16; i++)
 			{
-				//filtTemp[i] = (low_gainVal * low_b[0] * currSamp[i] + low_gainVal * low_b[1] * low_prevInput[i][0] +
-				//    -low_a[1] * low_prevFiltOut[i][0] - low_a[2] * low_prevFiltOut[i][1] - low_a[3] * low_prevFiltOut[i][2] - low_a[4] * low_prevFiltOut[i][3]);
 				filtTemp[i] = low_gainVal * (low_b[0] * currSamp[i] + low_b[1] * low_prevInput[i][0] + low_b[2] * low_prevInput[i][1]) -
 							  (low_a[1] * low_prevFiltOut[i][0] + low_a[2] * low_prevFiltOut[i][1]);
 

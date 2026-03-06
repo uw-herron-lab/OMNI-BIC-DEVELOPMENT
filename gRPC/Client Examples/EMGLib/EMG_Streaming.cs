@@ -19,7 +19,7 @@ namespace EMGLib
         BinaryReader emgReader;
 
         // EMG parameters
-        private int emgDataPort = 50043;
+        private int emgDataPort = 50043; // Delsys TCP Port
         private int numberOfChannels = 16; // Number of Trigno Delsys EMGs corresponding to number of channels
         private int bytesPerChannel = 4; // Port 50043 processes 4-byte float per sample per channel
         private int bytesPerSample;
@@ -53,7 +53,7 @@ namespace EMGLib
 
 
         // related to filter
-        private BlockingCollection<rawPacket> rawSamplesQueueForProcc = new BlockingCollection<rawPacket>();
+        private BlockingCollection<emgPacket> rawSamplesQueueForProcc = new BlockingCollection<emgPacket>();
         public Processing_Modules _processingMod;
 
         // related to stim
@@ -69,9 +69,9 @@ namespace EMGLib
         // calibration bool, if true stim is disabled, if false stim is enabled
         public bool calibrationOn = false;
 
-        private struct rawPacket
+        private struct emgPacket
         {
-            public rawPacket(float[] rawSamples, long timestamp)
+            public emgPacket(float[] rawSamples, long timestamp)
             {
                 samples = rawSamples;
                 stamp = timestamp;
@@ -227,7 +227,7 @@ namespace EMGLib
                         }
 
                         // add unpacked data to queue for prepping to plot
-                        rawPacket rawSampBuff = new rawPacket(unpackedSamp, formattedTimestamp);
+                        emgPacket rawSampBuff = new emgPacket(unpackedSamp, formattedTimestamp);
                         rawSamplesQueueForProcc.Add(rawSampBuff);
                         lock (plotDataLock)
                         {
@@ -252,33 +252,19 @@ namespace EMGLib
         // TO DO: change the following method to filter and log filtered and algo related info
         public void filtEMGstream(CancellationToken token, string saveDir)
         {
-            string filename;
-            string stamp_filename;
-			//if (calibrationOn)
-			//{
-			//    filename = currPart + "_FiltEMGData_" + file_extension;
-			//    emgFiltSW = new StreamWriter(Path.Combine(saveDir, filename));
-			//    emgFiltSW.WriteLine(string.Join(",", "filt signal", "raw signal timstamp", "filt timestamp"));
-			//    emgFiltSW.Flush();
-
-			//}
-			//else
-			//{
-			    if (calibrationOn)
-			    {
-				    saveDir = Path.Combine(saveDir, "Calibration");
-			    }
-			    filename = currPart + "_FiltEMGData_" + file_extension;
-                emgFiltSW = new StreamWriter(Path.Combine(saveDir, filename));
-				emgFiltSW.WriteLine(string.Join(",", "raw signal", "TTL signal", "raw timestamp", "filt signal", "filt timestamp", "env signal", "env timestamp", "MTS on", "send stim", "movement detected", "movement timestamp", "stimulator timestamp", "percentage", "threshold", "max MVC", "Trial"));
-				emgFiltSW.Flush();
-                filename = currPart + "_EnvData_" + file_extension;
-                //emgEnvelopedSW = new StreamWriter(Path.Combine(saveDir, filename));
-                //emgEnvelopedSW.WriteLine(string.Join(",", "emg channel", "enveloped signal", "start stim", "stim command", "movement detected", "movement detected timestamp", "raw signal timestamp", "percent", "threshold"));
-                //emgEnvelopedSW.Flush();
-            //}
+            
+			if (calibrationOn)
+			{
+				saveDir = Path.Combine(saveDir, "Calibration");
+			}
+			string filename = currPart + "_FiltEMGData_" + file_extension;
+            emgFiltSW = new StreamWriter(Path.Combine(saveDir, filename));
+			emgFiltSW.WriteLine(string.Join(",", "raw signal", "TTL signal", "raw timestamp", "filt signal", "filt timestamp", "env signal", "env timestamp", "MTS on", "send stim", "movement detected", "movement timestamp", "stimulator timestamp", "percentage", "threshold", "max MVC", "Trial"));
+			emgFiltSW.Flush();
 
 
+            float[] filtSamples = new float[numberOfChannels];
+            float[] envelopedSamples = new float[numberOfChannels];
             while (!token.IsCancellationRequested)
             {
                 try
@@ -286,83 +272,58 @@ namespace EMGLib
                     int rawSamplesAvailable = rawSamplesQueueForProcc.Count;
                     if (rawSamplesAvailable > 0)
                     {
-                        rawPacket rawSampPacket = new rawPacket();
-                        long bandpassFiltTS;
-                        long envFiltTS;
+                        emgPacket rawSampPacket = new emgPacket();
                         // theoretically this should take the data as it becomes available quickly,
                         // but this process might create a latency that later on should be fixed -> maybe should be incorporated into the same thread for raw data being logged?
                         // or maybe the most recent data available should be processed for stimulation and the rest, if not processed already, should be ignored. but this process is needed for plotting
-                        rawSampPacket = rawSamplesQueueForProcc.Take();
+                        rawSampPacket = rawSamplesQueueForProcc.Take(); // take raw samples
                         float[] rawSamples = rawSampPacket.samples;
                         long timestampForAllSamples = rawSampPacket.stamp;
-                        float[] filtSamples = new float[numberOfChannels];
-                        float[] envelopedSamples = new float[numberOfChannels];
                         // filter data
-                        filtSamples = _processingMod.IIRFilter(rawSamples);
-                        bandpassFiltTS = DateTime.Now.Ticks;
-                        envelopedSamples = _processingMod.envelopeSignals(_stimMod.rectifySignals(filtSamples));
-                        envFiltTS = DateTime.Now.Ticks;
+                        filtSamples = _processingMod.IIRFilter(rawSamples); // bandpass filter raw samples
+                        long bandpassFiltTS = DateTime.Now.Ticks;
+                        envelopedSamples = _processingMod.envelopeSignals(_stimMod.rectifySignals(filtSamples)); // envelope bandpass filtered samples
+                        long envFiltTS = DateTime.Now.Ticks;
                         // FILE SAVED FOR CALIBRATION DATA VS STIM DATA ARE DIFFERENT, SINCE CALIBRATION DATA WILL NOT INCLUDE STIM VALUES
                         // ADD CHECK BOX TO UI INDICATE WHETHER CALIBRATION
                         // movement detection
                         // add raw, filtered, and movement detection to queue
 
-                        // log data
-         //               if (calibrationOn)
-         //               {
-         //                   filtSamplesQueueForPlot.Add(filtSamples);
-         //                   for (int i = 0; i < filtSamples.Length;)
-         //                   {
-         //                       for (int ch = 0; ch < 16; ch++)
-         //                       {
-         //                           if (ch == 0)
-         //                           {
-									//	emgFiltSW.WriteLine(string.Join(",", filtSamples[i].ToString(), timestampForAllSamples, bandpassFiltTS));
-                                        
-									//}
-         //                           i++;
-         //                       }
-                                
-         //                   }
-         //               }
-         //               else
-         //               {
-                            //if (_stimEnabled)
-                            //{
-                            _stimMod.stimEnabled = _stimEnabled;
+                        //_stimMod.stimEnabled = _stimEnabled; // currenly doesn't do anything
 
-                            (int[] movementDetected, long[] movementDetectedTimestamp) = _stimMod.triggerStim(envelopedSamples, 0);
-                            //long movementDetectedTS = DateTime.Now.Ticks;
+                        (int[] movementDetected, long[] movementDetectedTimestamp) = _stimMod.triggerStim(envelopedSamples, 0);
+                        //long movementDetectedTS = DateTime.Now.Ticks;
 
-                            _generateStim = _stimMod.generateStim;
-                            //rawSamplesQueue.Add(emgSamples);
-                            lock (plotFiltLock)
+                        // TO DO: add lock to this 
+                        _generateStim = _stimMod.generateStim;
+                        //rawSamplesQueue.Add(emgSamples);
+                        lock (plotFiltLock)
+                        {
+                            filtSamplesQueueForPlot.Add(filtSamples);
+
+                        }
+                        //threshSamplesQueueForPlot.Add(_stimMod.thresh);
+                        //stimSamplesQueueForPlot.Add(movementDetected);
+
+                        // TO DO: maybe do this in a different thread?
+                        if (logging)
+                        {
+
+                            for (int i = 0; i < filtSamples.Length;)
                             {
-                                filtSamplesQueueForPlot.Add(filtSamples);
+								for (int ch = 0; ch < 16; ch++) // TO DO: can replace this to not have to loop through all channels
+								{
+									// only stores EMG1 at index i, and the TTL signal which is EMG2 at i+1
 
-                            }
-                            //threshSamplesQueueForPlot.Add(_stimMod.thresh);
-                            //stimSamplesQueueForPlot.Add(movementDetected);
-                            if (logging)
-                            {
-
-                                for (int i = 0; i < filtSamples.Length;)
-                                {
-									for (int ch = 0; ch < 16; ch++)
+									if (ch == 0)
 									{
-										// only stores EMG1 at index i, and the TTL signal which is EMG2 at i+1
-
-										if (ch == 0)
-										{
-											emgFiltSW.WriteLine(string.Join(",", rawSamples[i], rawSamples[i+1], timestampForAllSamples, filtSamples[i], bandpassFiltTS, envelopedSamples[i], envFiltTS, _stimEnabled, _generateStim, movementDetected[i], movementDetectedTimestamp[i], stimulatorTimestamp, _stimMod.percent, _stimMod.thresh[0], _stimMod.maxSig[0], currTrial));
-										}
-                                        i++;
+										emgFiltSW.WriteLine(string.Join(",", rawSamples[i], rawSamples[i+1], timestampForAllSamples, filtSamples[i], bandpassFiltTS, envelopedSamples[i], envFiltTS, _stimEnabled, _generateStim, movementDetected[i], movementDetectedTimestamp[i], stimulatorTimestamp, _stimMod.percent, _stimMod.thresh[0], _stimMod.maxSig[0], currTrial));
 									}
-									//emgFiltSW.WriteLine(string.Join(",", $"{i + 1}", filtSamples[i].ToString(), timestampForAllSamples, bandpassFiltTS));
-                                    //emgEnvelopedSW.WriteLine(string.Join(",", $"{i + 1}", envelopedSamples[i].ToString(), _stimEnabled, _generateStim, movementDetected[i], movementDetectedTimestamp[i], timestampForAllSamples, _stimMod.percent, _stimMod.thresh[i]));
-                                }
-                            //}
-                            //}
+                                    i++;
+								}
+								//emgFiltSW.WriteLine(string.Join(",", $"{i + 1}", filtSamples[i].ToString(), timestampForAllSamples, bandpassFiltTS));
+                                //emgEnvelopedSW.WriteLine(string.Join(",", $"{i + 1}", envelopedSamples[i].ToString(), _stimEnabled, _generateStim, movementDetected[i], movementDetectedTimestamp[i], timestampForAllSamples, _stimMod.percent, _stimMod.thresh[i]));
+                            }
 
                         }
                     }
