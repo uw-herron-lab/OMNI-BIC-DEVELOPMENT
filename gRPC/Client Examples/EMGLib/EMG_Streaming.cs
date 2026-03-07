@@ -36,6 +36,7 @@ namespace EMGLib
 
         public bool streamingStatus = false;
         public long stimulatorTimestamp = 0;
+        private long stimulatorTimestampBuff = 0;
 
         // for logging
         StreamWriter emgSW;
@@ -319,8 +320,15 @@ namespace EMGLib
                                     if (ch == 0)
                                     {
                                         emgFiltSW.WriteLine(string.Join(",", rawSamples[i], rawSamples[i + 1], timestampForAllSamples, filtSamples[i], bandpassFiltTS, envelopedSamples[i], envFiltTS, _stimEnabled, _generateStim, movementDetected[i], movementDetectedTimestamp[i], stimulatorTimestamp, _stimMod.percent, _stimMod.thresh[0], _stimMod.maxSig[0], currTrial));
-                                        Console.WriteLine("Movement TS - stimulator TS: " + (movementDetected[i] - stimulatorTimestamp).ToString());
-                                        Console.WriteLine(elapsedTime(stimulatorTimestamp, movementDetectedTimestamp[i]).ToString());
+                                        
+                                        if(stimulatorTimestamp != stimulatorTimestampBuff)
+                                        {
+                                            // typical elapsed time is in range of 9-13ms, averaging more around 12ms
+                                            //Console.WriteLine("Movement TS - stimulator TS: " + (movementDetected[i] - stimulatorTimestamp).ToString());
+                                            //Console.WriteLine("Elapsed Time: " + elapsedTime(stimulatorTimestamp, movementDetectedTimestamp[i]).ToString());
+                                        }
+                                        
+                                        stimulatorTimestampBuff = stimulatorTimestamp;
                                     }
                                     i++;
 								}
@@ -495,9 +503,28 @@ namespace EMGLib
 
         private double elapsedTime(long t1, long t2)
         {
-            long t_elapsed = t1 - t2;
-            DateTime dt = new DateTime(t_elapsed);
-            double t_ms = dt.TimeOfDay.TotalMilliseconds;
+            double t_ms = 0;
+
+            try
+            {
+                if (t1 > t2)
+                {
+                    long t_elapsed = t1 - t2;
+                    TimeSpan ts = new TimeSpan(t_elapsed);
+                    t_ms = ts.TotalMilliseconds;
+                }
+                else
+                {
+                    long t_elapsed = t2 - t1;
+                    TimeSpan ts = new TimeSpan(t_elapsed);
+                    t_ms = ts.TotalMilliseconds;
+                }
+                
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("elapsed time calculator exception: " + e.Message);
+            }
 
             return t_ms;
 

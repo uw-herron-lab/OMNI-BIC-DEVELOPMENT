@@ -334,8 +334,7 @@ namespace EMGTriggeredStimTherapyApp
                 {
                     // if currently not stimulating
                     // and if currently not triggering a stimulation
-                    bool[] getStimState = aBICManager.getStimState();
-                    if (getStimState[0] && !getStimState[1])
+                    if (!aBICManager.getStimState()[0] && !aBICManager.getStimState()[1])
                     {
                         // send a single stim pulse
                         try
@@ -362,7 +361,6 @@ namespace EMGTriggeredStimTherapyApp
                     }
 
                 }
-
 
             }
 

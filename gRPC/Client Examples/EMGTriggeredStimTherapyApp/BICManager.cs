@@ -618,7 +618,7 @@ namespace EMGTriggeredStimTherapyApp
                         // testing timestamp issue
                         long unixStamp = long.Parse(stream.ResponseStream.Current.Samples[sampleNum].TimeStamp.ToString());
                         long ticks = DateTimeOffset.FromUnixTimeMilliseconds(unixStamp / 1000 / 10).Ticks; // divided by 10000 bs of the precision being to 100ns
-                        Console.WriteLine(ticks.ToString());
+                        //Console.WriteLine(ticks.ToString());
                         logLineQueue.Enqueue(logString);
                     }
                     // Add new data to filtered data buffer
