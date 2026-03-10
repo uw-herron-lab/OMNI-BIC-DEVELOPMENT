@@ -285,15 +285,15 @@ namespace EMGLib
                         long bandpassFiltTS = DateTime.Now.Ticks;
                         envelopedSamples = _processingMod.envelopeSignals(_stimMod.rectifySignals(filtSamples)); // envelope bandpass filtered samples
                         long envFiltTS = DateTime.Now.Ticks;
+
                         // FILE SAVED FOR CALIBRATION DATA VS STIM DATA ARE DIFFERENT, SINCE CALIBRATION DATA WILL NOT INCLUDE STIM VALUES
                         // ADD CHECK BOX TO UI INDICATE WHETHER CALIBRATION
                         // movement detection
                         // add raw, filtered, and movement detection to queue
 
-                        //_stimMod.stimEnabled = _stimEnabled; // currenly doesn't do anything
 
                         (int[] movementDetected, long[] movementDetectedTimestamp) = _stimMod.triggerStim(envelopedSamples, 0);
-                        //long movementDetectedTS = DateTime.Now.Ticks;
+                        
 
                         // TO DO: add lock to this 
                         _generateStim = _stimMod.generateStim;
@@ -310,7 +310,7 @@ namespace EMGLib
                         // TO DO: maybe do this in a different thread?
                         if (logging)
                         {
-
+                            //long t1 = DateTime.Now.Ticks;
                             for (int i = 0; i < filtSamples.Length;)
                             {
 								for (int ch = 0; ch < 16; ch++) // TO DO: can replace this to not have to loop through all channels
@@ -325,7 +325,7 @@ namespace EMGLib
                                         {
                                             // typical elapsed time is in range of 9-13ms, averaging more around 12ms
                                             //Console.WriteLine("Movement TS - stimulator TS: " + (movementDetected[i] - stimulatorTimestamp).ToString());
-                                            //Console.WriteLine("Elapsed Time: " + elapsedTime(stimulatorTimestamp, movementDetectedTimestamp[i]).ToString());
+                                            //Console.WriteLine("Elapsed Time: " + elapsedTime(stimulatorTimestamp, timestampForAllSamples).ToString());
                                         }
                                         
                                         stimulatorTimestampBuff = stimulatorTimestamp;
@@ -335,7 +335,8 @@ namespace EMGLib
 								//emgFiltSW.WriteLine(string.Join(",", $"{i + 1}", filtSamples[i].ToString(), timestampForAllSamples, bandpassFiltTS));
                                 //emgEnvelopedSW.WriteLine(string.Join(",", $"{i + 1}", envelopedSamples[i].ToString(), _stimEnabled, _generateStim, movementDetected[i], movementDetectedTimestamp[i], timestampForAllSamples, _stimMod.percent, _stimMod.thresh[i]));
                             }
-
+                            //long t2 = DateTime.Now.Ticks;
+                            //Console.WriteLine("Elapsed time filt for loop: " + elapsedTime(t1, t2));
                         }
                     }
                 }
@@ -469,7 +470,7 @@ namespace EMGLib
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("Prep for Flot - " + e.Message);
+                    Console.WriteLine("Prep for plot - " + e.Message);
                 }
             }
         }
@@ -501,7 +502,7 @@ namespace EMGLib
         //    return (plotThreshData, plotStimData);
         //}
 
-        private double elapsedTime(long t1, long t2)
+        public double elapsedTime(long t1, long t2)
         {
             double t_ms = 0;
 

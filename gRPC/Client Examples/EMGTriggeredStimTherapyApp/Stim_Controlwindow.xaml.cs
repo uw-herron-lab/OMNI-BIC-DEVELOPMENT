@@ -122,7 +122,7 @@ namespace EMGTriggeredStimTherapyApp
                 cancellationTokenSource.Cancel();
                 emgStreaming.emgDataPort_Diconnect();
 
-                plotFiltThread.Abort();
+                //plotFiltThread.Abort();
                 filtEMGThread.Abort();
                 emgStreamThread.Abort();
 
@@ -334,19 +334,16 @@ namespace EMGTriggeredStimTherapyApp
                 {
                     // if currently not stimulating
                     // and if currently not triggering a stimulation
-                    if (!aBICManager.getStimState()[0] && !aBICManager.getStimState()[1])
-                    {
+                    //if (!aBICManager.getStimState()[0] && !aBICManager.getStimState()[1])
+                    //{
                         // send a single stim pulse
                         try
                         {
-                            //bool[] stimState;
-                            //stimState = aBICManager.getStimState();
-                            //Console.WriteLine("stim active: " + stimState[0] + " triggering stim: " + stimState[1]);
+
                             emgStreaming.stimulatorTimestamp = DateTime.Now.Ticks;
                             aBICManager.sendSingleStimulation();
-                            //Console.WriteLine("\n>>>> single stim sent " );
-                            //stimState = aBICManager.getStimState();
-                            //Console.WriteLine("stim active: " + stimState[0] + " triggering stim: " + stimState[1]);
+                            long t2 = DateTime.Now.Ticks;
+                            Console.WriteLine("Stimulator elapsed time: " + emgStreaming.elapsedTime(emgStreaming.stimulatorTimestamp, t2).ToString());
                             Thread.Sleep(2000);
                         }
                         catch
@@ -358,7 +355,7 @@ namespace EMGTriggeredStimTherapyApp
                         }
 
 
-                    }
+                    //}
 
                 }
 
@@ -383,12 +380,12 @@ namespace EMGTriggeredStimTherapyApp
             emgStreamThread = new Thread(() => emgStreaming.StreamEMG(cancellationTokenSource.Token, path));
             filtEMGThread = new Thread(() => emgStreaming.filtEMGstream(cancellationTokenSource.Token, path));
 
-            plotFiltThread = new Thread(() => emgStreaming.prepFiltForPlot(cancellationTokenSource.Token));
+            //plotFiltThread = new Thread(() => emgStreaming.prepFiltForPlot(cancellationTokenSource.Token));
 
             // Start the threads
             emgStreamThread.Start();
             filtEMGThread.Start();
-            plotFiltThread.Start();
+            //plotFiltThread.Start();
 
             // send command to base to start streaming
             baseConnection.SendCommand("START");
@@ -397,7 +394,7 @@ namespace EMGTriggeredStimTherapyApp
             // Start update timer
             EMGChartUpdateTimer = new System.Timers.Timer(200);
             EMGChartUpdateTimer.Elapsed += EMGChartUpdateTimer_Elapsed;
-            EMGChartUpdateTimer.Start();
+            //EMGChartUpdateTimer.Start();
 
             btn_connectEMG.IsEnabled = false;
             btn_disconnectEMG.IsEnabled = true;

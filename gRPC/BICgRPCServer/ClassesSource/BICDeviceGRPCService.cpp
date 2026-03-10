@@ -611,14 +611,18 @@ namespace BICGRPCHelperNamespace
         // Perform the operation
         try
         {
-            if (deviceDirectory[request->deviceaddress()]->lastEnqueueType == StimulationMode::STIM_MODE_PERSISTENT_FUNC_PRELOADING)
+            if (!deviceDirectory[request->deviceaddress()]->listener->isStimulating() && !deviceDirectory[request->deviceaddress()]->listener->isTriggeringStimulation())
             {
-                deviceDirectory[request->deviceaddress()]->theImplant->startStimulation(request->functionindex());
+                if (deviceDirectory[request->deviceaddress()]->lastEnqueueType == StimulationMode::STIM_MODE_PERSISTENT_FUNC_PRELOADING)
+                {
+                    deviceDirectory[request->deviceaddress()]->theImplant->startStimulation(request->functionindex());
+                }
+                else
+                {
+                    deviceDirectory[request->deviceaddress()]->theImplant->startStimulation();
+                }
             }
-            else
-            {
-                deviceDirectory[request->deviceaddress()]->theImplant->startStimulation();
-            }
+            
         }
         catch (const std::exception theExeption)
         {
