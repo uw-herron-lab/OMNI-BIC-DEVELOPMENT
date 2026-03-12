@@ -531,7 +531,7 @@ namespace EMGTriggeredStimTherapyApp
             try
             {
                 //maxSig = new float[numChannels];
-                int ch = 1;
+                //int ch = 1;
                 // open dialog box to select file with patient-specific settings
                 var fileD = new Microsoft.Win32.OpenFileDialog();
                 bool? loadFile = fileD.ShowDialog();
@@ -547,12 +547,16 @@ namespace EMGTriggeredStimTherapyApp
                             {
                                 var line = fileReader.ReadLine();
                                 var values = line.Split(',');
-                                float maxVal;
-								//float.TryParse(values[1], out maxVal);
-								float.TryParse(values[1], out maxVal);
-								//maxSig[ch] = maxVal;
-								emgStreaming._stimMod.maxSig[ch] = maxVal;
-                                ch++;
+                                for(int ch = 0; ch < values.Length; ch++)
+                                {
+                                    float maxVal;
+                                    //float.TryParse(values[1], out maxVal);
+                                    float.TryParse(values[ch], out maxVal);
+                                    //maxSig[ch] = maxVal;
+                                    emgStreaming._stimMod.maxSig[ch] = maxVal;
+                                }
+                                
+                                //ch++;
                             }
                             
                         }
