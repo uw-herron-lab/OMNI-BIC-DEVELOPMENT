@@ -292,7 +292,7 @@ namespace EMGLib
                         // add raw, filtered, and movement detection to queue
 
 
-                        (int[] movementDetected, long[] movementDetectedTimestamp) = _stimMod.triggerStim(envelopedSamples, 0);
+                        (int[] movementDetected, long[] movementDetectedTimestamp) = _stimMod.triggerStim(envelopedSamples, 1);
                         
 
                         // TO DO: add lock to this 

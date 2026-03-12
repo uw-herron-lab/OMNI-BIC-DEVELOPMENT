@@ -122,7 +122,7 @@ namespace EMGTriggeredStimTherapyApp
                 cancellationTokenSource.Cancel();
                 emgStreaming.emgDataPort_Diconnect();
 
-                //plotFiltThread.Abort();
+                plotFiltThread.Abort();
                 filtEMGThread.Abort();
                 emgStreamThread.Abort();
 
@@ -380,12 +380,12 @@ namespace EMGTriggeredStimTherapyApp
             emgStreamThread = new Thread(() => emgStreaming.StreamEMG(cancellationTokenSource.Token, path));
             filtEMGThread = new Thread(() => emgStreaming.filtEMGstream(cancellationTokenSource.Token, path));
 
-            //plotFiltThread = new Thread(() => emgStreaming.prepFiltForPlot(cancellationTokenSource.Token));
+            plotFiltThread = new Thread(() => emgStreaming.prepFiltForPlot(cancellationTokenSource.Token));
 
             // Start the threads
             emgStreamThread.Start();
             filtEMGThread.Start();
-            //plotFiltThread.Start();
+            plotFiltThread.Start();
 
             // send command to base to start streaming
             baseConnection.SendCommand("START");
@@ -394,7 +394,7 @@ namespace EMGTriggeredStimTherapyApp
             // Start update timer
             EMGChartUpdateTimer = new System.Timers.Timer(200);
             EMGChartUpdateTimer.Elapsed += EMGChartUpdateTimer_Elapsed;
-            //EMGChartUpdateTimer.Start();
+            EMGChartUpdateTimer.Start();
 
             btn_connectEMG.IsEnabled = false;
             btn_disconnectEMG.IsEnabled = true;
@@ -531,7 +531,7 @@ namespace EMGTriggeredStimTherapyApp
             try
             {
                 //maxSig = new float[numChannels];
-                int ch = 0;
+                int ch = 1;
                 // open dialog box to select file with patient-specific settings
                 var fileD = new Microsoft.Win32.OpenFileDialog();
                 bool? loadFile = fileD.ShowDialog();
@@ -549,7 +549,7 @@ namespace EMGTriggeredStimTherapyApp
                                 var values = line.Split(',');
                                 float maxVal;
 								//float.TryParse(values[1], out maxVal);
-								float.TryParse(values[0], out maxVal);
+								float.TryParse(values[1], out maxVal);
 								//maxSig[ch] = maxVal;
 								emgStreaming._stimMod.maxSig[ch] = maxVal;
                                 ch++;
