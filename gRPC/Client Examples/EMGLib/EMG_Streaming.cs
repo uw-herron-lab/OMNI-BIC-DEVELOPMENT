@@ -61,6 +61,7 @@ namespace EMGLib
         public Stim_Modules _stimMod;
         //private BlockingCollection<double[]> threshSamplesQueueForPlot = new BlockingCollection<double[]>();
         //private BlockingCollection<int[]> stimSamplesQueueForPlot = new BlockingCollection<int[]>();
+        public AutoResetEvent stimulatorWaitHandle = new AutoResetEvent(false);
 
         public bool _generateStim = false;
         public bool _stimEnabled = false;
@@ -246,9 +247,17 @@ namespace EMGLib
                         envelopedSamples = _processingMod.envelopeSignals(_processingMod.rectifySignals(filtSamples), 0); // envelope bandpass filtered samples
                         long envFiltTS = DateTime.Now.Ticks;
 
-                        (int[] movementDetected, long[] movementDetectedTimestamp) = _stimMod.triggerStim(envelopedSamples, 0);
+                        (bool stimState, int[] movementDetected, long[] movementDetectedTimestamp) = _stimMod.triggerStim(envelopedSamples, 0);
 
-                        _generateStim = _stimMod.generateStim;
+                        if(stimState != _generateStim)
+                        {
+                            _generateStim = stimState;
+                            if (_generateStim && _stimEnabled)
+                            {
+                                stimulatorWaitHandle.Set();
+                            }
+                        }
+                        
                         //rawSamplesQueue.Add(emgSamples);
                         lock (plotFiltLock)
                         {
@@ -344,11 +353,11 @@ namespace EMGLib
                         // add raw, filtered, and movement detection to queue
 
 
-                        (int[] movementDetected, long[] movementDetectedTimestamp) = _stimMod.triggerStim(envelopedSamples, 0);
+                        (bool stimState, int[] movementDetected, long[] movementDetectedTimestamp) = _stimMod.triggerStim(envelopedSamples, 0);
                         
 
                         // TO DO: add lock to this 
-                        _generateStim = _stimMod.generateStim;
+                        _generateStim = stimState;
                         //rawSamplesQueue.Add(emgSamples);
                         lock (plotFiltLock)
                         {

@@ -328,6 +328,7 @@ namespace EMGTriggeredStimTherapyApp
                  */
 
             }
+            emgStreaming.stimulatorWaitHandle.WaitOne();
             while (emgStreaming._stimEnabled)
             {
                 if (emgStreaming._generateStim) // TO DO: Add a lock to this
