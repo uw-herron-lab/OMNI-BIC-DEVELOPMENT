@@ -39,10 +39,10 @@ namespace EMGLib
         private long stimulatorTimestampBuff = 0;
 
         // for logging
-        StreamWriter emgSW;
+        //StreamWriter emgSW;
         StreamWriter emgFiltSW;
-        StreamWriter emgEnvelopedSW;
-        StreamWriter emgTimestampSW;
+        //StreamWriter emgEnvelopedSW;
+        //StreamWriter emgTimestampSW;
         public string currPart;
         public bool logging = false;
         public int currTrial = 0;
@@ -135,8 +135,8 @@ namespace EMGLib
             emgStream.Dispose();
             emgSocket.Dispose();
 
-            emgSW.Dispose();
-            emgTimestampSW.Dispose();
+            //emgSW.Dispose();
+            //emgTimestampSW.Dispose();
 
             emgFiltSW.Dispose();
             if (!calibrationOn)
@@ -173,20 +173,22 @@ namespace EMGLib
                 Console.WriteLine("EMG Streamer, Directory Exception - " + ex.Message.ToString());
             }
 
-            emgSW = new StreamWriter(Path.Combine(saveDir, filename));
-            string emgLog_label = "EMG1";
-            for (int i = 1; i < numberOfChannels; i++)
-            {
-                emgLog_label = string.Join(",", emgLog_label, "EMG" + (i + 1).ToString());
-            }
-            emgLog_label = string.Join(",", emgLog_label, "Timestamp", "Trial num");
-            emgSW.WriteLine(emgLog_label);
-            emgSW.Flush();
+            //emgSW = new StreamWriter(Path.Combine(saveDir, filename));
+            //string emgLog_label = "EMG1";
+            //for (int i = 1; i < numberOfChannels; i++)
+            //{
+            //    emgLog_label = string.Join(",", emgLog_label, "EMG" + (i + 1).ToString());
+            //}
+            //emgLog_label = string.Join(",", emgLog_label, "Timestamp", "Trial num");
+            //emgSW.WriteLine(emgLog_label);
+            //emgSW.Flush();
+
             // timestamp log file could be used for easier interpolation of timestamps if needed
             // (since there are repeats of the same timestamp for about 25 samples)
-            emgTimestampSW = new StreamWriter(Path.Combine(saveDir, stamp_filename));
-            emgTimestampSW.WriteLine("Timestamp of EMG bytes retrieved");
-            emgTimestampSW.Flush();
+
+            //emgTimestampSW = new StreamWriter(Path.Combine(saveDir, stamp_filename));
+            //emgTimestampSW.WriteLine("Timestamp of EMG bytes retrieved");
+            //emgTimestampSW.Flush();
 
             while (!token.IsCancellationRequested)
             {
@@ -215,39 +217,89 @@ namespace EMGLib
                         for (int i = 1; i < numberOfChannels; i++)
                         {
                             unpackedSamp[i] = BitConverter.ToSingle(sampleBuffer.Skip(indTracker).Take(bytesPerChannel).ToArray(), 0);
-                            emgLog = string.Join(",", emgLog, unpackedSamp[i]);
+                            //emgLog = string.Join(",", emgLog, unpackedSamp[i]);
                             indTracker = indTracker + 4;
 
                         }
                         if (logging)
                         {
-                            emgLog = string.Join(",", emgLog, formattedTimestamp, currTrial);
-                            emgSW.WriteLine(emgLog);
-                            emgTimestampSW.WriteLine(formattedTimestamp);
+                            //emgLog = string.Join(",", emgLog, formattedTimestamp, currTrial);
+                            //emgSW.WriteLine(emgLog);
+                            //emgTimestampSW.WriteLine(formattedTimestamp);
 
                         }
 
                         // add unpacked data to queue for prepping to plot
-                        emgPacket rawSampBuff = new emgPacket(unpackedSamp, formattedTimestamp);
-                        rawSamplesQueueForProcc.Add(rawSampBuff);
-                        lock (plotDataLock)
+                        //emgPacket rawSampBuff = new emgPacket(unpackedSamp, formattedTimestamp);
+                        //rawSamplesQueueForProcc.Add(rawSampBuff);
+                        //lock (plotDataLock)
+                        //{
+                        //    rawSamplesQueueForPlot.Add(unpackedSamp);
+                        //}
+
+                        // MOD to test
+                        float[] filtSamples = new float[numberOfChannels];
+                        float[] envelopedSamples = new float[numberOfChannels];
+
+                        filtSamples = _processingMod.IIRFilter(unpackedSamp, 0); // bandpass filter raw samples
+                        long bandpassFiltTS = DateTime.Now.Ticks;
+                        envelopedSamples = _processingMod.envelopeSignals(_processingMod.rectifySignals(filtSamples), 0); // envelope bandpass filtered samples
+                        long envFiltTS = DateTime.Now.Ticks;
+
+                        (int[] movementDetected, long[] movementDetectedTimestamp) = _stimMod.triggerStim(envelopedSamples, 0);
+
+                        _generateStim = _stimMod.generateStim;
+                        //rawSamplesQueue.Add(emgSamples);
+                        lock (plotFiltLock)
                         {
-                            rawSamplesQueueForPlot.Add(unpackedSamp);
+                            filtSamplesQueueForPlot.Add(filtSamples);
+
                         }
 
-                    }
+                        // TO DO: maybe do this in a different thread?
+                        if (logging)
+                        {
+                            //long t1 = DateTime.Now.Ticks;
+                            for (int i = 0; i < filtSamples.Length;)
+                            {
+                                for (int ch = 0; ch < 16; ch++) // TO DO: can replace this to not have to loop through all channels
+                                {
+                                    // only stores EMG1 at index i, and the TTL signal which is EMG2 at i+1
 
+                                    if (ch == 0)
+                                    {
+                                        emgFiltSW.WriteLine(string.Join(",", unpackedSamp[i], unpackedSamp[i + 1], formattedTimestamp, filtSamples[i], bandpassFiltTS, envelopedSamples[i], envFiltTS, _stimEnabled, _generateStim, movementDetected[i], movementDetectedTimestamp[i], stimulatorTimestamp, _stimMod.percent, _stimMod.thresh[0], _stimMod.maxSig[0], currTrial));
+
+                                        if (stimulatorTimestamp != stimulatorTimestampBuff)
+                                        {
+                                            // typical elapsed time is in range of 9-13ms, averaging more around 12ms
+                                            //Console.WriteLine("Movement TS - stimulator TS: " + (movementDetected[i] - stimulatorTimestamp).ToString());
+                                            //Console.WriteLine("Elapsed Time: " + elapsedTime(stimulatorTimestamp, timestampForAllSamples).ToString());
+                                        }
+
+                                        stimulatorTimestampBuff = stimulatorTimestamp;
+                                    }
+                                    i++;
+                                }
+                                //emgFiltSW.WriteLine(string.Join(",", $"{i + 1}", filtSamples[i].ToString(), timestampForAllSamples, bandpassFiltTS));
+                                //emgEnvelopedSW.WriteLine(string.Join(",", $"{i + 1}", envelopedSamples[i].ToString(), _stimEnabled, _generateStim, movementDetected[i], movementDetectedTimestamp[i], timestampForAllSamples, _stimMod.percent, _stimMod.thresh[i]));
+                            }
+                            //long t2 = DateTime.Now.Ticks;
+                            //Console.WriteLine("Elapsed time filt for loop: " + elapsedTime(t1, t2));
+                        }
+                    }
                 }
                 catch (Exception e)
                 {
-                    emgSW.Flush();
-                    emgTimestampSW.Flush();
+                    emgFiltSW.Flush();
+                    //emgSW.Flush();
+                    //emgTimestampSW.Flush();
                     Console.WriteLine("EMG Streamer - " + e.Message);
                 }
             }
             // flush outside of while loop to avoid taking up processing time
-            emgTimestampSW.Flush();
-            emgSW.Flush();
+            //emgTimestampSW.Flush();
+            //emgSW.Flush();
         }
 
         // TO DO: change the following method to filter and log filtered and algo related info
@@ -281,9 +333,9 @@ namespace EMGLib
                         float[] rawSamples = rawSampPacket.samples;
                         long timestampForAllSamples = rawSampPacket.stamp;
                         // filter data
-                        filtSamples = _processingMod.IIRFilter(rawSamples); // bandpass filter raw samples
+                        filtSamples = _processingMod.IIRFilter(rawSamples, 0); // bandpass filter raw samples
                         long bandpassFiltTS = DateTime.Now.Ticks;
-                        envelopedSamples = _processingMod.envelopeSignals(_stimMod.rectifySignals(filtSamples)); // envelope bandpass filtered samples
+                        envelopedSamples = _processingMod.envelopeSignals(_processingMod.rectifySignals(filtSamples),0); // envelope bandpass filtered samples
                         long envFiltTS = DateTime.Now.Ticks;
 
                         // FILE SAVED FOR CALIBRATION DATA VS STIM DATA ARE DIFFERENT, SINCE CALIBRATION DATA WILL NOT INCLUDE STIM VALUES
@@ -292,7 +344,7 @@ namespace EMGLib
                         // add raw, filtered, and movement detection to queue
 
 
-                        (int[] movementDetected, long[] movementDetectedTimestamp) = _stimMod.triggerStim(envelopedSamples, 1);
+                        (int[] movementDetected, long[] movementDetectedTimestamp) = _stimMod.triggerStim(envelopedSamples, 0);
                         
 
                         // TO DO: add lock to this 

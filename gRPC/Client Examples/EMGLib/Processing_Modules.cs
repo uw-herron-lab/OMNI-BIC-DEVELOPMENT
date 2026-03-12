@@ -77,52 +77,68 @@ namespace EMGLib
             }
 
         }
-        public float[] IIRFilter(float[] currSamp)
+        public float[] IIRFilter(float[] currSamp, int i)
         {
+            // 2nd order IIR filter
             // this is a band pass filter:
             float[] filtTemp = new float[16];
+			// for now, to save on computation time, set all non essential channels to 0 instead of having them go thru filtering
+			for (int ch = 0; ch < 16; ch++)
+			{
+				filtTemp[ch] = 0f;
+			}
 
-            for (int i = 0; i < 16; i++)
-            {
-                // 2nd order IIR filter
-                //if(currSamp[i] != 0f)
-                //{
-                //    Console.WriteLine("test");
-                //}
-                filtTemp[i] = (band_gainVal * band_b[0] * currSamp[i] + band_gainVal * band_b[1] * band_prevInput[i][0] + band_gainVal * band_b[2] * band_prevInput[i][1] + band_gainVal * band_b[3] * band_prevInput[i][2] + band_gainVal * band_b[4] * band_prevInput[i][3]
-                    - band_a[1] * band_prevFiltOut[i][0] - band_a[2] * band_prevFiltOut[i][1] - band_a[3] * band_prevFiltOut[i][2] - band_a[4] * band_prevFiltOut[i][3]);
+            //for (int i = 0; i < 16; i++)
+            //{
 
-                band_prevFiltOut[i].Insert(0, filtTemp[i]);
-                band_prevFiltOut[i].RemoveAt(band_prevFiltOut[i].Count - 1);
+            filtTemp[i] = (band_gainVal * band_b[0] * currSamp[i] + band_gainVal * band_b[1] * band_prevInput[i][0] + band_gainVal * band_b[2] * band_prevInput[i][1] + band_gainVal * band_b[3] * band_prevInput[i][2] + band_gainVal * band_b[4] * band_prevInput[i][3]
+                - band_a[1] * band_prevFiltOut[i][0] - band_a[2] * band_prevFiltOut[i][1] - band_a[3] * band_prevFiltOut[i][2] - band_a[4] * band_prevFiltOut[i][3]);
 
-                // Store most recent sample at the beginning of history window
-                band_prevInput[i].Insert(0, currSamp[i]);
-                band_prevInput[i].RemoveAt(band_prevInput[i].Count - 1);
-            }
+            band_prevFiltOut[i].Insert(0, filtTemp[i]);
+            band_prevFiltOut[i].RemoveAt(band_prevFiltOut[i].Count - 1);
+
+            // Store most recent sample at the beginning of history window
+            band_prevInput[i].Insert(0, currSamp[i]);
+            band_prevInput[i].RemoveAt(band_prevInput[i].Count - 1);
+            //}
 
 
             return filtTemp;
         }
 
+        public float[] rectifySignals(float[] signal)
+        {
+            float[] rectifiedSignal = new float[signal.Length];
+            for (int ch = 0; ch < signal.Length; ch++)
+            {
+                rectifiedSignal[ch] = Math.Abs(signal[ch]);
+            }
+            return rectifiedSignal;
+        }
 
-		public float[] envelopeSignals(float[] currSamp)
+        public float[] envelopeSignals(float[] currSamp, int i)
 		{
 			// this is the low pass filter coefficient: 
 			// y[n] = (b0 * x[n] + b1 * x[n-1]) / (1 + a1 * y[n-1])
 
 			float[] filtTemp = new float[16];
-			for (int i = 0; i < 16; i++)
-			{
-				filtTemp[i] = low_gainVal * (low_b[0] * currSamp[i] + low_b[1] * low_prevInput[i][0] + low_b[2] * low_prevInput[i][1]) -
-							  (low_a[1] * low_prevFiltOut[i][0] + low_a[2] * low_prevFiltOut[i][1]);
+            // for now, to save on computation time, set all non essential channels to 0 instead of having them go thru filtering
+            for (int ch = 0; ch < 16; ch++)
+            {
+                filtTemp[ch] = 0f;
+            }
+   //         for (int i = 0; i < 16; i++)
+			//{
+			filtTemp[i] = low_gainVal * (low_b[0] * currSamp[i] + low_b[1] * low_prevInput[i][0] + low_b[2] * low_prevInput[i][1]) -
+							(low_a[1] * low_prevFiltOut[i][0] + low_a[2] * low_prevFiltOut[i][1]);
 
-				low_prevFiltOut[i].Insert(0, filtTemp[i]);
-				low_prevFiltOut[i].RemoveAt(low_prevFiltOut[i].Count - 1);
+			low_prevFiltOut[i].Insert(0, filtTemp[i]);
+			low_prevFiltOut[i].RemoveAt(low_prevFiltOut[i].Count - 1);
 
-				// Store most recent sample at the beginning of history window
-				low_prevInput[i].Insert(0, currSamp[i]);
-				low_prevInput[i].RemoveAt(low_prevInput[i].Count - 1);
-			}
+			// Store most recent sample at the beginning of history window
+			low_prevInput[i].Insert(0, currSamp[i]);
+			low_prevInput[i].RemoveAt(low_prevInput[i].Count - 1);
+			//}
 
 			return filtTemp;
 		}

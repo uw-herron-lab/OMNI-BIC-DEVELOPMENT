@@ -38,15 +38,6 @@ namespace EMGLib
             }
         }
 
-        public float[] rectifySignals(float[] signal)
-        {
-            float[] rectifiedSignal = new float[signal.Length];
-            for (int ch = 0; ch < signal.Length; ch++)
-            {
-                rectifiedSignal[ch] = Math.Abs(signal[ch]);
-            }
-            return rectifiedSignal;
-        }
 
         // the name of this method is misleading, it should be changed to e.g. identifyMovement, 
         public (int[] movementDetected, long[] movementDetectedTimestamp) triggerStim(float[] signal, int ch)

@@ -123,7 +123,7 @@ namespace EMGTriggeredStimTherapyApp
                 emgStreaming.emgDataPort_Diconnect();
 
                 plotFiltThread.Abort();
-                filtEMGThread.Abort();
+                //filtEMGThread.Abort();
                 emgStreamThread.Abort();
 
                 baseConnection.SendCommand("STOP");
@@ -378,13 +378,13 @@ namespace EMGTriggeredStimTherapyApp
             // create/recreate threads
             emgStreaming.emgDataPort_Connect();
             emgStreamThread = new Thread(() => emgStreaming.StreamEMG(cancellationTokenSource.Token, path));
-            filtEMGThread = new Thread(() => emgStreaming.filtEMGstream(cancellationTokenSource.Token, path));
+            //filtEMGThread = new Thread(() => emgStreaming.filtEMGstream(cancellationTokenSource.Token, path));
 
             plotFiltThread = new Thread(() => emgStreaming.prepFiltForPlot(cancellationTokenSource.Token));
 
             // Start the threads
             emgStreamThread.Start();
-            filtEMGThread.Start();
+            //filtEMGThread.Start();
             plotFiltThread.Start();
 
             // send command to base to start streaming
