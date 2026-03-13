@@ -37,6 +37,7 @@ namespace EMGLib
         public bool streamingStatus = false;
         public long stimulatorTimestamp = 0;
         private long stimulatorTimestampBuff = 0;
+        public long stimulatorTimestamp2 = 0;
 
         // for logging
         //StreamWriter emgSW;
@@ -161,10 +162,6 @@ namespace EMGLib
             {
                 saveDir = Path.Combine(saveDir, "Calibration");
             }
-            string filename = currPart + "_FiltEMGData_" + file_extension;
-            emgFiltSW = new StreamWriter(Path.Combine(saveDir, filename));
-            emgFiltSW.WriteLine(string.Join(",", "raw signal", "TTL signal", "raw timestamp", "filt signal", "filt timestamp", "env signal", "env timestamp", "MTS on", "send stim", "movement detected", "movement timestamp", "stimulator timestamp", "percentage", "threshold", "max MVC", "Trial"));
-            emgFiltSW.Flush();
             try
             {
                 if (!Directory.Exists(saveDir))
@@ -176,6 +173,10 @@ namespace EMGLib
             {
                 Console.WriteLine("EMG Streamer, Directory Exception - " + ex.Message.ToString());
             }
+            string filename = currPart + "_FiltEMGData_" + file_extension;
+            emgFiltSW = new StreamWriter(Path.Combine(saveDir, filename));
+            emgFiltSW.WriteLine(string.Join(",", "raw signal", "TTL signal", "raw timestamp", "filt signal", "filt timestamp", "env signal", "env timestamp", "MTS on", "send stim", "movement detected", "movement timestamp", "stimulator timestamp", "percentage", "threshold", "max MVC", "Trial"));
+            emgFiltSW.Flush();
 
             //emgSW = new StreamWriter(Path.Combine(saveDir, filename));
             //string emgLog_label = "EMG1";
@@ -286,7 +287,17 @@ namespace EMGLib
                                         if (stimulatorTimestamp != stimulatorTimestampBuff)
                                         {
                                             // typical elapsed time is in range of 9-13ms, averaging more around 12ms
-                                            Console.WriteLine("Elapsed Time: " + elapsedTime(formattedTimestamp, stimulatorTimestamp).ToString());
+                                            Console.WriteLine(formattedTimestamp);
+                                            Console.WriteLine(movementDetectedTimestamp[i]);
+                                            Console.WriteLine(stimulatorTimestamp);
+                                            Console.WriteLine(formattedTimestamp - stimulatorTimestamp);
+                                            Console.WriteLine(formattedTimestamp - stimulatorTimestamp2);
+                                            Console.WriteLine(stimulatorTimestamp2);
+                                            //Console.WriteLine("Elapsed t: " + elapsedTime(formattedTimestamp, t).ToString());
+                                            //Console.WriteLine("Elapsed Time1: " + elapsedTime(formattedTimestamp, stimulatorTimestamp).ToString());
+                                            //Console.WriteLine("Elapsed Time2: " + elapsedTime(movementDetectedTimestamp[i], stimulatorTimestamp2).ToString());
+                                            //Console.WriteLine("Elapsed Time3: " + elapsedTime(formattedTimestamp, stimulatorTimestamp2).ToString());
+                                            //Console.WriteLine("test2 " + formattedTimestamp.ToString() + " " + stimulatorTimestamp2.ToString() + (formattedTimestamp - stimulatorTimestamp2).ToString());
                                             //Console.WriteLine("stim: " + stimulatorTimestamp.ToString());
                                             //Console.WriteLine(movementDetectedTimestamp.ToString());
                                         }

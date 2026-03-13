@@ -328,6 +328,7 @@ namespace EMGTriggeredStimTherapyApp
                  */
 
             }
+            Console.WriteLine("test " + emgStreaming.elapsedTime(639090103096606782, 639090103096606782).ToString());
             emgStreaming.stimulatorWaitHandle.WaitOne();
             while (emgStreaming._stimEnabled)
             {
@@ -338,24 +339,26 @@ namespace EMGTriggeredStimTherapyApp
                     //if (!aBICManager.getStimState()[0] && !aBICManager.getStimState()[1])
                     //{
                         // send a single stim pulse
-                        try
-                        {
+                    try
+                    {
 
-                            emgStreaming.stimulatorTimestamp = DateTime.Now.Ticks;
+                        emgStreaming.stimulatorTimestamp = DateTime.Now.Ticks;
                         aBICManager.sendSingleStimulation();
-                            //emgStreaming.stimulatorTimestamp = DateTime.Now.Ticks;
-                            long t2 = DateTime.Now.Ticks;
-                            //Console.WriteLine("Stimulator elapsed time: " + emgStreaming.elapsedTime(emgStreaming.stimulatorTimestamp, t2).ToString());
-                            Thread.Sleep(2000);
-                            
-                    }
-                        catch
-                        {
-                            // Exception occured, gRPC command did not succeed, do not update UI button elements
-                            Console.WriteLine("Single stimulation not sent\n");
+                        //emgStreaming.stimulatorTimestamp = DateTime.Now.Ticks;
+                        //long t2 = DateTime.Now.Ticks;
+                        emgStreaming.stimulatorTimestamp2 = DateTime.Now.Ticks;
+                        Console.WriteLine("Elapsed Time4: " + emgStreaming.elapsedTime(emgStreaming.stimulatorTimestamp, emgStreaming.stimulatorTimestamp2).ToString());
 
-                            return;
-                        }
+                        Thread.Sleep(2000);
+
+                    }
+                    catch
+                    {
+                        // Exception occured, gRPC command did not succeed, do not update UI button elements
+                        Console.WriteLine("Single stimulation not sent\n");
+
+                        return;
+                    }
 
 
                     //}
