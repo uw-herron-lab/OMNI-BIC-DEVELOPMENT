@@ -342,11 +342,13 @@ namespace EMGTriggeredStimTherapyApp
                         {
 
                             emgStreaming.stimulatorTimestamp = DateTime.Now.Ticks;
-                            aBICManager.sendSingleStimulation();
+                        aBICManager.sendSingleStimulation();
+                            //emgStreaming.stimulatorTimestamp = DateTime.Now.Ticks;
                             long t2 = DateTime.Now.Ticks;
-                            Console.WriteLine("Stimulator elapsed time: " + emgStreaming.elapsedTime(emgStreaming.stimulatorTimestamp, t2).ToString());
+                            //Console.WriteLine("Stimulator elapsed time: " + emgStreaming.elapsedTime(emgStreaming.stimulatorTimestamp, t2).ToString());
                             Thread.Sleep(2000);
-                        }
+                            
+                    }
                         catch
                         {
                             // Exception occured, gRPC command did not succeed, do not update UI button elements

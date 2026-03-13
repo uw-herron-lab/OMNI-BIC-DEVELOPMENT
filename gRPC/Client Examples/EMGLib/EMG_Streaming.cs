@@ -155,13 +155,16 @@ namespace EMGLib
 
             // setup logging
 
-            string filename = currPart + "_RawFormattedEMGData_" + file_extension;
-            string stamp_filename = currPart + "_TimestampEMG_" + file_extension;
+            //string filename = currPart + "_RawFormattedEMGData_" + file_extension;
+            //string stamp_filename = currPart + "_TimestampEMG_" + file_extension;
             if (calibrationOn)
             {
                 saveDir = Path.Combine(saveDir, "Calibration");
             }
-
+            string filename = currPart + "_FiltEMGData_" + file_extension;
+            emgFiltSW = new StreamWriter(Path.Combine(saveDir, filename));
+            emgFiltSW.WriteLine(string.Join(",", "raw signal", "TTL signal", "raw timestamp", "filt signal", "filt timestamp", "env signal", "env timestamp", "MTS on", "send stim", "movement detected", "movement timestamp", "stimulator timestamp", "percentage", "threshold", "max MVC", "Trial"));
+            emgFiltSW.Flush();
             try
             {
                 if (!Directory.Exists(saveDir))
@@ -248,13 +251,14 @@ namespace EMGLib
                         long envFiltTS = DateTime.Now.Ticks;
 
                         (bool stimState, int[] movementDetected, long[] movementDetectedTimestamp) = _stimMod.triggerStim(envelopedSamples, 0);
-
+                        long t = 0;
                         if(stimState != _generateStim)
                         {
                             _generateStim = stimState;
                             if (_generateStim && _stimEnabled)
                             {
                                 stimulatorWaitHandle.Set();
+                                t = DateTime.Now.Ticks;
                             }
                         }
                         
@@ -282,8 +286,9 @@ namespace EMGLib
                                         if (stimulatorTimestamp != stimulatorTimestampBuff)
                                         {
                                             // typical elapsed time is in range of 9-13ms, averaging more around 12ms
-                                            //Console.WriteLine("Movement TS - stimulator TS: " + (movementDetected[i] - stimulatorTimestamp).ToString());
-                                            //Console.WriteLine("Elapsed Time: " + elapsedTime(stimulatorTimestamp, timestampForAllSamples).ToString());
+                                            Console.WriteLine("Elapsed Time: " + elapsedTime(formattedTimestamp, stimulatorTimestamp).ToString());
+                                            //Console.WriteLine("stim: " + stimulatorTimestamp.ToString());
+                                            //Console.WriteLine(movementDetectedTimestamp.ToString());
                                         }
 
                                         stimulatorTimestampBuff = stimulatorTimestamp;
@@ -569,19 +574,9 @@ namespace EMGLib
 
             try
             {
-                if (t1 > t2)
-                {
-                    long t_elapsed = t1 - t2;
-                    TimeSpan ts = new TimeSpan(t_elapsed);
-                    t_ms = ts.TotalMilliseconds;
-                }
-                else
-                {
-                    long t_elapsed = t2 - t1;
-                    TimeSpan ts = new TimeSpan(t_elapsed);
-                    t_ms = ts.TotalMilliseconds;
-                }
-                
+                long t_elapsed = Math.Abs(t1 - t2);
+                t_ms = TimeSpan.FromTicks(t_elapsed).TotalMilliseconds;
+
             }
             catch (Exception e)
             {

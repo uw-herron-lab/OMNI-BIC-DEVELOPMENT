@@ -101,7 +101,7 @@ namespace EMGLib
             band_prevInput[i].Insert(0, currSamp[i]);
             band_prevInput[i].RemoveAt(band_prevInput[i].Count - 1);
             //}
-
+            filtTemp[1] = currSamp[1];
 
             return filtTemp;
         }
