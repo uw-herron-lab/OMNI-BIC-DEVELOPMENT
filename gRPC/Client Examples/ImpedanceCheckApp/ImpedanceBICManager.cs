@@ -111,9 +111,12 @@ namespace ImpedanceCheckApp
         public void performImpCheck()
         {
             // Logging impedance items
-            impedFilePath = "./impedances" + DateTime.Now.ToString("_MMddyyyy_HHmmss") + ".csv";
+            impedFilePath = "./impedances" + DateTime.Now.ToString("_yyyy-MM-dd_HH-mm-ss") + ".csv";
             impedFileStream = new FileStream(impedFilePath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, FileOptions.Asynchronous);
             impedFileWriter = new StreamWriter(impedFileStream);
+
+            // Add header labels
+            impedFileWriter.WriteLine("Channel,Impedance,Units");
 
             // Get timestamp
             string timestamp = DateTime.Now.ToString("hh:mm:ss tt");
@@ -127,14 +130,22 @@ namespace ImpedanceCheckApp
                 bicGetImpedanceReply chanImpedValue = deviceClient.bicGetImpedance(new bicGetImpedanceRequest() { DeviceAddress = DeviceName, Channel = channelNum });
                 if (chanImpedValue.Success == "success")
                 {
+                    // Output to display to application
                     impBuffer.Add(chanImpedValue.ChannelImpedance.ToString() + chanImpedValue.Units);
+
+                    // Output to save to file
+                    impedFileWriter.WriteLine((channelNum + 1).ToString() + ", " +
+                        chanImpedValue.ChannelImpedance.ToString() + ", " +
+                        chanImpedValue.Units);
                 }
                 else
                 {
                     impBuffer.Add("Unsuccessful impedance reading");
+                    impedFileWriter.WriteLine((channelNum + 1).ToString() + ", " +
+                        "Unsuccessful impedance reading, " +
+                        "N/A");
                 }
-                impedEntry += ", " + impBuffer.Last();
-                impedFileWriter.WriteLine(impedEntry);
+                impedEntry += "," + impBuffer.Last();
             }
 
             // Close impedance logging items

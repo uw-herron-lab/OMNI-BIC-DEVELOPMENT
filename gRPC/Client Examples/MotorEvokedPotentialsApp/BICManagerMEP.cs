@@ -9,10 +9,10 @@ using System.Diagnostics;
 using System.IO;
 using Grpc.Core;
 using BICgRPC;
-// D:\gitbuilds\OMNI - BIC - DEVELOPMENT\gRPC\Client Examples\EvokedPotentialsApp\BICManager.cs
-namespace EvokedPotentialsApp
+
+namespace MotorEvokedPotentialsApp
 {
-    class BICManagerEP : IDisposable
+    class BICManagerMEP : IDisposable
     {
         // Private class objects
         private Channel aGRPChannel;
@@ -36,7 +36,7 @@ namespace EvokedPotentialsApp
         // Logging Objects
         FileStream logFileStream;
         StreamWriter logFileWriter;
-        string filePath = "./epLog" + DateTime.Now.ToString("_yyyy-MM-dd_HH-mm-ss") + ".csv";
+        string filePath = "./mepLog" + DateTime.Now.ToString("_yyyy-MM-dd_HH-mm-ss") + ".csv";
         ConcurrentQueue<string> logLineQueue = new ConcurrentQueue<string>();
         Thread newLoggingThread;
         bool loggingNotDisposed = true;
@@ -46,14 +46,14 @@ namespace EvokedPotentialsApp
         public delegate void disconnectEventHandler(List<string> disconnectionInfo);
         public event disconnectEventHandler disconnected;
 
-        public int deviceSampleRate {  get; set; }
-        
+        public int deviceSampleRate { get; set; }
+
         // Task pointers for streaming methods
         private Task neuroMonitor = null;
         private Task connectMonitor = null;
 
         // Constructor
-        public BICManagerEP(int definedDataBufferLength, uint stimPeriod, uint baselinePeriod) 
+        public BICManagerMEP(int definedDataBufferLength, uint stimPeriod, uint baselinePeriod)
         {
             // Open up the GRPC Channel to the BIC microservice
             aGRPChannel = new Channel("127.0.0.1:50051", ChannelCredentials.Insecure);
@@ -67,7 +67,7 @@ namespace EvokedPotentialsApp
             runningTotals = new List<double>[numSensingChannelsDef];
             connectionInfoBuffer = new List<string>();
 
-            for(int i = 0; i < numSensingChannelsDef; i++)
+            for (int i = 0; i < numSensingChannelsDef; i++)
             {
                 dataBuffer[i] = new List<double>();
                 currPulseBuffer[i] = new List<double>();
@@ -75,7 +75,7 @@ namespace EvokedPotentialsApp
             }
 
             // Set up the logging interface
-            if(File.Exists(filePath))
+            if (File.Exists(filePath))
             {
                 File.Delete(filePath);
             }
@@ -87,9 +87,9 @@ namespace EvokedPotentialsApp
                 chanHeader += ",CH" + (chNum + 1).ToString();
             }
             // list of header names
-            logFileWriter.WriteLine("PacketNum,TimeStamp,FilteredChannelNum,RawChannelData,FilteredChannelData,boolInterpolated,StimChannelData,StimActive" + chanHeader);
+            logFileWriter.WriteLine("PacketNum,TimeStamp,FilteredChannelNum,RawChannelData,FilteredChannelData,boolInterpolated,StimChannelData,StimActive,InputTrigger" + chanHeader);
         }
-       
+
         // Resets currPulseBuffer and runningTotals
         public void zeroAvgsBuffers()
         {
@@ -102,12 +102,12 @@ namespace EvokedPotentialsApp
                 }
             }
         }
-        
+
         public bool BICConnect()
         {
-//#warning TODO: Add a check for already connected devices?
+            //#warning TODO: Add a check for already connected devices?
 
-//#warning TODO: Add InfoService- prompted by "?"
+            //#warning TODO: Add InfoService- prompted by "?"
             infoClient = new BICInfoService.BICInfoServiceClient(aGRPChannel);
             Console.WriteLine("Grabbing information: ");
             var versionNumberReply = infoClient.VersionNumber(new VersionNumberRequest());
@@ -202,47 +202,119 @@ namespace EvokedPotentialsApp
         }
 
         /// <summary>
-        /// Sends one pulse of monopolar or bipolar stimulation
+        /// Send in a trains of stimulation for motor evoked potential experiments
         /// </summary>
         /// <param name="monopolar"></param>
         /// <param name="stimChannel"></param>
         /// <param name="returnChannel"></param>
+        /// <param name="numPulses"></param>
+        /// <param name="numTrains"></param>
+        /// <param name="interPulseInterval"></param>
+        /// <param name="interTrainInterval"></param>
         /// <param name="stimAmplitude"></param>
         /// <param name="stimDuration"></param>
-        public void enableStimulationPulse(bool monopolar, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, bool useStimGround)
+        /// <param name="chargeBalancePWRatio"></param>
+        /// <param name="stimThreshold"></param>
+        public void enableStimulationPulse(bool monopolar, bool useStimGround, uint stimChannel, uint returnChannel, uint numPulses, uint numTrains, uint interPulseInterval, uint interTrainInterval, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, double stimThreshold)
         {
+            uint dz1Dur = interPulseInterval - (5 * stimDuration) - 20; // DZ1 = IPI - 5 * stimDuration - 2 * DZ0
             bicEnqueueStimulationRequest aNewWaveformRequest = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.PersistentWaveform, WaveformRepititions = 1 };
             if (monopolar)
             {
                 // Create a pulse function for monopolar
                 StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
                 {
-                    FunctionName = "evokedPotentialStim",
-                    StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 10, PulseWidth = stimDuration, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { }, UseGround = true, BurstRepetitions = 1 }
+                    FunctionName = "motorEvokedPotentialStim",
+                    StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = dz1Dur, PulseWidth = stimDuration, PulseRepetitions = numPulses, SourceElectrodes = { stimChannel }, SinkElectrodes = { }, UseGround = true, BurstRepetitions = 1 }
 
                 };
                 aNewWaveformRequest.Functions.Add(pulseFunction0);
+
+                // Create a intertrain pause for monopolar stimulation
+                StimulationFunctionDefinition interTrainPause = new StimulationFunctionDefinition()
+                {
+                    FunctionName = "pausePulse",
+                    Pause = new pauseFunction() { Duration = interTrainInterval - numPulses * ((5 * stimDuration) + 20 + dz1Dur) } // pauseDuration = interTrainInterval - numPulses * ((5 * stimDuration) + (2 * DZ0) + DZ1))
+                };
+                aNewWaveformRequest.Functions.Add(interTrainPause);
             }
             else
             {
                 // Create a pulse function for bipolar stimulation
                 StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
                 {
-                    FunctionName = "evokedPotentialStim",
-                    StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 10, PulseWidth = stimDuration, PulseRepetitions = 1, SourceElectrodes = { stimChannel }, SinkElectrodes = { returnChannel }, UseGround = useStimGround, BurstRepetitions = 1 }
+                    FunctionName = "motorEvokedPotentialStim",
+                    StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = dz1Dur, PulseWidth = stimDuration, PulseRepetitions = numPulses, SourceElectrodes = { stimChannel }, SinkElectrodes = { returnChannel }, UseGround = useStimGround, BurstRepetitions = 1 }
 
                 };
                 aNewWaveformRequest.Functions.Add(pulseFunction0);
+
+                // Create a intertrain pause for bipolar stimulation
+                StimulationFunctionDefinition interTrainPause = new StimulationFunctionDefinition()
+                {
+                    FunctionName = "pausePulse",
+                    Pause = new pauseFunction() { Duration = interTrainInterval - numPulses * ((5 * stimDuration) + 20 + dz1Dur) }
+                };
+                aNewWaveformRequest.Functions.Add(interTrainPause);
             }
+
             deviceClient.bicEnqueueStimulation(aNewWaveformRequest);
             deviceClient.bicStartStimulation(new bicStartStimulationRequest() { DeviceAddress = DeviceName });
         }
 
-        public void stopEvokedPotentialStimulation()
+        public void enableMotorThresholdStimulation(bool openStimEn, bool monopolar, bool useStimGround, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold)
+        {
+            // Determine the number of waveform repetitions needed to create a 2-sec burst of stimulation
+            uint numRepetition = 3000 / (interPulseInterval / 1000);
+            // Additional pause duration for stimulation
+            uint addDuration = interPulseInterval - (5 * stimDuration);
+
+            if (openStimEn)
+            {
+                // Create a waveform defintion request 
+                bicEnqueueStimulationRequest aNewWaveformRequest = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.PersistentWaveform, WaveformRepititions = 1 };
+
+                if (monopolar)
+                {
+                    // Create a pulse function for monopolar stimulation
+                    StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
+                    {
+                        FunctionName = "openLoopPulse",
+                        StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = addDuration, PulseWidth = stimDuration, PulseRepetitions = numRepetition, SourceElectrodes = { stimChannel }, SinkElectrodes = { }, UseGround = true, BurstRepetitions = 1 }
+
+                    };
+                    aNewWaveformRequest.Functions.Add(pulseFunction0);
+                }
+                else
+                {
+                    // Create a pulse function for bipolar stimulation
+                    StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
+                    {
+                        FunctionName = "openLoopPulse",
+                        StimPulse = new stimPulseFunction() { Amplitude = { stimAmplitude, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = addDuration, PulseWidth = stimDuration, PulseRepetitions = numRepetition, SourceElectrodes = { stimChannel }, SinkElectrodes = { returnChannel }, UseGround = useStimGround, BurstRepetitions = 1 }
+
+                    };
+                    aNewWaveformRequest.Functions.Add(pulseFunction0);
+                }
+
+                // Enqueue the stimulation waveform
+                deviceClient.bicEnqueueStimulation(aNewWaveformRequest);
+                deviceClient.bicStartStimulation(new bicStartStimulationRequest() { DeviceAddress = DeviceName });
+            }
+            else
+            {
+                // Stop the stim
+                deviceClient.bicStopStimulation(new RequestDeviceAddress() { DeviceAddress = DeviceName });
+            }
+        }
+
+        /// <summary>
+        /// Stop all stimulation
+        /// </summary>
+        public void stopMotorThresholdStimulation()
         {
             deviceClient.bicStopStimulation(new RequestDeviceAddress() { DeviceAddress = DeviceName });
         }
-
 
         /// <summary>
         /// Provide a copy of the current data buffers
@@ -252,7 +324,7 @@ namespace EvokedPotentialsApp
         {
             List<double>[] outputBuffer = new List<double>[dataBuffer.Length];
 
-            lock(dataBufferLock)
+            lock (dataBufferLock)
             {
                 for (int i = 0; i < dataBuffer.Length; i++)
                 {
@@ -262,38 +334,13 @@ namespace EvokedPotentialsApp
             return outputBuffer;
         }
 
-
-        /// <summary>
-        /// Provide a copy of the current running averages
-        /// </summary>
-        /// <returns>A list of double-arrays, each array is composed of the latest running total from each BIC channel. </returns>
-        public List<double>[] getAvgsData()
-        {
-            List<double>[] outputBuffer = new List<double>[runningTotals.Length];
-
-            lock (dataBufferLock)
-            {
-                for (int i = 0; i < runningTotals.Length; i++)
-                {
-                    double[] chanBuffer = new double[stimPeriodSamples];
-                    for (int j = 0; j < stimPeriodSamples; j++)
-                    {
-                        chanBuffer[j] = runningTotals[i][j] / currNumPulses;
-                    }
-                    outputBuffer[i] = new List<double>(chanBuffer);
-                }
-            }
-            return outputBuffer;
-        }
-
-
         private void loggingThread()
         {
             // Declare output from concurrent queue
             string dequeuedString;
 
             // Loop until quit
-            while(loggingNotDisposed)
+            while (loggingNotDisposed)
             {
                 try
                 {
@@ -320,7 +367,7 @@ namespace EvokedPotentialsApp
             for (int i = 1; i < sampleBuffer.Count; i++)
             {
                 // check if the sequential packet number is less than the previous packet number
-                if (sampleBuffer[i].SampleCounter < prevPacketNum + 1) 
+                if (sampleBuffer[i].SampleCounter < prevPacketNum + 1)
                 {
                     Console.WriteLine("ERROR: Packet numbers are not in order! Sample (prev, next): " + prevPacketNum.ToString() + ", " + sampleBuffer[i].SampleCounter.ToString());
                     return false;
@@ -367,8 +414,8 @@ namespace EvokedPotentialsApp
         async Task neuralMonitorTaskAsync()
         {
             Debug.WriteLine("********************************************************* calling monitor task");
-            var stream = deviceClient.bicNeuralStream(new bicNeuralSetStreamingEnable() { DeviceAddress = DeviceName, Enable = true, BufferSize = 100, MaxInterpolationPoints = 10, AmplificationFactor = RecordingAmplificationFactor.Amplification395DB, RefChannels = { 31 }, UseGroundReference = true});
-        
+            var stream = deviceClient.bicNeuralStream(new bicNeuralSetStreamingEnable() { DeviceAddress = DeviceName, Enable = true, BufferSize = 100, MaxInterpolationPoints = 10, AmplificationFactor = RecordingAmplificationFactor.Amplification395DB, RefChannels = { 31 }, UseGroundReference = true });
+
             // Create performance-tracking interpacket variables
             Stopwatch aStopwatch = new Stopwatch();
             newLoggingThread = new Thread(loggingThread);
@@ -382,11 +429,11 @@ namespace EvokedPotentialsApp
                 validBufferOrderCheck(stream.ResponseStream.Current.Samples);
 
                 // Missing packet handling
-                if (stream.ResponseStream.Current.Samples[0].SampleCounter != (latestPacketNum + 1) )
+                if (stream.ResponseStream.Current.Samples[0].SampleCounter != (latestPacketNum + 1))
                 {
                     // Determine the number of packets missing
                     long diffPackets = stream.ResponseStream.Current.Samples[0].SampleCounter - (latestPacketNum + 1);
-                    
+
                     // Account for uint wrap around (RARE)
                     if (diffPackets < 0)
                     {
@@ -394,7 +441,7 @@ namespace EvokedPotentialsApp
                     }
 
                     // Insert a maximum of 10 NANs
-                    if(diffPackets > 10)
+                    if (diffPackets > 10)
                     {
                         diffPackets = 10;
                     }
@@ -407,7 +454,7 @@ namespace EvokedPotentialsApp
                     {
                         nanBuffer[i] = double.NaN;
                     }
-                    
+
                     // Lock dataBuffer access to ensure no mid-update copy.
                     lock (dataBufferLock)
                     {
@@ -422,11 +469,11 @@ namespace EvokedPotentialsApp
 
                 // Status update to console
                 aStopwatch.Restart();
-               
+
                 // Create local copy buffers and loop variables
                 int numSamples = stream.ResponseStream.Current.Samples.Count;
                 double[] copyBuffer = new double[numSamples];
-                double[] filtBuffer = new double [numSamples];
+                double[] filtBuffer = new double[numSamples];
 
                 // Lock dataBuffer access to ensure no mid-update copy.
                 lock (dataBufferLock)
@@ -498,7 +545,7 @@ namespace EvokedPotentialsApp
                             }
                         }
                     }
-                    
+
 
                     // Update the data buffers
                     for (int channelNum = 0; channelNum < dataBuffer.Length; channelNum++)
@@ -531,13 +578,14 @@ namespace EvokedPotentialsApp
 
                         // Enqueue the data for the logging thread
                         string logString = stream.ResponseStream.Current.Samples[sampleNum].SampleCounter.ToString() + ", " +
-                            stream.ResponseStream.Current.Samples[sampleNum].TimeStamp.ToString() + ", " + 
+                            stream.ResponseStream.Current.Samples[sampleNum].TimeStamp.ToString() + ", " +
                             filteredIndex.ToString() + ", " +
                             stream.ResponseStream.Current.Samples[sampleNum].Measurements[filteredIndex].ToString() + ", " +
                             stream.ResponseStream.Current.Samples[sampleNum].FiltSample.ToString() + ", " +
                             stream.ResponseStream.Current.Samples[sampleNum].IsInterpolated.ToString() + ", " +
                             stream.ResponseStream.Current.Samples[sampleNum].Measurements[5].ToString() + ", " +
-                            stream.ResponseStream.Current.Samples[sampleNum].StimulationActive.ToString();
+                            stream.ResponseStream.Current.Samples[sampleNum].StimulationActive.ToString() + ", " +
+                            stream.ResponseStream.Current.Samples[sampleNum].IsInputTrigHigh.ToString(); ;
                         for (int chNum = 0; chNum < numSensingChannelsDef; chNum++)
                         {
                             logString += ", " + stream.ResponseStream.Current.Samples[sampleNum].Measurements[chNum].ToString();

@@ -480,7 +480,7 @@ namespace EvokedPotentialsApp
                 // Wait until end of condition before continuing to next condition (waiting for numPulses pulses for current source/destination condition), or wait until Stop is clicked.
                 try
                 {
-                    await Task.Delay((int)((stimPeriod + jitterMax) / 1000 * numPulses), cancellationTokenSource.Token);
+                    await Task.Delay((int)(5000 + (stimPeriod + jitterMax) / 1000 * numPulses), cancellationTokenSource.Token);
                 }
                 catch (TaskCanceledException)
                 {

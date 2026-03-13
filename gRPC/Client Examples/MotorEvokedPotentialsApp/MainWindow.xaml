@@ -1,0 +1,71 @@
+﻿<Window x:Name="MainWindow1" x:Class="MotorEvokedPotentialsApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:winformchart="clr-namespace:System.Windows.Forms.DataVisualization.Charting;assembly=System.Windows.Forms.DataVisualization"
+        xmlns:local="clr-namespace:MotorEvokedPotentialsApp"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="600" Width="800" Loaded="MainWindow_Loaded" Closed="MainWindow_Closed">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="23*"/>
+            <RowDefinition Height="7*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="113*"/>
+            <ColumnDefinition Width="85*"/>
+            <ColumnDefinition Width="602*"/>
+        </Grid.ColumnDefinitions>
+        <Button x:Name="btn_load" Content="Load Config" Margin="16,24,7,0" VerticalAlignment="Top" Click="btn_load_Click" Height="20" Grid.ColumnSpan="2"/>
+        <Button x:Name="btn_start" Content="Start Stim" Margin="16,230,0,0" VerticalAlignment="Top" Click="btn_start_Click" Height="20" HorizontalAlignment="Left" Width="78"/>
+        <Button x:Name="btn_stop" Content="Stop Stim" Margin="0,230,0,0" VerticalAlignment="Top" Click="btn_stop_Click" Height="20" Grid.Column="1" HorizontalAlignment="Left" Width="78"/>
+        <Button x:Name="btn_disconnect" Content="Disconnect" Margin="10,0,0,11" Click="btn_disconnect_Click" Grid.Column="2" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="74"/>
+        <Button x:Name="btn_reconnect" Content="Reconnect" Grid.Column="2" Margin="103,0,0,11" Click="btn_reconnect_Click" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="68"/>
+        <Button x:Name="btn_set" Content="Set" Margin="40,121,0,0" Grid.Column="1" Click="btn_set_Click" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="38"/>
+
+        <ScrollViewer Name="Scroller" Background="White" Grid.ColumnSpan="3" VerticalScrollBarVisibility="Auto" Grid.Row="1">
+            <Border BorderThickness="1" BorderBrush="Black">
+                <TextBlock Name="OutputConsole" Foreground="Black" FontFamily="Consolas" FontSize="15" Padding="10" TextWrapping="Wrap"/>
+            </Border>
+        </ScrollViewer>
+        <Label Content="Real time streaming" Margin="10,6,0,0" Grid.Column="2" Height="26" VerticalAlignment="Top" HorizontalAlignment="Left" Width="119"/>
+        <WindowsFormsHost x:Name="formHost" Margin="0,42,0,48" Grid.Column="2">
+            <winformchart:Chart x:Name="neuroStreamChart" Dock="Fill">
+                <winformchart:Chart.Series>
+                    <winformchart:Series Name="series" ChartType="Line"/>
+                </winformchart:Chart.Series>
+                <winformchart:Chart.ChartAreas>
+                    <winformchart:ChartArea/>
+                </winformchart:Chart.ChartAreas>
+                <winformchart:Chart.Legends>
+                    <winformchart:Legend/>
+                </winformchart:Chart.Legends>
+            </winformchart:Chart>
+        </WindowsFormsHost>
+        <Label Content="Display Channels" Margin="10,255,0,0" Height="28" VerticalAlignment="Top"/>
+        <ListBox ItemsSource="{Binding channelList}" Margin="7,283,0,16" Grid.ColumnSpan="2" HorizontalAlignment="Left" Width="184">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <CheckBox IsChecked="{Binding IsSelected}" Content="{Binding Name}" Checked="CheckBox_Changed" Unchecked="CheckBox_Changed"/>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <TextBlock TextWrapping="Wrap" Text="y-axis min:" Grid.Column="2" Margin="0,0,187,14" Height="16" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="61"/>
+        <TextBox x:Name="y_min" TextWrapping="Wrap" Margin="0,0,136,11" Grid.Column="2" TextChanged="y_min_TextChanged" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="50"/>
+        <TextBlock TextWrapping="Wrap" Text="y-axis max:" Grid.Column="2" Margin="0,0,60,14" HorizontalAlignment="Right" Width="63" Height="16" VerticalAlignment="Bottom"/>
+        <TextBox x:Name="y_max" TextWrapping="Wrap" Margin="0,0,10,11" Grid.Column="2" TextChanged="y_max_TextChanged" HorizontalAlignment="Right" Width="50" Height="20" VerticalAlignment="Bottom"/>
+
+        <Label Content="Stim Mode:" HorizontalAlignment="Left" Margin="16,59,0,0" VerticalAlignment="Top" Height="26" Width="70"/>
+        <ComboBox x:Name="mode" SelectedIndex="{Binding Path=stimMode}" HorizontalAlignment="Left" Margin="0,61,0,0" VerticalAlignment="Top" Width="78" Grid.Column="1" SelectionChanged="mode_SelectionChanged" Height="22">
+            <ComboBoxItem Content="(MT) Motor Thresholds"/>
+            <ComboBoxItem Content="(MEP) Motor Evoked Potentials"/>
+        </ComboBox>
+        <Label Content="Amplitude (uA):" HorizontalAlignment="Left" Margin="16,94,0,0" VerticalAlignment="Top" Height="26" Width="93"/>
+        <TextBox x:Name="amp" HorizontalAlignment="Left" Margin="0,98,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="78" Grid.Column="1" TextChanged="stim_TextChanged" Height="18"/>
+        <Label Content="Source:" HorizontalAlignment="Left" Margin="16,153,0,0" VerticalAlignment="Top" Height="26" Width="49"/>
+        <ComboBox x:Name="sources" ItemsSource="{Binding Path=channelNumList}" SelectedItem="{Binding Path=stimChannel}" HorizontalAlignment="Left" Margin="0,155,0,0" VerticalAlignment="Top" Width="78" Grid.Column="1" SelectionChanged="sources_SelectionChanged" Height="22"/>
+        <Label Content="Destination:" HorizontalAlignment="Left" Margin="16,190,0,0" VerticalAlignment="Top" Height="26" Width="73"/>
+        <ComboBox x:Name="destinations" ItemsSource="{Binding Path=channelNumList}" SelectedItem="{Binding Path=returnChannel}" HorizontalAlignment="Left" Margin="0,192,0,0" VerticalAlignment="Top" Width="78" Grid.Column="1" SelectionChanged="destinations_SelectionChanged" Height="22"/>
+    </Grid>
+</Window>
