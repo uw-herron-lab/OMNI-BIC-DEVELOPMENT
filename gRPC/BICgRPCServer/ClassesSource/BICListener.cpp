@@ -524,7 +524,7 @@ namespace BICGRPCHelperNamespace
                                         newInterpolatedSample->set_phase(calcPhase(bpFiltData, lastNeuroCount + interpolatedPointNum, &sigFreqData, &phaseData));
 
                                         // Call Processing Helper, take output and send to client
-                                        newInterpolatedSample->set_filtsample(processingHelper(interpolatedSample, &rawPrevData, &stimOnset, &hampelPrevData, &dcFiltPrevData, sampGain));
+                                        newInterpolatedSample->set_filtsample(processingHelper(interpolatedSample, lastNeuroCount + interpolatedPointNum, stimSampStamp, &rawPrevData, &stimOnset, &hampelPrevData, &dcFiltPrevData, sampGain));
                                         newInterpolatedSample->set_prefiltsample(dcFiltPrevData[0]);
                                         newInterpolatedSample->set_hampelfiltsample(hampelPrevData[0]);
                                         newInterpolatedSample->set_isvalidtarget(isValidTarget);
@@ -603,7 +603,7 @@ namespace BICGRPCHelperNamespace
                         newSample->set_phase(calcPhase(bpFiltData, sampleCounter, &sigFreqData, &phaseData));
 
                         // Call Processing Helper, take output and send to client
-                        newSample->set_filtsample(processingHelper(theData[j], &rawPrevData, &stimOnset, &hampelPrevData, &dcFiltPrevData, sampGain));
+                        newSample->set_filtsample(processingHelper(theData[j], sampleCounter, stimSampStamp, &rawPrevData, &stimOnset, &hampelPrevData, &dcFiltPrevData, sampGain));
                         newSample->set_prefiltsample(dcFiltPrevData[0]);
                         newSample->set_hampelfiltsample(hampelPrevData[0]);
                         newSample->set_isvalidtarget(isValidTarget);
@@ -694,23 +694,23 @@ namespace BICGRPCHelperNamespace
         // assign upper and lower bounds for determining trigger phase depending on target phase
         if ((stimTargetPhase > 0) && (stimTargetPhase < 90)) // ascending hyperpolarizing
         {
-            lowerBound = 180;
-            upperBound = 270;
-        }
-        else if ((stimTargetPhase > 90) && (stimTargetPhase < 180)) // descending hyperpolarizing
-        {
-            lowerBound = 270;
+            lowerBound = 225;
             upperBound = 360;
         }
-        else if ((stimTargetPhase > 180) && (stimTargetPhase < 270)) // descending depolarizing
+        else if ((stimTargetPhase > 90) && (stimTargetPhase < 180)) // descending hyperpolarizing
         {
             lowerBound = 0;
             upperBound = 90;
         }
+        else if ((stimTargetPhase > 180) && (stimTargetPhase < 270)) // descending depolarizing
+        {
+            lowerBound = 0;
+            upperBound = 135;
+        }
         else if ((stimTargetPhase > 270) && (stimTargetPhase < 360)) // ascending depolarizing
         {
             lowerBound = 90;
-            upperBound = 180;
+            upperBound = 225;
         }
 
         if (enableDistributed && !isTriggeringStimulation() && !isStimulating())
@@ -861,14 +861,14 @@ namespace BICGRPCHelperNamespace
     /// <param name="dcFiltHistory">History of samples after going through DC Block filter</param>
     /// <param name="filterGain">Gain of the IIR bandpass filter</param>
     /// <returns></returns>
-    double BICListener::processingHelper(double newData, std::vector<double>* dataHistory, std::vector<double>* stimHistory, std::vector<double>* hampelDataHistory, std::vector<double>* dcFiltHistory, double filterGain)
-    {   
+    double BICListener::processingHelper(double newData, uint64_t currSamp, std::vector<int> stimSampHistory, std::vector<double>* dataHistory, std::vector<double>* stimHistory, std::vector<double>* hampelDataHistory, std::vector<double>* dcFiltHistory, double filterGain)
+    {
         double stimCount = 0;
         double dcFiltSamp;
         double hampelSamp;
         double MAD;
         double medianVal;
-        
+
         std::vector<double> modifier(dataHistory->size());
         std::vector<double> sorted(dataHistory->size());
 
@@ -904,13 +904,13 @@ namespace BICGRPCHelperNamespace
         for (int i = 0; i < dcFiltHistory->size(); i++)
         {
             modifier[i] = abs(dcFiltHistory->at(i) - medianVal);
-        }        
+        }
 
         sort(modifier.begin(), modifier.end());
         MAD = 1.4826 * modifier[((modifier.size() - 1) / 2) + 1];
 
         // Determine if a sample is an outlier and needs to be replaced by calculated median value
-        if (abs(dcFiltSamp - medianVal) <= 3 * MAD) 
+        if (abs(dcFiltSamp - medianVal) <= 3 * MAD)
         {
             hampelSamp = dcFiltSamp;
         }
@@ -922,24 +922,35 @@ namespace BICGRPCHelperNamespace
         // Band pass filter for beta activity
         double filtSamp = filterIIR(hampelSamp, &bpFiltData, hampelDataHistory, &betaBandPassIIR_B, &betaBandPassIIR_A, 1);
 
-        // if at a particular phase, above an arbitrary threshold, and closed loop stim is enabled, send stimulation
+        // Determine if we have a valid target to initiate stimulation 
         if (!isSelfTrig && isCLStimEn && detectTriggerPhase(phaseData, stimTriggerPhase) && abs(bpFiltData[0]) > distributedStimThreshold)
         {
-            // log that a valid target has been found
-            isValidTarget = true;
-
-            // start thread to execute stim command
-            stimTrigger->notify_all();
+            // check if stimulation was sent out recently, may be a false positive target (i.e. too soon)
+            if (currSamp - stimSampHistory[0] > 30) // Choice of this threshold reflects the 30 Hz upper limit of beta
+            {
+                // If conditions have been met, then it's a valid target
+                isValidTarget = true;
+            }
+            else
+            {
+                // otherwise, not a valid target
+                isValidTarget = true;
+            }
         }
         else
         {
+            // otherwise, not a valid target
             isValidTarget = false;
         }
 
-        // Return the filtered sample for visualization purposes
+        // send stimulation if a valid target has been identified
+        if (isValidTarget)
+        {
+            stimTrigger->notify_all();
+        }
+
         return filtSamp;
     }
-
 
     /// <summary>
     /// Private function that applies an IIR filter to incoming neural data
@@ -956,7 +967,7 @@ namespace BICGRPCHelperNamespace
        double filtTemp;
 
        // 2nd order IIR filter
-       filtTemp = gainVal * b->at(0) * currSamp + gainVal * b->at(1) * prevInput->at(0) + gainVal * b->at(2) * prevInput->at(1) + gainVal * b->at(3) * prevInput->at(2) + gainVal * b->at(4) * prevInput->at(3)
+       filtTemp = b->at(0) * currSamp + b->at(1) * prevInput->at(0) + b->at(2) * prevInput->at(1) + b->at(3) * prevInput->at(2) + b->at(4) * prevInput->at(3)
             - a->at(1) * prevFiltOut->at(0) - a->at(2) * prevFiltOut->at(1) - a->at(3) * prevFiltOut->at(2) - a->at(4) * prevFiltOut->at(3);
 
         // remove the last sample and insert the most recent sample to the front of the vector
@@ -975,19 +986,73 @@ namespace BICGRPCHelperNamespace
     /// </summary>
     /// <param name="dataArray">Vector of sensing data to assess for zero crossing</param>
     /// <returns>Boolean indicating if the latest point is a positive zero crossing</returns>
-    bool BICListener::isZeroCrossing(std::vector<double> dataArray)
+    bool BICListener::isPosZeroCrossing(std::vector<double> dataArray)
     {
-        bool isZeroCrossing = false;
+        bool isPosZeroCrossing = false;
 
         // Check neighboring samples to determine for a zero-crossing
         if (dataArray[0] > 0)
         {
             if (dataArray[1] < 0)
             {
-                isZeroCrossing = true;
+                isPosZeroCrossing = true;
             }
         }
-        return isZeroCrossing;
+        return isPosZeroCrossing;
+    }
+
+    /// <summary>
+    /// Helper function for identifying if the latest point is a negative zero crossing
+    /// </summary>
+    /// <param name="dataArray">Vector of sensing data to assess for zero crossing</param>
+    /// <returns>Boolean indicating if the latest point is a negative zero crossing</returns>
+    bool BICListener::isNegZeroCrossing(std::vector<double> dataArray)
+    {
+        bool isNegZeroCrossing = false;
+
+        // Check neighboring samples to determine for a zero-crossing
+        if (dataArray[0] < 0)
+        {
+            if (dataArray[1] > 0)
+            {
+                isNegZeroCrossing = true;
+            }
+        }
+        return isNegZeroCrossing;
+    }
+
+    /// <summary>
+    /// Helper function for identifying if the previous sample was a maximum
+    /// </summary>
+    /// <param name="dataArray">Vector of sensing data to assess for zero crossing</param>
+    /// <returns>Boolean indicating if the latest point is a negative zero crossing</returns>
+    bool BICListener::isMax(std::vector<double> dataArray)
+    {
+        bool isMax = false;
+
+        // Check if neighboring samples are smaller
+        if (dataArray[0] < dataArray[1] && dataArray[1] > dataArray[2])
+        {
+            isMax = true;
+        }
+        return isMax;
+    }
+
+    /// <summary>
+    /// Helper function for identifying if the previous sample was a minimum
+    /// </summary>
+    /// <param name="dataArray">Vector of sensing data to assess for zero crossing</param>
+    /// <returns>Boolean indicating if the latest point is a negative zero crossing</returns>
+    bool BICListener::isMin(std::vector<double> dataArray)
+    {
+        bool isMin = false;
+
+        // Check if neighboring samples are smaller
+        if (dataArray[0] > dataArray[1] && dataArray[1] < dataArray[2])
+        {
+            isMin = true;
+        }
+        return isMin;
     }
     
     /// <summary>
@@ -1000,7 +1065,7 @@ namespace BICGRPCHelperNamespace
     {
         bool wasTriggerPhase = false;
 
-        if (prevPhase[0] > triggerPhase && prevPhase[2] < triggerPhase)
+        if (prevPhase[0] > triggerPhase && prevPhase[4] < triggerPhase)
         {
             wasTriggerPhase = true;
         }
@@ -1023,14 +1088,13 @@ namespace BICGRPCHelperNamespace
         uint64_t sampDiff = 0;
 
         // Identify sample difference 
-        sampDiff = currSamp - zeroSamp;
+        sampDiff = currSamp - refSamp;
 
-        // Check if there is a negative zero crossing
         // Estimate oscillation frequency
-        if (isZeroCrossing(dataArray))
+        if (isPosZeroCrossing(dataArray) || isNegZeroCrossing(dataArray) || isMax(dataArray) || isMin(dataArray))
         {
-            // If so, calculate the  frequency
-            sigFreq = 1 / (sampDiff * 0.001);
+            // If so, calculate the frequency
+            sigFreq = 1 / (4 * sampDiff * 0.001);
 
             // Check that the calculated frequency is within reasonable bounds
             if (sigFreq > 10 && sigFreq < 30) 
@@ -1038,10 +1102,33 @@ namespace BICGRPCHelperNamespace
                 prevSigFreq->insert(prevSigFreq->begin(), sigFreq);
                 prevSigFreq->pop_back();
             }
-            zeroSamp = currSamp;
 
-            // Phase is 0 since it's a zero crossing
-            currPhase = 0;
+            // Depending on its type, identify the current phase and reassign reference point for estimating phase
+            if (isPosZeroCrossing(dataArray))
+            {
+                currPhase = 0;
+                refSamp = currSamp;
+                refPoint = 0;
+            }
+            else if (isNegZeroCrossing(dataArray))
+            {
+                currPhase = 180;
+                refSamp = currSamp;
+                refPoint = 180;
+            } 
+
+            else if (isMax(dataArray))
+            {
+                currPhase = 90;
+                refSamp = currSamp;
+                refPoint = 90;
+            }
+            else if (isMin(dataArray))
+            {
+                currPhase = 270;
+                refSamp = currSamp;
+                refPoint = 270;
+            }
         }
 
         // Calculate the phase value using previously recorded signal frequencies
@@ -1053,19 +1140,13 @@ namespace BICGRPCHelperNamespace
             }
             avgSigFreq /= prevSigFreq->size();
 
-            currPhase = 0.001 * sampDiff * avgSigFreq * 360;
+            currPhase = refPoint + (0.001 * sampDiff * avgSigFreq * 360);
         }
 
         // Save the calculated phase
         prevPhase->insert(prevPhase->begin(), currPhase);
         prevPhase->pop_back();
 
-        //// Check stimTriggerPhase is within range- seems to be repetitive... maybe just keep in updateTriggerPhase method?
-        //if (stimTriggerPhase <= 0 || stimTriggerPhase > 360)
-        //{
-        //    // If not, reset stimTriggerPhase
-        //    stimTriggerPhase = findMedian(&triggerPhaseData);//45; // TODO: reset to the median of the history (see below?)
-        //}
         return currPhase;
     }
 
@@ -1075,15 +1156,27 @@ namespace BICGRPCHelperNamespace
     /// <param name="prevStimPhase">phase of current sample that just triggered stimulation</param>
     void BICListener::updateTriggerPhase(double prevStimPhase, std::vector<double>* prevTrigPhase)
     {
-
-        // TODO- keep a history of trigger phases? if out of bounds, don't store in the history, but reset to the  mean/median of the history?
         double phaseDiff = 0;
+        double actPhaseDiff = 0;
 
         // find phase difference and use that to update stimTriggerPhase alongside arbitrary gain
         phaseDiff = prevStimPhase - stimTargetPhase; 
-        stimTriggerPhase -= (0.1) * phaseDiff;
 
-        // Checks to reset stimTriggerPhase if out of bounds- TODO modify how trigger bounds are defined
+        if (phaseDiff > 180)
+        {
+            actPhaseDiff = phaseDiff - 360;
+        }
+        else if (phaseDiff < -180)
+        {
+            actPhaseDiff = phaseDiff + 360;
+        }
+        else
+        {
+            actPhaseDiff = phaseDiff;
+        }
+        stimTriggerPhase -= (0.1) * actPhaseDiff;
+
+        // Checks to reset stimTriggerPhase if out of bounds
         if ((stimTriggerPhase > lowerBound) && (stimTriggerPhase < upperBound))
         {
             // if newly calculated trigger phase is within bounds, add to the history 
@@ -1094,7 +1187,10 @@ namespace BICGRPCHelperNamespace
         {
             // otherwise, update the trigger phase to be the median of previous trigger phases
             stimTriggerPhase = findMedian(prevTrigPhase);
-
+            if (stimTriggerPhase == 0) // in the case that there hasn't been enough stimulation to establish a steady history of trigger phases, the median will yield 0
+            {
+                stimTriggerPhase = (lowerBound + upperBound) * 0.5;
+            }
         }
     }
 

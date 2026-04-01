@@ -31,7 +31,7 @@ namespace BICGRPCHelperNamespace
         void enableDistributedStim(bool enableDistributed, int phaseSensingChannel, std::vector<double> filtCoeff_B, std::vector<double> filtCoeff_A, uint32_t triggeredFunctionIndex, double stimThreshold, double triggerPhase, double targetPhase);
         void addImplantPointer(cortec::implantapi::IImplant* theImplantedDevice);
         void enableStimTimeLogging(bool enableSensing);
-        double processingHelper(double newData, std::vector<double>* dataHistory, std::vector<double>* stimHistory, std::vector<double>* hampelDataHistory, std::vector<double>* dcFiltHistory, double filterGain);
+        double processingHelper(double newData, uint64_t currSamp, std::vector<int> stimSampHistory, std::vector<double>* dataHistory, std::vector<double>* stimHistory, std::vector<double>* hampelDataHistory, std::vector<double>* dcFiltHistory, double filterGain);
 
         // ************************* Public Event Handlers *************************
         void onStimulationStateChanged(const bool isStimulating);
@@ -147,7 +147,10 @@ namespace BICGRPCHelperNamespace
         void triggeredSendStimThread(void);
         void openLoopStimLoopThread(void);
         double filterIIR(double currSamp, std::vector<double>* prevFiltOut, std::vector<double>* prevInput, std::vector<double>* b, std::vector<double>* a, double gainVal);
-        bool isZeroCrossing(std::vector<double> dataArray);
+        bool isPosZeroCrossing(std::vector<double> dataArray);
+        bool isNegZeroCrossing(std::vector<double> dataArray);
+        bool isMax(std::vector<double> dataArray);
+        bool isMin(std::vector<double> dataArray);
         double calcPhase(std::vector<double> dataArray, uint64_t currSamp, std::vector<double>* prevSigFreq, std::vector<double>* prevPhase);
         bool detectTriggerPhase(std::vector<double> prevPhase, double triggerPhase);
         void updateTriggerPhase(double prevStimPhase, std::vector<double>* prevTrigPhase);
@@ -166,9 +169,9 @@ namespace BICGRPCHelperNamespace
         double distributedAnodeAmplitude = 250;     // Distributed algorithm anode (positive pulse) amplitude (input)
         uint64_t distributedAnodeDuration = 1600;   // Distributed algorithm anode (positive pulse) duration (input)
         double distributedStimThreshold = 10;       // Distributed algorithm threshold to trigger stimulation (input)
-
+        
         // Signal Processing Variables
-        std::vector<double> bpFiltData = { 0, 0, 0, 0, 0 };                     // IIR filter output history
+        std::vector<double> bpFiltData = std::vector<double>(15, 0);            // IIR filter output history
         std::vector<double> rawPrevData = std::vector<double>(15, 0);           // Data history for raw input samples
         std::vector<double> hampelPrevData = std::vector<double>(15, 0);        // Data history for hampel filtered input samples
         std::vector<double> dcFiltPrevData = std::vector<double>(15, 0);    
@@ -181,14 +184,15 @@ namespace BICGRPCHelperNamespace
         std::vector<int> stimSampStamp = std::vector<int>(4, 0);            // history of sample number for stim onset
 
         // Phase-Locked Loop (PLL) Variables
-        uint64_t zeroSamp = 0;                              // Timestamp for first negative zero crossing
-        double stimTriggerPhase = 25;                       // Phase for triggering stimulation
-        double stimTargetPhase = 210;                       // Ideal phase to deliver stimulation
-        double lowerBound = 0;
-        double upperBound = 90;
-        bool prevStimActive = false;                        // State for previous stimulation 
-        std::vector<double> sigFreqData = { 0, 0, 0, 0 };   // History of frequency estimates 
-        std::vector<double> phaseData = { 0, 0, 0 };        // History for previous estimated phase calculations
-        std::vector<double> triggerPhaseData = { 0, 0, 0, 0, 0 }; // History of previous trigger phases used 
+        uint32_t refPoint = 0;                                      // Phase (degrees) being used as a reference to estimate phase
+        uint64_t refSamp = 0;                                       // Sample number to use for estimating phase
+        double stimTriggerPhase = 25;                               // Phase for triggering stimulation
+        double stimTargetPhase = 210;                               // Ideal phase to deliver stimulation
+        double lowerBound = 0;                                      // Lower bound for triggering phase
+        double upperBound = 90;                                     // Upper bound for triggering phase
+        bool prevStimActive = false;                                // State for previous stimulation 
+        std::vector<double> sigFreqData = { 0, 0, 0, 0 };           // History of frequency estimates 
+        std::vector<double> phaseData = { 0, 0, 0, 0, 0 };             // History for previous estimated phase calculations
+        std::vector<double> triggerPhaseData = { 0, 0, 0, 0, 0 };   // History of previous trigger phases used 
     };
 }
