@@ -171,7 +171,7 @@ namespace BICGRPCHelperNamespace
         double distributedStimThreshold = 10;       // Distributed algorithm threshold to trigger stimulation (input)
         
         // Signal Processing Variables
-        std::vector<double> bpFiltData = std::vector<double>(15, 0);            // IIR filter output history
+        std::vector<double> bpFiltData = std::vector<double>(5, 0);            // IIR filter output history
         std::vector<double> rawPrevData = std::vector<double>(15, 0);           // Data history for raw input samples
         std::vector<double> hampelPrevData = std::vector<double>(15, 0);        // Data history for hampel filtered input samples
         std::vector<double> dcFiltPrevData = std::vector<double>(15, 0);    
@@ -184,6 +184,7 @@ namespace BICGRPCHelperNamespace
         std::vector<int> stimSampStamp = std::vector<int>(4, 0);            // history of sample number for stim onset
 
         // Phase-Locked Loop (PLL) Variables
+        int phasicStimTarget = 0;                                   // Category for phase-specific stim: 0- ascending hyperpolarizing, 1- descending hyperpolarizing, 2- descending depolarizing, 3- ascending depolarizing
         uint32_t refPoint = 0;                                      // Phase (degrees) being used as a reference to estimate phase
         uint64_t refSamp = 0;                                       // Sample number to use for estimating phase
         double stimTriggerPhase = 25;                               // Phase for triggering stimulation
@@ -192,7 +193,7 @@ namespace BICGRPCHelperNamespace
         double upperBound = 90;                                     // Upper bound for triggering phase
         bool prevStimActive = false;                                // State for previous stimulation 
         std::vector<double> sigFreqData = { 0, 0, 0, 0 };           // History of frequency estimates 
-        std::vector<double> phaseData = { 0, 0, 0, 0, 0 };             // History for previous estimated phase calculations
+        std::vector<double> phaseData = { 0, 0, 0, 0 };             // History for previous estimated phase calculations
         std::vector<double> triggerPhaseData = { 0, 0, 0, 0, 0 };   // History of previous trigger phases used 
     };
 }

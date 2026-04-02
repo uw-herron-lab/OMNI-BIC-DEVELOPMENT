@@ -696,21 +696,25 @@ namespace BICGRPCHelperNamespace
         {
             lowerBound = 225;
             upperBound = 360;
+            phasicStimTarget = 0;
         }
         else if ((stimTargetPhase > 90) && (stimTargetPhase < 180)) // descending hyperpolarizing
         {
-            lowerBound = 0;
+            lowerBound = -45;
             upperBound = 90;
+            phasicStimTarget = 1;
         }
         else if ((stimTargetPhase > 180) && (stimTargetPhase < 270)) // descending depolarizing
         {
             lowerBound = 0;
             upperBound = 135;
+            phasicStimTarget = 2;
         }
         else if ((stimTargetPhase > 270) && (stimTargetPhase < 360)) // ascending depolarizing
         {
             lowerBound = 90;
             upperBound = 225;
+            phasicStimTarget = 3;
         }
 
         if (enableDistributed && !isTriggeringStimulation() && !isStimulating())
@@ -923,24 +927,29 @@ namespace BICGRPCHelperNamespace
         double filtSamp = filterIIR(hampelSamp, &bpFiltData, hampelDataHistory, &betaBandPassIIR_B, &betaBandPassIIR_A, 1);
 
         // Determine if we have a valid target to initiate stimulation 
-        if (!isSelfTrig && isCLStimEn && detectTriggerPhase(phaseData, stimTriggerPhase) && abs(bpFiltData[0]) > distributedStimThreshold)
+        if (phasicStimTarget == 1)
         {
-            // check if stimulation was sent out recently, may be a false positive target (i.e. too soon)
-            if (currSamp - stimSampHistory[0] > 30) // Choice of this threshold reflects the 30 Hz upper limit of beta
+            if (!isSelfTrig && isCLStimEn && detectTriggerPhase(phaseData, stimTriggerPhase) && abs(findMedian(&bpFiltData)) > distributedStimThreshold)
             {
                 // If conditions have been met, then it's a valid target
                 isValidTarget = true;
             }
             else
             {
-                // otherwise, not a valid target
-                isValidTarget = true;
+                isValidTarget = false;
             }
         }
-        else
+        else 
         {
-            // otherwise, not a valid target
-            isValidTarget = false;
+            if (!isSelfTrig && isCLStimEn && detectTriggerPhase(phaseData, stimTriggerPhase) && abs(bpFiltData[0]) > distributedStimThreshold)
+            {
+                // If conditions have been met, then it's a valid target
+                isValidTarget = true;
+            }
+            else
+            {
+                isValidTarget = false;
+            }
         }
 
         // send stimulation if a valid target has been identified
@@ -949,6 +958,7 @@ namespace BICGRPCHelperNamespace
             stimTrigger->notify_all();
         }
 
+        // Return the filtered sample for visualization purposes
         return filtSamp;
     }
 
@@ -1064,8 +1074,29 @@ namespace BICGRPCHelperNamespace
     bool BICListener::detectTriggerPhase(std::vector<double> prevPhase, double triggerPhase)
     {
         bool wasTriggerPhase = false;
+        double currTrigPhase = triggerPhase;
+        double latestPhase = prevPhase[0];
+        double oldestPhase = prevPhase[3];
 
-        if (prevPhase[0] > triggerPhase && prevPhase[4] < triggerPhase)
+        // for the ascending hyperpolarizing case, may need to convert phase estimations
+        if (phasicStimTarget == 1)
+        {
+            // convert the appropriate phases to enable proper comparison
+            if (triggerPhase > 270)
+            {
+                double currTrigPhase = triggerPhase - 360;
+            }
+            if (oldestPhase > 270)
+            {
+                double oldestPhase = prevPhase[3] - 360;
+            }
+            if (latestPhase > 270)
+            {
+                double latestPhase = prevPhase[0] - 360;
+            }
+        }
+
+        if (latestPhase > currTrigPhase && oldestPhase < currTrigPhase)
         {
             wasTriggerPhase = true;
         }
@@ -1158,6 +1189,7 @@ namespace BICGRPCHelperNamespace
     {
         double phaseDiff = 0;
         double actPhaseDiff = 0;
+        bool isValidTrigPhase = false;
 
         // find phase difference and use that to update stimTriggerPhase alongside arbitrary gain
         phaseDiff = prevStimPhase - stimTargetPhase; 
@@ -1175,15 +1207,59 @@ namespace BICGRPCHelperNamespace
             actPhaseDiff = phaseDiff;
         }
         stimTriggerPhase -= (0.1) * actPhaseDiff;
+        std::cout << "\tInitial Stim Trigger Phase: " << stimTriggerPhase << std::endl;
+        // // make "conversions" in order to minimize issues when updating trigger phase
+        if (stimTriggerPhase < 0)
+        {
+            stimTriggerPhase += 360; 
+        }
+        else if (stimTriggerPhase > 360)
+        {
+            stimTriggerPhase -= 360; 
+        }
 
-        // Checks to reset stimTriggerPhase if out of bounds
-        if ((stimTriggerPhase > lowerBound) && (stimTriggerPhase < upperBound))
+        std::cout <<  "\tFinalized Stim Trigger Phase: " << stimTriggerPhase << std::endl;
+
+        // Do appropriate conversions in order to enable trigger phase comparison for the ascending hyperpolarizing case
+        if (phasicStimTarget == 1)
+        {
+            // In the case where stimTriggerPhase is 270 - 360
+            if ((stimTriggerPhase >= 270) && (stimTriggerPhase <= 360))
+            {
+                std::cout <<  "\tAdjusted stim trigger phase: " << stimTriggerPhase - 360 << std::endl;
+                // "convert" the phase to enable appropriate comparison
+                if (((stimTriggerPhase - 360) > lowerBound) && ((stimTriggerPhase - 360) < upperBound))
+                {
+                    isValidTrigPhase = true;
+                }
+            }
+            else
+            {
+                // otherwise, just go ahead and make the comparison to determine if stimTriggerPhase is out of bounds
+                if ((stimTriggerPhase > lowerBound) && (stimTriggerPhase < upperBound))
+                {
+                    isValidTrigPhase = true;
+                }
+            }
+            
+        }
+        // for all other phase targets
+        else 
+        {
+            // Check to reset stimTriggerPhase if out of bounds
+            if ((stimTriggerPhase > lowerBound) && (stimTriggerPhase < upperBound))
+            {
+                isValidTrigPhase = true;
+            }
+        }
+        
+        if (isValidTrigPhase)
         {
             // if newly calculated trigger phase is within bounds, add to the history 
             prevTrigPhase->insert(prevTrigPhase->begin(), stimTriggerPhase);
             prevTrigPhase->pop_back();
         }
-        else 
+        else
         {
             // otherwise, update the trigger phase to be the median of previous trigger phases
             stimTriggerPhase = findMedian(prevTrigPhase);
