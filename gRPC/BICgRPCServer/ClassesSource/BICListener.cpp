@@ -1207,8 +1207,8 @@ namespace BICGRPCHelperNamespace
             actPhaseDiff = phaseDiff;
         }
         stimTriggerPhase -= (0.1) * actPhaseDiff;
-        std::cout << "\tInitial Stim Trigger Phase: " << stimTriggerPhase << std::endl;
-        // // make "conversions" in order to minimize issues when updating trigger phase
+
+        // make "conversions" in order to minimize issues when updating trigger phase
         if (stimTriggerPhase < 0)
         {
             stimTriggerPhase += 360; 
@@ -1218,15 +1218,12 @@ namespace BICGRPCHelperNamespace
             stimTriggerPhase -= 360; 
         }
 
-        std::cout <<  "\tFinalized Stim Trigger Phase: " << stimTriggerPhase << std::endl;
-
         // Do appropriate conversions in order to enable trigger phase comparison for the ascending hyperpolarizing case
         if (phasicStimTarget == 1)
         {
             // In the case where stimTriggerPhase is 270 - 360
             if ((stimTriggerPhase >= 270) && (stimTriggerPhase <= 360))
             {
-                std::cout <<  "\tAdjusted stim trigger phase: " << stimTriggerPhase - 360 << std::endl;
                 // "convert" the phase to enable appropriate comparison
                 if (((stimTriggerPhase - 360) > lowerBound) && ((stimTriggerPhase - 360) < upperBound))
                 {
