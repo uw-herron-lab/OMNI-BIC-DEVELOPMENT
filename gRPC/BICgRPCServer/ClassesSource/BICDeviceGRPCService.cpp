@@ -678,15 +678,20 @@ namespace BICGRPCHelperNamespace
         {
             for (int i = 0; i < request->functions_size(); i++)
             {
-                // Set general function parameters
-                IStimulationFunction* theFunction = theFactory->createStimulationFunction();
-                theFunction->setName(request->functions().at(i).functionname());
+
 
                 // Check which requested type of function requested
                 if (request->functions().at(i).has_stimpulse())
                 {
+                    // Create stimulation function
+                    IStimulationFunction* theStimFunction = theFactory->createRect4AmplitudeStimulationFunction(request->functions().at(i).stimpulse().amplitude()[0],
+                        request->functions().at(i).stimpulse().pulsewidth(),
+                        request->functions().at(i).stimpulse().dz0duration(),
+                        request->functions().at(i).stimpulse().dz1duration());
+                    theStimFunction->setName(request->functions().at(i).functionname());
+
                     // Set repetition field
-                    theFunction->setRepetitions(request->functions().at(i).stimpulse().pulserepetitions(), request->functions().at(i).stimpulse().burstrepetitions());
+                    theStimFunction->setRepetitions(request->functions().at(i).stimpulse().pulserepetitions(), request->functions().at(i).stimpulse().burstrepetitions());
 
                     // Pull out the electrodes and set the electrode fields
                     std::set<uint32_t> sources;
@@ -699,45 +704,18 @@ namespace BICGRPCHelperNamespace
                     {
                         sinks.insert(request->functions().at(i).stimpulse().sinkelectrodes()[j]);
                     }
-                    theFunction->setVirtualStimulationElectrodes(sources, sinks, request->functions().at(i).stimpulse().useground());
+                    theStimFunction->setVirtualStimulationElectrodes(sources, sinks, request->functions().at(i).stimpulse().useground());
 
-                    // Generate the stimulation pulse by assembling atoms and appending them to the function
-                    // Generate Atoms -- positive  pulse
-                    theFunction->append(theFactory->createRect4AmplitudeStimulationAtom(
-                        request->functions().at(i).stimpulse().amplitude()[0],
-                        request->functions().at(i).stimpulse().amplitude()[1],
-                        request->functions().at(i).stimpulse().amplitude()[2],
-                        request->functions().at(i).stimpulse().amplitude()[3],
-                        request->functions().at(i).stimpulse().pulsewidth()));
-
-                    // Generate atoms -- DZ0
-                    theFunction->append(theFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, request->functions().at(i).stimpulse().dz0duration()));
-
-                    // Genmerate atoms -- charge balance ( based on charge balance ratio - does this have to be 4?)
-                    theFunction->append(theFactory->createRect4AmplitudeStimulationAtom(
-                        request->functions().at(i).stimpulse().amplitude()[0] / -4,
-                        request->functions().at(i).stimpulse().amplitude()[1] / -4,
-                        request->functions().at(i).stimpulse().amplitude()[2] / -4,
-                        request->functions().at(i).stimpulse().amplitude()[3] / -4,
-                        request->functions().at(i).stimpulse().pulsewidth() * 4));
-
-                    // Generate atoms -- DZ0
-                    // TODO - SHOULD THIS BE HERE?
-                    theFunction->append(theFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, request->functions().at(i).stimpulse().dz0duration()));
-
-                    // Generate atoms -- DZ1
-                    theFunction->append(theFactory->createRect4AmplitudeStimulationAtom(0, 0, 0, 0, request->functions().at(i).stimpulse().dz1duration()));
-
-                    // Add the function to the command
-                    theStimulationCommand->append(theFunction);
+                    // Add the stimulation function to the command
+                    theStimulationCommand->append(theStimFunction);
                 }
                 else if (request->functions().at(i).has_pause())
                 {
-                    // Create the pulse function
-                    theFunction->append(theFactory->createStimulationPauseAtom(request->functions().at(i).pause().duration()));
+                    // Create the pause function
+                    IStimulationFunction* thePauseFunction = theFactory->createPauseStimulationFunction(request->functions().at(i).pause().duration());
 
-                    // Add the function to the command
-                    theStimulationCommand->append(theFunction);
+                    // Add the pause function to the command
+                    theStimulationCommand->append(thePauseFunction);
                 }
                 else
                 {
