@@ -1,0 +1,477 @@
+﻿ // Copyright 2015 gRPC authors.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "io.grpc.BICgRPC";
+option java_outer_classname = "BICgRPC";
+option objc_class_prefix = "HLW";
+option csharp_namespace = "BICgRPC";
+
+package BICgRPC;
+
+import "google/protobuf/any.proto";
+import "google/protobuf/empty.proto";
+
+// The BICBridgeService definition
+service BICBridgeService { 
+	rpc ListBridges(QueryBridgesRequest) returns (QueryBridgesResponse);
+	rpc ScanBridges(QueryBridgesRequest) returns (QueryBridgesResponse);
+	rpc ConnectedBridges(QueryBridgesRequest) returns (QueryBridgesResponse);
+	rpc ConnectBridge(ConnectBridgeRequest) returns (ConnectBridgeResponse);
+	rpc DescribeBridge(DescribeBridgeRequest) returns (DescribeBridgeResponse);
+	rpc DisconnectBridge(DisconnectBridgeRequest) returns (google.protobuf.Empty);
+}
+
+// The BICDeviceService definition.
+service BICDeviceService{
+	// Initialization/Destruction
+	rpc ScanDevices (ScanDevicesRequest) returns (ScanDevicesReply) {}
+	rpc ConnectDevice (ConnectDeviceRequest) returns (bicSuccessReply) {}
+	rpc bicDispose (RequestDeviceAddress) returns (bicSuccessReply) {}
+
+	// Get Functions
+	rpc bicGetImplantInfo (bicGetImplantInfoRequest) returns (bicGetImplantInfoReply) {}
+	rpc bicGetImpedance (bicGetImpedanceRequest) returns (bicGetImpedanceReply) {}
+	rpc bicGetTemperature (RequestDeviceAddress) returns (bicGetTemperatureReply) {}
+	rpc bicGetHumidity (RequestDeviceAddress) returns (bicGetHumidityReply) {}
+	rpc bicGetIsStimulating (bicGetIsStimulatingRequest) returns (bicGetIsStimulatingReply) {}
+
+	// Set Functions
+	rpc bicSetImplantPower (bicSetImplantPowerRequest) returns (bicSuccessReply) {}
+
+	// Stim Functions
+	rpc bicStartStimulation (bicStartStimulationRequest) returns (bicSuccessReply) {}
+	rpc bicEnqueueStimulation (bicEnqueueStimulationRequest) returns (bicSuccessReply) {}
+	rpc bicStopStimulation (RequestDeviceAddress) returns (bicSuccessReply) {}
+	rpc enableOpenLoopStimulation (openLoopStimEnableRequest) returns (bicSuccessReply) {}
+	rpc enableDistributedStimulation (distributedStimEnableRequest) returns (bicSuccessReply) {}
+
+	// Streaming endpoints
+	rpc bicNeuralStream (bicNeuralSetStreamingEnable) returns (stream NeuralUpdate) {}
+	rpc bicTemperatureStream (bicSetStreamEnable) returns (stream TemperatureUpdate) {}
+	rpc bicHumidityStream (bicSetStreamEnable) returns (stream HumidityUpdate) {}
+	rpc bicConnectionStream (bicSetStreamEnable) returns (stream ConnectionUpdate) {}
+	rpc bicPowerStream (bicSetStreamEnable) returns (stream PowerUpdate) {}
+	rpc bicErrorStream (bicSetStreamEnable) returns (stream ErrorUpdate) {}
+}
+
+// The Info Service Definition
+service BICInfoService{
+	rpc VersionNumber (VersionNumberRequest) returns (VersionNumberResponse) {} // List the version number for the Summit Server
+	rpc SupportedDevices (SupportedDevicesRequest) returns (SupportedDevicesResponse) {} // List supported devices.
+	rpc InspectRepository (InspectRepositoryRequest) returns (InspectRepositoryResponse) {} // Inspect Repository.
+}
+
+// Basic Messages
+message bicSuccessReply{
+}
+
+// ScanDevices Messages
+message ScanDevicesRequest {
+  string bridgeName = 1;
+}
+
+message ScanDevicesReply{
+	string name = 1;
+	bicGetImplantInfoReply discoveredDevice = 2;
+}
+
+// ConnectDevice Messages
+message ConnectDeviceRequest{
+	string deviceAddress = 1;
+	string logFileName = 2;
+}
+
+// bicGetImplantInfo Messages
+message bicGetImplantInfoRequest{
+	string deviceAddress = 1;
+	bool updateCachedInfo = 2;
+}
+
+// bicGetImplantInfo Messages
+message bicGetImplantInfoReply {
+	message bicChannelInfo {
+		enum UnitType{
+		    UT_NO_UNIT = 0;
+            UT_CURRENT = 1;
+            UT_VOLTAGE = 2;
+            UT_COUNT = 3;
+		}
+		bool canMeasure = 1;
+		double measureValueMin = 2;
+		double measureValueMax = 3;
+		bool canStimulate = 4;
+		UnitType stimulationUnit = 5;
+		double stimValueMin = 6;
+		double stimValueMax = 7;
+		bool canMeasureImpedance = 8;
+	}
+	
+	string firmwareVersion = 1;
+	string deviceType = 2;
+	string deviceId = 3;
+	repeated bicChannelInfo channelInfoList = 4;
+	int64 channelCount = 5;
+	int64 measurementChannelCount = 6;
+	int64 stimulationChannelCount = 7;
+	int64 samplingRate = 8;
+	string success = 9;
+}
+
+message bicSetStreamEnable{
+	string deviceAddress = 1;
+	bool enable = 2;
+}
+
+message RequestDeviceAddress{
+	string deviceAddress = 1;
+}
+
+// *************************** Device Get/Set Service Messages ***************************
+// bicGetImpedance Messages
+message bicGetImpedanceRequest {
+	string deviceAddress = 1;
+	uint32 channel = 2;
+}
+
+message bicGetImpedanceReply {
+	double channelImpedance = 1;
+	string units = 2;
+	string success = 3;
+}
+
+// bicGetTemperature Messages
+message bicGetTemperatureReply{
+	double temperature = 1;
+	string units = 2;
+	string success = 3;
+}
+
+// bicGetHumiditiy Messages
+message bicGetHumidityReply{
+	double humidity = 1;
+	string units = 2;
+	string success = 3;
+}
+
+// bicNeuralSensingEnableRequest Messages
+message bicNeuralSetStreamingEnable{
+	string deviceAddress = 1;
+	bool enable = 2;
+	repeated uint32 refChannels = 3;
+	bool useGroundReference = 4;
+	RecordingAmplificationFactor amplificationFactor = 5;
+	uint32 bufferSize = 6;
+	uint32 maxInterpolationPoints = 7;
+}
+
+enum RecordingAmplificationFactor{
+	AMPLIFICATION_57_5dB = 0;
+    AMPLIFICATION_51_5dB = 1;
+    AMPLIFICATION_45_5dB = 2;
+    AMPLIFICATION_39_5dB = 3;
+}
+
+// bicSetImplantPower Messages
+message bicSetImplantPowerRequest{
+	string deviceAddress = 1;
+	bool powerEnabled = 2;
+}
+
+
+message bicGetIsStimulatingRequest{
+	string deviceAddress = 1;
+	string channel = 2;
+}
+
+message bicGetIsStimulatingReply{
+	bool isStimulating = 1; 
+	bool isTriggeringStim = 2;
+	string success = 3;
+}
+
+
+// *************************** Device Stimulation Service Messages ***************************
+message bicStartStimulationRequest{
+	string deviceAddress = 1;
+	uint32 functionIndex = 2;
+}
+
+message bicEnqueueStimulationRequest{
+	string deviceAddress = 1;
+	EnqueueStimulationMode mode = 2;
+	repeated StimulationFunctionDefinition functions = 3;
+	uint32 WaveformRepititions = 4;
+}
+
+enum EnqueueStimulationMode{
+	VOLATILE_WAVEFORM = 0;
+	PERSISTENT_WAVEFORM = 1;
+	PERSISTENT_SUBFUNCTIONS = 2;
+}
+
+message StimulationFunctionDefinition{
+	string functionName = 1;
+	
+	oneof functionDefinition{
+		stimPulseFunction stimPulse = 2;
+		pauseFunction pause = 3;
+	}
+}
+
+message stimPulseFunction{
+	repeated double amplitude = 1;
+	uint64 pulseWidth = 2;
+	uint64 dZ0duration = 3;
+	uint64 dZ1duration = 4;
+	uint32 pulseRepetitions = 5;
+	uint32 burstRepetitions = 6;
+	repeated uint32 sourceElectrodes = 7;
+	repeated uint32 sinkElectrodes = 8;
+	bool useGround = 9;
+}
+
+message pauseFunction{
+	uint64 duration = 1;
+}
+
+message openLoopStimEnableRequest{
+	string deviceAddress = 1;
+	bool enable = 2;
+	uint32 watchdogInterval = 3;
+	double triggerStimThreshold = 4;
+}
+
+message distributedStimEnableRequest{
+	string deviceAddress = 1;
+	bool enable = 2;
+	uint32 sensingChannel = 3;
+	repeated double filterCoefficients_B = 4;
+	repeated double filterCoefficients_A = 5;
+	uint32 triggeredFunctionIndex = 6;
+	double triggerStimThreshold = 7;
+	double initTriggerStimPhase = 8;
+	double targetPhase = 9;
+}
+
+// *************************** Device Streaming Service Messages ***************************
+message TemperatureUpdate{
+	double temperature = 1;
+	string units = 2;
+}
+
+message HumidityUpdate{
+	double humidity = 1;
+	string units = 2;
+}
+
+message NeuralUpdate{
+	repeated NeuralSample samples = 1;
+}
+
+message NeuralSample{
+	uint32 numberOfMeasurements = 1;
+	repeated double measurements = 2;
+	uint32 supplyVoltage = 3;
+	bool isConnected = 4;
+	uint32 stimulationNumber = 5;
+	bool stimulationActive = 6;
+	uint32 sampleCounter = 7;
+	bool isInterpolated = 8;
+	double filtSample = 9;
+	uint32 filtChannel = 10;
+	uint64 timeStamp = 11;
+	double phase = 12;
+	double triggerPhase = 13;
+	double preFiltSample = 14;
+	double hampelFiltSample = 15;
+	bool isValidTarget = 16;
+	bool isInputTrigHigh = 17;
+}
+
+message ConnectionUpdate{
+	string connectionType = 1;
+	bool isConnected = 2;
+}
+
+message PowerUpdate{
+	string parameter = 1;
+	double value = 2;
+	string units = 3;
+}
+
+message ErrorUpdate{
+	string message = 1;
+}
+
+
+// *************************** Bridge Service Messages ***************************
+message Bridge {
+  /**
+   * Scheme-less URI describing the bridge resource.
+   * For example, '//summit/bridge/xxxxxxxxx' where
+   * 'xxxxxxxxx' is the serial number of the bridge.
+   */
+  string name = 1;
+
+  /**
+   * Additional platform specific details. These are defined in a separate
+   * protobuf files, one per device manufacturer.
+   */
+  string deviceType = 2;
+  string deviceId = 3;
+  string firmwareVersion = 4;
+}
+
+/**
+ * This message is used for all of the query functions on the BridgeService.
+ * All the query functions have the same shape if there's a need we can split
+ * out different messages later.
+ */
+message QueryBridgesRequest {
+  /**
+   * The partial scheme-less URI for the resource. For example,
+   * '//summit/bridge/123' will search for all bridges whose
+   * serial number begins with 123.
+   */
+  string query = 1;
+}
+
+/**
+ * This message is used for all of the query functions on the BridgeService.
+ * All the query functions have the same shape if there's a need we can split
+ * out different messages later.
+ */
+message QueryBridgesResponse {
+  /**
+   * List of bridges.
+   */
+  repeated Bridge bridges = 1;
+}
+
+message ConnectBridgeRequest {
+  /**
+   * Scheme-less URI describing the bridge resource.
+   * For example, '//summit/bridge/xxxxxxxxx' where
+   * 'xxxxxxxxx' is the serial number of the bridge.
+   */
+  string name = 1;
+
+  /**
+   * Additional platform specific arguments. These are defined in separate
+   * protobuf files, one per device manufacturer.
+   */
+  google.protobuf.Any parameters = 2;
+}
+
+/**
+ * Common connection states for Bridges, additional details provide by manufacturer
+ * specific connection status codes.
+ */
+enum ConnectBridgeStatus {
+  CONNECT_BRIDGE_STATUS_UNSPECIFIED = 0;
+  CONNECTION_SUCCESS = 1;
+  CONNECTION_FAILURE = 2;
+}
+
+message ConnectBridgeResponse {
+  /**
+   * Scheme-less URI describing the bridge resource.
+   * For example, '//summit/bridge/xxxxxxxxx' where
+   * 'xxxxxxxxx' is the serial number of the bridge.
+   */
+  string name = 1;  
+
+  /**
+   * Status of the connection attempt.
+   */
+  ConnectBridgeStatus connection_status = 2;
+
+  /**
+   * Additional platform specific details. These are defined in a separate
+   * protobuf files, one per device manufacturer.
+   */
+  google.protobuf.Any details = 3;
+}
+
+message DescribeBridgeRequest {
+  /**
+   * Scheme-less URI describing the bridge resource.
+   * For example, '//summit/bridge/xxxxxxxxx' where
+   * 'xxxxxxxxx' is the serial number of the bridge.
+   */
+  string name = 1; 
+}
+
+message DescribeBridgeResponse {
+  /**
+   * Scheme-less URI describing the bridge resource.
+   * For example, '//summit/bridge/xxxxxxxxx' where
+   * 'xxxxxxxxx' is the serial number of the bridge.
+   */
+  string name = 1;  
+
+  /**
+   * Additional platform specific bridge information. These are defined in a separate
+   * protobuf files, one per device manufacturer.
+   */
+  Bridge details = 2;
+
+  /**
+   * Additional platform specific error details. These are defined in a separate
+   * protobuf files, one per manufacturer.
+   */
+  google.protobuf.Any error = 3;
+}
+
+message DisconnectBridgeRequest {
+  /**
+   * Scheme-less URI describing the bridge resource.
+   * For example, '//summit/bridge/xxxxxxxxx' where
+   * 'xxxxxxxxx' is the serial number of the bridge.
+   */
+  string name = 1;
+}
+
+message VersionNumberRequest {
+}
+
+message VersionNumberResponse {
+  /**
+   String with the version number for the Summit Server 
+   */
+  string version_number = 1;
+}
+
+message SupportedDevicesRequest {
+}
+
+message SupportedDevicesResponse {
+  /**
+   * List with supported devices.
+   */
+   repeated string supported_devices = 1;
+}
+
+message InspectRepositoryRequest{
+}
+
+message InspectRepositoryResponse{
+  /**
+   * List of URI's in repository
+   */
+   repeated string repo_uri = 1;
+}

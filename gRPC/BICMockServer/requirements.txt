@@ -1,0 +1,10 @@
+# Runtime dependencies for the OMNI-BIC mock server + reference client.
+# Synthetic mode needs only grpcio + numpy; replay/file-streaming adds
+# pandas + scipy for CSV loading and task-log timestamp sync.
+grpcio>=1.60
+numpy>=1.24
+pandas>=2.0
+scipy>=1.11
+
+# Only needed to regenerate the gRPC stubs from the .proto (scripts/build_proto.py):
+grpcio-tools>=1.60

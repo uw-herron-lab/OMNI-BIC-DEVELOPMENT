@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Environments
+.env
+.venv/
+env/
+venv/
+
+# IDE
+.vscode/
+.vs/
+.idea/
+*.swp
+*.swo
+
+# Recordings dropped in for replay (never commit participant data)
+data/
+session_data/
+*.h5
+*.hdf5
+
+# Logs / runtime
+*.log
+bci_device_log.txt
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
