@@ -107,7 +107,7 @@ namespace BICGRPCHelperNamespace
         const uint32_t rxQueueOverflows, const uint32_t txQueueOverflows)
     {
         // Write Event Information to Console
-        std::cout << "\tSTATE CHANGE: Rf Quality Update: " << antennaQualitydBm << "dBm" << std::endl;
+        std::cout << "\tSTATE CHANGE: Rf Quality Update: " << (int) antennaQualitydBm << " dBm" << std::endl;
     }
 
     /// <summary>
