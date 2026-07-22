@@ -10,3 +10,4 @@ C:\gitbuilds\OMNI-BIC-DEVELOPMENT\gRPC\Client Examples\EMGLib\obj\Debug\net8.0\E
 C:\gitbuilds\OMNI-BIC-DEVELOPMENT\gRPC\Client Examples\EMGLib\obj\Debug\net8.0\refint\EMGLib.dll
 C:\gitbuilds\OMNI-BIC-DEVELOPMENT\gRPC\Client Examples\EMGLib\obj\Debug\net8.0\EMGLib.pdb
 C:\gitbuilds\OMNI-BIC-DEVELOPMENT\gRPC\Client Examples\EMGLib\obj\Debug\net8.0\ref\EMGLib.dll
+C:\gitbuilds\OMNI-BIC-DEVELOPMENT\gRPC\Client Examples\EMGLib\obj\Debug\net8.0\EMGLib.csproj.AssemblyReference.cache

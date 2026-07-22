@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("EMGLib")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bdea31bc1e7ca3e555e14af03954062aa0368f73")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f09f7e30911ae658dd5912093af9feba1714fc35")]
 [assembly: System.Reflection.AssemblyProductAttribute("EMGLib")]
 [assembly: System.Reflection.AssemblyTitleAttribute("EMGLib")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -145,6 +145,9 @@ namespace EMGLib
             }
         }
 
+        // receives raw data in byts and converts to floats
+        // it logs raw float data and add the raw flots to queue for processing i.e. filterEMGstream()
+        // unless the app is used for collecting data for callibration -> where stim is not required
         public void StreamEMG(CancellationToken token, string saveDir)
         {
             // establish transmission
@@ -156,6 +159,7 @@ namespace EMGLib
 
             string filename = currPart + "_RawFormattedEMGData_" + file_extension;
             string stamp_filename = currPart + "_TimestampEMG_" + file_extension;
+
             if (calibrationOn)
             {
                 saveDir = Path.Combine(saveDir, "Calibration");
@@ -199,7 +203,7 @@ namespace EMGLib
                                                               // max data that can be held for transmission is 65536 bytes, 1024 samples, if not attempted to receive fast enough
                     float[] unpackedSamp = new float[numberOfChannels];
 
-                    if (bytesAvailable > bytesPerSample)
+                    if (bytesAvailable >= bytesPerSample) //TO DO: see if adding = changes anything?
                     {
                         sampleBuffer = new byte[bytesPerSample];
                         emgReader.Read(sampleBuffer, 0, bytesPerSample); // reads total bytes for each sample i.e. 64
@@ -319,6 +323,7 @@ namespace EMGLib
 
                                     if (ch == 0)
                                     {
+                                        // the EMG signal for MTS is ch0 and TTL signal is ch1
                                         emgFiltSW.WriteLine(string.Join(",", rawSamples[i], rawSamples[i + 1], timestampForAllSamples, filtSamples[i], bandpassFiltTS, envelopedSamples[i], envFiltTS, _stimEnabled, _generateStim, movementDetected[i], movementDetectedTimestamp[i], stimulatorTimestamp, _stimMod.percent, _stimMod.thresh[0], _stimMod.maxSig[0], currTrial));
                                         
                                         if(stimulatorTimestamp != stimulatorTimestampBuff)

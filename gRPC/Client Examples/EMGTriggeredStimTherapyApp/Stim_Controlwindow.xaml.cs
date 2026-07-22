@@ -30,6 +30,7 @@ namespace EMGTriggeredStimTherapyApp
     /// </summary>
     public partial class Stim_ControlWindow : Window
     {
+        // import classes
         private BICManager aBICManager = new BICManager();
         private EMGLib.Delsys_Connection baseConnection = new EMGLib.Delsys_Connection();
         private EMGLib.EMG_Streaming emgStreaming = new EMGLib.EMG_Streaming();
@@ -49,8 +50,6 @@ namespace EMGTriggeredStimTherapyApp
         int numChannels = 16;
         int bicChannels = 34;
 
-        emgConfiguration EMGconfigInfo;
-
         private System.Timers.Timer EMGChartUpdateTimer;
         private System.Timers.Timer neuroStreamChartUpdateTimer;
 
@@ -65,6 +64,8 @@ namespace EMGTriggeredStimTherapyApp
 
         private int currTrialBuffer = 0;
 
+        // configuration
+        emgConfiguration EMGconfigInfo;
         public class Channel
         {
             public string Name { get; set; }
@@ -81,7 +82,7 @@ namespace EMGTriggeredStimTherapyApp
             public string save_path { get; set; }
         }
 
-
+        // UI related
         public List<Channel> channelList { get; set; }
         public List<Channel> bicList { get; set; }
         public ObservableCollection<Participant> participantList { get; set; }
@@ -334,6 +335,7 @@ namespace EMGTriggeredStimTherapyApp
                 {
                     // if currently not stimulating
                     // and if currently not triggering a stimulation
+                    // TO DO: check to see why this is commented out, does it contribute to latency?
                     //if (!aBICManager.getStimState()[0] && !aBICManager.getStimState()[1])
                     //{
                         // send a single stim pulse

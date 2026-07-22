@@ -7,8 +7,19 @@
   "targets": {
     ".NETCoreApp,Version=v8.0": {
       "EMGLib/1.0.0": {
+        "dependencies": {
+          "System.Collections.Immutable": "10.0.10"
+        },
         "runtime": {
           "EMGLib.dll": {}
+        }
+      },
+      "System.Collections.Immutable/10.0.10": {
+        "runtime": {
+          "lib/net8.0/System.Collections.Immutable.dll": {
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.1026.32716"
+          }
         }
       }
     }
@@ -18,6 +29,13 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "System.Collections.Immutable/10.0.10": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Ih5zrydoDc1H5I0eNP6f4Lzw3cjsPMN4Nikd86kbyi66y0flkM9GfjVo62aUbcxeTbypzBCFAFQ+/6RF2jRORg==",
+      "path": "system.collections.immutable/10.0.10",
+      "hashPath": "system.collections.immutable.10.0.10.nupkg.sha512"
     }
   }
 }

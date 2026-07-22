@@ -1,0 +1,9 @@
+- clean up code
+- implement go-cue MTS
+- add directory path changes to the UI
+TO DOs:
+- EMG streaming 
+- Stimulator
+
+- change code so that unrelated channels are not processed and checked against the threshold
+could potentially help with latency..? but don't remove the option to use every channel

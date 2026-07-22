@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "FFH7B75hHWg=",
+  "dgSpecHash": "8hcGaSmpzEc=",
   "success": true,
   "projectFilePath": "C:\\gitbuilds\\OMNI-BIC-DEVELOPMENT\\gRPC\\Client Examples\\EMGLib\\EMGLib.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\Maryam2.0\\.nuget\\packages\\system.collections.immutable\\10.0.10\\system.collections.immutable.10.0.10.nupkg.sha512"
+  ],
   "logs": []
 }
