@@ -41,7 +41,6 @@ namespace EMGTriggeredStimTherapyApp
         Thread plotFiltThread;
 
         Thread startStimThread;
-
         List<float>[] emgRawData;
         List<float>[] emgFiltData;
         List<double>[] threshData;
@@ -61,7 +60,8 @@ namespace EMGTriggeredStimTherapyApp
 
         private bool delsysConnected = false;
         private bool bicConnected = false;
-        private bool startStim = false;
+        private bool enableStim = false;
+        private bool goCue_startStim = false;
 
         private int currTrialBuffer = 0;
 
@@ -123,8 +123,11 @@ namespace EMGTriggeredStimTherapyApp
                 emgStreaming.emgDataPort_Diconnect();
 
                 plotFiltThread.Abort();
-                //filtEMGThread.Abort();
                 emgStreamThread.Abort();
+                if (!emgStreaming.combineProcc)
+                {
+                    filtEMGThread.Abort();
+                }
 
                 baseConnection.SendCommand("STOP");
                 baseConnection.SendCommand("QUIT");
@@ -185,8 +188,8 @@ namespace EMGTriggeredStimTherapyApp
             btn_loadCalib.IsEnabled = true;
             partSelect.IsEnabled = false;
             btn_threshSave.IsEnabled = false;
-            btn_startStim.IsEnabled = false;
-            btn_stopStim.IsEnabled = false;
+            btn_enableStim.IsEnabled = false;
+            btn_disableStim.IsEnabled = false;
 
             string seriesName;
 
@@ -290,45 +293,16 @@ namespace EMGTriggeredStimTherapyApp
         }
 
         // *************Stimulator***************
-        private void Stimulator()
+        private void emgStimulator()
         {
             var configInfo = aBICManager.configInfo;
             // ensures stim is actually enabled for EMG
             if (emgStreaming._stimEnabled)
             {
                 aBICManager.enqueueStimulation(configInfo.monopolar, (uint)configInfo.stimChannel - 1, (uint)configInfo.returnChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, configInfo.stimPeriod - (5 * configInfo.stimDuration) - 3500, configInfo.stimThreshold);
-                // start BICListener.cpp -> enableStimTimeLogging() -> this starts logStimTimeThread() which should store exceptions with more detail;
-
-                /* FOR OL Stim:
-                 * BICManager.cs:
-                 * enableOpenLoopStimulation()
-                 * deviceClient.enableOpenLoopStimulation
-                 * 
-                 * -> BICDeviceGRPCService.cpp:
-                 * enableOpenLoopStimulation()
-                 * listener -> enableOpenLoopStim()
-                 * 
-                 * -> BICListener.cpp:
-                 * enableOpenLoopStim()
-                 * openLoopStimLoopThread()
-                 * enableStimTimeLogging()
-                 */
-
-                /* For MT Stim:
-                 * Stim_Controlwindow.xaml.cs:
-                 * Stimulator()
-                 * aBICManager.enableMovementStimTimeLogging()
-                 * 
-                 * -> BICManager.cs:
-                 * deviceClient.enableMovementStimTimeLogging()
-                 * 
-                 * -> BICDeviceGRPCService.cpp:
-                 * enableMovementStimTimeLogging()
-                 * listener -> enableStimTimeLogging()
-                 */
+                
 
             }
-            Console.WriteLine("test " + emgStreaming.elapsedTime(639090103096606782, 639090103096606782).ToString());
             emgStreaming.stimulatorWaitHandle.WaitOne();
             while (emgStreaming._stimEnabled)
             {
@@ -350,7 +324,57 @@ namespace EMGTriggeredStimTherapyApp
                         Console.WriteLine("Elapsed Time4: " + emgStreaming.elapsedTime(emgStreaming.stimulatorTimestamp, emgStreaming.stimulatorTimestamp2).ToString());
 
                         Thread.Sleep(2000);
+                        btn_trialStop.IsEnabled = true;
+                    }
+                    catch
+                    {
+                        // Exception occured, gRPC command did not succeed, do not update UI button elements
+                        Console.WriteLine("Single stimulation not sent\n");
 
+                        return;
+                    }
+
+
+                    //}
+
+                }
+
+            }
+
+
+        }
+        private void goCueStimulator()
+        {
+            var configInfo = aBICManager.configInfo;
+            // ensures stim is actually enabled for EMG
+            if (emgStreaming._stimEnabled)
+            {
+                aBICManager.enqueueStimulation(configInfo.monopolar, (uint)configInfo.stimChannel - 1, (uint)configInfo.returnChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 4, configInfo.stimPeriod - (5 * configInfo.stimDuration) - 3500, configInfo.stimThreshold);
+
+
+            }
+            //emgStreaming.stimulatorWaitHandle.WaitOne();
+            while (emgStreaming._stimEnabled)
+            {
+                if (goCue_startStim)
+                {
+                     // TO DO: Add a lock to this
+                
+                    try
+                    {
+                        emgStreaming.stimulatorTimestamp = DateTime.Now.Ticks;
+                        emgStreaming._generateStim = true;
+                        aBICManager.sendSingleStimulation();
+                        emgStreaming._generateStim = false;
+                        goCue_startStim = false;
+                        
+                        //emgStreaming.stimulatorTimestamp = DateTime.Now.Ticks;
+                        //long t2 = DateTime.Now.Ticks;
+                        emgStreaming.stimulatorTimestamp2 = DateTime.Now.Ticks;
+                        Console.WriteLine("Elapsed Time4: " + emgStreaming.elapsedTime(emgStreaming.stimulatorTimestamp, emgStreaming.stimulatorTimestamp2).ToString());
+
+                        Thread.Sleep(2000);
+                        btn_trialStop.IsEnabled = true;
                     }
                     catch
                     {
@@ -373,25 +397,40 @@ namespace EMGTriggeredStimTherapyApp
         // **************Buttons*****************
         private void btn_connectEMG_Click(object sender, RoutedEventArgs e)
         {
-
-            dateStamp = $"{DateTime.Now:yyyy - MM - dd}";
-            string path = System.IO.Path.Combine(EMGconfigInfo.save_path, emgStreaming.currPart, dateStamp);
-
+            string path;
+            dateStamp = $"{DateTime.Now:yyyy-MM-dd}";
+            if (emgStreaming.calibrationOn)
+            {
+                path = System.IO.Path.Combine(EMGconfigInfo.save_path, emgStreaming.currPart, dateStamp,"calibration");
+            }
+            else
+            {
+                path = System.IO.Path.Combine(EMGconfigInfo.save_path, emgStreaming.currPart, dateStamp);
+            }
+            // make sure neural csv files save in the same path
             aBICManager.saveDir = path;
 
             cancellationTokenSource = new CancellationTokenSource();
             baseConnection.Main();
             // create/recreate threads
             emgStreaming.emgDataPort_Connect();
-            emgStreamThread = new Thread(() => emgStreaming.StreamEMG(cancellationTokenSource.Token, path));
-            //filtEMGThread = new Thread(() => emgStreaming.filtEMGstream(cancellationTokenSource.Token, path));
+            if (emgStreaming.combineProcc)
+            {
+                emgStreamThread = new Thread(() => emgStreaming.raw_filterEMGstream(cancellationTokenSource.Token, path));
+                plotFiltThread = new Thread(() => emgStreaming.prepFiltForPlot(cancellationTokenSource.Token));
+                plotFiltThread.Start();
+                emgStreamThread.Start();
+            }
+            else
+            {
+                emgStreamThread = new Thread(() => emgStreaming.rawEMGstream(cancellationTokenSource.Token, path));
+                filtEMGThread = new Thread(() => emgStreaming.filtEMGstream(cancellationTokenSource.Token, path));
+                plotFiltThread = new Thread(() => emgStreaming.prepFiltForPlot(cancellationTokenSource.Token));
+                emgStreamThread.Start();
+                filtEMGThread.Start();
+                plotFiltThread.Start();
+            }
 
-            plotFiltThread = new Thread(() => emgStreaming.prepFiltForPlot(cancellationTokenSource.Token));
-
-            // Start the threads
-            emgStreamThread.Start();
-            //filtEMGThread.Start();
-            plotFiltThread.Start();
 
             // send command to base to start streaming
             baseConnection.SendCommand("START");
@@ -423,11 +462,30 @@ namespace EMGTriggeredStimTherapyApp
         }
         private void btn_disconnectEMG_Click(object senser, RoutedEventArgs e)
         {
+            if (delsysConnected)
+            {
+                EMGChartUpdateTimer.Stop();
+                cancellationTokenSource.Cancel();
+                emgStreaming.emgDataPort_Diconnect();
 
+                plotFiltThread.Abort();
+                emgStreamThread.Abort();
+                if (!emgStreaming.combineProcc)
+                {
+                    filtEMGThread.Abort();
+                }
+
+                baseConnection.SendCommand("STOP");
+                baseConnection.SendCommand("QUIT");
+            }
         }
         private void btn_disconnectBIC_Click(object senser, RoutedEventArgs e)
         {
-
+            if (bicConnected)
+            {
+                aBICManager.Dispose();
+                neuroStreamChartUpdateTimer.Stop();
+            }
         }
 
 
@@ -597,7 +655,7 @@ namespace EMGTriggeredStimTherapyApp
             btn_startEMGlog.IsEnabled = false;
 
             // do not allow to stop logging if stimulation is on -> all data should be logged
-            if (!startStim)
+            if (!enableStim)
             {
                 btn_stopEMGlog.IsEnabled = true;
             }
@@ -605,7 +663,7 @@ namespace EMGTriggeredStimTherapyApp
             // only if BIC is connected and threshold is selected allow for start stim to be enabled
             if (bicConnected && emgStreaming._stimMod.percent > 0)
             {
-                btn_startStim.IsEnabled = true;
+                btn_enableStim.IsEnabled = true;
             }
 
         }
@@ -628,7 +686,7 @@ namespace EMGTriggeredStimTherapyApp
 
                 if (bicConnected == true & emgStreaming.logging == true)
                 {
-                    btn_startStim.IsEnabled = true;
+                    btn_enableStim.IsEnabled = true;
                 }
 			}
             
@@ -636,6 +694,8 @@ namespace EMGTriggeredStimTherapyApp
        
         private void btn_trialStart_Click(object sender, RoutedEventArgs e)
         {
+            goCue_startStim = true;
+            Console.Beep();
             currTrialBuffer++;
             emgStreaming.currTrial = currTrialBuffer;
             trialCount.Text = emgStreaming.currTrial.ToString();
@@ -649,6 +709,7 @@ namespace EMGTriggeredStimTherapyApp
 
         private void btn_trialStop_Click(object sender, RoutedEventArgs e)
         {
+            goCue_startStim = false;
             emgStreaming.currTrial = 0;
             var converter = new System.Windows.Media.BrushConverter();
             trialCount.Background = (Brush)converter.ConvertFromString("#FFCA5B5B");
@@ -657,22 +718,33 @@ namespace EMGTriggeredStimTherapyApp
             btn_trialStop.IsEnabled = false;
         }
 
-        private void btn_startStim_Click(object sender, RoutedEventArgs e)
+        private void btn_enableStim_Click(object sender, RoutedEventArgs e)
         {
-            startStim = true;
-            startStimThread = new Thread(() => Stimulator());
+            enableStim = true;
+            if(btn_goCueStim.IsChecked ==  true)
+            {
+                emgStreaming._triggerMode = "go-cue";
+                startStimThread = new Thread(() => goCueStimulator());
+            }
+            if(btn_emgStim.IsChecked == true)
+            {
+                emgStreaming._triggerMode = "emg";
+                startStimThread = new Thread(() => emgStimulator());
+            }
 
             var configInfo = aBICManager.configInfo;
 
+            stimModeToggle.IsEnabled = false;
             emgStreaming._stimEnabled = true;
             startStimThread.Start();
-            btn_stopStim.IsEnabled = true;
+            btn_disableStim.IsEnabled = true;
             btn_stopEMGlog.IsEnabled = false;
             btn_trialStart.IsEnabled = true;
         }
 
-        private void btn_stopStim_Click(Object sender, RoutedEventArgs e)
+        private void btn_disableStim_Click(Object sender, RoutedEventArgs e)
         {
+            stimModeToggle.IsEnabled = true;
             BICManager.Configuration configInfo = aBICManager.configInfo;
             emgStreaming._stimEnabled = false;
             aBICManager.enableOpenLoopStimulation(false, configInfo.monopolar, (uint)configInfo.stimChannel - 1, (uint)configInfo.returnChannel - 1, configInfo.stimAmplitude, configInfo.stimDuration, 1, 20000, configInfo.stimThreshold);

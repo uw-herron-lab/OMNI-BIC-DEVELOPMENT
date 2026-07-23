@@ -40,10 +40,11 @@ namespace EMGLib
         public long stimulatorTimestamp2 = 0;
 
         // for logging
-        //StreamWriter emgSW;
+        public bool combineProcc = true; // set the to false if you want 2 threads for unpacking and processing EMG data
+        StreamWriter emgSW;
         StreamWriter emgFiltSW;
-        //StreamWriter emgEnvelopedSW;
-        //StreamWriter emgTimestampSW;
+        StreamWriter emgEnvelopedSW;
+        StreamWriter emgTimestampSW;
         public string currPart;
         public bool logging = false;
         public int currTrial = 0;
@@ -64,6 +65,7 @@ namespace EMGLib
         //private BlockingCollection<int[]> stimSamplesQueueForPlot = new BlockingCollection<int[]>();
         public AutoResetEvent stimulatorWaitHandle = new AutoResetEvent(false);
 
+        public string _triggerMode = "";
         public bool _generateStim = false;
         public bool _stimEnabled = false;
 
@@ -137,8 +139,11 @@ namespace EMGLib
             emgStream.Dispose();
             emgSocket.Dispose();
 
-            //emgSW.Dispose();
-            //emgTimestampSW.Dispose();
+            if (combineProcc)
+            {
+                emgSW.Dispose();
+                emgTimestampSW.Dispose();
+            }
 
             emgFiltSW.Dispose();
             if (!calibrationOn)
@@ -146,8 +151,9 @@ namespace EMGLib
                 //emgEnvelopedSW.Dispose();
             }
         }
-
-        public void StreamEMG(CancellationToken token, string saveDir)
+        // this method combines unpacking of raw data with real-time filtering,
+        // instead of having separate threads for the two
+        public void raw_filterEMGstream(CancellationToken token, string saveDir)
         {
             // establish transmission
             streamStart_timestamp = DateTime.Now.Ticks;
@@ -155,13 +161,11 @@ namespace EMGLib
             emgReader = new BinaryReader(emgStream);
 
             // setup logging
-
-            //string filename = currPart + "_RawFormattedEMGData_" + file_extension;
-            //string stamp_filename = currPart + "_TimestampEMG_" + file_extension;
-            if (calibrationOn)
-            {
-                saveDir = Path.Combine(saveDir, "Calibration");
-            }
+            // TO DO: test to make sure this works, now that it's being controlled by the controlwindow
+            //if (calibrationOn)
+            //{
+            //    saveDir = Path.Combine(saveDir, "Calibration");
+            //}
             try
             {
                 if (!Directory.Exists(saveDir))
@@ -173,24 +177,183 @@ namespace EMGLib
             {
                 Console.WriteLine("EMG Streamer, Directory Exception - " + ex.Message.ToString());
             }
-            string filename = currPart + "_FiltEMGData_" + file_extension;
+            string filename = currPart + "_EMGData_" + file_extension;
             emgFiltSW = new StreamWriter(Path.Combine(saveDir, filename));
-            emgFiltSW.WriteLine(string.Join(",", "raw signal", "TTL signal", "raw timestamp", "filt signal", "filt timestamp", "env signal", "env timestamp", "MTS on", "send stim", "movement detected", "movement timestamp", "stimulator timestamp", "percentage", "threshold", "max MVC", "Trial"));
+            emgFiltSW.WriteLine(string.Join(",", "raw signal", "TTL signal", "raw timestamp", "filt signal", "filt timestamp", "env signal", "env timestamp", "MTS enabled", "trigger mode", "stim generate", "movement detected", "movement timestamp", "stimulator timestamp", "percentage", "threshold", "max MVC", "Trial"));
             emgFiltSW.Flush();
 
-            //emgSW = new StreamWriter(Path.Combine(saveDir, filename));
-            //string emgLog_label = "EMG1";
-            //for (int i = 1; i < numberOfChannels; i++)
-            //{
-            //    emgLog_label = string.Join(",", emgLog_label, "EMG" + (i + 1).ToString());
-            //}
-            //emgLog_label = string.Join(",", emgLog_label, "Timestamp", "Trial num");
-            //emgSW.WriteLine(emgLog_label);
+            while (!token.IsCancellationRequested)
+            {
+                // begin streaming bytes from the API
+                try
+                {
+                    byte[] sampleBuffer;
+                    long formattedTimestamp;
+                    int bytesAvailable = emgSocket.Available; // max EMG samples per frame is 27, equaling 1728 bytes. which is the fasted data can be received. 
+                                                              // max data that can be held for transmission is 65536 bytes, 1024 samples, if not attempted to receive fast enough
+                    float[] unpackedSamp = new float[numberOfChannels];
+
+                    if (bytesAvailable >= bytesPerSample) // TO DO: check '='
+                    {
+                        sampleBuffer = new byte[bytesPerSample];
+                        emgReader.Read(sampleBuffer, 0, bytesPerSample); // reads total bytes for each sample i.e. 64
+                        formattedTimestamp = DateTime.Now.Ticks; // timestamps the bytes read
+
+
+                        int indTracker = 0; // used to process the total bytes of all channels for each sample
+
+                        // convert bytes to floating point values
+                        unpackedSamp[0] = BitConverter.ToSingle(sampleBuffer.Skip(indTracker).Take(bytesPerChannel).ToArray(), 0);
+                        indTracker = indTracker + 4;
+                        for (int i = 1; i < numberOfChannels; i++)
+                        {
+                            unpackedSamp[i] = BitConverter.ToSingle(sampleBuffer.Skip(indTracker).Take(bytesPerChannel).ToArray(), 0);
+                            indTracker = indTracker + 4;
+
+                        }
+
+                        float[] filtSamples = new float[numberOfChannels];
+                        float[] envelopedSamples = new float[numberOfChannels];
+                        filtSamples = _processingMod.IIRFilter(unpackedSamp, 0); // bandpass filter raw samples
+                        long bandpassFiltTS = DateTime.Now.Ticks;
+                        bool stimState = false;
+                        int[] movementDetected = null;
+                        long[] movementDetectedTimestamp = null;
+                        long envFiltTS = 0;
+                        if (_triggerMode == "emg")
+                        {
+                            envelopedSamples = _processingMod.envelopeSignals(_processingMod.rectifySignals(filtSamples), 0); // envelope bandpass filtered samples
+                            envFiltTS = DateTime.Now.Ticks;
+
+                            (bool stimStateBuff, int[] movementDetectedBuff, long[] movementDetectedTimestampBuff) = _stimMod.triggerStim(envelopedSamples, 0);
+                            long t = 0;
+                            if (stimStateBuff != _generateStim)
+                            {
+                                _generateStim = stimStateBuff;
+                                if (_generateStim && _stimEnabled)
+                                {
+                                    stimulatorWaitHandle.Set();
+                                    //t = DateTime.Now.Ticks;
+                                }
+                            }
+                            stimState = stimStateBuff;
+                            movementDetectedBuff = movementDetectedBuff;
+                            movementDetectedTimestamp = movementDetectedTimestampBuff;
+                        }
+                        
+
+                        lock (plotFiltLock)
+                        {
+                            filtSamplesQueueForPlot.Add(filtSamples);
+
+                        }
+
+                        // TO DO: maybe do this in a different thread?
+                        if (logging)
+                        {
+                            //long t1 = DateTime.Now.Ticks;
+                            for (int i = 0; i < filtSamples.Length;)
+                            {
+                                for (int ch = 0; ch < 16; ch++) // TO DO: can replace this to not have to loop through all channels
+                                {
+                                    // only stores EMG1 at index i, and the TTL signal which is EMG2 at i+1
+
+                                    if (ch == 0)
+                                    {
+                                        if (_triggerMode == "emg")
+                                        {
+                                            emgFiltSW.WriteLine(string.Join(",", unpackedSamp[i], unpackedSamp[i + 1], formattedTimestamp, filtSamples[i], bandpassFiltTS, envelopedSamples[i], envFiltTS, _stimEnabled, _triggerMode, _generateStim, movementDetected[i], movementDetectedTimestamp[i], stimulatorTimestamp, _stimMod.percent, _stimMod.thresh[0], _stimMod.maxSig[0], currTrial));
+
+                                            if (stimulatorTimestamp != stimulatorTimestampBuff)
+                                            {
+                                                // typical elapsed time is in range of 9-13ms, averaging more around 12ms
+                                                Console.WriteLine(formattedTimestamp);
+                                                Console.WriteLine(movementDetectedTimestamp[i]);
+                                                Console.WriteLine(stimulatorTimestamp);
+                                                Console.WriteLine(formattedTimestamp - stimulatorTimestamp);
+                                                Console.WriteLine(formattedTimestamp - stimulatorTimestamp2);
+                                                Console.WriteLine(stimulatorTimestamp2);
+                                                //Console.WriteLine("Elapsed t: " + elapsedTime(formattedTimestamp, t).ToString());
+                                                //Console.WriteLine("Elapsed Time1: " + elapsedTime(formattedTimestamp, stimulatorTimestamp).ToString());
+                                                //Console.WriteLine("Elapsed Time2: " + elapsedTime(movementDetectedTimestamp[i], stimulatorTimestamp2).ToString());
+                                                //Console.WriteLine("Elapsed Time3: " + elapsedTime(formattedTimestamp, stimulatorTimestamp2).ToString());
+                                                //Console.WriteLine("test2 " + formattedTimestamp.ToString() + " " + stimulatorTimestamp2.ToString() + (formattedTimestamp - stimulatorTimestamp2).ToString());
+                                                //Console.WriteLine("stim: " + stimulatorTimestamp.ToString());
+                                                //Console.WriteLine(movementDetectedTimestamp.ToString());
+                                            }
+
+                                            stimulatorTimestampBuff = stimulatorTimestamp;
+                                        }
+                                        if (_triggerMode == "go-cue")
+                                        {
+
+                                        }
+                                        
+                                    }
+                                    i++;
+                                }
+                                //emgFiltSW.WriteLine(string.Join(",", $"{i + 1}", filtSamples[i].ToString(), timestampForAllSamples, bandpassFiltTS));
+                                //emgEnvelopedSW.WriteLine(string.Join(",", $"{i + 1}", envelopedSamples[i].ToString(), _stimEnabled, _generateStim, movementDetected[i], movementDetectedTimestamp[i], timestampForAllSamples, _stimMod.percent, _stimMod.thresh[i]));
+                            }
+                            //long t2 = DateTime.Now.Ticks;
+                            //Console.WriteLine("Elapsed time filt for loop: " + elapsedTime(t1, t2));
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    emgFiltSW.Flush();
+                    //emgSW.Flush();
+                    //emgTimestampSW.Flush();
+                    Console.WriteLine("EMG Streamer - " + e.Message);
+                }
+            }
+            // flush outside of while loop to avoid taking up processing time
+            //emgTimestampSW.Flush();
             //emgSW.Flush();
+        }
+        // this needs to be reverted back to just streamEMG
+        public void rawEMGstream(CancellationToken token, string saveDir)
+        {
+            // establish transmission
+            streamStart_timestamp = DateTime.Now.Ticks;
+            emgStream = emgSocket.GetStream();
+            emgReader = new BinaryReader(emgStream);
 
-            // timestamp log file could be used for easier interpolation of timestamps if needed
-            // (since there are repeats of the same timestamp for about 25 samples)
+            // setup logging
 
+            string filename = currPart + "_RawFormattedEMGData_" + file_extension;
+            //string stamp_filename = currPart + "_TimestampEMG_" + file_extension;
+            //if (calibrationOn)
+            //{
+            //    saveDir = Path.Combine(saveDir, "Calibration");
+            //}
+            try
+            {
+                if (!Directory.Exists(saveDir))
+                {
+                    System.IO.Directory.CreateDirectory(saveDir);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("EMG Streamer, Directory Exception - " + ex.Message.ToString());
+            }
+
+            emgSW = new StreamWriter(Path.Combine(saveDir, filename));
+            string emgLog_label = "EMG1";
+            for (int i = 1; i < numberOfChannels; i++)
+            {
+                emgLog_label = string.Join(",", emgLog_label, "EMG" + (i + 1).ToString());
+            }
+            emgLog_label = string.Join(",", emgLog_label, "Timestamp", "Trial num");
+            emgSW.WriteLine(emgLog_label);
+            emgSW.Flush();
+
+            //timestamp log file could be used for easier interpolation of timestamps if needed
+            //(since there are repeats of the same timestamp for about 25 samples)
+
+            // TO DO: add in after debugging is done
             //emgTimestampSW = new StreamWriter(Path.Combine(saveDir, stamp_filename));
             //emgTimestampSW.WriteLine("Timestamp of EMG bytes retrieved");
             //emgTimestampSW.Flush();
@@ -206,7 +369,7 @@ namespace EMGLib
                                                               // max data that can be held for transmission is 65536 bytes, 1024 samples, if not attempted to receive fast enough
                     float[] unpackedSamp = new float[numberOfChannels];
 
-                    if (bytesAvailable > bytesPerSample)
+                    if (bytesAvailable >= bytesPerSample) // TO DO: check '='
                     {
                         sampleBuffer = new byte[bytesPerSample];
                         emgReader.Read(sampleBuffer, 0, bytesPerSample); // reads total bytes for each sample i.e. 64
@@ -331,10 +494,10 @@ namespace EMGLib
         public void filtEMGstream(CancellationToken token, string saveDir)
         {
             
-			if (calibrationOn)
-			{
-				saveDir = Path.Combine(saveDir, "Calibration");
-			}
+			//if (calibrationOn)
+			//{
+			//	saveDir = Path.Combine(saveDir, "Calibration");
+			//}
 			string filename = currPart + "_FiltEMGData_" + file_extension;
             emgFiltSW = new StreamWriter(Path.Combine(saveDir, filename));
 			emgFiltSW.WriteLine(string.Join(",", "raw signal", "TTL signal", "raw timestamp", "filt signal", "filt timestamp", "env signal", "env timestamp", "MTS on", "send stim", "movement detected", "movement timestamp", "stimulator timestamp", "percentage", "threshold", "max MVC", "Trial"));
