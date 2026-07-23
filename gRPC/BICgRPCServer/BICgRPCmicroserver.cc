@@ -90,7 +90,9 @@ BOOL WINAPI CtrlHandler(DWORD fdwCtrlType)
 }
 
 // Server Instance
-void RunServer() {
+void RunServer(const std::string& stimTimeLogDirectory, const std::string& apiLogDirectory) {
+    // Set the stim time log directory for the device service
+	deviceService.setStimTimeLogDirectory(stimTimeLogDirectory);
     // ******************* Build up GRPC Interface *******************
     // Define the server address
     std::string server_address("0.0.0.0:50051");
@@ -107,8 +109,17 @@ void RunServer() {
     time_t now = time(0);
     std::tm* timestamp = std::localtime(&now);
     char timeBuff[50];
-    std::strftime(timeBuff, 50, "./apiLog_%Y%m%d_%H%M%S.txt", timestamp);
-    theImplantFactory.reset(createImplantFactory(true, timeBuff));
+    std::strftime(timeBuff, 50, "apiLog_%Y%m%d_%H%M%S.txt", timestamp);
+    std::string apiLogFilePath;
+    if (apiLogDirectory.empty()) {
+        apiLogFilePath = "./";
+        apiLogFilePath += timeBuff;
+    }
+    else {
+        apiLogFilePath = apiLogDirectory + "\\";
+        apiLogFilePath += timeBuff;
+    }
+    theImplantFactory.reset(createImplantFactory(true, apiLogFilePath.c_str()));
     bridgeService.passFactory(theImplantFactory.get());
     deviceService.passFactory(theImplantFactory.get());
     infoService.addRepository(&deviceService.theImplants);
@@ -134,7 +145,16 @@ void RunServer() {
 
 // Main Stub, just runs the server
 int main(int argc, char** argv) {
-  RunServer();
+  std::string stimTimeLogDirectory;
+  std::string apiLogDirectory;
+
+  if (argc > 1) {
+      apiLogDirectory = argv[1];
+  }
+  if (argc > 2) {
+      stimTimeLogDirectory = argv[2];
+  }
+  RunServer(stimTimeLogDirectory, apiLogDirectory);
 
   return 0;
 }

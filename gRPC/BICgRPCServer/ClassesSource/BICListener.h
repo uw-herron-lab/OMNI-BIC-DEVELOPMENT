@@ -18,6 +18,9 @@ namespace BICGRPCHelperNamespace
     class BICListener : public cortec::implantapi::IImplantListener
     {
     public:
+        // ************************* Public Configuration **********************
+		void setStimTimeLogDirectory(const std::string& directory);
+
         // ************************* Public Sensing Management **********************
         void enableNeuralStreaming(bool enableSensing, uint32_t dataBufferSize, uint32_t interplationThreshold, grpc::ServerWriter<BICgRPC::NeuralUpdate>* aWriter);
         void enableTemperatureStreaming(bool enableSensing, grpc::ServerWriter<BICgRPC::TemperatureUpdate>* aWriter);
@@ -68,6 +71,9 @@ namespace BICGRPCHelperNamespace
        
     private:
         // ************************* Private General State Objects and Methods *************************
+        // Logging directory
+        std::string stimTimeLogDirectory;
+        
         // Stim Logging Functions
         void logStimTimeThread(void);
         

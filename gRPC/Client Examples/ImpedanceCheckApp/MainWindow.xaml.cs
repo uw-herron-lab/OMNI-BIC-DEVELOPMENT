@@ -37,6 +37,13 @@ namespace ImpedanceCheckApp
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            // Check for command line argument for log directory
+            string[] commandLineArgs = Environment.GetCommandLineArgs();
+            string impedLogDirectory = null;
+            if (commandLineArgs.Length > 1)
+            {
+                impedLogDirectory = commandLineArgs[1];
+            }
             // Establish connection
             impBICManager = new ImpedanceCheckApp.ImpedanceBICManager((int)MainWindow1.Width); // additional parameter that is set to default otherwise?
             connectState = impBICManager.BICConnect();

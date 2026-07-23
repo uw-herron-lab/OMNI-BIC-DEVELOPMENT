@@ -27,10 +27,13 @@ namespace ImpedanceCheckApp
         FileStream impedFileStream;
         StreamWriter impedFileWriter;
         string impedFilePath;
+        string impedLogDirectory;
 
         // Constructor
-        public ImpedanceBICManager(int definedDataBufferLength)
+        public ImpedanceBICManager(int definedDataBufferLength, string impedLogDirectory = null)
         {
+            // Set the impedance log directory
+            this.impedLogDirectory = impedLogDirectory;
             // Open up the GRPC Channel to the BIC microservice
             aGRPChannel = new Channel("127.0.0.1:50051", ChannelCredentials.Insecure);
         }
@@ -111,7 +114,16 @@ namespace ImpedanceCheckApp
         public void performImpCheck()
         {
             // Logging impedance items
-            impedFilePath = "./impedances" + DateTime.Now.ToString("_yyyy-MM-dd_HH-mm-ss") + ".csv";
+            string impedFileName = "impedances" + DateTime.Now.ToString("_yyyy-MM-dd_HH-mm-ss") + ".csv";
+            if (string.IsNullOrWhiteSpace(impedLogDirectory)) // Current directory
+            {
+                impedFilePath = "./" + impedFileName;
+            }
+            else // Create directory tree
+            {
+                Directory.CreateDirectory(impedLogDirectory);
+                impedFilePath = Path.Combine(impedLogDirectory, impedFileName);
+            }
             impedFileStream = new FileStream(impedFilePath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, FileOptions.Asynchronous);
             impedFileWriter = new StreamWriter(impedFileStream);
 
