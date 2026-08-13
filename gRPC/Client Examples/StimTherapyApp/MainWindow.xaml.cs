@@ -159,6 +159,13 @@ namespace StimTherapyApp
 
                 }));
 
+            // Get command line arguments for config file
+            string[] commandLineArgs = Environment.GetCommandLineArgs();
+            if (commandLineArgs.Length > 2)
+            {
+                loadConfiguration(commandLineArgs[2]);
+            }
+
             // Start update timer
             neuroChartUpdateTimer = new System.Timers.Timer(200);
             neuroChartUpdateTimer.Elapsed += neuroChartUpdateTimer_Elapsed;
@@ -239,18 +246,16 @@ namespace StimTherapyApp
                 });
             }
         }
-        private void btn_load_Click(object sender, RoutedEventArgs e)
+        private bool loadConfiguration(string fileName)
         {
             try
             {
-                // open dialog box to select file with patient-specific settings
-                var fileD = new Microsoft.Win32.OpenFileDialog();
-                bool? loadFile = fileD.ShowDialog();
-                if (loadFile == true)
+                if (!File.Exists(fileName))
                 {
-                    string fileName = fileD.FileName;
-                    if (File.Exists(fileName))
-                    {
+                    OutputConsole.Inlines.Add("Configuration file not found: " + fileName + "\n");
+                    Scroller.ScrollToEnd();
+                    return false;
+                }
                         // load in .json file and read in stimulation parameters
                         using (StreamReader fileReader = new StreamReader(fileName))
                         {
@@ -292,8 +297,7 @@ namespace StimTherapyApp
                             btn_load.IsEnabled = true; // load config button
                             btn_stop.IsEnabled = true; // stop stim button
                         }));
-                    }
-                }
+                return true;   
             }
             catch ( Exception theException )
             {
@@ -301,6 +305,16 @@ namespace StimTherapyApp
                 OutputConsole.Inlines.Add("Error encoutnered: " + theException.Message + "\n");
                 OutputConsole.Inlines.Add("\n");
                 Scroller.ScrollToEnd();
+                return false;
+            }
+        }
+
+        private void btn_load_Click(object sender, RoutedEventArgs e)
+        {
+            var fileD = new Microsoft.Win32.OpenFileDialog();
+            if (fileD.ShowDialog() == true)
+            {
+                loadConfiguration(fileD.FileName);
             }
         }
         private void btn_beta_Click(object sender, RoutedEventArgs e)

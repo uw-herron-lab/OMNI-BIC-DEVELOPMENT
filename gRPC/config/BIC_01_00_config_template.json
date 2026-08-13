@@ -1,0 +1,30 @@
+{
+  "stimType": "Beta",
+  "monopolar": false,
+  "senseChannel": 0,
+  "stimChannel": 1,
+  "returnChannel": 2,
+  "stimPeriod": 1000000,
+  "stimAmplitude": -500,
+  "stimDuration": 200,
+  "stimThreshold": 50.0,
+  "filterCoefficients_B": [1.0],
+  "filterCoefficients_A": [1.0],
+  "triggerPhase": 0.0,
+  "targetPhase": 180.0,
+
+  "stimMode": 0,
+  "numPulses": 1,
+  "numTrains": 1,
+  "interPulseInterval": 1000,
+  "interTrainInterval": 5000000,
+  "baselinePeriod": 1000000,
+  "jitterMax": 0,
+  "useGround": false,
+
+  "scanMode": false,
+  "numChannels": 32,
+  "reversePolarity": false,
+  "stimChannelsQueue": [1],
+  "returnChannelsQueue": [2]
+}
