@@ -29,6 +29,7 @@ session_data/
 # Logs / runtime
 *.log
 bci_device_log.txt
+generated/
 
 # OS
 .DS_Store

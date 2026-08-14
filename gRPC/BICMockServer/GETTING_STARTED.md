@@ -12,25 +12,21 @@ implant bridge, so you can build and test clients, decoders, and visualizations.
 
 ---
 
-##1. Install dependencies
+## 1. Install dependencies & generate Python stubs
 
-Pick either conda or pip.
-
-**Conda:**
-
-```bash
-conda env create -f environment.yml
-conda activate omni-bic-mock
-```
-
-**pip:**
+Install the required Python dependencies:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-That's `grpcio`, `numpy`, `pandas`, `scipy`. Synthetic mode only actually needs
-`grpcio` + `numpy`; `pandas`/`scipy` are for file replay.
+Then generate the Python gRPC stubs from the OMNI-BIC protocol definition:
+
+```bash
+python scripts/build.py
+```
+
+This reads `gRPC/Protos/BICgRPC.proto` and generates required Python bindings in `generated/`
 
 ## 2. Start the server (synthetic mode)
 
@@ -132,7 +128,7 @@ Because the mock speaks the real API, **the same client code works unchanged
 against the real OMNI-BIC microservice** — just change `server_address`.
 
 Prefer to talk gRPC directly (any language)? The service and message
-definitions are in `proto/BICgRPC.proto`. The data stream is the
+definitions are in `gRPC/Protos/BICgRPC.proto`. The data stream is the
 `BICDeviceService.bicNeuralStream` server-streaming RPC; generate stubs for your
 language from that `.proto`.
 

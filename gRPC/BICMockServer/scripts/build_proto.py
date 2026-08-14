@@ -1,9 +1,5 @@
 """
-Regenerate the gRPC Python stubs from proto/BICgRPC.proto.
-
-The generated stubs (generated/BICgRPC_pb2.py, generated/BICgRPC_pb2_grpc.py)
-are committed to the repo so the server runs out of the box.  Run this only if
-you edit the .proto file or upgrade grpcio-tools.
+Regenerate the gRPC Python stubs from gRPC/Protos/BICgRPC.proto.
 
 Usage:
     python scripts/build_proto.py
@@ -15,9 +11,11 @@ import subprocess
 import sys
 from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
-PROTO_DIR = REPO_ROOT / "proto"
-OUT_DIR = REPO_ROOT / "generated"
+BICMOCKSERVER_ROOT = Path(__file__).resolve().parent.parent
+GRPC_ROOT = BICMOCKSERVER_ROOT.parent
+
+PROTO_DIR = GRPC_ROOT / "Protos"
+OUT_DIR = BICMOCKSERVER_ROOT / "generated"
 PROTO_FILE = PROTO_DIR / "BICgRPC.proto"
 
 

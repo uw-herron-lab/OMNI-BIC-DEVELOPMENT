@@ -26,9 +26,7 @@ Downstream code connects exactly as it would to real hardware.
 | `src/mock_server.py` | The mock gRPC server (synthetic + file-replay modes) |
 | `src/neural_stream_client.py` | Reference client — pulls the stream into a ring buffer |
 | `src/sync.py` | Task-log ↔ device-clock alignment used for replay labels |
-| `proto/BICgRPC.proto` | The OMNI-BIC gRPC service + message contract |
-| `generated/` | Pre-built Python gRPC stubs (committed; run out of the box) |
-| `scripts/build_proto.py` | Regenerate the stubs if you edit the `.proto` |
+| `scripts/build_proto.py` | Generate Python gRPC stubs from the shared `.proto` |
 | `scripts/example_client.py` | Runnable demo: connect, stream, print what arrived |
 | `GETTING_STARTED.md` | Step-by-step onboarding walkthrough + troubleshooting |
 | `docs/FILE_FORMAT.md` | CSV schema for replay recordings |
@@ -48,8 +46,13 @@ Or plain pip (into any Python ≥ 3.9 environment):
 pip install -r requirements.txt
 ```
 
-Synthetic mode needs only `grpcio` + `numpy`; file replay adds `pandas` +
-`scipy`. `grpcio-tools` is only needed if you regenerate the stubs.
+Synthetic mode needs only `grpcio` + `numpy`; file replay adds `pandas` + `scipy`.
+
+## Build
+
+```bash
+python scripts/build_proto.py
+```
 
 ## Run it
 
@@ -101,7 +104,7 @@ same client works unchanged.
 
 ## The gRPC contract
 
-Defined in `proto/BICgRPC.proto` and implemented by the mock across three
+Defined in `gRPC/Protos/BICgRPC.proto` and implemented by the mock across three
 services:
 
 - **BICInfoService** — version, supported devices, repository inspection
@@ -110,7 +113,7 @@ services:
   stream), plus temperature / humidity / connection / power / error streams and
   stim endpoints (no-ops in the mock)
 
-If you change the `.proto`, regenerate the stubs:
+Generate or regenerate the Python stubs with:
 
 ```bash
 python scripts/build_proto.py
