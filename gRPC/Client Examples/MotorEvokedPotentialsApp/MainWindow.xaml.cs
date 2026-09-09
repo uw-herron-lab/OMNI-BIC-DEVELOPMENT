@@ -44,15 +44,18 @@ namespace MotorEvokedPotentialsApp
         private uint baselinePeriod = 100000;               // pre-stimulus period for calculating average [us]
         private int stimAmplitude = 0;                      // pulse amplitude of initial phase of stimulation pulse [uA]
         private uint stimDuration = 250;                    // pulse duration of initial phase of stimulation pulse [us]
+        private uint trainDuration = 2;                      // duration of 50 Hz train for MT stimulation [s]
         private int jitterMax = 300000;                     // upper limit of jitter [us]
         private bool useGround = true;                      // use ground during stimulation
         private bool monopolar = false;                     // stimulation configuration
         private double stimThreshold = 100;                 // threshold for determining stimulation onset for calculating average [uV]
         private bool connectState = false;
-        private int ampToSet = 0;
+        private int ampToSet = 0;                           // amplitude of 50 Hz MT stimulation 
+        private uint durationToSet = 0;                     // duration of 50 Hz MT stimulation
 
         private bool modeSetFlag = false;
         private bool ampSetFlag = false;
+        private bool durationSetFlag = false;
         private bool sourceSetFlag = false;
         private bool destinationSetFlag = false;
         private string currTimeStamp = DateTime.Now.ToString("h:mm:ss tt");
@@ -182,7 +185,8 @@ namespace MotorEvokedPotentialsApp
                     // disable buttons
                     btn_start.IsEnabled = false; // open loop stim button
                     btn_stop.IsEnabled = false;
-                    btn_set.IsEnabled = false;
+                    btn_setAmp.IsEnabled = false;
+                    btn_setDur.IsEnabled = false;
                 }));
 
             // Start update timer
@@ -345,7 +349,7 @@ namespace MotorEvokedPotentialsApp
                     try
                     {
                         // Deliver 50 Hz stimulation with specified stimulation parameters
-                        aBICManagerMEP.enableMotorThresholdStimulation(true, monopolar, useGround, (uint)stimChannel - 1, (uint)returnChannel - 1, stimAmplitude, stimDuration, 4, 20000, stimThreshold);
+                        aBICManagerMEP.enableMotorThresholdStimulation(true, monopolar, useGround, (uint)stimChannel - 1, (uint)returnChannel - 1, stimAmplitude, stimDuration, trainDuration, 4, 20000, stimThreshold);
                     }
                     catch
                     {
@@ -365,12 +369,14 @@ namespace MotorEvokedPotentialsApp
                             sources.IsEnabled = false;
                             destinations.IsEnabled = false;
                             amp.IsEnabled = false;
+                            duration.IsEnabled = false;
 
                             // update buttons
                             btn_start.IsEnabled = false;
                             btn_stop.IsEnabled = true;
                             btn_load.IsEnabled = false;
-                            btn_set.IsEnabled = false;
+                            btn_setAmp.IsEnabled = false;
+                            btn_setDur.IsEnabled = false;
                         }));
 
                     // notify user of stimulation starting
@@ -420,6 +426,7 @@ namespace MotorEvokedPotentialsApp
                             // disable any controls that can change stimulation parameters
                             mode.IsEnabled = false;
                             amp.IsEnabled = false;
+                            duration.IsEnabled = false;
                             sources.IsEnabled = false;
                             destinations.IsEnabled = false;
 
@@ -427,7 +434,8 @@ namespace MotorEvokedPotentialsApp
                             btn_start.IsEnabled = false;
                             btn_stop.IsEnabled = true;
                             btn_load.IsEnabled = false;
-                            btn_set.IsEnabled = false;
+                            btn_setAmp.IsEnabled = false;
+                            btn_setDur.IsEnabled = false;
                         }));
 
                     // notify user of stimulation starting
@@ -507,6 +515,7 @@ namespace MotorEvokedPotentialsApp
                        // re-enable any controls that can change stimulation parameters
                        mode.IsEnabled = true;
                        amp.IsEnabled = true;
+                       duration.IsEnabled = true;
                        sources.IsEnabled = true;
                        destinations.IsEnabled = true;
 
@@ -514,7 +523,8 @@ namespace MotorEvokedPotentialsApp
                        btn_start.IsEnabled = true;
                        btn_stop.IsEnabled = false;
                        btn_load.IsEnabled = true;
-                       btn_set.IsEnabled = true;
+                       btn_setAmp.IsEnabled = true;
+                       btn_setDur.IsEnabled = true;
                    }));
         }
 
@@ -531,7 +541,7 @@ namespace MotorEvokedPotentialsApp
             {
                 if (stimMode == 0)
                 {
-                    aBICManagerMEP.enableMotorThresholdStimulation(false, monopolar, useGround, (uint)stimChannel - 1, (uint)returnChannel - 1, stimAmplitude, stimDuration, 1, 20000, stimThreshold);
+                    aBICManagerMEP.enableMotorThresholdStimulation(false, monopolar, useGround, (uint)stimChannel - 1, (uint)returnChannel - 1, stimAmplitude, stimDuration, trainDuration, 1, 20000, stimThreshold);
                 }
                 else if (stimMode == 1)
                 {
@@ -577,13 +587,22 @@ namespace MotorEvokedPotentialsApp
             aBICManagerMEP.disconnected += onDisconnected;
         }
 
-        private void btn_set_Click(object sender, RoutedEventArgs e)
+        private void btn_setAmp_Click(object sender, RoutedEventArgs e)
         {
             stimAmplitude = ampToSet;
             ampSetFlag = true;
             allParametersSet();
 
             OutputConsole.Inlines.Add("Stim amplitude set to " + stimAmplitude.ToString() + " uA\n");
+        }
+
+        private void btn_setDur_Click(object sender, RoutedEventArgs e)
+        {
+            trainDuration = durationToSet;
+            durationSetFlag = true;
+            allParametersSet();
+
+            OutputConsole.Inlines.Add("MT stim duration set to " + trainDuration.ToString() + " uA\n");
         }
 
         private void MainWindow_Closed(object sender, EventArgs e)
@@ -685,11 +704,30 @@ namespace MotorEvokedPotentialsApp
                 if (inputStimAmplitude > -5400 && inputStimAmplitude < 0)
                 {
                     ampToSet = inputStimAmplitude;
-                    btn_set.IsEnabled = true;
+                    btn_setAmp.IsEnabled = true;
                 }
                 else
                 {
                     OutputConsole.Inlines.Add("Entered text must be between -5400 and 0 [uA]!");
+                }
+            }
+        }
+
+        private void duration_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            uint inputStimDuration = 0;
+            bool valEntry = uint.TryParse(amp.Text, out inputStimDuration);
+            if (valEntry)
+            {
+                // duration range of [0, 5] s
+                if (inputStimDuration >= 0 && inputStimDuration <= 5)
+                {
+                    durationToSet = inputStimDuration;
+                    btn_setDur.IsEnabled = true;
+                }
+                else
+                {
+                    OutputConsole.Inlines.Add("Entered text must be between 0 and 5 [s]!");
                 }
             }
         }
@@ -713,7 +751,7 @@ namespace MotorEvokedPotentialsApp
         private bool allParametersSet()
         {
             // once all parameters have been set, enable the start stim button
-            if (modeSetFlag && ampSetFlag && sourceSetFlag && destinationSetFlag)
+            if (modeSetFlag && ampSetFlag && durationSetFlag && sourceSetFlag && destinationSetFlag)
             {
                 neuroStreamChart.Invoke(new System.Windows.Forms.MethodInvoker(
                     delegate
@@ -724,5 +762,7 @@ namespace MotorEvokedPotentialsApp
             }
             return false;
         }
+
+        
     }
 }
