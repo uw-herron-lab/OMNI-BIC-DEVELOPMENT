@@ -387,7 +387,7 @@ namespace MotorEvokedPotentialsApp
                     }));
                 });
 
-                await Task.Delay(2000); // wait for 2 seconds before updating UI
+                await Task.Delay((int)durationToSet); // wait before updating UI
 
                 // notify user of stimulation ending
                 currTimeStamp = DateTime.Now.ToString("h:mm:ss tt");
@@ -602,7 +602,7 @@ namespace MotorEvokedPotentialsApp
             durationSetFlag = true;
             allParametersSet();
 
-            OutputConsole.Inlines.Add("MT stim duration set to " + trainDuration.ToString() + " uA\n");
+            OutputConsole.Inlines.Add("MT stim duration set to " + trainDuration.ToString() + " ms\n");
         }
 
         private void MainWindow_Closed(object sender, EventArgs e)
@@ -708,7 +708,8 @@ namespace MotorEvokedPotentialsApp
                 }
                 else
                 {
-                    OutputConsole.Inlines.Add("Entered text must be between -5400 and 0 [uA]!");
+                    btn_setAmp.IsEnabled = false;
+                    OutputConsole.Inlines.Add("Entered text must be between -5400 and 0 [uA]!\n");
                 }
             }
         }
@@ -716,18 +717,19 @@ namespace MotorEvokedPotentialsApp
         private void duration_TextChanged(object sender, TextChangedEventArgs e)
         {
             uint inputStimDuration = 0;
-            bool valEntry = uint.TryParse(amp.Text, out inputStimDuration);
+            bool valEntry = uint.TryParse(duration.Text, out inputStimDuration);
             if (valEntry)
             {
-                // duration range of [0, 5] s
-                if (inputStimDuration >= 0 && inputStimDuration <= 5)
+                // duration range of [0, 5000] ms
+                if (inputStimDuration >= 0 && inputStimDuration <= 5000)
                 {
                     durationToSet = inputStimDuration;
                     btn_setDur.IsEnabled = true;
                 }
                 else
                 {
-                    OutputConsole.Inlines.Add("Entered text must be between 0 and 5 [s]!");
+                    btn_setDur.IsEnabled = false;
+                    OutputConsole.Inlines.Add("Entered text must be between 0 and 5000 [ms]!\n");
                 }
             }
         }

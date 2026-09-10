@@ -68,7 +68,7 @@
         <ComboBox x:Name="sources" ItemsSource="{Binding Path=channelNumList}" SelectedItem="{Binding Path=stimChannel}" HorizontalAlignment="Left" Margin="0,199,0,0" VerticalAlignment="Top" Width="78" Grid.Column="1" SelectionChanged="sources_SelectionChanged" Height="22"/>
         <Label Content="Destination:" HorizontalAlignment="Left" Margin="16,235,0,0" VerticalAlignment="Top" Height="26" Width="73"/>
         <ComboBox x:Name="destinations" ItemsSource="{Binding Path=channelNumList}" SelectedItem="{Binding Path=returnChannel}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="78" Grid.Column="1" SelectionChanged="destinations_SelectionChanged" Height="22" Margin="0,237,0,0"/>
-        <Label Content="Duration (s):" HorizontalAlignment="Left" Margin="16,143,0,0" VerticalAlignment="Top"/>
+        <Label Content="Duration (ms):" HorizontalAlignment="Left" Margin="16,143,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="duration" HorizontalAlignment="Left" Margin="0,147,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="78" Grid.Column="1" TextChanged="duration_TextChanged" Height="18"/>
     </Grid>
 </Window>
