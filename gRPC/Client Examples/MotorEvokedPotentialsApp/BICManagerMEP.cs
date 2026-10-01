@@ -262,10 +262,10 @@ namespace MotorEvokedPotentialsApp
             deviceClient.bicStartStimulation(new bicStartStimulationRequest() { DeviceAddress = DeviceName });
         }
 
-        public void enableMotorThresholdStimulation(bool openStimEn, bool monopolar, bool useStimGround, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold)
+        public void enableMotorThresholdStimulation(bool openStimEn, bool monopolar, bool useStimGround, uint stimChannel, uint returnChannel, double stimAmplitude, uint stimDuration, uint trainDuration, uint chargeBalancePWRatio, uint interPulseInterval, double stimThreshold)
         {
-            // Determine the number of waveform repetitions needed to create a 2-sec burst of stimulation
-            uint numRepetition = 3000 / (interPulseInterval / 1000);
+            // Determine the number of waveform repetitions needed to create a burst of stimulation. All timing variables should be in units of [ms]
+            uint numRepetition = (trainDuration) / (interPulseInterval / 1000);
             // Additional pause duration for stimulation
             uint addDuration = interPulseInterval - (5 * stimDuration);
 
