@@ -40,6 +40,12 @@ using BICgRPC::bicGetHumidityReply;
 
 namespace BICGRPCHelperNamespace
 {
+    // ************************* Public Configuration Definitions *********************
+    void BICDeviceGRPCService::setStimTimeLogDirectory(const std::string& directory)
+    {
+        stimTimeLogDirectory = directory;
+    }
+
     // ************************* Non-GRPC Helper Service Function Declarations *************************
     void BICDeviceGRPCService::passFactory(cortec::implantapi::IImplantFactory* serverFactory)
     {
@@ -169,6 +175,7 @@ namespace BICGRPCHelperNamespace
             newKeyPair.second = theImplants.back().get();
             newKeyPair.second->theImplant.reset(theImplantFactory->create(*exInfos.at(exInfoIndex), *theImplantInfo));
             newKeyPair.second->listener.reset(new BICListener());
+			newKeyPair.second->listener.get()->setStimTimeLogDirectory(stimTimeLogDirectory);
             newKeyPair.second->listener.get()->addImplantPointer(newKeyPair.second->theImplant.get());
             newKeyPair.second->theImplant->registerListener(newKeyPair.second->listener.get());
             newKeyPair.second->theImplant->pushState();

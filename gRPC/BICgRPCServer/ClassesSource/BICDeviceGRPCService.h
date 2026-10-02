@@ -21,6 +21,9 @@ namespace BICGRPCHelperNamespace
         std::unordered_map<std::string, BICDeviceInfoStruct*> deviceDirectory;
         std::mutex rpcServiceLock;
 
+        // ************************* Public Configuration *************************
+		void setStimTimeLogDirectory(const std::string& directory);
+
         // ************************* Non-GRPC Helper Service Function Declarations *************************
         void passFactory(cortec::implantapi::IImplantFactory* serverFactory);
 
@@ -69,5 +72,8 @@ namespace BICGRPCHelperNamespace
         grpc::Status enableDistributedStimulation(grpc::ServerContext* context, const BICgRPC::distributedStimEnableRequest* request, BICgRPC::bicSuccessReply* reply) override;
 
         grpc::Status enableOpenLoopStimulation(grpc::ServerContext* context, const BICgRPC::openLoopStimEnableRequest* request, BICgRPC::bicSuccessReply* reply) override;
+    
+    private:
+        std::string stimTimeLogDirectory;
     };
 }

@@ -193,6 +193,13 @@ namespace EvokedPotentialsApp
 
             mode.SelectedIndex = 0;
 
+            // Get command line argument for config file path
+            string[] commandLineArgs = Environment.GetCommandLineArgs();
+            if (commandLineArgs.Length > 2)
+            {
+                loadConfiguration(commandLineArgs[2]);
+            }
+
             // Start update timer
             neuroChartUpdateTimer = new System.Timers.Timer(200);
             neuroChartUpdateTimer.Elapsed += neuroChartUpdateTimer_Elapsed;
@@ -296,22 +303,19 @@ namespace EvokedPotentialsApp
             }
         }
         /// <summary>
-        /// Read in config file
+        /// Load config file
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void btn_load_Click(object sender, RoutedEventArgs e)
+        /// <param name="fileName"></param>
+        private bool loadConfiguration(string fileName)
         {
             try
             {
-                // open dialog box to select file with patient-specific settings
-                var fileD = new Microsoft.Win32.OpenFileDialog();
-                bool? loadFile = fileD.ShowDialog();
-                if (loadFile == true)
+                if (!File.Exists(fileName))
                 {
-                    string fileName = fileD.FileName;
-                    if (File.Exists(fileName))
-                    {
+                    OutputConsole.Inlines.Add("Configuration file not found: " + fileName + "\n");
+                    Scroller.ScrollToEnd();
+                    return false;
+                }
                         // load in .json file and read in stimulation parameters
                         using (StreamReader fileReader = new StreamReader(fileName))
                         {
@@ -378,8 +382,8 @@ namespace EvokedPotentialsApp
                                     destinations.IsEnabled = true;
                                 }));
                         }
-                    }
-                }
+
+                return true;
             }
             catch (Exception theException)
             {
@@ -387,6 +391,20 @@ namespace EvokedPotentialsApp
                 OutputConsole.Inlines.Add("Error encoutnered: " + theException.Message + "\n");
                 OutputConsole.Inlines.Add("\n");
                 Scroller.ScrollToEnd();
+                return false;
+            }
+        }
+        /// <summary>
+        /// Manually load config file
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_load_Click(object sender, RoutedEventArgs e)
+        {
+            var fileD = new Microsoft.Win32.OpenFileDialog();
+            if (fileD.ShowDialog() == true)
+            {
+                loadConfiguration(fileD.FileName);
             }
         }
 
