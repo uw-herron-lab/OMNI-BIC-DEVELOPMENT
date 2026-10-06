@@ -1,0 +1,16 @@
+# Conda environment for the OMNI-BIC mock server.
+# Usage:  conda env create -f environment.yml
+#         conda activate omni-bic-mock
+name: omni-bic-mock
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.11
+  - pip
+  - pip:
+      - grpcio>=1.60
+      - grpcio-tools>=1.60
+      - numpy>=1.24
+      - pandas>=2.0
+      - scipy>=1.11
