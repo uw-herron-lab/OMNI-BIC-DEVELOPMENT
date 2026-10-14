@@ -300,6 +300,7 @@ message NeuralSample{
 	double hampelFiltSample = 15;
 	bool isValidTarget = 16;
 	bool isInputTrigHigh = 17;
+	uint32 stimType = 18;
 }
 
 message ConnectionUpdate{

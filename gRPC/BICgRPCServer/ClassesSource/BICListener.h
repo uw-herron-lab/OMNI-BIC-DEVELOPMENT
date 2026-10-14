@@ -160,6 +160,7 @@ namespace BICGRPCHelperNamespace
         // Generic Distributed Variables
         bool isCLStimEn = false;                    // State tracking boolean indicates whether distributed stim is active or not
         bool isOLStimEn = false;                    // State tracking boolean indicates whether open loop stim is active or not
+        bool isCCEPStimEn = false;
         uint32_t openLoopSleepTimeDuration;
         UINT_PTR openLoopTimerPointer;
         uint32_t distributedInputChannel = 0;       // Distributed algorithm sensing channel (input)
@@ -169,7 +170,7 @@ namespace BICGRPCHelperNamespace
         double distributedAnodeAmplitude = 250;     // Distributed algorithm anode (positive pulse) amplitude (input)
         uint64_t distributedAnodeDuration = 1600;   // Distributed algorithm anode (positive pulse) duration (input)
         double distributedStimThreshold = 10;       // Distributed algorithm threshold to trigger stimulation (input)
-        
+
         // Signal Processing Variables
         std::vector<double> bpFiltData = std::vector<double>(5, 0);            // IIR filter output history
         std::vector<double> rawPrevData = std::vector<double>(15, 0);           // Data history for raw input samples
