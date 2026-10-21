@@ -427,7 +427,7 @@ namespace BICGRPCHelperNamespace
     /// </summary>
     /// <param name="samples">BIC sensed LFP samples</param>
     void BICListener::onData(const std::vector<CSample>* samples)
-    {
+    { 
         std::chrono::system_clock::time_point packetReceived = std::chrono::system_clock::now();
         // Ensure samples is not empty before working with it.
         if (!samples->empty())
@@ -435,6 +435,7 @@ namespace BICGRPCHelperNamespace
             // Loop through retrieved samples
             for (int i = 0; i < samples->size(); i++)
             {
+                int32_t currStimType = 0;
                 // Create a new sample data buffer
                 int32_t sampleCounter = samples->at(i).getMeasurementCounter();
                 int16_t sampleNum = samples->at(i).getNumberOfMeasurements();
@@ -496,6 +497,7 @@ namespace BICGRPCHelperNamespace
                             // Interpolate and mark data as interpolated in NeuralSample message
                             for (uint32_t interpolatedPointNum = 1; interpolatedPointNum <= diff; interpolatedPointNum++)
                             {
+                                int32_t currStimType = 0;       // no stimulation
                                 // Create a new sample data buffer
                                 NeuralSample* newInterpolatedSample = new NeuralSample();
 
@@ -529,11 +531,36 @@ namespace BICGRPCHelperNamespace
                                         newInterpolatedSample->set_hampelfiltsample(hampelPrevData[0]);
                                         newInterpolatedSample->set_isvalidtarget(isValidTarget);
 
+                                        // Store the stimulation type
+                                        if (newInterpolatedSample->stimulationactive() == true && isOLStimEn)
+                                        {
+                                            currStimType = 1;       // open-loop stimulation
+                                        }
+                                        else if (newInterpolatedSample->stimulationactive() == true && isCLStimEn)
+                                        {
+                                            if (isCCEPStimEn)
+                                            {
+                                                currStimType = 3;   // CCEP stimulation
+                                                // update the stimulation history
+                                                stimSampStamp.insert(stimSampStamp.begin(), lastNeuroCount + interpolatedPointNum);
+                                                stimSampStamp.pop_back();
+                                            }
+                                            else
+                                            {
+                                                currStimType = 2;   // distributed stimulation
+                                            }
+                                        }
+                                        newInterpolatedSample->set_stimtype(currStimType);
+
                                         // Update stimulation history window
                                         if (newInterpolatedSample->stimulationactive() == true && prevStimActive == false)
                                         {
                                             stimOnset.insert(stimOnset.begin(), 1);
-                                            updateTriggerPhase(newInterpolatedSample->phase(), &triggerPhaseData);
+                                            // only update the trigger phase value if the stimulation sent was a distributed stim pulse
+                                            if (currStimType == 2)
+                                            {
+                                                updateTriggerPhase(newInterpolatedSample->phase(), &triggerPhaseData);
+                                            }
                                             prevStimActive = true;
                                             stimSampStamp.insert(stimSampStamp.begin(), lastNeuroCount + interpolatedPointNum);
                                             stimSampStamp.pop_back();
@@ -608,11 +635,35 @@ namespace BICGRPCHelperNamespace
                         newSample->set_hampelfiltsample(hampelPrevData[0]);
                         newSample->set_isvalidtarget(isValidTarget);
 
+                        // Store the stimulation type
+                        if (newSample->stimulationactive() == true && isOLStimEn)
+                        {
+                            currStimType = 1;       // open-loop stimulation
+                        }
+                        else if (newSample->stimulationactive() == true && isCLStimEn)
+                        {
+                            if (isCCEPStimEn)
+                            {
+                                currStimType = 3;   // CCEP stimulation
+                                // update the stimulation history
+                                stimSampStamp.insert(stimSampStamp.begin(), sampleCounter);
+                                stimSampStamp.pop_back();
+                            }
+                            else
+                            {
+                                currStimType = 2;   // distributed stimulation
+                            }
+                        }
+                        newSample->set_stimtype(currStimType);
+
                         // Update stimulation history window
                         if (newSample->stimulationactive() == true && prevStimActive == false)
                         {
                             stimOnset.insert(stimOnset.begin(), 1);
-                            updateTriggerPhase(newSample->phase(), &triggerPhaseData);
+                            if (currStimType == 2) // only update the triggering phase if we sent distributed stimulation
+                            {
+                                updateTriggerPhase(newSample->phase(), &triggerPhaseData);
+                            }
                             prevStimActive = true;
                             stimSampStamp.insert(stimSampStamp.begin(), sampleCounter);
                             stimSampStamp.pop_back();
@@ -633,7 +684,6 @@ namespace BICGRPCHelperNamespace
                             {
                                 isSelfTrig = false;
                             }
-
                         }
 
                         if (newSample->stimulationactive() == false && prevStimActive == true)
@@ -927,8 +977,9 @@ namespace BICGRPCHelperNamespace
         double filtSamp = filterIIR(hampelSamp, &bpFiltData, hampelDataHistory, &betaBandPassIIR_B, &betaBandPassIIR_A, 1);
 
         // Determine if we have a valid target to initiate stimulation 
-        if (phasicStimTarget == 1)
+        if (phasicStimTarget == 1) // if targeting the rising hyperpolarizing phase...
         {
+            // check if the sample is a valid target using this set of conditions
             if (!isSelfTrig && isCLStimEn && detectTriggerPhase(phaseData, stimTriggerPhase) && abs(findMedian(&bpFiltData)) > distributedStimThreshold)
             {
                 // If conditions have been met, then it's a valid target
@@ -939,13 +990,14 @@ namespace BICGRPCHelperNamespace
                 isValidTarget = false;
             }
         }
-        else 
+        else if (phasicStimTarget == 0 || phasicStimTarget == 2 || phasicStimTarget == 3) // for any other phase target...
         {
+            // check if the sample is a valid target using this set of conditions
             if (!isSelfTrig && isCLStimEn && detectTriggerPhase(phaseData, stimTriggerPhase) && abs(bpFiltData[0]) > distributedStimThreshold)
             {
                 // If conditions have been met, then it's a valid target
                 isValidTarget = true;
-            }
+            } 
             else
             {
                 isValidTarget = false;
@@ -955,7 +1007,24 @@ namespace BICGRPCHelperNamespace
         // send stimulation if a valid target has been identified
         if (isValidTarget)
         {
+            isCCEPStimEn = false;
             stimTrigger->notify_all();
+        }
+
+        // check when was the last time since stimulation was delivered
+        if ((currSamp - stimSampHistory[0]) >= 500) // if it's been at least 500 ms...
+        {
+            // If distributed stim is enabled and single pulse stim isn't currently enabled
+            if (isCLStimEn && !isCCEPStimEn)
+            {
+                isCCEPStimEn = true;
+                // trigger stimulation
+                stimTrigger->notify_all();  
+            }
+        }
+        else
+        {
+            isCCEPStimEn = false;
         }
 
         // Return the filtered sample for visualization purposes
