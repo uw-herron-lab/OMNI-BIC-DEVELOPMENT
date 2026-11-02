@@ -1345,13 +1345,15 @@ namespace BICGRPCHelperNamespace
         // Append to the name of the stim logging file 
         std::string fileName = "stimTimeLog_" + timeStamp + ".csv";
         std::string filePath;
-        if (stimTimeLogDirectory.empty()) {
-            filePath = fileName;
-        }
-        else {
-            filePath = stimTimeLogDirectory + "\\" + fileName;
-        }
+
+        stimTimeLogDirectory.empty() ? filePath = fileName : filePath = stimTimeLogDirectory + "\\" + fileName;
+
+        // Need to verify file could be opened correctly
         myFile.open(filePath, std::ios_base::app);
+        if (!myFile) {
+            std::cerr << "Error opening Stim Time Log @ " << filePath << "\n";
+        }
+
         myFile << "BeforeStim, AfterStim, Exception, triggerPhase" << "\n";
         myFile.close();
 
