@@ -1,0 +1,14 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\gRPC",
+    "\\gRPC\\BICgRPCServer\\ClassesSource",
+    "\\gRPC\\BICgRPCServer\\cmake",
+    "\\gRPC\\BICgRPCServer\\cmake\\build",
+    "\\gRPC\\scripts",
+    "\\gRPC\\scripts\\BIC_01_00_script_template",
+    "\\gRPC\\x64"
+  ],
+  "SelectedNode": "\\gRPC\\scripts\\BIC_01_00_script_template\\ccep.bat",
+  "PreviewInSolutionExplorer": false
+}

@@ -8,9 +8,9 @@ for /f %%I in ('powershell -NoProfile -Command "Get-Date -Format yyyy-MM-dd_HH-m
 :: =============================================================
 :: Configuration
 :: =============================================================
-set "SERVER_EXE=C:\gitbuilds\OMNI-BIC-DEVELOPMENT\gRPC\BICgRPCServer\cmake\build\Release\BICgRPCmicroserver.exe"
+set "SERVER_EXE=C:\gitbuilds\OMNI-BIC-DEVELOPMENT\gRPC\BICgRPCServer\cmake\build\Debug\BICgRPCmicroserver.exe"
 :: =============================================================
-set "APP_EXE=C:\gitbuilds\OMNI-BIC-DEVELOPMENT\gRPC\Client Examples\StimTherapyApp\bin\Release\StimTherapyApp.exe"
+set "APP_EXE=C:\gitbuilds\OMNI-BIC-DEVELOPMENT\gRPC\Client Examples\StimTherapyApp\bin\Debug\StimTherapyApp.exe"
 :: =============================================================
 set "CONFIG_FILE=C:\gitbuilds\OMNI-BIC-DEVELOPMENT\gRPC\config\BIC_01_00_config_template.json"
 :: =============================================================
