@@ -30,7 +30,7 @@ gRPC Install/Update Instructions:
 10) Without closing gitbash, go into cmake/build and open up the "Install.vcxproj" in visual studio ( C:/gitbuilds/grpc/third_party/abseil-cpp/CMake/build)
 11) Build the install project (Find install in solution explorer, right click, then select build)
 
-Setting up the Protobuf build instructions:
+### BIC Setup
 1) Clone the BrainInterchange-Development repo in /c/gitbuilds
 2) Go to BrainInterchange-Development/gRPC/BICgRPCServer and create cmake/build subdirectory (can use same commands as above) (i.e. full directory: C:\gitbuilds\BrainInterchange-Development\gRPC\BICgRPCServer\cmake\build)
 2) Open gitbash IN cmake/build
@@ -56,7 +56,7 @@ Setting up the Protobuf build instructions:
 13) Build the solution
 
 
-Potential Errors when building solution
+### Troubleshooting
 1) There may be an error that appears: This project references NuGet package(s) that are missing on this computer. 
 	a) Reference this link for solution https://stackoverflow.com/questions/22909506/this-project-references-nuget-packages-that-are-missing-on-this-computer
 	b) Under the project, click on the arrow next to References. There will be some references with a yellow triangle and exclamation mark. Right click on those packages and select Remove.
