@@ -7,8 +7,6 @@ for /f %%I in ('powershell -NoProfile -Command "Get-Date -Format yyyy-MM-dd"') d
 :: =============================================================
 :: Configuration
 :: =============================================================
-set "SERVER_EXE=C:\gitbuilds\OMNI-BIC-DEVELOPMENT\gRPC\BICgRPCServer\cmake\build\Release\BICgRPCmicroserver.exe"
-:: =============================================================
 set "APP_EXE=C:\gitbuilds\OMNI-BIC-DEVELOPMENT\gRPC\Client Examples\MotorEvokedPotentialsApp\bin\Release\MotorEvokedPotentialsApp.exe"
 :: =============================================================
 set "LOG_DIRECTORY=C:\BICData\BIC_01_00\%TODAY%\ol_mt"
@@ -31,15 +29,7 @@ if not errorlevel 1 (
 )
 
 :: Launch gRPC server and wait until ready
-if not exist "%LOG_DIRECTORY%" mkdir "%LOG_DIRECTORY%"
-start "BIC gRPC Server" "%SERVER_EXE%" "%LOG_DIRECTORY%" "%LOG_DIRECTORY%"
-:WAIT_FOR_SERVER
-powershell -NoProfile -Command ^
-    "if ((Test-NetConnection 127.0.0.1 -Port 50051 -WarningAction SilentlyContinue).TcpTestSucceeded) { exit 0 } else { exit 1 }"
-if errorlevel 1 (
-    timeout /t 1 /nobreak >nul
-    goto WAIT_FOR_SERVER
-)
+call utils.bat START_SERVER "%LOG_DIRECTORY%" "%LOG_DIRECTORY%"
 
 :: Launch application and pass configurations
 start "" "%APP_EXE%" "%LOG_DIRECTORY%"

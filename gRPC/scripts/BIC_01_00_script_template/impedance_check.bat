@@ -30,16 +30,24 @@ if not errorlevel 1 (
     exit /b 1
 )
 
-:: Launch gRPC server and wait until ready
-if not exist "%LOG_DIRECTORY%" mkdir "%LOG_DIRECTORY%"
-start "BIC gRPC Server" "%SERVER_EXE%" "%LOG_DIRECTORY%" "%LOG_DIRECTORY%"
-:WAIT_FOR_SERVER
+:: Check whether a gRPC server is already running
 powershell -NoProfile -Command ^
-    "if ((Test-NetConnection 127.0.0.1 -Port 50051 -WarningAction SilentlyContinue).TcpTestSucceeded) { exit 0 } else { exit 1 }"
-if errorlevel 1 (
-    timeout /t 1 /nobreak >nul
-    goto WAIT_FOR_SERVER
+    "$client = New-Object System.Net.Sockets.TcpClient; try { $client.Connect('127.0.0.1', 50051); exit 0 } catch { exit 1 } finally { $client.Dispose() }"
+if not errorlevel 1 (
+    echo.
+    echo ERROR
+    echo ================================================
+    echo A gRPC server is already listening on port 50051
+    echo Close any existing gRPC servers before running
+    echo ================================================
+    echo.
+    pause
+    endlocal
+    exit /b 1
 )
+
+:: Launch gRPC server and wait until ready
+call utils.bat START_SERVER "%LOG_DIRECTORY%" "%LOG_DIRECTORY%"
 
 :: Launch application and pass configurations
 start "" "%APP_EXE%" "%LOG_DIRECTORY%"
