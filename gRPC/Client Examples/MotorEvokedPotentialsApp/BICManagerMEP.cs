@@ -36,7 +36,9 @@ namespace MotorEvokedPotentialsApp
         // Logging Objects
         FileStream logFileStream;
         StreamWriter logFileWriter;
-        string filePath = "./mepLog" + DateTime.Now.ToString("_yyyy-MM-dd_HH-mm-ss") + ".csv";
+        string logDirectory = null;
+        string fileName = "./mepLog" + DateTime.Now.ToString("_yyyy-MM-dd_HH-mm-ss") + ".csv";
+        string filePath;
         ConcurrentQueue<string> logLineQueue = new ConcurrentQueue<string>();
         Thread newLoggingThread;
         bool loggingNotDisposed = true;
@@ -74,6 +76,22 @@ namespace MotorEvokedPotentialsApp
                 runningTotals[i] = new List<double>(new double[stimPeriodSamples]);
             }
 
+            // Check for command line argument for log directory
+            string[] commandLineArgs = Environment.GetCommandLineArgs();
+            if (commandLineArgs.Length > 1)
+            {
+                logDirectory = commandLineArgs[1];
+            }
+            // Define log file path
+            if (string.IsNullOrWhiteSpace(logDirectory)) // Use current directory
+            {
+                filePath = "./" + fileName;
+            }
+            else // Create directory tree
+            {
+                Directory.CreateDirectory(logDirectory);
+                filePath = Path.Combine(logDirectory, fileName);
+            }
             // Set up the logging interface
             if (File.Exists(filePath))
             {

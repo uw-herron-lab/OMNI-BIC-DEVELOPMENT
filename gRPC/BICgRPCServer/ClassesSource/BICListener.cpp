@@ -22,6 +22,16 @@ using BICgRPC::NeuralSample;
 
 namespace BICGRPCHelperNamespace
 {
+    //*************************************************** Configuration ******************************************************************
+    /// <summary>
+    /// Set the output directory for stimulation timing log files.
+    /// </summary>
+    /// <param name="directory"></param>
+    void BICListener::setStimTimeLogDirectory(const std::string& directory)
+    {
+        stimTimeLogDirectory = directory;
+    }
+
     //*************************************************** Device State Event Handlers ***************************************************
     /// <summary>
     /// Event Handler for Brain Interchange stimulation state change events
@@ -1334,7 +1344,16 @@ namespace BICGRPCHelperNamespace
 
         // Append to the name of the stim logging file 
         std::string fileName = "stimTimeLog_" + timeStamp + ".csv";
-        myFile.open(fileName, std::ios_base::app);
+        std::string filePath;
+
+        stimTimeLogDirectory.empty() ? filePath = fileName : filePath = stimTimeLogDirectory + "\\" + fileName;
+
+        // Need to verify file could be opened correctly
+        myFile.open(filePath, std::ios_base::app);
+        if (!myFile) {
+            std::cerr << "Error opening Stim Time Log @ " << filePath << "\n";
+        }
+
         myFile << "BeforeStim, AfterStim, Exception, triggerPhase" << "\n";
         myFile.close();
 
