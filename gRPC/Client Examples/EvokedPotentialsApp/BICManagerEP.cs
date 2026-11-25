@@ -31,7 +31,7 @@ namespace EvokedPotentialsApp
         private object connectLock = new object();
         private uint stimPeriodSamples;                 // number of samples in the stimulation period
         private uint baselinePeriodSamples;             // number of samples in the baseline period (time before stimulation pulse to include in signal average)
-        private uint samplingRate = EvokedPotentialsApp::DEFAULT_SAMPL;               // [Hz]
+        private uint samplingRate = 1000;               // [Hz]
 
         // Logging Objects
         FileStream logFileStream;
@@ -76,7 +76,7 @@ namespace EvokedPotentialsApp
                 runningTotals[i] = new List<double>(new double[stimPeriodSamples]);
             }
 
-            ConfigureLogFile(numSensingChanelsDef);
+            ConfigureLogFile(numSensingChannelsDef);
         }
 
         // Configures Log File
