@@ -9,7 +9,7 @@ using System.Diagnostics;
 using System.IO;
 using Grpc.Core;
 using BICgRPC;
-// D:\gitbuilds\OMNI - BIC - DEVELOPMENT\gRPC\Client Examples\EvokedPotentialsApp\BICManager.cs
+
 namespace EvokedPotentialsApp
 {
     class BICManagerEP : IDisposable
@@ -31,7 +31,7 @@ namespace EvokedPotentialsApp
         private object connectLock = new object();
         private uint stimPeriodSamples;                 // number of samples in the stimulation period
         private uint baselinePeriodSamples;             // number of samples in the baseline period (time before stimulation pulse to include in signal average)
-        private uint samplingRate = 1000;               // [Hz]
+        private uint samplingRate = EvokedPotentialsApp::DEFAULT_SAMPL;               // [Hz]
 
         // Logging Objects
         FileStream logFileStream;
@@ -76,38 +76,50 @@ namespace EvokedPotentialsApp
                 runningTotals[i] = new List<double>(new double[stimPeriodSamples]);
             }
 
+            ConfigureLogFile(numSensingChanelsDef);
+        }
+
+        // Configures Log File
+        private void ConfigureLogFile(int numSensingChanelsDef) {
+
             // Check for log directory argument
             string[] commandLineArgs = Environment.GetCommandLineArgs();
             if (commandLineArgs.Length > 1)
             {
                 logDirectory = commandLineArgs[1];
             }
+
             // Define log file path
             if (string.IsNullOrWhiteSpace(logDirectory)) // Use current directory
             {
                 filePath = "./" + fileName;
             }
+
             else // Create directory tree
             {
                 Directory.CreateDirectory(logDirectory);
                 filePath = Path.Combine(logDirectory, fileName);
             }
+
             // Set up the logging interface
-            if(File.Exists(filePath))
+            if (File.Exists(filePath))
             {
                 File.Delete(filePath);
             }
+
             logFileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, FileOptions.Asynchronous);
             logFileWriter = new StreamWriter(logFileStream);
+
             string chanHeader = "";
             for (int chNum = 0; chNum < numSensingChannelsDef; chNum++)
             {
                 chanHeader += ",CH" + (chNum + 1).ToString();
             }
+
             // list of header names
             logFileWriter.WriteLine("PacketNum,TimeStamp,FilteredChannelNum,RawChannelData,FilteredChannelData,boolInterpolated,StimChannelData,StimActive" + chanHeader);
         }
-       
+
         // Resets currPulseBuffer and runningTotals
         public void zeroAvgsBuffers()
         {
