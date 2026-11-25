@@ -9,7 +9,7 @@ using System.Diagnostics;
 using System.IO;
 using Grpc.Core;
 using BICgRPC;
-// D:\gitbuilds\OMNI - BIC - DEVELOPMENT\gRPC\Client Examples\EvokedPotentialsApp\BICManager.cs
+
 namespace EvokedPotentialsApp
 {
     class BICManagerEP : IDisposable
@@ -27,16 +27,21 @@ namespace EvokedPotentialsApp
 
         public int currNumPulses { get; set; } = 0;     // Keeps track of how many pulses have occured for the current source/destination condition. Used to compute running average.
         private const int numSensingChannelsDef = 32;
-        private object dataBufferLock = new object();
-        private object connectLock = new object();
+        private readonly object dataBufferLock = new object();
+        private readonly object connectLock = new object();
         private uint stimPeriodSamples;                 // number of samples in the stimulation period
         private uint baselinePeriodSamples;             // number of samples in the baseline period (time before stimulation pulse to include in signal average)
-        private uint samplingRate = 1000;               // [Hz]
+        private uint samplingRate = 1000U;               // [Hz]
+        private readonly uint RefChannels = 31U;
+
+        private readonly int LoggingThreadSleepMs = 50;
 
         // Logging Objects
         FileStream logFileStream;
         StreamWriter logFileWriter;
-        string filePath = "./epLog" + DateTime.Now.ToString("_yyyy-MM-dd_HH-mm-ss") + ".csv";
+        string logDirectory = null;
+        string fileName = "epLog" + DateTime.Now.ToString("_yyyy-MM-dd_HH-mm-ss") + ".csv";
+        string filePath;
         ConcurrentQueue<string> logLineQueue = new ConcurrentQueue<string>();
         Thread newLoggingThread;
         bool loggingNotDisposed = true;
@@ -46,14 +51,14 @@ namespace EvokedPotentialsApp
         public delegate void disconnectEventHandler(List<string> disconnectionInfo);
         public event disconnectEventHandler disconnected;
 
-        public int deviceSampleRate {  get; set; }
-        
+        public int deviceSampleRate { get; set; }
+
         // Task pointers for streaming methods
         private Task neuroMonitor = null;
         private Task connectMonitor = null;
 
         // Constructor
-        public BICManagerEP(int definedDataBufferLength, uint stimPeriod, uint baselinePeriod) 
+        public BICManagerEP(int definedDataBufferLength, uint stimPeriod, uint baselinePeriod)
         {
             // Open up the GRPC Channel to the BIC microservice
             aGRPChannel = new Channel("127.0.0.1:50051", ChannelCredentials.Insecure);
@@ -67,29 +72,58 @@ namespace EvokedPotentialsApp
             runningTotals = new List<double>[numSensingChannelsDef];
             connectionInfoBuffer = new List<string>();
 
-            for(int i = 0; i < numSensingChannelsDef; i++)
+            for (int i = 0; i < numSensingChannelsDef; i++)
             {
                 dataBuffer[i] = new List<double>();
                 currPulseBuffer[i] = new List<double>();
                 runningTotals[i] = new List<double>(new double[stimPeriodSamples]);
             }
 
+            ConfigureLogFile(numSensingChannelsDef);
+        }
+
+        // Configures Log File
+        private void ConfigureLogFile(int numSensingChanelsDef)
+        {
+
+            // Check for log directory argument
+            string[] commandLineArgs = Environment.GetCommandLineArgs();
+            if (commandLineArgs.Length > 1)
+            {
+                logDirectory = commandLineArgs[1];
+            }
+
+            // Define log file path
+            if (string.IsNullOrWhiteSpace(logDirectory)) // Use current directory
+            {
+                filePath = "./" + fileName;
+            }
+
+            else // Create directory tree
+            {
+                Directory.CreateDirectory(logDirectory);
+                filePath = Path.Combine(logDirectory, fileName);
+            }
+
             // Set up the logging interface
-            if(File.Exists(filePath))
+            if (File.Exists(filePath))
             {
                 File.Delete(filePath);
             }
+
             logFileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, FileOptions.Asynchronous);
             logFileWriter = new StreamWriter(logFileStream);
+
             string chanHeader = "";
             for (int chNum = 0; chNum < numSensingChannelsDef; chNum++)
             {
                 chanHeader += ",CH" + (chNum + 1).ToString();
             }
+
             // list of header names
             logFileWriter.WriteLine("PacketNum,TimeStamp,FilteredChannelNum,RawChannelData,FilteredChannelData,boolInterpolated,StimChannelData,StimActive" + chanHeader);
         }
-       
+
         // Resets currPulseBuffer and runningTotals
         public void zeroAvgsBuffers()
         {
@@ -102,26 +136,35 @@ namespace EvokedPotentialsApp
                 }
             }
         }
-        
+
+        /// <summary>
+        /// Connects to BIC Device
+        /// </summary>
+        /// <returns> True if successful connection, false otherwise</returns>
         public bool BICConnect()
         {
-//#warning TODO: Add a check for already connected devices?
+            //#warning TODO: Add a check for already connected devices?
 
-//#warning TODO: Add InfoService- prompted by "?"
+            //#warning TODO: Add InfoService- prompted by "?"
             infoClient = new BICInfoService.BICInfoServiceClient(aGRPChannel);
             Console.WriteLine("Grabbing information: ");
+
             var versionNumberReply = infoClient.VersionNumber(new VersionNumberRequest());
             var supportedDevicesReply = infoClient.SupportedDevices(new SupportedDevicesRequest());
             var inspectRepositoryReply = infoClient.InspectRepository(new InspectRepositoryRequest());
+
             Console.WriteLine("\tVersion Number: " + versionNumberReply.VersionNumber);
             Console.WriteLine("\tSupported Devices: " + supportedDevicesReply.SupportedDevices);
             Console.WriteLine("\tRepository: " + inspectRepositoryReply.RepoUri);
 
             // Instantiate the Bridge and scan for bridges
             Console.WriteLine("Instantiating Bridge Service Client and scanning for bridges...");
+
             bridgeClient = new BICBridgeService.BICBridgeServiceClient(aGRPChannel);
+
             var connectedBridgesReply = bridgeClient.ConnectedBridges(new QueryBridgesRequest());
             var scanBridgesReply = bridgeClient.ScanBridges(new QueryBridgesRequest());
+
             if (scanBridgesReply.Bridges.Count == 0)
             {
                 Console.WriteLine("No bridges found. BICConnect returns false.");
@@ -142,8 +185,10 @@ namespace EvokedPotentialsApp
 
             // Connect to the first bridge
             Console.WriteLine("Connecting to the first bridge");
+
             string bridgeName = scanBridgesReply.Bridges[0].Name;
             var connectBridgeReply = bridgeClient.ConnectBridge(new ConnectBridgeRequest() { Name = bridgeName });
+
             Console.WriteLine("Connect Bridge Response: " + connectBridgeReply.ConnectionStatus);
             Console.WriteLine();
 
@@ -158,6 +203,7 @@ namespace EvokedPotentialsApp
                 Console.WriteLine("No devices found. BICConnect returns false.");
                 return false;
             }
+
             DeviceName = scanDevicesReply.Name;
 
             // Print out all devices found
@@ -186,16 +232,23 @@ namespace EvokedPotentialsApp
             return true;
         }
 
+        /// <summary>
+        /// Close BIC Stream and clear log file writes
+        /// </summary>
         public void Dispose()
         {
             // Tell BIC that we want to close!
             deviceClient.bicNeuralStream(new bicNeuralSetStreamingEnable() { DeviceAddress = DeviceName, Enable = false });
+
             var disposeReply = deviceClient.bicDispose(new RequestDeviceAddress() { DeviceAddress = DeviceName });
+
             Console.WriteLine("Dispose BIC Response: " + disposeReply.ToString());
+
             aGRPChannel.ShutdownAsync().Wait();
 
             // Tell logging we want to close
             loggingNotDisposed = false;
+
             logFileWriter.Flush();
             logFileWriter.Dispose();
             logFileStream.Dispose();
@@ -238,11 +291,13 @@ namespace EvokedPotentialsApp
             deviceClient.bicStartStimulation(new bicStartStimulationRequest() { DeviceAddress = DeviceName });
         }
 
+        /// <summary>
+        /// Stoped Potential Stimulation
+        /// </summary>
         public void stopEvokedPotentialStimulation()
         {
             deviceClient.bicStopStimulation(new RequestDeviceAddress() { DeviceAddress = DeviceName });
         }
-
 
         /// <summary>
         /// Provide a copy of the current data buffers
@@ -252,7 +307,7 @@ namespace EvokedPotentialsApp
         {
             List<double>[] outputBuffer = new List<double>[dataBuffer.Length];
 
-            lock(dataBufferLock)
+            lock (dataBufferLock)
             {
                 for (int i = 0; i < dataBuffer.Length; i++)
                 {
@@ -286,14 +341,16 @@ namespace EvokedPotentialsApp
             return outputBuffer;
         }
 
-
+        /// <summary>
+        /// Main loop for logging thread. Will exit until logging is explicitly disposed
+        /// </summary>
         private void loggingThread()
         {
             // Declare output from concurrent queue
             string dequeuedString;
 
             // Loop until quit
-            while(loggingNotDisposed)
+            while (loggingNotDisposed)
             {
                 try
                 {
@@ -301,30 +358,34 @@ namespace EvokedPotentialsApp
                     {
                         logFileWriter.WriteLine(dequeuedString);
                     }
-                    else
-                    {
-                        Thread.Sleep(50);
-                    }
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine("logging exception occured: " + e.Message);
                 }
 
+                Thread.Sleep(LoggingThreadSleepMs);
+
             }
         }
 
+        /// <summary>
+        /// Validates packet ordering. Packets are in order if their SampleCounter field is in ascending order.
+        /// </summary>
+        /// <param name="sampleBuffer"></param>
+        /// <returns>True if packets are in order, false otherwise</returns>
         private bool validBufferOrderCheck(Google.Protobuf.Collections.RepeatedField<NeuralSample> sampleBuffer)
         {
             uint prevPacketNum = sampleBuffer[0].SampleCounter;
             for (int i = 1; i < sampleBuffer.Count; i++)
             {
                 // check if the sequential packet number is less than the previous packet number
-                if (sampleBuffer[i].SampleCounter < prevPacketNum + 1) 
+                if (sampleBuffer[i].SampleCounter < prevPacketNum + 1)
                 {
                     Console.WriteLine("ERROR: Packet numbers are not in order! Sample (prev, next): " + prevPacketNum.ToString() + ", " + sampleBuffer[i].SampleCounter.ToString());
                     return false;
                 }
+
                 // update the prevPacketNum value
                 prevPacketNum = sampleBuffer[i].SampleCounter;
             }
@@ -345,6 +406,7 @@ namespace EvokedPotentialsApp
                     return i;
                 }
             }
+
             return -1;
         }
 
@@ -367,8 +429,12 @@ namespace EvokedPotentialsApp
         async Task neuralMonitorTaskAsync()
         {
             Debug.WriteLine("********************************************************* calling monitor task");
-            var stream = deviceClient.bicNeuralStream(new bicNeuralSetStreamingEnable() { DeviceAddress = DeviceName, Enable = true, BufferSize = 100, MaxInterpolationPoints = 10, AmplificationFactor = RecordingAmplificationFactor.Amplification395DB, RefChannels = { 31 }, UseGroundReference = true});
-        
+            var stream = deviceClient.bicNeuralStream(new bicNeuralSetStreamingEnable() {
+                DeviceAddress = DeviceName, Enable = true, BufferSize = 100,
+                MaxInterpolationPoints = 10,
+                AmplificationFactor = RecordingAmplificationFactor.Amplification395DB,
+                RefChannels = { RefChannels }, UseGroundReference = true });
+
             // Create performance-tracking interpacket variables
             Stopwatch aStopwatch = new Stopwatch();
             newLoggingThread = new Thread(loggingThread);
@@ -382,11 +448,11 @@ namespace EvokedPotentialsApp
                 validBufferOrderCheck(stream.ResponseStream.Current.Samples);
 
                 // Missing packet handling
-                if (stream.ResponseStream.Current.Samples[0].SampleCounter != (latestPacketNum + 1) )
+                if (stream.ResponseStream.Current.Samples[0].SampleCounter != (latestPacketNum + 1))
                 {
                     // Determine the number of packets missing
                     long diffPackets = stream.ResponseStream.Current.Samples[0].SampleCounter - (latestPacketNum + 1);
-                    
+
                     // Account for uint wrap around (RARE)
                     if (diffPackets < 0)
                     {
@@ -394,20 +460,15 @@ namespace EvokedPotentialsApp
                     }
 
                     // Insert a maximum of 10 NANs
-                    if(diffPackets > 10)
+                    if (diffPackets > 10)
                     {
                         diffPackets = 10;
                     }
 
-                    // Create a NAN buffer to append into the dataBuffer
+                    // Create a NAN buffer to append into the dataBuffer and fill
                     double[] nanBuffer = new double[diffPackets];
+                    nanBuffer.AsSpan().Fill(double.NaN);
 
-                    // Fill the buffer with NANs
-                    for (int i = 0; i < diffPackets; i++)
-                    {
-                        nanBuffer[i] = double.NaN;
-                    }
-                    
                     // Lock dataBuffer access to ensure no mid-update copy.
                     lock (dataBufferLock)
                     {
@@ -422,11 +483,11 @@ namespace EvokedPotentialsApp
 
                 // Status update to console
                 aStopwatch.Restart();
-               
+
                 // Create local copy buffers and loop variables
                 int numSamples = stream.ResponseStream.Current.Samples.Count;
                 double[] copyBuffer = new double[numSamples];
-                double[] filtBuffer = new double [numSamples];
+                double[] filtBuffer = new double[numSamples];
 
                 // Lock dataBuffer access to ensure no mid-update copy.
                 lock (dataBufferLock)
@@ -435,30 +496,41 @@ namespace EvokedPotentialsApp
 
                     // If current pulse buffer is empty and stim found, start the next current pulse buffer
                     int stimulationActiveIndex = getStimulationActiveIndex(stream.ResponseStream.Current.Samples);
+
                     if (currPulseBuffer[0].Count == 0 && stimulationActiveIndex > -1)
                     {
-                        int transferBufferSize = (int)(baselinePeriodSamples - stimulationActiveIndex); // how much data to take from the end of the buffer to get to baselinePeriodSamples before stim
+                        // how much data to take from the end of the buffer to get to baselinePeriodSamples before stim
+                        int transferBufferSize = (int)(baselinePeriodSamples - stimulationActiveIndex);
+
                         int currDataBufferSize = dataBuffer[0].Count;
-                        int dataBufferStartI = (int)(currDataBufferSize - transferBufferSize); // starting i in dataBuffer to transfer to currPulseBuffer
+
+                        // starting i in dataBuffer to transfer to currPulseBuffer
+                        int dataBufferStartI = currDataBufferSize - transferBufferSize;
                         int pulseBufferCurrSize = (int)(baselinePeriodSamples + (numSamples - stimulationActiveIndex));
+
                         for (int channelNum = 0; channelNum < dataBuffer.Length; channelNum++)
                         {
                             // add previous data from buffer to chanCurrPulseBuffer
                             double[] dataBufferTransfer = new double[transferBufferSize];
+
                             for (int i = dataBufferStartI; i < currDataBufferSize; i++)
                             {
                                 dataBufferTransfer[i - dataBufferStartI] = dataBuffer[channelNum][i];
                             }
+
                             currPulseBuffer[channelNum].AddRange(dataBufferTransfer);
+
                             // add new data to chanCurrPulseBuffer
                             double[] streamTransfer = new double[numSamples];
                             for (int sampleNum = 0; sampleNum < numSamples; sampleNum++)
                             {
                                 streamTransfer[sampleNum] = stream.ResponseStream.Current.Samples[sampleNum].Measurements[channelNum];
                             }
+
                             currPulseBuffer[channelNum].AddRange(streamTransfer);
                         }
                     }
+
                     // if current pulse buffer is not empty, add new samples until it's full. once full, filter and send to running totals
                     else if (currPulseBuffer[0].Count > 0)
                     {
@@ -468,21 +540,25 @@ namespace EvokedPotentialsApp
                             {
                                 copyBuffer[sampleNum] = stream.ResponseStream.Current.Samples[sampleNum].Measurements[channelNum];
                             }
+
                             // only add enough data to fill currPulseBuffer. if too long, remove
                             if (currPulseBuffer[channelNum].Count > stimPeriodSamples)
                             {
                                 int diffLength = (int)(currPulseBuffer[channelNum].Count - stimPeriodSamples);
                                 currPulseBuffer[channelNum].RemoveRange((int)stimPeriodSamples, diffLength);
                             }
+
                             else if (currPulseBuffer[channelNum].Count + copyBuffer.Length >= stimPeriodSamples)
                             {
                                 currPulseBuffer[channelNum].AddRange(new ArraySegment<double>(copyBuffer, 0, (int)(stimPeriodSamples - currPulseBuffer[channelNum].Count)));
                             }
+
                             else
                             {
                                 currPulseBuffer[channelNum].AddRange(copyBuffer);
                             }
                         }
+
                         // if we've filled up the buffer
                         if (currPulseBuffer[0].Count >= stimPeriodSamples)
                         {
@@ -498,7 +574,6 @@ namespace EvokedPotentialsApp
                             }
                         }
                     }
-                    
 
                     // Update the data buffers
                     for (int channelNum = 0; channelNum < dataBuffer.Length; channelNum++)
@@ -531,17 +606,19 @@ namespace EvokedPotentialsApp
 
                         // Enqueue the data for the logging thread
                         string logString = stream.ResponseStream.Current.Samples[sampleNum].SampleCounter.ToString() + ", " +
-                            stream.ResponseStream.Current.Samples[sampleNum].TimeStamp.ToString() + ", " + 
+                            stream.ResponseStream.Current.Samples[sampleNum].TimeStamp.ToString() + ", " +
                             filteredIndex.ToString() + ", " +
                             stream.ResponseStream.Current.Samples[sampleNum].Measurements[filteredIndex].ToString() + ", " +
                             stream.ResponseStream.Current.Samples[sampleNum].FiltSample.ToString() + ", " +
                             stream.ResponseStream.Current.Samples[sampleNum].IsInterpolated.ToString() + ", " +
                             stream.ResponseStream.Current.Samples[sampleNum].Measurements[5].ToString() + ", " +
                             stream.ResponseStream.Current.Samples[sampleNum].StimulationActive.ToString();
+
                         for (int chNum = 0; chNum < numSensingChannelsDef; chNum++)
                         {
                             logString += ", " + stream.ResponseStream.Current.Samples[sampleNum].Measurements[chNum].ToString();
                         }
+
                         logLineQueue.Enqueue(logString);
                     }
                 }
@@ -551,9 +628,11 @@ namespace EvokedPotentialsApp
 
                 // Output status
                 aStopwatch.Stop();
-                double elapsedTime = (double)aStopwatch.ElapsedTicks / (double)Stopwatch.Frequency;
+
+                double elapsedTime = (double) (aStopwatch.ElapsedTicks / Stopwatch.Frequency);
                 Console.WriteLine("Implant Stream Neural Samples Received: " + stream.ResponseStream.Current.Samples.Count + "copyTime: " + elapsedTime.ToString());
             }
+
             Console.WriteLine("(Neural Monitor Task Exited)");
         }
 
@@ -577,6 +656,7 @@ namespace EvokedPotentialsApp
                         connectionInfoBuffer.Add(connectionType);
                         connectionInfoBuffer.Add(connectionState);
                         disconnected.Invoke(connectionInfoBuffer);
+
                         Dispose(); // shut down connection since there is a disconnect
                     }
                 }
