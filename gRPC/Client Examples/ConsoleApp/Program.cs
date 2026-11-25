@@ -1,6 +1,7 @@
-﻿using System;
+﻿using BICgRPC;
 using Grpc.Core;
-using BICgRPC;
+using System;
+using System.Runtime.Remoting.Channels;
 using System.Threading.Tasks;
 
 namespace BICgRPC_ConsoleTest
@@ -12,17 +13,26 @@ namespace BICgRPC_ConsoleTest
         static BICDeviceService.BICDeviceServiceClient deviceClient;
         static BICInfoService.BICInfoServiceClient infoClient;
         static string DeviceName;
+        static Task temperMonitor = null;
+        static Task humidityMonitor = null;
+        static Task connectionMonitor = null;
+        static Task powerMonitor = null;
+        static Task errorMonitor = null;
+        static Task neuroMonitor = null;
+
+        static string IpAddr = "127.0.0.1:50051";
 
         public static void Main(string[] args)
         {
             // Basic Server Information
-            Channel channel = new Channel("127.0.0.1:50051", ChannelCredentials.Insecure);
+            Channel channel = new Channel(IpAddr, ChannelCredentials.Insecure);
 
             // Instantiate the Bridge and scan for bridges
             Console.WriteLine("Instantiating Bridge Service Client and scanning for bridges...");
             bridgeClient = new BICBridgeService.BICBridgeServiceClient(channel);
+
             var scanBridgesReply = bridgeClient.ScanBridges(new QueryBridgesRequest());
-            if(scanBridgesReply.Bridges.Count == 0)
+            if (scanBridgesReply.Bridges.Count == 0)
             {
                 Console.WriteLine("No bridges found, press a key to exit program.");
                 Console.ReadKey();
@@ -31,7 +41,7 @@ namespace BICgRPC_ConsoleTest
 
             // Print out all Bridges Found
             Console.WriteLine("Bridges Found:");
-            for(int i = 0; i < scanBridgesReply.Bridges.Count; i++)
+            for (int i = 0; i < scanBridgesReply.Bridges.Count; i++)
             {
                 Console.WriteLine("Bridge Index: " + i.ToString());
                 Console.WriteLine("\tBridge.Address: " + scanBridgesReply.Bridges[i].Name);
@@ -43,8 +53,10 @@ namespace BICgRPC_ConsoleTest
 
             // Connect to the first bridge
             Console.WriteLine("Connecting to the first bridge");
+
             string bridgeName = scanBridgesReply.Bridges[0].Name;
             var connectBridgeReply = bridgeClient.ConnectBridge(new ConnectBridgeRequest() { Name = bridgeName });
+
             Console.WriteLine("Connect Bridge Response: " + connectBridgeReply.ConnectionStatus);
             Console.WriteLine();
 
@@ -57,12 +69,13 @@ namespace BICgRPC_ConsoleTest
             infoClient = new BICInfoService.BICInfoServiceClient(channel);
 
             // Ensure a device was found
-            if(scanDevicesReply.Name == "")
+            if (scanDevicesReply.Name == "")
             {
                 Console.WriteLine("No devices found, press a key to exit program.");
                 Console.ReadKey();
                 return;
             }
+
             DeviceName = scanDevicesReply.Name;
 
             // Print out all devices found
@@ -81,204 +94,13 @@ namespace BICgRPC_ConsoleTest
             Console.WriteLine("Connecting to implantable device.");
             var connectDeviceReply = deviceClient.ConnectDevice(new ConnectDeviceRequest() { DeviceAddress = DeviceName, LogFileName = "./deviceLog.txt" });
 
-            // Task pointers for streaming methods
-            Task temperMonitor = null;
-            Task humidityMonitor = null;
-            Task connectionMonitor = null;
-            Task powerMonitor = null;
-            Task errorMonitor = null;
-            Task neuroMonitor = null;
-
-            // Done initializing, start user controlled loop
-            writeCommandMenu();
-            Random randomNumGen = new Random();
-            bool phasicStimEn = false;
-            ConsoleKeyInfo userCommand;
-            
-            do
-            {
-                userCommand = Console.ReadKey();
-                Console.WriteLine();
-
-                switch (userCommand.Key)
-                {
-                    case ConsoleKey.G:
-                        bicGetImplantInfoReply anInfoReply = deviceClient.bicGetImplantInfo(new bicGetImplantInfoRequest() { DeviceAddress = DeviceName, UpdateCachedInfo = true });
-                        Console.WriteLine("Received Device Info:");
-                        Console.WriteLine("\tDevice.Address: " + DeviceName);
-                        Console.WriteLine("\tDevice.Id: " + anInfoReply.DeviceId.ToString());
-                        Console.WriteLine("\tDevice.Type: " + anInfoReply.DeviceType.ToString());
-                        Console.WriteLine("\tDevice.FirmwareVersion: " + anInfoReply.FirmwareVersion.ToString());
-                        Console.WriteLine("\tDevice.ChannelCount: " + anInfoReply.ChannelCount.ToString());
-                        Console.WriteLine("\tDevice.MeasurementChannelCount: " + anInfoReply.MeasurementChannelCount.ToString());
-                        Console.WriteLine("\tDevice.StimulationChannelCount: " + anInfoReply.StimulationChannelCount.ToString());
-                        Console.WriteLine("\tDevice.SamplingRate: " + anInfoReply.SamplingRate.ToString());
-                        Console.WriteLine("\tDevice.Channels:");
-                        for(int i = 0; i < anInfoReply.ChannelInfoList.Count; i++)
-                        {
-                            Console.WriteLine("\t\tChannel.Number: " + i.ToString());
-                            Console.WriteLine("\t\tChannel.CanMeasureImpedance: " + anInfoReply.ChannelInfoList[i].CanMeasureImpedance);
-                            Console.WriteLine("\t\tChannel.CanMeasure: " + anInfoReply.ChannelInfoList[i].CanMeasure);
-                            Console.WriteLine("\t\tChannel.MeasureValueMax: " + anInfoReply.ChannelInfoList[i].MeasureValueMax);
-                            Console.WriteLine("\t\tChannel.MeasureValueMin: " + anInfoReply.ChannelInfoList[i].MeasureValueMin);
-                            Console.WriteLine("\t\tChannel.CanStimulate: " + anInfoReply.ChannelInfoList[i].CanStimulate);
-                            Console.WriteLine("\t\tChannel.StimValueMax: " + anInfoReply.ChannelInfoList[i].StimValueMax);
-                            Console.WriteLine("\t\tChannel.StimValueMin: " + anInfoReply.ChannelInfoList[i].StimValueMin);
-                            Console.WriteLine("\t\tChannel.StimulationUnit: " + anInfoReply.ChannelInfoList[i].StimulationUnit);
-                            Console.WriteLine();
-                        }
-                        break;
-                    case ConsoleKey.I:
-                        uint channelReq = (uint)randomNumGen.Next(0, 32);
-                        bicGetImpedanceReply theImpedReply = deviceClient.bicGetImpedance(new bicGetImpedanceRequest() { DeviceAddress = DeviceName, Channel = channelReq });
-                        Console.WriteLine("Implant Get Impedance, Selected Channel: " + channelReq.ToString() +  ", Impedance: " + theImpedReply.ChannelImpedance.ToString() + theImpedReply.Units);
-                        break;
-                    case ConsoleKey.T:
-                        bicGetTemperatureReply theTempReply = deviceClient.bicGetTemperature(new RequestDeviceAddress() { DeviceAddress = DeviceName });
-                        Console.WriteLine("Implant Get Temperature: " + theTempReply.Temperature.ToString() + theTempReply.Units);
-                        if(temperMonitor == null || temperMonitor.IsCompleted)
-                        {
-                            // Start up the stream
-                            temperMonitor = Task.Run(temperMonitorTaskAsync);
-                        }
-                        else
-                        {
-                            // Stop the stream
-                            deviceClient.bicTemperatureStream(new bicSetStreamEnable() { DeviceAddress = DeviceName, Enable = false });
-                        }
-                        break;
-                    case ConsoleKey.H:
-                        bicGetHumidityReply theHumidReply = deviceClient.bicGetHumidity(new RequestDeviceAddress() { DeviceAddress = DeviceName });
-                        Console.WriteLine("Implant Get Humidity: " + theHumidReply.Humidity.ToString() + theHumidReply.Units);
-                        if (humidityMonitor == null || humidityMonitor.IsCompleted)
-                        {
-                            // Start up the stream
-                            humidityMonitor = Task.Run(humidMonitorTaskAsync);
-                        }
-                        else
-                        {
-                            // Stop the stream
-                            deviceClient.bicHumidityStream(new bicSetStreamEnable() { DeviceAddress = DeviceName, Enable = false });
-                        }
-                        break;
-                    case ConsoleKey.F:
-                        // infoService
-                        VersionNumberResponse verNumber = infoClient.VersionNumber(new VersionNumberRequest());
-                        SupportedDevicesResponse suppDevices = infoClient.SupportedDevices(new SupportedDevicesRequest());
-                        InspectRepositoryResponse repos = infoClient.InspectRepository(new InspectRepositoryRequest());
-                        Console.WriteLine("Testing infoService:");
-                        Console.WriteLine("\tInfo.VersionNumber: " + verNumber.VersionNumber.ToString());
-                        Console.WriteLine("\tInfo.SupportedDevices: " + suppDevices.SupportedDevices.ToString());
-                        Console.WriteLine("\tInfo.InspectRepository: " + repos.ToString());
-                        break;
-                    case ConsoleKey.E:
-                        if (errorMonitor == null || errorMonitor.IsCompleted)
-                        {
-                            // Start up the stream
-                            errorMonitor = Task.Run(errorMonitorTaskAsync);
-                        }
-                        else
-                        {
-                            // Stop the stream
-                            deviceClient.bicErrorStream(new bicSetStreamEnable() { DeviceAddress = DeviceName, Enable = false });
-                        }
-                        break;
-                    case ConsoleKey.C:
-                        if (connectionMonitor == null || connectionMonitor.IsCompleted)
-                        {
-                            // Start up the stream
-                            connectionMonitor = Task.Run(connectionMonitorTaskAsync);
-                        }
-                        else
-                        {
-                            // Stop the stream
-                            deviceClient.bicConnectionStream(new bicSetStreamEnable() { DeviceAddress = DeviceName, Enable = false });
-                        }
-                        break;
-                    case ConsoleKey.L:
-                        if (powerMonitor == null || powerMonitor.IsCompleted)
-                        {
-                            // Start up the stream
-                            powerMonitor = Task.Run(powerMonitorTaskAsync);
-                        }
-                        else
-                        {
-                            // Stop the stream
-                            deviceClient.bicPowerStream(new bicSetStreamEnable() { DeviceAddress = DeviceName, Enable = false });
-                        }
-                        break;
-                    case ConsoleKey.S:
-                        if (neuroMonitor == null || neuroMonitor.IsCompleted)
-                        {
-                            // Start up the stream
-                            neuroMonitor = Task.Run(neuralMonitorTaskAsync);
-                        }
-                        else
-                        {
-                            deviceClient.bicNeuralStream(new bicNeuralSetStreamingEnable() { DeviceAddress = DeviceName, Enable = false });
-                        }
-                        break;
-                    case ConsoleKey.R:
-                        if (!phasicStimEn)
-                        {
-                            // Start up the stream
-                            deviceClient.enableDistributedStimulation(new distributedStimEnableRequest() { DeviceAddress = DeviceName, Enable = true });
-                            phasicStimEn = true;
-                        }
-                        else
-                        {
-                            deviceClient.enableDistributedStimulation(new distributedStimEnableRequest() { DeviceAddress = DeviceName, Enable = false });
-                            phasicStimEn = false;
-                        }
-                        break;
-                    case ConsoleKey.P:
-                        Console.WriteLine("Implant Power On Command Result: " + deviceClient.bicSetImplantPower(new bicSetImplantPowerRequest() { DeviceAddress = DeviceName, PowerEnabled = true }));
-                        break;
-                    case ConsoleKey.O:
-                        Console.WriteLine("Implant Power Off Command Result: " + deviceClient.bicSetImplantPower(new bicSetImplantPowerRequest() { DeviceAddress = DeviceName, PowerEnabled = false }));
-                        break;
-                    case ConsoleKey.D1:
-                        // Create a waveform defintion request 
-                        bicEnqueueStimulationRequest aNewWaveform = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.PersistentSubfunctions, WaveformRepititions = 2 };
-                        // Create a pulse function
-                        StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition() { FunctionName = "pulseFunction0", 
-                            StimPulse = new stimPulseFunction() { Amplitude = { 1000, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 2550, PulseWidth = 400, PulseRepetitions = 3, SourceElectrodes = { 31 }, SinkElectrodes = { }, UseGround = true, BurstRepetitions = 2 } };
-                        StimulationFunctionDefinition pulseFunction1 = new StimulationFunctionDefinition() { FunctionName = "pulseFunction1", 
-                            StimPulse = new stimPulseFunction() { Amplitude = { 500, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 2550, PulseWidth = 400, PulseRepetitions = 5, SourceElectrodes = { 31 }, SinkElectrodes = { }, UseGround = true, BurstRepetitions = 4 } };
-                        // Create a pause function
-                        StimulationFunctionDefinition pauseFunction = new StimulationFunctionDefinition() { FunctionName = "pauseFunction",
-                            Pause = new pauseFunction() { Duration = 30000 } };
-                            
-                        // Load functions into waveform, then into command
-                        aNewWaveform.Functions.Add(pulseFunction0);
-                        aNewWaveform.Functions.Add(pulseFunction1);
-                        aNewWaveform.Functions.Add(pauseFunction);
-                        deviceClient.bicEnqueueStimulation(aNewWaveform);
-                        deviceClient.bicStartStimulation(new bicStartStimulationRequest() { DeviceAddress = DeviceName, FunctionIndex = (uint)randomNumGen.Next(1, 4) });
-                        break;
-                    case ConsoleKey.D0:
-                        Console.WriteLine("Stim Off Not Implemented");
-                        break;
-                    case ConsoleKey.Q:
-                        break;
-                    default:
-                        writeCommandMenu();
-                        break;
-                }
-
-            } while (userCommand.Key != ConsoleKey.Q);
-            
-            var reply3 = deviceClient.bicDispose(new RequestDeviceAddress() { DeviceAddress = DeviceName }) ;
-            Console.WriteLine("Dispose BIC Response: " + reply3.ToString());
-            channel.ShutdownAsync().Wait();
-            Console.WriteLine("Press any key to exit...");
-            Console.ReadKey();
+            RunMenu(DeviceName, channel);
         }
 
         static async Task temperMonitorTaskAsync()
         {
             var stream = deviceClient.bicTemperatureStream(new bicSetStreamEnable() { DeviceAddress = DeviceName, Enable = true });
-            while(await stream.ResponseStream.MoveNext())
+            while (await stream.ResponseStream.MoveNext())
             {
                 Console.WriteLine("Implant Stream Temperature: " + stream.ResponseStream.Current.Temperature.ToString() + stream.ResponseStream.Current.Units);
             }
@@ -353,6 +175,223 @@ namespace BICgRPC_ConsoleTest
             Console.WriteLine("\t1 : Start Stimulation - random number (1-9) 1mA pulses");
             Console.WriteLine("\t0 : Stop Stimulation (not implemented yet)");
             Console.WriteLine("\tq : Quit Program");
+        }
+
+        static void RunMenu(string DeviceName, Channel channel)
+        {
+            // Done initializing, start user controlled loop
+            writeCommandMenu();
+            Random randomNumGen = new Random();
+            bool phasicStimEn = false;
+            ConsoleKeyInfo userCommand;
+
+            do
+            {
+                userCommand = Console.ReadKey();
+                Console.WriteLine();
+
+                switch (userCommand.Key)
+                {
+                    case ConsoleKey.G:
+                        bicGetImplantInfoReply anInfoReply = deviceClient.bicGetImplantInfo(new bicGetImplantInfoRequest() { DeviceAddress = DeviceName, UpdateCachedInfo = true });
+                        Console.WriteLine("Received Device Info:");
+                        Console.WriteLine("\tDevice.Address: " + DeviceName);
+                        Console.WriteLine("\tDevice.Id: " + anInfoReply.DeviceId.ToString());
+                        Console.WriteLine("\tDevice.Type: " + anInfoReply.DeviceType.ToString());
+                        Console.WriteLine("\tDevice.FirmwareVersion: " + anInfoReply.FirmwareVersion.ToString());
+                        Console.WriteLine("\tDevice.ChannelCount: " + anInfoReply.ChannelCount.ToString());
+                        Console.WriteLine("\tDevice.MeasurementChannelCount: " + anInfoReply.MeasurementChannelCount.ToString());
+                        Console.WriteLine("\tDevice.StimulationChannelCount: " + anInfoReply.StimulationChannelCount.ToString());
+                        Console.WriteLine("\tDevice.SamplingRate: " + anInfoReply.SamplingRate.ToString());
+                        Console.WriteLine("\tDevice.Channels:");
+                        for (int i = 0; i < anInfoReply.ChannelInfoList.Count; i++)
+                        {
+                            Console.WriteLine("\t\tChannel.Number: " + i.ToString());
+                            Console.WriteLine("\t\tChannel.CanMeasureImpedance: " + anInfoReply.ChannelInfoList[i].CanMeasureImpedance);
+                            Console.WriteLine("\t\tChannel.CanMeasure: " + anInfoReply.ChannelInfoList[i].CanMeasure);
+                            Console.WriteLine("\t\tChannel.MeasureValueMax: " + anInfoReply.ChannelInfoList[i].MeasureValueMax);
+                            Console.WriteLine("\t\tChannel.MeasureValueMin: " + anInfoReply.ChannelInfoList[i].MeasureValueMin);
+                            Console.WriteLine("\t\tChannel.CanStimulate: " + anInfoReply.ChannelInfoList[i].CanStimulate);
+                            Console.WriteLine("\t\tChannel.StimValueMax: " + anInfoReply.ChannelInfoList[i].StimValueMax);
+                            Console.WriteLine("\t\tChannel.StimValueMin: " + anInfoReply.ChannelInfoList[i].StimValueMin);
+                            Console.WriteLine("\t\tChannel.StimulationUnit: " + anInfoReply.ChannelInfoList[i].StimulationUnit);
+                            Console.WriteLine();
+                        }
+                        break;
+
+                    case ConsoleKey.I:
+                        uint channelReq = (uint)randomNumGen.Next(0, 32);
+                        bicGetImpedanceReply theImpedReply = deviceClient.bicGetImpedance(new bicGetImpedanceRequest() { DeviceAddress = DeviceName, Channel = channelReq });
+                        Console.WriteLine("Implant Get Impedance, Selected Channel: " + channelReq.ToString() + ", Impedance: " + theImpedReply.ChannelImpedance.ToString() + theImpedReply.Units);
+                        break;
+
+                    case ConsoleKey.T:
+                        bicGetTemperatureReply theTempReply = deviceClient.bicGetTemperature(new RequestDeviceAddress() { DeviceAddress = DeviceName });
+                        Console.WriteLine("Implant Get Temperature: " + theTempReply.Temperature.ToString() + theTempReply.Units);
+
+                        if (temperMonitor == null || temperMonitor.IsCompleted)
+                        {
+                            // Start up the stream
+                            temperMonitor = Task.Run(temperMonitorTaskAsync);
+                        }
+
+                        else
+                        {
+                            // Stop the stream
+                            deviceClient.bicTemperatureStream(new bicSetStreamEnable() { DeviceAddress = DeviceName, Enable = false });
+                        }
+                        break;
+
+                    case ConsoleKey.H:
+                        bicGetHumidityReply theHumidReply = deviceClient.bicGetHumidity(new RequestDeviceAddress() { DeviceAddress = DeviceName });
+                        Console.WriteLine("Implant Get Humidity: " + theHumidReply.Humidity.ToString() + theHumidReply.Units);
+                        if (humidityMonitor == null || humidityMonitor.IsCompleted)
+                        {
+                            // Start up the stream
+                            humidityMonitor = Task.Run(humidMonitorTaskAsync);
+                        }
+                        else
+                        {
+                            // Stop the stream
+                            deviceClient.bicHumidityStream(new bicSetStreamEnable() { DeviceAddress = DeviceName, Enable = false });
+                        }
+                        break;
+
+                    case ConsoleKey.F:
+                        // infoService
+                        VersionNumberResponse verNumber = infoClient.VersionNumber(new VersionNumberRequest());
+                        SupportedDevicesResponse suppDevices = infoClient.SupportedDevices(new SupportedDevicesRequest());
+                        InspectRepositoryResponse repos = infoClient.InspectRepository(new InspectRepositoryRequest());
+                        Console.WriteLine("Testing infoService:");
+                        Console.WriteLine("\tInfo.VersionNumber: " + verNumber.VersionNumber.ToString());
+                        Console.WriteLine("\tInfo.SupportedDevices: " + suppDevices.SupportedDevices.ToString());
+                        Console.WriteLine("\tInfo.InspectRepository: " + repos.ToString());
+                        break;
+
+                    case ConsoleKey.E:
+                        if (errorMonitor == null || errorMonitor.IsCompleted)
+                        {
+                            // Start up the stream
+                            errorMonitor = Task.Run(errorMonitorTaskAsync);
+                        }
+                        else
+                        {
+                            // Stop the stream
+                            deviceClient.bicErrorStream(new bicSetStreamEnable() { DeviceAddress = DeviceName, Enable = false });
+                        }
+                        break;
+
+                    case ConsoleKey.C:
+                        if (connectionMonitor == null || connectionMonitor.IsCompleted)
+                        {
+                            // Start up the stream
+                            connectionMonitor = Task.Run(connectionMonitorTaskAsync);
+                        }
+                        else
+                        {
+                            // Stop the stream
+                            deviceClient.bicConnectionStream(new bicSetStreamEnable() { DeviceAddress = DeviceName, Enable = false });
+                        }
+                        break;
+
+                    case ConsoleKey.L:
+                        if (powerMonitor == null || powerMonitor.IsCompleted)
+                        {
+                            // Start up the stream
+                            powerMonitor = Task.Run(powerMonitorTaskAsync);
+                        }
+                        else
+                        {
+                            // Stop the stream
+                            deviceClient.bicPowerStream(new bicSetStreamEnable() { DeviceAddress = DeviceName, Enable = false });
+                        }
+                        break;
+
+                    case ConsoleKey.S:
+                        if (neuroMonitor == null || neuroMonitor.IsCompleted)
+                        {
+                            // Start up the stream
+                            neuroMonitor = Task.Run(neuralMonitorTaskAsync);
+                        }
+                        else
+                        {
+                            deviceClient.bicNeuralStream(new bicNeuralSetStreamingEnable() { DeviceAddress = DeviceName, Enable = false });
+                        }
+                        break;
+
+                    case ConsoleKey.R:
+                        if (!phasicStimEn)
+                        {
+                            // Start up the stream
+                            deviceClient.enableDistributedStimulation(new distributedStimEnableRequest() { DeviceAddress = DeviceName, Enable = true });
+                            phasicStimEn = true;
+                        }
+                        else
+                        {
+                            deviceClient.enableDistributedStimulation(new distributedStimEnableRequest() { DeviceAddress = DeviceName, Enable = false });
+                            phasicStimEn = false;
+                        }
+                        break;
+
+                    case ConsoleKey.P:
+                        Console.WriteLine("Implant Power On Command Result: " + deviceClient.bicSetImplantPower(new bicSetImplantPowerRequest() { DeviceAddress = DeviceName, PowerEnabled = true }));
+                        break;
+
+                    case ConsoleKey.O:
+                        Console.WriteLine("Implant Power Off Command Result: " + deviceClient.bicSetImplantPower(new bicSetImplantPowerRequest() { DeviceAddress = DeviceName, PowerEnabled = false }));
+                        break;
+
+                    case ConsoleKey.D1:
+                        // Create a waveform defintion request 
+                        bicEnqueueStimulationRequest aNewWaveform = new bicEnqueueStimulationRequest() { DeviceAddress = DeviceName, Mode = EnqueueStimulationMode.PersistentSubfunctions, WaveformRepititions = 2 };
+                        // Create a pulse function
+                        StimulationFunctionDefinition pulseFunction0 = new StimulationFunctionDefinition()
+                        {
+                            FunctionName = "pulseFunction0",
+                            StimPulse = new stimPulseFunction() { Amplitude = { 1000, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 2550, PulseWidth = 400, PulseRepetitions = 3, SourceElectrodes = { 31 }, SinkElectrodes = { }, UseGround = true, BurstRepetitions = 2 }
+                        };
+                        StimulationFunctionDefinition pulseFunction1 = new StimulationFunctionDefinition()
+                        {
+                            FunctionName = "pulseFunction1",
+                            StimPulse = new stimPulseFunction() { Amplitude = { 500, 0, 0, 0 }, DZ0Duration = 10, DZ1Duration = 2550, PulseWidth = 400, PulseRepetitions = 5, SourceElectrodes = { 31 }, SinkElectrodes = { }, UseGround = true, BurstRepetitions = 4 }
+                        };
+                        // Create a pause function
+                        StimulationFunctionDefinition pauseFunction = new StimulationFunctionDefinition()
+                        {
+                            FunctionName = "pauseFunction",
+                            Pause = new pauseFunction() { Duration = 30000 }
+                        };
+
+                        // Load functions into waveform, then into command
+                        aNewWaveform.Functions.Add(pulseFunction0);
+                        aNewWaveform.Functions.Add(pulseFunction1);
+                        aNewWaveform.Functions.Add(pauseFunction);
+                        deviceClient.bicEnqueueStimulation(aNewWaveform);
+                        deviceClient.bicStartStimulation(new bicStartStimulationRequest() { DeviceAddress = DeviceName, FunctionIndex = (uint)randomNumGen.Next(1, 4) });
+                        break;
+
+                    case ConsoleKey.D0:
+                        Console.WriteLine("Stim Off Not Implemented");
+                        break;
+
+                    case ConsoleKey.Q:
+                        break;
+
+                    default:
+                        Console.WriteLine("Invalid key pressed; Please pick from the below menu.");
+
+                        writeCommandMenu();
+                        break;
+                }
+
+            } while (userCommand.Key != ConsoleKey.Q);
+
+            var reply3 = deviceClient.bicDispose(new RequestDeviceAddress() { DeviceAddress = DeviceName });
+
+            Console.WriteLine("Dispose BIC Response: " + reply3.ToString());
+            channel.ShutdownAsync().Wait();
+            Console.WriteLine("Press any key to exit...");
+            Console.ReadKey();
         }
     }
 }

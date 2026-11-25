@@ -21,6 +21,7 @@ namespace ImpedanceCheckApp
         private BICInfoService.BICInfoServiceClient infoClient;
         private string DeviceName;
         private const int numSensingChannelsDef = 32;
+        private const string IpAddr = "127.0.0.1:50051";
         private List<string> impBuffer;
 
         // Logging Objects
@@ -35,15 +36,18 @@ namespace ImpedanceCheckApp
             // Set the impedance log directory
             this.impedLogDirectory = impedLogDirectory;
             // Open up the GRPC Channel to the BIC microservice
-            aGRPChannel = new Channel("127.0.0.1:50051", ChannelCredentials.Insecure);
+            aGRPChannel = new Channel(IpAddr, ChannelCredentials.Insecure);
         }
+
         public bool BICConnect()
         {
             infoClient = new BICInfoService.BICInfoServiceClient(aGRPChannel);
             Console.WriteLine("Grabbing information: ");
+
             var versionNumberReply = infoClient.VersionNumber(new VersionNumberRequest());
             var supportedDevicesReply = infoClient.SupportedDevices(new SupportedDevicesRequest());
             var inspectRepositoryReply = infoClient.InspectRepository(new InspectRepositoryRequest());
+
             Console.WriteLine("\tVersion Number: " + versionNumberReply.VersionNumber);
             Console.WriteLine("\tSupported Devices: " + supportedDevicesReply.SupportedDevices);
             Console.WriteLine("\tRepository: " + inspectRepositoryReply.RepoUri);
@@ -51,6 +55,7 @@ namespace ImpedanceCheckApp
             // Instantiate the Bridge and scan for bridges
             Console.WriteLine("Instantiating Bridge Service Client and scanning for bridges...");
             bridgeClient = new BICBridgeService.BICBridgeServiceClient(aGRPChannel);
+
             var connectedBridgesReply = bridgeClient.ConnectedBridges(new QueryBridgesRequest());
             var scanBridgesReply = bridgeClient.ScanBridges(new QueryBridgesRequest());
             if (scanBridgesReply.Bridges.Count == 0)
@@ -119,11 +124,13 @@ namespace ImpedanceCheckApp
             {
                 impedFilePath = "./" + impedFileName;
             }
+
             else // Create directory tree
             {
                 Directory.CreateDirectory(impedLogDirectory);
                 impedFilePath = Path.Combine(impedLogDirectory, impedFileName);
             }
+
             impedFileStream = new FileStream(impedFilePath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, FileOptions.Asynchronous);
             impedFileWriter = new StreamWriter(impedFileStream);
 
@@ -150,6 +157,7 @@ namespace ImpedanceCheckApp
                         chanImpedValue.ChannelImpedance.ToString() + ", " +
                         chanImpedValue.Units);
                 }
+
                 else
                 {
                     impBuffer.Add("Unsuccessful impedance reading");
@@ -157,6 +165,7 @@ namespace ImpedanceCheckApp
                         "Unsuccessful impedance reading, " +
                         "N/A");
                 }
+
                 impedEntry += "," + impBuffer.Last();
             }
 
@@ -171,10 +180,10 @@ namespace ImpedanceCheckApp
             // Tell BIC that we want to close!
             Console.WriteLine("Disposing...");
             var disposeReply = deviceClient.bicDispose(new RequestDeviceAddress() { DeviceAddress = DeviceName });
-            deviceClient = null;
+
             Console.WriteLine("Dispose BIC Response: " + disposeReply.ToString());
             aGRPChannel.ShutdownAsync().Wait();
-        }  
+        }
 
         public List<string> getImpedances()
         {
